@@ -4,7 +4,7 @@ import Info from './Info.jsx';
 
 const App = () => (
   <div>
-    <h1>Welcome to Meteor!</h1>
+    <h1>Welcome to Dynamic!</h1>
     <Hello />
     <Info />
   </div>
