@@ -5,9 +5,12 @@ import '../assets/_main.scss';
 
 
 export default class Landing extends Component {
-  static propTypes = {
-    prop: PropTypes
-  }
+  // static propTypes = {
+  //   prop: PropTypes
+  // }
+
+  //TODO: when code is entered, forward to route /{code}
+  // - Setup routes (React Router)
 
   render() {
     return (
