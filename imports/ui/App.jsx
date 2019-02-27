@@ -11,3 +11,5 @@ const App = () => (
 );
 
 export default App;
+
+//TODO: Routes if not done (install meteor react-routes, Render Dynamic component for form entry that takes you to enter username page
