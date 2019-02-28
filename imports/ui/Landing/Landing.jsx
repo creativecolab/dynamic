@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import Wrapper from '../Wrapper/Wrapper'
 import '../assets/_main.scss';
 import { Redirect } from 'react-router-dom'
+import Sessions from "../../api/sessions";
 
 
 export default class Landing extends Component {
@@ -25,11 +26,24 @@ export default class Landing extends Component {
   //once the user enters the session code, go to that session's page
   handleCodeEntry(evt) {
     evt.preventDefault();
-    console.log("Code entered");
-    console.log(this.state.session_code);
-    this.setState({
-      redirect: true
-    })    
+
+    const { session_code } = this.state;
+
+    if (session_code === "instructor") {
+      console.log('NOOO!!');
+    }
+
+    // check if session exists
+    // TODO: display message is session does not exist
+    const session = Sessions.findOne({code: session_code});
+    if (session) {
+      this.setState({
+        redirect: true
+      });  
+    } else {
+      console.log('Nope');
+    }
+     
   }
 
   //will redirect to the enter username page if the redirect state is set
@@ -48,9 +62,9 @@ export default class Landing extends Component {
         <h1 id="title-dynamic">Dynamic!</h1>
         <form id="session-form" onSubmit={(evt) => this.handleCodeEntry(evt)}>
           <div id="session-code" className="field-container">
-            <label className="field-title" htmlFor="session-code">Please enter session code</label>
+            <label className="field-title" htmlFor="session-code">Session code</label>
             <div className="input-container">
-              <input type="text" name="session-code" placeholder="Type your session code here" value={this.state.session} onChange={(evt) => this.handleChange(evt)}/>
+              <input type="text" name="session-code" placeholder="Enter your session code" value={this.state.session} onChange={(evt) => this.handleChange(evt)}/>
             </div>
           </div>
         </form>

@@ -1,3 +1,3 @@
 import { Mongo } from 'meteor/mongo';
 
-export default Users = new Mongo.Collection('users');
+export default Users = new Mongo.Collection('dynamic-users');
