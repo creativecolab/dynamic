@@ -26,6 +26,7 @@ class InstructorUI extends Component {
       code: session_code,
       timestamp: new Date().toDateString(),
       participants: [],
+      teams: [], // TODO: take this out of here
       activities: [],
       status: 0 // TODO: ENUM with status PENDING, DONE, IN_PROGRESS
     }, (data) => {
@@ -52,7 +53,7 @@ class InstructorUI extends Component {
 
   mapSessions() {
     return this.props.sessions.map(({_id, code, participants, timestamp, status}) => (
-      <SessionListItem key={_id} _id={_id} participants={participants.length} code={code} timestamp={timestamp} status={status} />
+      <SessionListItem key={_id} _id={_id} participants={participants} code={code} timestamp={timestamp} status={status} />
     ));
   }
 

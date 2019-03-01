@@ -1,3 +1,7 @@
+html, body, #react-target, #react-target>div {
+  height: 100%
+}
+
 body {
   margin: 0;
   cursor: default;
@@ -6,4 +10,9 @@ body {
   min-height: 100%;
   text-align: center;
   font-family: 'PT Sans Narrow', sans-serif;
+}
+
+h1 {
+  margin: 0;
+  padding: 0.67em;
 }
