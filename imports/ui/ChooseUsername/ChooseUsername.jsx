@@ -74,7 +74,7 @@ class ChooseUsername extends Component {
       // also, very very vey ugly. do this right.
       // assumes num of teams <= 5
       if (this.props.session.status === 1) {
-
+ 
         for (let i = 0; i < this.props.session.teams.length; i++) {
           if (this.props.session.teams[i].includes(this.state.username)) {
             color = colors[i];

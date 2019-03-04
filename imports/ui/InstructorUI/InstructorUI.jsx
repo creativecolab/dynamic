@@ -21,12 +21,20 @@ class InstructorUI extends Component {
   // insert new session to db
   handleNewSession(evt) {
     evt.preventDefault();
-    const { session_code, size } = this.state;
+    const { session_code } = this.state;
+
+    const session = Sessions.findOne({code: session_code});
+
+    // session already exists!
+    if (session) {
+      console.log('Session already exists!');
+      return;
+    }
+
     Sessions.insert({
       code: session_code,
-      timestamp: new Date().toDateString(),
+      timestamp: new Date().getTime(),
       participants: [],
-      teams: [], // TODO: take this out of here
       activities: [],
       status: 0 // TODO: ENUM with status PENDING, DONE, IN_PROGRESS
     }, (data) => {
@@ -45,12 +53,7 @@ class InstructorUI extends Component {
     });
   }
 
-  handleSizeChange(evt) {
-    this.setState({
-      size: parseInt(evt.target.value)
-    });
-  }
-
+  // list sessions
   mapSessions() {
     return this.props.sessions.map(({_id, code, participants, timestamp, status}) => (
       <SessionListItem key={_id} _id={_id} participants={participants} code={code} timestamp={timestamp} status={status} />
@@ -68,12 +71,6 @@ class InstructorUI extends Component {
               <input type="text" name="session-code" placeholder="Type your session code here" value={this.state.session_code} onChange={(evt) => this.handleSessionChange(evt)}/>
             </div>
           </div>
-          {/* <div id="team-size" className="field-container">
-            <label className="field-title" htmlFor="team-size">Maximum team size</label>
-            <div className="input-container">
-              <input type="number" name="team-size" placeholder="Maximum team size" value={this.state.size} onChange={(evt) => this.handleSizeChange(evt)}/>
-            </div>
-          </div> */}
           <div id="submit" className="field-container">
             <div className="input-container">
               <input type="submit" name="submit" value="Create"/>
