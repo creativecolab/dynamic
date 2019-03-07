@@ -19,8 +19,6 @@ class Session extends Component {
     const name = 'brainstorm';
     const session_id = this.props.session._id;
 
-    // console.log(evt.target.select.value);
-
     // add new activity to db
     const activity = Activities.insert({
       name,
@@ -28,7 +26,7 @@ class Session extends Component {
       timestamp: new Date().getTime(),
       team_size: 3, // TODO: default value?
       status: 0,
-      groups: []
+      teams: []
     });
 
     // add new activity to this session, necessary? good?
@@ -41,11 +39,15 @@ class Session extends Component {
   }
 
   mapActivities() {
-    const activities = Activities.find({session_id: this.props.session._id}).fetch();
-
+    const { activities } = this.props;
+    if (!activities) return ""; 
     return activities.map((act) => {
       return <div  key={act._id}>Name: {act.name} | Status: {act.status}</div>;
     });
+  }
+
+  backToHome() {    
+    window.location = '/instructor';
   }
 
   render() {
@@ -53,6 +55,7 @@ class Session extends Component {
     const { status, timestamp, participants } = this.props.session;
     return (
       <Wrapper>
+        <button onClick={() => this.backToHome()} id="back-button">back</button>
         <h1>{this.props.match.params.code}</h1>
         <table>
           <tbody id="session-info">
@@ -97,5 +100,7 @@ class Session extends Component {
 export default withTracker((props) => {
   const { code } = props.match.params;
   const session = Sessions.findOne({code});
-  return {session};
+  if (!session) return {};
+  const activities = Activities.find({session_id: session._id}).fetch();
+  return {session, activities};
 })(Session);

@@ -3,6 +3,7 @@ html, body, #react-target, #react-target>div {
 }
 
 body {
+  font-size: 24px;
   margin: 0;
   cursor: default;
   overflow: hidden;

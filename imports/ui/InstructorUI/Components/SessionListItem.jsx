@@ -42,8 +42,8 @@ class SessionListItem extends Component {
     const { participants } = this.props;
 
     // need participants!
-    if (participants.length === 0) {
-      console.log('No participants!');
+    if (participants.length < 2) {
+      console.log('Not enough participants!');
       return;
     }
 
@@ -59,7 +59,7 @@ class SessionListItem extends Component {
     return (
       <div>
         {this.renderRedirect()}
-        Code: {code} | Participants: {participants.length} | Status: {status}
+        Code: {code} | Status: {status} {" "}
         <button onClick={() => this.startSession()}>start</button>
         <button onClick={() => this.editSession()}>edit</button>
       </div>

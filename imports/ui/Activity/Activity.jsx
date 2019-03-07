@@ -3,61 +3,124 @@ import PropTypes from 'prop-types'
 import { withTracker } from 'meteor/react-meteor-data';
 import Wrapper from '..//Wrapper/Wrapper'
 import TeamBox from "./Components/TeamBox/TeamBox";
+import Activities from '../../api/activities';
 
 class Activity extends Component {
   static propTypes = {
-    session_code: PropTypes.string.isRequired,
+    participants: PropTypes.array.isRequired,
     username:  PropTypes.string.isRequired,
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentTeam: []
+    }
   }
 
   // if necessary for the activity...
   // TODO: before this, pop an activity from the session!
   formTeams() {
 
-    const { participants } = this.props.session;
+    // get snapshot of participants
+    const { participants, nextActivity } = this.props;
+
     let teams = [];
 
     // form teams, teams of 3
-    let newTeam = [participants[0]];
+    let newTeam = {confirmed: false, members: [participants[0]]};
     for (let i = 1; i < participants.length; i++) {
+
+      // completed a new team
       if (i % 3 == 0) {
         teams.push(newTeam);
-        newTeam = [participants[i]];
-      } else {
-        newTeam.push(participants[i]);
+        newTeam = {confirmed: false, members: [participants[i]]};
+      }
+      
+      // add new member to team
+      else {
+        newTeam.members.push(participants[i]);
       }
     }
 
-    // last team
-    if (newTeam.length < 3) {
+    // 1 left, create team of 4
+    if (newTeam.members.length === 1) {
+      teams[teams.length - 1].members.push(newTeam.members[0]);
+    }
+
+    // 2 left, create team of 2
+    else if (newTeam.members.length === 2) {
       teams.push(newTeam);
     }
 
     console.log(teams);
 
-    //TODO: fix this!!
-    return teams.filter(team => team.includes(this.props.username));
+    // start and update activity on database
+    Activities.update(nextActivity._id, {
+      $set: {
+        teams,
+        status: 1
+      }
+    }, (error) => {
+      if (!error) {
+        console.log('Teams created!')
+      } else {
+        console.log(error);
+      }
+    });
+
+    // return this user's team to render
+    const currentTeam = teams.filter(team => team.members.includes(this.props.username))[0];
+
+    // keep current team on state
+    this.setState({
+      currentTeam
+    });
 
   }
 
-  renderTeammates() {
-    // TODO: get first activity from props
-    const team = this.formTeams();
-    return <TeamBox team={team} />
+  renderActivity() {
+
+    const { currentActivity } = this.props;
+
+    //TODO: consider adding a boolean to activity
+    // e.g., requires_team
+    if (currentActivity.name === "brainstorm") {
+      const team = this.state.currentTeam;
+      return <TeamBox team={team} />
+    }
+
+    else {
+      return "Invalid activity"
+    }
+
   }
 
+  componentWillMount() {
+    if (this.props.nextActivity) this.formTeams();
+    if (this.state.currentTeam) console.log('Ready');
+  }
+
+  // needs a current activity
   render() {
+    console.log('render!');
+    if (!this.props.currentActivity) {
+      return <Wrapper>No activities left...</Wrapper>
+    }
     return (
       <Wrapper>
-        Find your teammates, {this.props.username}:
-        {this.renderTeammates()}
+        {this.renderActivity()}
       </Wrapper>
     )
   }
 }
 
 export default withTracker((props) => {
-  const { session_code } = props;
-  const session = Sessions.findOne({code: session_code});
-  return {session};
+  const { session_id } = props;
+  const nextActivity = Activities.findOne({session_id, status: 0});
+  const currentActivity = Activities.findOne({session_id, status: 1});
+  
+  // const { teams } = currentActivity;
+  // const myTeam = teams.filter(team => team.members.includes(props.username))[0];
+  return {currentActivity, nextActivity};
 })(Activity);

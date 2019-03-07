@@ -50,7 +50,7 @@ class ChooseUsername extends Component {
         // add user to session
         Sessions.update(this.props.session._id, {
           $push: {
-            participants: {username}
+            participants: username
           }
         }, () => {
           this.setState({
@@ -71,13 +71,13 @@ class ChooseUsername extends Component {
     // user entered their name!
     if (ready) {
       
-      // get status of session
-      const { status } = this.props.session;
+      // get status and participants of session
+      const { _id ,status, participants } = this.props.session;
 
       // session is active!
       // TODO: decide between redirect or this
       if (status === 1) {
-        return <Activity username={username} session_code={code}/>
+        return <Activity username={username} session_id={_id} participants={participants}/>
       }
       
       // waiting for instructor... TODO: make this a component
