@@ -22,12 +22,6 @@ class SessionListItem extends Component {
     };
   } 
 
-  startActivity() {
-
-    
-
-  }
-
   editSession() {
     this.setState({
       redirect: true
@@ -53,26 +47,7 @@ class SessionListItem extends Component {
       return;
     }
 
-    // let teams = [];
-
-    // // form teams, teams of 3
-    // let newTeam = [participants[0]];
-    // for (let i = 1; i < participants.length; i++) {
-    //   if (i % 3 == 0) {
-    //     teams.push(newTeam);
-    //     newTeam = [participants[i]];
-    //   } else {
-    //     newTeam.push(participants[i]);
-    //   }
-    // }
-
-    // // last team
-    // if (newTeam.length < 3) {
-    //   teams.push(newTeam);
-    // }
-
-    // console.log(teams)
-
+    // ready to start session!
     Sessions.update(this.props._id, {
       $set: { status: 1 }
     });

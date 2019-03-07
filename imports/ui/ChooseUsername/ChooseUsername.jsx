@@ -6,6 +6,7 @@ import Wrapper from '../Wrapper/Wrapper'
 import '../assets/_main.scss';
 import Sessions from '../../api/sessions';
 import Color from '../Color';
+import Activity from '../Activity/Activity';
 
 class ChooseUsername extends Component {
   // static propTypes = {
@@ -51,39 +52,36 @@ class ChooseUsername extends Component {
           $push: {
             participants: {username}
           }
-        });
-
-        this.setState({
-          username: '',
-          ready: true
+        }, () => {
+          this.setState({
+            ready: true
+          });
         });
       });
     }    
   }
 
   render() {
-    const colors = ['#ffa5a5', '#fff9a4', '#a3ffb3', '#a3e9ff', '#c9a3ff']
     const code = this.props.match.params.code;
-    const { ready } = this.state;
+    const { ready, username } = this.state;
+
+    // session not available yet TODO: return loading component
+    if (!this.props.session) return "";
 
     // user entered their name!
     if (ready) {
+      
+      // get status of session
+      const { status } = this.props.session;
 
-      let color = 'red';
-      // TODO: fix this, prop might not exist yet
-      // also, very very vey ugly. do this right.
-      // assumes num of teams <= 5
-      if (this.props.session.status === 1) {
- 
-        for (let i = 0; i < this.props.session.teams.length; i++) {
-          if (this.props.session.teams[i].includes(this.state.username)) {
-            color = colors[i];
-            break;
-          }
-        }
-
-        return <Color color={color}><h1>Find your teammates who have the same color as you!</h1></Color>
-      } else {
+      // session is active!
+      // TODO: decide between redirect or this
+      if (status === 1) {
+        return <Activity username={username} session_code={code}/>
+      }
+      
+      // waiting for instructor... TODO: make this a component
+      else {
         return (
           <Wrapper><h1>Waiting for more people to join...</h1><h2>There are currently {this.props.session.participants.length}</h2></Wrapper>
         )
