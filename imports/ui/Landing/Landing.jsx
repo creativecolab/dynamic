@@ -66,6 +66,7 @@ export default class Landing extends Component {
             <div className="input-container">
               <input type="text" name="session-code" placeholder="Enter your session code" value={this.state.session} onChange={(evt) => this.handleChange(evt)}/>
             </div>
+            <input type="submit" value="Next"/>
           </div>
         </form>
       </Wrapper>

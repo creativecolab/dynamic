@@ -100,6 +100,7 @@ class ChooseUsername extends Component {
             <div className="input-container">
               <input type="text" name="username" placeholder="Enter your username" id="username" value={this.state.username} onChange={(evt) => this.handleChange(evt)}/>
             </div>
+            <input type="submit" value="Next"/>
           </div>
         </form>
       </Wrapper>
