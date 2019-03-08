@@ -71,6 +71,7 @@ class Activity extends Component {
 
     // return this user's team to render
     const currentTeam = teams.filter(team => team.members.includes(this.props.username))[0];
+    console.log(currentTeam);
 
     // keep current team on state
     this.setState({
@@ -87,6 +88,7 @@ class Activity extends Component {
     // e.g., requires_team
     if (currentActivity.name === "brainstorm") {
       const team = this.state.currentTeam;
+      //allow a confirm box to pop up once all teammates are confirmed...this confirmation with signal that this team is ready
       return <TeamBox team={team} />
     }
 
