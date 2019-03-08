@@ -43,19 +43,14 @@ class Activity extends Component {
       }
     }
 
-    // first team of 3
-    if (newTeam.members.length === 3) {
+    // last team is of 3 or 2
+    if (newTeam.members.length === 3 || newTeam.members.length === 2) {
       teams.push(newTeam);
     }
-
-    // 1 left, create team of 4
+    
+    // only 1 participant left, create team of 4
     if (newTeam.members.length === 1) {
       teams[teams.length - 1].members.push(newTeam.members[0]);
-    }
-
-    // 2 left, create team of 2
-    else if (newTeam.members.length === 2) {
-      teams.push(newTeam);
     }
 
     console.log(teams);

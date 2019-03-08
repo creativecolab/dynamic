@@ -13,8 +13,6 @@ export default class ChooseUsername extends Component {
     window.location = '/';
   }
 
-  //TODO: re-render when username is set
-
   render() {
     return (
       <Wrapper>

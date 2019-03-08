@@ -34,6 +34,10 @@ export default class Landing extends Component {
       console.log('NOOO!!');
     }
 
+    if (session_code === "") {
+      console.log('NOOO!!');
+    }
+
     // check if session exists
     const session = Sessions.findOne({code: session_code});
     if (session) {

@@ -20,6 +20,7 @@ class ChooseUsername extends Component {
     super(props);
     this.state = {
       username: '',
+      taken: false,
       ready: false
     };
   }
@@ -41,6 +42,9 @@ class ChooseUsername extends Component {
 
     if (user) {
       console.log('User exists!');
+      this.setState({
+        taken: true
+      });
     } else {
       Users.insert({
         username,
@@ -54,11 +58,19 @@ class ChooseUsername extends Component {
           }
         }, () => {
           this.setState({
+            taken: false,
             ready: true
           });
         });
       });
     }    
+  }
+
+  //will alert the user that there username is not valid
+  renderUsernameTaken = () => {
+    if (this.state.taken) {
+      return <p style={{color:"red"}}>That username is already taken! Please choose another one.</p>
+    }
   }
 
   render() {
@@ -94,6 +106,7 @@ class ChooseUsername extends Component {
         <h2>Session: {code}</h2>
         <form id="username-form" onSubmit={(evt) => this.saveUser(evt)}>
           <div id="username" className="field-container">
+            {this.renderUsernameTaken()}
             <label className="field-title" htmlFor="username">Username</label>
             <div className="input-container">
               <input type="text" name="username" placeholder="Enter your username" id="username" value={this.state.username} onChange={(evt) => this.handleChange(evt)}/>

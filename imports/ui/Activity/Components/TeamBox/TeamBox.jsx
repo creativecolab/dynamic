@@ -1,9 +1,8 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+
 
 export default function TeamBox(props) {
-
-  //TODO: add buttons to each of the names 
-  //<button onClick={(evt) => {evt.target.style.background-color: 'red'}} value="not-clicked"></button>
 
   if (!props.team) return "";
   return (
@@ -20,3 +19,35 @@ export default function TeamBox(props) {
       </div>
   )
 }
+
+// class TeamBox extends Component {
+//   static propTypes = {
+//     username: PropTypes.string.isRequired,
+//     team: PropTypes.array.isRequired,
+//   }
+
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       confirmed: false,
+//       found: ""
+//     }
+//   }
+
+//   render() {
+//     if (!props.team) return "";
+//     return (
+//       <div>
+//         Find your teammates, {props.username}:
+//         {props.team.members.filter(username => {
+//           return username !== props.username;
+//         }).map(username => {
+//           return <div onClick={(evt) => this.setState({found = "Found"})} key={username}><b>{this.state.found} + {username}</b></div>
+//         })}
+//           <div>
+//             <br/>Click on their names when you find them!
+//           </div>
+//         </div>
+//     )
+//   }
+// }
