@@ -12,7 +12,8 @@ export default class Landing extends Component {
     super(props);
     this.state = {
       session_code: '',
-      redirect: false
+      redirect: false,
+      invalid_code: false
     };
   }
 
@@ -34,14 +35,18 @@ export default class Landing extends Component {
     }
 
     // check if session exists
-    // TODO: display message is session does not exist
     const session = Sessions.findOne({code: session_code});
     if (session) {
       this.setState({
-        redirect: true
+        redirect: true,
+        invalid_code: false
       });  
     } else {
       console.log('Nope');
+      this.setState({
+        invalid_code: true
+      });
+      
     }
      
   }
@@ -52,6 +57,13 @@ export default class Landing extends Component {
       return <Redirect to={{
         pathname: '/' + this.state.session_code
       }}/>
+    }
+  }
+
+  //will alert the user that the entered code is not valid
+  renderCodeNonexistant = () => {
+    if (this.state.invalid_code && !this.state.redirect) {
+      return <p style={{color:"red"}}>A session with that code does not exist!</p>
     }
   }
 
@@ -66,6 +78,7 @@ export default class Landing extends Component {
             <div className="input-container">
               <input type="text" name="session-code" placeholder="Enter your session code" value={this.state.session} onChange={(evt) => this.handleChange(evt)}/>
             </div>
+            {this.renderCodeNonexistant()}
             <input type="submit" value="Next"/>
           </div>
         </form>

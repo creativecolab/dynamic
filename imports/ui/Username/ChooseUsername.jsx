@@ -9,11 +9,16 @@ export default class ChooseUsername extends Component {
   //   prop: PropTypes
   // }
 
+  backToHome() {    
+    window.location = '/';
+  }
+
   //TODO: re-render when username is set
 
   render() {
     return (
       <Wrapper>
+        <button onClick={() => this.backToHome()} id="back-button">back</button>
         <h1 id="title-dynamic">Dynamic!</h1>
         <form id="username-form">
           <div id="username" className="field-container">
