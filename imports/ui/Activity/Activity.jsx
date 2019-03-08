@@ -43,6 +43,11 @@ class Activity extends Component {
       }
     }
 
+    // first team of 3
+    if (newTeam.members.length === 3) {
+      teams.push(newTeam);
+    }
+
     // 1 left, create team of 4
     if (newTeam.members.length === 1) {
       teams[teams.length - 1].members.push(newTeam.members[0]);
@@ -82,14 +87,14 @@ class Activity extends Component {
 
   renderActivity() {
 
-    const { currentActivity } = this.props;
+    const { currentActivity, username } = this.props;
 
     //TODO: consider adding a boolean to activity
     // e.g., requires_team
     if (currentActivity.name === "brainstorm") {
       const team = this.state.currentTeam;
       //allow a confirm box to pop up once all teammates are confirmed...this confirmation with signal that this team is ready
-      return <TeamBox team={team} />
+      return <TeamBox username={username} team={team} />
     }
 
     else {

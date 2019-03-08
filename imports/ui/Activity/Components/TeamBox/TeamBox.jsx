@@ -8,10 +8,15 @@ export default function TeamBox(props) {
   if (!props.team) return "";
   return (
     <div>
-      Find your teammates, {"HELOO"}:
-      {props.team.members.map(username => {
-        return <div key={username}>{username}</div>
+      Find your teammates, {props.username}:
+      {props.team.members.filter(username => {
+        return username !== props.username;
+      }).map(username => {
+        return <div onClick={(evt) => evt.target.text = "Found " + username} key={username}><b>{username}</b></div>
       })}
+        <div>
+          <br/>Click on their names when you find them!
+        </div>
       </div>
   )
 }
