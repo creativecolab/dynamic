@@ -63,11 +63,12 @@ class Activity extends Component {
       }
     }, (error) => {
       if (!error) {
-        console.log('Teams created!')
+        console.log('Teams created!');
       } else {
         console.log(error);
       }
     });
+
 
     // return this user's team to render
     const currentTeam = teams.filter(team => team.members.includes(this.props.username))[0];
@@ -77,6 +78,8 @@ class Activity extends Component {
     this.setState({
       currentTeam
     });
+
+    
 
   }
 
