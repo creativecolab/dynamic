@@ -25,7 +25,7 @@ function clearCollections() {
 }
 
 Meteor.startup(() => {
-  clearCollections();
+  //clearCollections();
   // If the Links collection is empty, add some data.
   if (Links.find().count() === 0) {
     insertLink(
