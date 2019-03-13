@@ -10,12 +10,14 @@ class Activity extends Component {
   static propTypes = {
     participants: PropTypes.array.isRequired,
     username:  PropTypes.string.isRequired,
+    session_id: PropTypes.string.isRequired,
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      currentTeam: []
+      currentTeam: [],
+      currentActivity: sess
     }
   }
 
@@ -111,7 +113,7 @@ class Activity extends Component {
   // needs a current activity
   render() {
     console.log('render!');
-    if (!this.props.currentActivity) {
+    if (!this.props.session.status) {
       return <Wrapper>No activities left...</Wrapper>
     }
     return (
