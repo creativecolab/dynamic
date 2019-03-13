@@ -47,7 +47,8 @@ class Activity extends Component {
     if (newTeam.members.length === 3 || newTeam.members.length === 2) {
       teams.push(newTeam);
     }
-    
+
+
     // only 1 participant left, create team of 4
     if (newTeam.members.length === 1) {
       teams[teams.length - 1].members.push(newTeam.members[0]);
@@ -79,8 +80,8 @@ class Activity extends Component {
       currentTeam
     });
 
-    
 
+    
   }
 
   renderActivity() {
