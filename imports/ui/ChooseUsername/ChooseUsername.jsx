@@ -84,20 +84,22 @@ class ChooseUsername extends Component {
     if (ready) {
       
       // get status and participants of session
-      const { _id ,status, participants } = this.props.session;
+      const { _id, participants } = this.props.session;
 
-      // session is active!
-      // TODO: decide between redirect or this
-      if (status === 1) {
-        return <Activity username={username} session_id={_id} participants={participants}/>
-      }
+      return <Activity username={username} session_id={_id} participants={participants}/>
+
+      // // session is active!
+      // // TODO: decide between redirect or this
+      // if (status === 1) {
+        
+      // }
       
-      // waiting for instructor... TODO: make this a component
-      else {
-        return (
-          <Wrapper><h1>Waiting for more people to join...</h1><h2>There are currently {this.props.session.participants.length}</h2></Wrapper>
-        )
-      }
+      // // waiting for instructor... TODO: make this a component
+      // else {
+      //   return (
+      //     <Wrapper><h1>Waiting for more people to join...</h1><h2>There are currently {this.props.session.participants.length}</h2></Wrapper>
+      //   )
+      // }
     }
 
     return (

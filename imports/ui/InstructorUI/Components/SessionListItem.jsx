@@ -37,6 +37,7 @@ class SessionListItem extends Component {
   }
 
   // this should be it's own component, with its own view
+  // TODO: move it up
   startSession() {
 
     const { participants } = this.props;
