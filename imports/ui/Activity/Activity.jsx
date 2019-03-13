@@ -4,6 +4,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import Wrapper from '..//Wrapper/Wrapper'
 import TeamBox from "./Components/TeamBox/TeamBox";
 import Activities from '../../api/activities';
+import Sessions from '../../api/sessions';
 
 class Activity extends Component {
   static propTypes = {
@@ -121,11 +122,13 @@ class Activity extends Component {
 }
 
 export default withTracker((props) => {
-  const { session_id } = props;
-  const nextActivity = Activities.findOne({session_id, status: 0});
-  const currentActivity = Activities.findOne({session_id, status: 1});
+  // const { session_id } = props;
+  // const nextActivity = Activities.findOne({session_id, status: 0});
+  // const currentActivity = Activities.findOne({session_id, status: 1});
   
+  const session = Sessions.findOne(props.session_id);
+
   // const { teams } = currentActivity;
   // const myTeam = teams.filter(team => team.members.includes(props.username))[0];
-  return {currentActivity, nextActivity};
+  return {session};
 })(Activity);
