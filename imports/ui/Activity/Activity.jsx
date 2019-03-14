@@ -17,7 +17,50 @@ class Activity extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentActivity: this.props.session.activities[0] // id of the running activity
+      currentActivity: this.props.session.activities[0], // id of the running activity
+      activityCount: 0,
+    }
+  }
+
+  endActivity() {
+    // end and update activity on database
+    Activities.update(this.state.currentActivity, {
+      $set: {
+        teams,
+        status: 2
+      }
+    }, (error) => {
+      if (!error) {
+        console.log('Activity Ended!');
+      } else {
+        console.log(error);
+      }
+    });
+    // keep count if we are doing more activities than there are planned
+    const nextActivityIndex = this.state.activityCount + 1;
+    if (nextActivityIndex != this.props.session.activities.length) { // pick next activity, set states and update database
+      nextActivity = this.props.session.activities[nextActivityIndex]
+      this.setState({
+        currentActivity: nextActivity, // id of the next running activity
+        activityNumber: nextActivityIndex, // update the activity count
+      });
+    } else { // no more activites left, set states and update database
+        this.setState({
+            currentActivity: "",
+            activityNumber: -1,
+        });
+        // end and update the Session on database
+        Sessions.update(this.props.session_id, {
+          $set: {
+            status: 2
+          }
+        }, (error) => {
+          if (!error) {
+            console.log('Session ended!');
+          } else {
+            console.log(error);
+          }
+        });
     }
   }
 
@@ -33,7 +76,6 @@ class Activity extends Component {
     // e.g., requires_team
     if (activity.name === "brainstorm") {
       console.log("Starting brainstorming");
-
       //allow a confirm box to pop up once all teammates are confirmed...this confirmation with signal that this team is ready
       return <Icebreaker _id={activity._id} username={username} participants={session.participants} />
     }
@@ -47,7 +89,6 @@ class Activity extends Component {
   // needs a current activity
   render() {
     console.log('render!');
-    console.log(this.props.session);
     if (!this.props.session.status) {
       return <Wrapper>Waiting for activities...</Wrapper>
     }
