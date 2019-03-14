@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 export default class TeamBox extends Component {
   static propTypes = {
-    // prop: PropTypes
+    team: PropTypes.array.isRequired,
   }
 
   constructor(props) {
@@ -17,9 +17,18 @@ export default class TeamBox extends Component {
     };
   }
 
+  // sets team member's state found to true
   handleFound(evt) {
-    console.log(evt.target.innerText);
-    //evt.target.innerText = "Found " + evt.target.innerText;
+    const username = evt.target.innerText;
+    this.setState((state) => {
+      // look for teammate and update state
+      state.team.forEach(function(member) {
+        if (member.username === username) {
+          member.found = true;
+        }
+      }); 
+      return state;
+    });
   }
 
   render() {
