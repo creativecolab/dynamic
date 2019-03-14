@@ -5,7 +5,10 @@ import TeamBox from '../TeamBox/TeamBox';
 export default class Icebreaker extends Component {
   static propTypes = {
     username: PropTypes.string.isRequired,
-    team: PropTypes.array.isRequired,
+    team: PropTypes.objectOf({
+      confirmed: PropTypes.bool.isRequired,
+      members: PropTypes.array.isRequired
+    }).isRequired,
     endActivity: PropTypes.func.isRequired
   }
 
