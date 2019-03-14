@@ -3,7 +3,10 @@ import PropTypes from 'prop-types'
 
 export default class TeamBox extends Component {
   static propTypes = {
-    team: PropTypes.array.isRequired,
+    team: PropTypes.shape({
+      confirmed: PropTypes.bool.isRequired,
+      members: PropTypes.array.isRequired
+    }).isRequired
   }
 
   constructor(props) {
@@ -20,9 +23,10 @@ export default class TeamBox extends Component {
   // sets team member's state found to true
   handleFound(evt) {
     const username = evt.target.innerText;
+    console.log(username);
     this.setState((state) => {
       // look for teammate and update state
-      state.team.forEach(function(member) {
+      state.teammates.forEach(function(member) {
         if (member.username === username) {
           member.found = true;
         }
