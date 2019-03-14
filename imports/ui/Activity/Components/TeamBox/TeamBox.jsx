@@ -20,13 +20,27 @@ export default class TeamBox extends Component {
     };
   }
 
+  // check if confirmed
+  componentDidUpdate() {
+
+    let foundAll = true;
+    this.state.teammates.forEach((member) => {
+      if (!member.found) foundAll = false;
+    }); 
+
+    if (foundAll) {
+      console.log('Awesome. You found everyone!');
+    }
+
+  }
+
   // sets team member's state found to true
   handleFound(evt) {
     const username = evt.target.innerText;
     console.log(username);
     this.setState((state) => {
       // look for teammate and update state
-      state.teammates.forEach(function(member) {
+      state.teammates.forEach((member) => {
         if (member.username === username) {
           member.found = true;
         }
