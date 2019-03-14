@@ -5,10 +5,10 @@ import Wrapper from '..//Wrapper/Wrapper'
 import TeamBox from "./Components/TeamBox/TeamBox";
 import Activities from '../../api/activities';
 import Sessions from '../../api/sessions';
+import users from '../../api/users';
 
 class Activity extends Component {
   static propTypes = {
-    participants: PropTypes.array.isRequired,
     username:  PropTypes.string.isRequired,
     session_id: PropTypes.string.isRequired,
   }
@@ -17,16 +17,19 @@ class Activity extends Component {
     super(props);
     this.state = {
       currentTeam: [],
-      currentActivity: sess
+      currentActivity: this.props.session.activities[0], // id of the running activity
     }
   }
 
+  
   // if necessary for the activity...
   // TODO: before this, pop an activity from the session!
   formTeams() {
 
+    //TODO: shuffle the participants
     // get snapshot of participants
-    const { participants, nextActivity } = this.props;
+    const  { participants }  = this.props.session;
+    console.log("Participants: " + participants);
 
     let teams = [];
 
@@ -60,7 +63,7 @@ class Activity extends Component {
     console.log(teams);
 
     // start and update activity on database
-    Activities.update(nextActivity._id, {
+    Activities.update(this.state.currentActivity, {
       $set: {
         teams,
         status: 1
@@ -75,26 +78,31 @@ class Activity extends Component {
 
 
     // return this user's team to render
-    const currentTeam = teams.filter(team => team.members.includes(this.props.username))[0];
-    console.log(currentTeam);
+    const usersTeam = teams.filter(team => team.members.includes(this.props.username))[0];
 
     // keep current team on state
     this.setState({
-      currentTeam
+      currentTeam: usersTeam,
     });
 
+    console.log("The user's team is: " + this.state.currentTeam);
 
-    
-  }
+  } 
 
   renderActivity() {
 
-    const { currentActivity, username } = this.props;
+    const { username } = this.props;
+
+    const activityToStart = Activities.findOne(this.state.currentActivity); // get the activity we are going to run
+
+    //this.formTeams(); // set up the teams for this activity (in case it needs them)
 
     //TODO: consider adding a boolean to activity
     // e.g., requires_team
-    if (currentActivity.name === "brainstorm") {
+    if (activityToStart.name === "brainstorm") {
+      console.log("Starting brainstorming");
       const team = this.state.currentTeam;
+      console.log(this.state.currentTeam);
       //allow a confirm box to pop up once all teammates are confirmed...this confirmation with signal that this team is ready
       return <TeamBox username={username} team={team} />
     }
@@ -106,15 +114,19 @@ class Activity extends Component {
   }
 
   componentWillMount() {
-    if (this.props.nextActivity) this.formTeams();
+    if (this.props.session.status == 1) this.formTeams();
     if (this.state.currentTeam) console.log('Ready');
   }
 
   // needs a current activity
   render() {
     console.log('render!');
+    console.log(this.props.session);
     if (!this.props.session.status) {
-      return <Wrapper>No activities left...</Wrapper>
+      return <Wrapper>Waiting for activities...</Wrapper>
+    }
+    if (this.props.session.status == 2) {
+      return <Wrapper>No activites left...</Wrapper>
     }
     return (
       <Wrapper>
