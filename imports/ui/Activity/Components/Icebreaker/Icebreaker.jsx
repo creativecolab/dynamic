@@ -49,6 +49,10 @@ class Icebreaker extends Component {
 
   }
 
+  renderResponses() {
+    return "tbd";
+  }
+
   // creates teams
   formTeams() {
 
@@ -163,7 +167,7 @@ class Icebreaker extends Component {
 
   render() {
     if (!this.state.currentTeam) return <Wrapper>There is an activity in progress.<br/>Please wait for the next one!</Wrapper>;
-    if (this.props.allConfirmed) return <Wrapper>All confirmed!!!</Wrapper>
+    if (this.props.allConfirmed) return <Wrapper>All confirmed!!! {this.renderResponses()}</Wrapper>
     if (this.state.confirmed) return <Wrapper>You found all your teammates!</Wrapper>
     else return <TeamBox confirm={this.confirmTeam} username={this.props.username} team_id={this.state.currentTeam}/>
   }
@@ -187,6 +191,6 @@ export default withTracker((props) => {
     if (member.confirmed == false) allConfirmed = false;
   });
 
-  const { members } = team;
-  return {allConfirmed, members};
+  const { members, responses } = team;
+  return {allConfirmed, members, responses};
 })(Icebreaker);
