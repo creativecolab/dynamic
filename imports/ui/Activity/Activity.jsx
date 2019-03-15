@@ -76,6 +76,8 @@ class Activity extends Component {
     //   return "Ongoing activity, wait for the next one...";
     // }
 
+    if (!activity) return <Wrapper>Oops!<br/>The instructor forgot to create activities.</Wrapper>
+
     //TODO: consider adding a boolean to activity
     // e.g., requires_team
     if (activity.name === "brainstorm") {

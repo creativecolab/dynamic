@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import TeamBox from '../TeamBox/TeamBox';
 import Wrapper from '../../../Wrapper/Wrapper';
+import Teams from '../../../../api/teams';
 
 export default class Icebreaker extends Component {
   static propTypes = {
@@ -35,6 +36,18 @@ export default class Icebreaker extends Component {
     const  { participants, _id }  = this.props;
     console.log("Participants: " + participants);
 
+    const activity = Activities.findOne(_id);
+    
+    if (!activity) {
+      console.log("Something went wrong!")
+      return {};
+    }
+
+    // team already created
+    if (activity.status === 1) {
+      return activity.teams.filter(team => team.members.includes(this.props.username))[0];
+    }
+
     let teams = [];
 
     // form teams, teams of 3
@@ -45,7 +58,10 @@ export default class Icebreaker extends Component {
       if (i % 3 == 0) {
         teams.push(newTeam);
 
-        
+        // team_id = Teams.insert({
+        //   activity_id: _id,
+        //   members: newTeam.members.map(member => ({username: member, confirmed: false}))
+        // });
 
         newTeam = {confirmed: false, members: [participants[i]]};
       }
@@ -89,7 +105,7 @@ export default class Icebreaker extends Component {
   } 
 
   render() {
-    if (!this.state.currentTeam) return "";
+    if (!this.state.currentTeam) return <Wrapper>There is an activity in progress.<br/>Please wait for the next one!</Wrapper>;
     if (this.state.confirmed) return <Wrapper>You found all your teammates!</Wrapper>
     else return <TeamBox confirm={this.confirmTeam} username={this.props.username} team={this.state.currentTeam}/>
   }
