@@ -77,6 +77,8 @@ class Icebreaker extends Component {
         "members.username": username
       });
 
+      console.log("Team already created! No need to make another...");
+
       if (!team) return "";
       return team._id;
     }
