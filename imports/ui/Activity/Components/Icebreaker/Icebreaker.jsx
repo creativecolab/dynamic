@@ -167,7 +167,7 @@ class Icebreaker extends Component {
   render() {
     if (!this.state.currentTeam) return <Wrapper>There is an activity in progress.<br/>Please wait for the next one!</Wrapper>;
     if (this.props.allConfirmed) return <Responses />;
-    if (this.state.confirmed) return <Wrapper>You found all your teammates!</Wrapper>
+    if (this.state.confirmed) return <Wrapper>Share with your team something about yourself that they would not be able to find online</Wrapper>
     else return <TeamBox confirm={this.confirmTeam} username={this.props.username} team_id={this.state.currentTeam}/>
   }
 }
