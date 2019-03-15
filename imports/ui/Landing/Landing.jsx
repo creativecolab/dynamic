@@ -5,6 +5,7 @@ import '../assets/_main.scss';
 import { Redirect } from 'react-router-dom'
 import Sessions from "../../api/sessions";
 
+import './Landing.scss';
 
 export default class Landing extends Component {
 
@@ -76,6 +77,7 @@ export default class Landing extends Component {
       <Wrapper>
         {this.renderRedirect()}
         <h1 id="title-dynamic">Dynamic!</h1>
+        <img id="logo" src="./dynamic.png" alt=""/>
         <form id="session-form" onSubmit={(evt) => this.handleCodeEntry(evt)}>
           <div id="session-code" className="field-container">
             <label className="field-title" htmlFor="session-code">Session code</label>

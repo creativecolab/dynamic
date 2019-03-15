@@ -40,6 +40,8 @@ class ChooseUsername extends Component {
 
     const user = Users.findOne({username});
 
+    if (username.length === 0) return;
+
     if (user) {
       console.log('User exists!');
       this.setState({

@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import TeamBox from '../TeamBox/TeamBox';
+import Wrapper from '../../../Wrapper/Wrapper';
 
 export default class Icebreaker extends Component {
   static propTypes = {
+    _id: PropTypes.string.isRequired,
     username: PropTypes.string.isRequired,
     participants: PropTypes.array.isRequired
     // endActivity: PropTypes.func.isRequired
@@ -12,12 +14,20 @@ export default class Icebreaker extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentTeam: this.formTeams()
+      currentTeam: this.formTeams(),
+      confirmed: false
     }
   }
 
-  // if necessary for the activity...
-  // TODO: before this, pop an activity from the session!
+  // called when a team is formed
+  confirmTeam = () => {
+    console.log('Here!!');
+    this.setState({
+      confirmed: true
+    });
+  }
+
+  // creates teams
   formTeams() {
 
     //TODO: shuffle the participants
@@ -34,6 +44,9 @@ export default class Icebreaker extends Component {
       // completed a new team
       if (i % 3 == 0) {
         teams.push(newTeam);
+
+        
+
         newTeam = {confirmed: false, members: [participants[i]]};
       }
       
@@ -54,8 +67,6 @@ export default class Icebreaker extends Component {
       teams[teams.length - 1].members.push(newTeam.members[0]);
     }
 
-    console.log(teams);
-
     // start and update activity on database
     Activities.update(_id, {
       $set: {
@@ -70,22 +81,16 @@ export default class Icebreaker extends Component {
       }
     });
 
+
+
     // return this user's team to render
     return teams.filter(team => team.members.includes(this.props.username))[0];
-
-    // // keep current team on state
-    // this.setState({
-    //   currentTeam: usersTeam,
-    // });
-
-    // console.log("The user's team is: " + this.state.currentTeam);
 
   } 
 
   render() {
     if (!this.state.currentTeam) return "";
-    return (
-      <TeamBox username={this.props.username} team={this.state.currentTeam}/>
-    )
+    if (this.state.confirmed) return <Wrapper>You found all your teammates!</Wrapper>
+    else return <TeamBox confirm={this.confirmTeam} username={this.props.username} team={this.state.currentTeam}/>
   }
 }

@@ -6,7 +6,8 @@ export default class TeamBox extends Component {
     team: PropTypes.shape({
       confirmed: PropTypes.bool.isRequired,
       members: PropTypes.array.isRequired
-    }).isRequired
+    }).isRequired,
+    confirm: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -29,7 +30,7 @@ export default class TeamBox extends Component {
     }); 
 
     if (foundAll) {
-      console.log('Awesome. You found everyone!');
+      this.props.confirm();
     }
 
   }

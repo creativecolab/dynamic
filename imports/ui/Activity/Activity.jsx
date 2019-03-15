@@ -36,6 +36,7 @@ class Activity extends Component {
         console.log(error);
       }
     });
+
     // keep count if we are doing more activities than there are planned
     const nextActivityIndex = this.state.activityCount + 1;
     if (nextActivityIndex != this.props.session.activities.length) { // pick next activity, set states and update database
@@ -70,13 +71,21 @@ class Activity extends Component {
 
     const activity = Activities.findOne(this.state.currentActivity); // get the activity we are going to run
 
-    //this.formTeams(); // set up the teams for this activity (in case it needs them)
+    // TODO: maybe...
+    // if (activity.status === 1) {
+    //   return "Ongoing activity, wait for the next one...";
+    // }
 
     //TODO: consider adding a boolean to activity
     // e.g., requires_team
     if (activity.name === "brainstorm") {
       console.log("Starting brainstorming");
+
       //allow a confirm box to pop up once all teammates are confirmed...this confirmation with signal that this team is ready
+      // this.setState(state => {
+      //   activeStudentCount: state.activeStudentCount + 1
+      // });
+
       return <Icebreaker _id={activity._id} username={username} participants={session.participants} />
     }
 
@@ -89,10 +98,10 @@ class Activity extends Component {
   // needs a current activity
   render() {
     console.log('render!');
-    if (!this.props.session.status) {
+    if (this.props.session.status === 0) {
       return <Wrapper>Waiting for activities...</Wrapper>
     }
-    if (this.props.session.status == 2) {
+    if (this.props.session.status === 2) {
       return <Wrapper>No activites left...</Wrapper>
     }
     return (
