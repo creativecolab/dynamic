@@ -60,7 +60,7 @@ class Icebreaker extends Component {
     const  { participants, _id, username }  = this.props;
     console.log("Participants: " + participants);
 
-    const colors = ['red', 'blue', 'orange', 'black', 'green', "purple"];
+    const colors = ['red', 'blue', 'orange', 'black', 'green', 'purple', 'teal', 'olive', 'maroon'];
 
     // find current activity
     const activity = Activities.findOne(_id);
