@@ -28,7 +28,7 @@ class Icebreaker extends Component {
   // called when a team is formed
   confirmTeam = (team_id) => {
     console.log('Here!!');
-    const team = Teams.findOne(team_id);
+    const team = Teams.findOne(team_id, {sort: {timestamp: -1}});
 
     team.members.forEach(member => {
       if (member.username === this.props.username) {
@@ -42,8 +42,6 @@ class Icebreaker extends Component {
       }
     });
     
-    console.log(Teams.findOne(team_id));
-
     this.setState({
       confirmed: true
     });
@@ -180,7 +178,7 @@ export default withTracker((props) => {
   const team = Teams.findOne({
     activity_id: props._id,
     "members.username": props.username
-  });
+  }, {sort: {timestamp: -1}});
 
   let allConfirmed = true;
 
