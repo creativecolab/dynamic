@@ -1,10 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { Meteor } from 'meteor/meteor';
 import TeamBox from '../TeamBox/TeamBox';
 import Wrapper from '../../../Wrapper/Wrapper';
 import Teams from '../../../../api/teams';
+import { withTracker } from 'meteor/react-meteor-data';
 
-export default class Icebreaker extends Component {
+
+
+class Icebreaker extends Component {
   static propTypes = {
     _id: PropTypes.string.isRequired,
     username: PropTypes.string.isRequired,
@@ -21,11 +25,28 @@ export default class Icebreaker extends Component {
   }
 
   // called when a team is formed
-  confirmTeam = () => {
+  confirmTeam = (team_id) => {
     console.log('Here!!');
+    const team = Teams.findOne(team_id);
+
+    team.members.forEach(member => {
+      if (member.username === this.props.username) {
+        member.confirmed = true;
+      }
+    });
+
+    Teams.update(team_id, {
+      $set: {
+        members: team.members
+      }
+    });
+    
+    console.log(Teams.findOne(team_id));
+
     this.setState({
       confirmed: true
     });
+
   }
 
   // creates teams
@@ -33,54 +54,87 @@ export default class Icebreaker extends Component {
 
     //TODO: shuffle the participants
     // get snapshot of participants
-    const  { participants, _id }  = this.props;
+    const  { participants, _id, username }  = this.props;
     console.log("Participants: " + participants);
 
+    const colors = ['red', 'blue', 'orange', 'black', 'green'];
+
+    // find current activity
     const activity = Activities.findOne(_id);
     
     if (!activity) {
       console.log("Something went wrong!")
-      return {};
+      return "";
     }
 
     // team already created
     if (activity.status === 1) {
-      return activity.teams.filter(team => team.members.includes(this.props.username))[0];
+      const team = Teams.findOne({
+        activity_id: _id,
+        "members.username": username
+      });
+
+      if (!team) return "";
+      return team._id;
     }
 
     let teams = [];
+    let team_id = "";
+    let username_index = 0;
 
     // form teams, teams of 3
-    let newTeam = {confirmed: false, members: [participants[0]]};
+    let newTeam =[participants[0]];
     for (let i = 1; i < participants.length; i++) {
+
+      // get this person's index
+      // if (participants[i] === username) {
+      //   username_index = i;
+      // }
 
       // completed a new team
       if (i % 3 == 0) {
-        teams.push(newTeam);
 
-        // team_id = Teams.insert({
-        //   activity_id: _id,
-        //   members: newTeam.members.map(member => ({username: member, confirmed: false}))
-        // });
+        console.log(newTeam);
+        
+        team_id = Teams.insert({
+          activity_id: _id,
+          timestamp: new Date().getTime(),
+          members: newTeam.map(name => ({username: name, confirmed: false})),
+          color: colors[teams.length], //TODO: change thiss!!
+          responses: []
+        });
 
-        newTeam = {confirmed: false, members: [participants[i]]};
+        teams.push(team_id);
+
+        newTeam = [participants[i]];
       }
       
       // add new member to team
       else {
-        newTeam.members.push(participants[i]);
+        newTeam.push(participants[i]);
       }
     }
 
     // last team is of 3 or 2
-    if (newTeam.members.length === 3 || newTeam.members.length === 2) {
-      teams.push(newTeam);
+    if (newTeam.length === 3 || newTeam.length === 2) {
+      team_id = Teams.insert({
+        activity_id: _id,
+        timestamp: new Date().getTime(),
+        members: newTeam.map(name => ({username: name, confirmed: false})),
+        color: colors[teams.length], // TODO: change this!!
+        responses: []
+      });
+
+      teams.push(team_id);
     }
 
-
     // only 1 participant left, create team of 4
-    if (newTeam.members.length === 1) {
-      teams[teams.length - 1].members.push(newTeam.members[0]);
+    if (newTeam.length === 1) {
+      Teams.update(team_id, {
+        $push: {
+          members: {username: newTeam[0], confirmed: false}
+        }
+      });
     }
 
     // start and update activity on database
@@ -97,16 +151,42 @@ export default class Icebreaker extends Component {
       }
     });
 
-
+    const team = Teams.findOne({
+      activity_id: _id,
+      "members.username": username
+    });
 
     // return this user's team to render
-    return teams.filter(team => team.members.includes(this.props.username))[0];
+    return team._id;
 
   } 
 
   render() {
     if (!this.state.currentTeam) return <Wrapper>There is an activity in progress.<br/>Please wait for the next one!</Wrapper>;
+    if (this.props.allConfirmed) return <Wrapper>All confirmed!!!</Wrapper>
     if (this.state.confirmed) return <Wrapper>You found all your teammates!</Wrapper>
-    else return <TeamBox confirm={this.confirmTeam} username={this.props.username} team={this.state.currentTeam}/>
+    else return <TeamBox confirm={this.confirmTeam} username={this.props.username} team_id={this.state.currentTeam}/>
   }
 }
+
+
+// TODO: clean this up
+export default withTracker((props) => {
+  const team = Teams.findOne({
+    activity_id: props._id,
+    "members.username": props.username
+  });
+
+  let allConfirmed = true;
+
+
+  if (!team) return {allConfirmed: false};
+
+  team.members.forEach(member => {
+    console.log(member);
+    if (member.confirmed == false) allConfirmed = false;
+  });
+
+  const { members } = team;
+  return {allConfirmed, members};
+})(Icebreaker);

@@ -1,49 +1,44 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import Teams from '../../../../api/teams';
+import Color from '../../../Color';
 
 export default class TeamBox extends Component {
   static propTypes = {
-    team: PropTypes.shape({
-      confirmed: PropTypes.bool.isRequired,
-      members: PropTypes.array.isRequired
-    }).isRequired,
+    team_id: PropTypes.string.isRequired,
     confirm: PropTypes.func.isRequired,
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      teammates: this.props.team.members.filter(username => {
-        return username !== this.props.username;
-      }).map(username => {
-        return {username, found: false};
-      })
+      teammates: Teams.findOne(props.team_id).members.filter(member => member.username !== props.username)
     };
   }
 
   // check if confirmed
   componentDidUpdate() {
 
-    let foundAll = true;
+    let confirmedAll = true;
     this.state.teammates.forEach((member) => {
-      if (!member.found) foundAll = false;
+      if (!member.confirmed) confirmedAll = false;
     }); 
 
-    if (foundAll) {
-      this.props.confirm();
+    if (confirmedAll) {
+      this.props.confirm(this.props.team_id);
     }
 
   }
 
-  // sets team member's state found to true
-  handleFound(evt) {
+  // sets team member's state confirmed to true
+  handleConfirmed(evt) {
     const username = evt.target.innerText;
     console.log(username);
     this.setState((state) => {
       // look for teammate and update state
       state.teammates.forEach((member) => {
         if (member.username === username) {
-          member.found = true;
+          member.confirmed = true;
         }
       }); 
       return state;
@@ -51,12 +46,16 @@ export default class TeamBox extends Component {
   }
 
   render() {
-    if (!this.props.team) return "";
+    if (!this.props.team_id) return "";
+
+    const team = Teams.findOne(this.props.team_id);
+
     return (
       <div>
-        Find your teammates, {this.props.username}:
+        <Color color={team.color} username={this.props.username} />
+        Find your teammates:
         {this.state.teammates.map(teammate => {
-          if (!teammate.found) return <div onClick={(evt) => this.handleFound(evt)} key={teammate.username}><b>{teammate.username}</b></div>;
+          if (!teammate.confirmed) return <div onClick={(evt) => this.handleConfirmed(evt)} key={teammate.username}><b>{teammate.username}</b></div>;
           else return <div key={teammate.username}><b>Found {teammate.username}</b></div>;
         })}
           <div>
