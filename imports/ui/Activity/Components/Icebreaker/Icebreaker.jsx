@@ -4,6 +4,7 @@ import { Meteor } from 'meteor/meteor';
 import TeamBox from '../TeamBox/TeamBox';
 import Wrapper from '../../../Wrapper/Wrapper';
 import Teams from '../../../../api/teams';
+import Responses from './Components/Responses'
 import { withTracker } from 'meteor/react-meteor-data';
 
 
@@ -167,7 +168,7 @@ class Icebreaker extends Component {
 
   render() {
     if (!this.state.currentTeam) return <Wrapper>There is an activity in progress.<br/>Please wait for the next one!</Wrapper>;
-    if (this.props.allConfirmed) return <Wrapper>All confirmed!!! {this.renderResponses()}</Wrapper>
+    if (this.props.allConfirmed) return <Responses />;
     if (this.state.confirmed) return <Wrapper>You found all your teammates!</Wrapper>
     else return <TeamBox confirm={this.confirmTeam} username={this.props.username} team_id={this.state.currentTeam}/>
   }
@@ -191,6 +192,6 @@ export default withTracker((props) => {
     if (member.confirmed == false) allConfirmed = false;
   });
 
-  const { members, responses } = team;
-  return {allConfirmed, members, responses};
+  const { members } = team;
+  return {allConfirmed, members};
 })(Icebreaker);
