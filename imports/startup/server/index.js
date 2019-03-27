@@ -28,20 +28,20 @@ function clearCollections() {
 }
 
 Meteor.methods({
-  'team.updateConfirmed'({ team_id, username }) {
+  'activity.start'({ activity_id }) {
     // new SimpleSchema({
     //   team_id: { type: String },
     //   username: { type: String }
     // }).validate({ team_id, username });
 
-    console.log(Teams.findOne(team_id));
-    Teams.rawCollection().update(team_id,
-      { $set: { "members.$[elem].confirmed": true } },
-      {
-        arrayFilters: [ { "elem.username": username } ]
-      }
-    );
-    console.log(Teams.findOne(team_id));
+    console.log(Activities.findOne(activity_id));
+    // Teams.rawCollection().update(team_id,
+    //   { $set: { "members.$[elem].confirmed": true } },
+    //   {
+    //     arrayFilters: [ { "elem.username": username } ]
+    //   }
+    // );
+    // console.log(Teams.findOne(team_id));
 
   }
 });
@@ -49,6 +49,49 @@ Meteor.methods({
 Meteor.startup(() => {
   //clearCollections();
   // If the Links collection is empty, add some data.
+
+  // const bound = Meteor.bindEnvironment((setTimeout) => {set});
+
+  const sessionCursor = Sessions.find({});
+  const handle = sessionCursor.observeChanges({
+    changed(_id, update) {
+      console.log(_id + " updated.");
+      console.log(update);
+
+      // start session!
+      if (update.status === 1) {
+
+        // start first activity
+        const session = Sessions.findOne(_id);
+        Activities.update(session.activities[0], {
+          $set: {
+            status: 1
+          }
+        });
+      }
+
+    } 
+  });
+
+  const activitiesCursor = Activities.find({});
+  activitiesCursor.observeChanges({
+    changed(_id, update) {
+      console.log(_id + " updated. [Activity]");
+      console.log(update);
+
+      // start activity!
+      if (update.status === 1) {
+
+        // do team formation...
+        console.log('Form teams!');
+      }
+
+    } 
+  });
+
+  // After five seconds, stop keeping the count.
+  
+
 
   if (Links.find().count() === 0) {
     insertLink(

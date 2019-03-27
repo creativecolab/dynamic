@@ -21,7 +21,7 @@ class ChooseUsername extends Component {
     this.state = {
       username: '',
       taken: false,
-      ready: false
+      ready: localStorage.getItem('username') != null
     };
   }
 
@@ -51,7 +51,10 @@ class ChooseUsername extends Component {
       Users.insert({
         username,
         teammates: []
-      }, () => {        
+      }, () => {
+        
+        // save username locally
+        localStorage.setItem('username', username);
 
         // add user to session
         Sessions.update(this.props.session._id, {
@@ -77,14 +80,17 @@ class ChooseUsername extends Component {
 
   render() {
     const code = this.props.match.params.code;
-    const { ready, username } = this.state;
+    const { ready } = this.state;
+
+    // TODO: might be a problem
+    const username = this.state.username || localStorage.getItem("username");
 
     // session not available yet TODO: return loading component
     if (!this.props.session) return "";
 
     // user entered their name!
     if (ready) {
-      
+
       // get status and participants of session
       const { _id, participants } = this.props.session;
 
