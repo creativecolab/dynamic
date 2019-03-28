@@ -80,12 +80,12 @@ export default class Landing extends Component {
         <img id="logo" src="./dynamic.png" alt=""/>
         <form id="session-form" onSubmit={(evt) => this.handleCodeEntry(evt)}>
           <div id="session-code" className="field-container">
-            <label className="field-title" htmlFor="session-code">Session code</label>
+            <label className="field-title" htmlFor="session-code">Session code:</label> 
             <div className="input-container">
-              <input type="text" name="session-code" placeholder="Enter your session code" value={this.state.session} onChange={(evt) => this.handleChange(evt)}/>
+              <input id="i-container" type="text" name="session-code" placeholder="Enter your session code" value={this.state.session} onChange={(evt) => this.handleChange(evt)}/>
             </div>
             {this.renderCodeNonexistant()}
-            <input type="submit" value="Next"/>
+            <input id="next-button" type="submit" value="Continue"/>
           </div>
         </form>
       </Wrapper>
