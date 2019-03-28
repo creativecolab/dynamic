@@ -8,6 +8,8 @@ import Sessions from '../../api/sessions';
 import Color from '../Color';
 import Activity from '../Activity/Activity';
 
+import './Landing.scss';
+
 class ChooseUsername extends Component {
   // static propTypes = {
   //   prop: PropTypes
@@ -119,9 +121,9 @@ class ChooseUsername extends Component {
             {this.renderUsernameTaken()}
             <label className="field-title" htmlFor="username">Username</label>
             <div className="input-container">
-              <input type="text" name="username" placeholder="Enter your username" id="username" value={this.state.username} onChange={(evt) => this.handleChange(evt)}/>
+              <input id="i-container" type="text" name="username" placeholder="Enter your username" id="username" value={this.state.username} onChange={(evt) => this.handleChange(evt)}/>
             </div>
-            <input type="submit" value="Next"/>
+            <input id="next-button" type="submit" value="Continue"/>
           </div>
         </form>
       </Wrapper>
