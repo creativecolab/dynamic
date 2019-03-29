@@ -115,8 +115,9 @@ class ChooseUsername extends Component {
     return (
       
  <Wrapper>
-   <h1>Dynamic</h1>
+   <h3 id="navbar">Dynamic</h3>
         <h2>Session: {code}</h2>
+
         <form id="username-form" onSubmit={(evt) => this.saveUser(evt)}>
           <div id="username" className="field-container">
             {this.renderUsernameTaken()}
