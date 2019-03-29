@@ -1,0 +1,61 @@
+#title-dynamic{
+    font-weight: bolder; 
+    font-family: 'PT Sans Narrow', sans-serif; 
+  }
+  
+  h1{
+      text-align: center; 
+  }
+  body{
+    color: black; 
+    margin: 0; 
+  }
+  
+  #logo {
+    min-width: 100px;
+    min-height: 100px;
+    width: 10%;
+    height: 10%;
+    padding-bottom: 2em;
+  }
+
+  #navbar {
+    overflow: hidden;
+    background-color: #F6F6F6;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 8%; 
+    color: black; 
+    text-align: center; 
+    font-family: 'PT Sans Narrow', sans-serif; 
+    font-size: 8px; 
+    font-weight: bolder; 
+    position: flex; 
+  }
+  
+  .i-container{
+    border-radius: 25px;
+    border: 2px solid black;
+    width: 100%; 
+    height: 40%; 
+    padding: 10%; 
+    margin: auto; 
+    display: block; 
+    margin-top: 12px; 
+    font-size: 18px;
+    font-family: 'PT Sans Narrow', sans-serif; 
+    font-weight: bold; 
+  }
+  
+  #next-button{
+    padding: 2% 7% 2% 7%;
+    margin-top: 30%;
+    text-align: center; 
+    font-family: 'PT Sans Narrow', sans-serif; 
+    font-weight: bold; 
+    font-size: 13px; 
+    border-radius: 25px;
+    background-color: #EBEBEB; 
+    border: none; 
+  }
