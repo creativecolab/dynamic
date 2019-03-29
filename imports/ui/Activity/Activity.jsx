@@ -8,6 +8,8 @@ import Sessions from '../../api/sessions';
 import users from '../../api/users';
 import Icebreaker from './Components/Icebreaker/Icebreaker';
 
+import './Activity.scss';
+
 class Activity extends Component {
   static propTypes = {
     username:  PropTypes.string.isRequired,
@@ -101,7 +103,9 @@ class Activity extends Component {
   render() {
     console.log('render!');
     if (this.props.session.status === 0) {
-      return <Wrapper>Waiting for activities...</Wrapper>
+      return <Wrapper>Waiting for activities...
+        <img id="moving-logo" src="./dynamic.gif" class="center"/>
+      </Wrapper>
     }
     if (this.props.session.status === 2) {
       return <Wrapper>No activites left...</Wrapper>
