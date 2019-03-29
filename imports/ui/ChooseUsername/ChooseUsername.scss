@@ -20,25 +20,23 @@
   }
 
   #navbar {
-    overflow: hidden;
     background-color: #F6F6F6;
-    position: fixed;
     top: 0;
-    width: 100%;
+    width: 300%;
     height: 8%; 
     color: black; 
     text-align: center; 
     font-family: 'PT Sans Narrow', sans-serif; 
-    font-size: 8px; 
+    font-size: 12px; 
     font-weight: bolder; 
-    position: flex; 
+    position: absolute; 
   }
   
-  .i-container{
+  .u-container{
     border-radius: 25px;
     border: 2px solid black;
-    width: 100%; 
-    height: 40%; 
+    width: 80%; 
+    height: 10%; 
     padding: 10%; 
     margin: auto; 
     display: block; 
@@ -46,16 +44,17 @@
     font-size: 18px;
     font-family: 'PT Sans Narrow', sans-serif; 
     font-weight: bold; 
+    text-align: center; 
   }
   
-  #next-button{
-    padding: 2% 7% 2% 7%;
-    margin-top: 30%;
+  #next_button{
+    padding: 4% 14% 4% 14%;
+    margin-top: 80%;
     text-align: center; 
     font-family: 'PT Sans Narrow', sans-serif; 
     font-weight: bold; 
     font-size: 13px; 
     border-radius: 25px;
     background-color: #EBEBEB; 
-    border: none; 
+    border: none;
   }
