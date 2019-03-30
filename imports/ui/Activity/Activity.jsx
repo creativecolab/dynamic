@@ -22,6 +22,7 @@ class Activity extends Component {
     const { pid, session_id } = props;
     this.state = {
       timeLeft: 0,
+      duration: 15,
       session: Sessions.findOne(session_id),
       username: Users.findOne({pid}).name,
       currentActivity: null, // id of the running activity
@@ -33,7 +34,7 @@ class Activity extends Component {
     if (!prevProps.currentActivity && this.props.currentActivity) {
       const { currentActivity } = this.props;
       this.setState({
-        timeLeft: 60 - parseInt(Math.abs(currentActivity.startTime - new Date().getTime()) / 1000)
+        timeLeft: this.state.duration - parseInt(Math.abs(currentActivity.startTime - new Date().getTime()) / 1000)
       }, () => {
         this.timerID = setInterval(
           () => this.tick(),
@@ -57,10 +58,12 @@ class Activity extends Component {
     </div>
   }
 
+  // clear tick when not rendered
   componentWillUnmount() {
     clearInterval(this.timerID);
   }
 
+  // called every second
   tick() {
     if (this.state.timeLeft <= 0) {
       Activities.update(this.props.currentActivity._id, {
@@ -69,12 +72,13 @@ class Activity extends Component {
         }
       });
       this.setState({
-        timeLeft: 60
+        duration: 30,
+        timeLeft: 30 - parseInt(Math.abs(this.props.currentActivity.startTime - new Date().getTime()) / 1000)
       });
       return;
     };
     this.setState({
-      timeLeft: this.state.timeLeft - 1
+      timeLeft: this.state.duration - parseInt(Math.abs(this.props.currentActivity.startTime - new Date().getTime()) / 1000)
     });
   }
 
@@ -96,49 +100,6 @@ class Activity extends Component {
       )
     } else {
       return "Something went wrong. Invalid activity."
-    }
-  }
-
-  endActivity() {
-    // end and update activity on database
-    Activities.update(this.state.currentActivity, {
-      $set: {
-        teams,
-        status: 2
-      }
-    }, (error) => {
-      if (!error) {
-        console.log('Activity Ended!');
-      } else {
-        console.log(error);
-      }
-    });
-
-    // keep count if we are doing more activities than there are planned
-    const nextActivityIndex = this.state.activityCount + 1;
-    if (nextActivityIndex != this.props.session.activities.length) { // pick next activity, set states and update database
-      nextActivity = this.props.session.activities[nextActivityIndex]
-      this.setState({
-        currentActivity: nextActivity, // id of the next running activity
-        activityNumber: nextActivityIndex, // update the activity count
-      });
-    } else { // no more activites left, set states and update database
-        this.setState({
-            currentActivity: "",
-            activityNumber: -1,
-        });
-        // end and update the Session on database
-        Sessions.update(this.props.session_id, {
-          $set: {
-            status: 2
-          }
-        }, (error) => {
-          if (!error) {
-            console.log('Session ended!');
-          } else {
-            console.log(error);
-          }
-        });
     }
   }
 
