@@ -90,7 +90,7 @@ class Activity extends Component {
     if (currentActivity.name === "brainstorm") {
       return (
         <Wrapper>
-          {this.state.timeLeft > 0 && <Clock timeLeft={this.state.timeLeft}/>}
+          {this.state.timeLeft >= 0 && <Clock timeLeft={this.state.timeLeft}/>}
           <Icebreaker _id={currentActivity._id} pid={pid} />
         </Wrapper>
       )
