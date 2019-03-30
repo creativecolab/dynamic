@@ -17,9 +17,9 @@ class Icebreaker extends Component {
 
   constructor(props) {
     super(props);
+    console.log('CONSTRUCTOR');
     this.state = {
-      confirmed: false,
-      allConfirmed: props.team.members.filter(member => member.confirmed === false).length === 0
+      confirmed: false
     }
   }
 
@@ -53,7 +53,7 @@ class Icebreaker extends Component {
 
   render() {
     if (!this.props.team) return "You have not been assigned a team for this activity.";
-    if (this.state.allConfirmed) return "Everyone confirmed! Great :)";
+    if (this.props.allConfirmed) return "Everyone confirmed! Great :)";
     if (this.state.confirmed) return "Someone in your team has not confirmed yet...";
     return <TeamBox confirm={this.confirmTeam} pid={this.props.pid} team_id={this.props.team._id}/>
     
@@ -70,5 +70,9 @@ export default withTracker(props => {
     activity_id: props._id,
     "members.pid": props.pid
   });
-  return {team};
+
+  let allConfirmed = false;
+  if (team) allConfirmed = team.members.filter(member => member.confirmed === false).length === 0;
+  return {team, allConfirmed};
+
 })(Icebreaker);
