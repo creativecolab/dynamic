@@ -120,11 +120,114 @@ Meteor.startup(() => {
       console.log(_id + " updated. [Activity]");
       console.log(update);
 
-      // start activity!
+      // start activity! aka form teams
       if (update.status === 1) {
 
-        // do team formation...
-        console.log('Form teams!');
+        // helper function to shuffle array
+        // reference: https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array
+        const shuffle = (a) => {
+          for (let i = a.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [a[i], a[j]] = [a[j], a[i]];
+          }
+          return a;
+        }
+
+        // get snapshot of participants in session
+        const session_id = Activities.findOne(_id).session_id;
+        const participants  = Sessions.findOne(session_id).participants;
+        shuffle(participants);
+        console.log("Participants: " + participants);
+
+        // TODO: get these from instructor
+        const MAX_TEAM_SIZE = 3;
+        const MAX_NUM_TEAMS = 50;
+
+        // set of team colors
+        const colors = [];
+
+        // helper method to generate a new color
+        const getRandomColor = () => {
+          var letters = '6789ABCDEF';
+          var color = '#';
+          for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 10)];
+          }
+          return color;
+        }
+
+        // make array of random colors
+        // TODO: get MAX_NUM_TEAMS from instructor!
+        for (let i = 0; i < MAX_NUM_TEAMS; i++) {
+          let newColor = getRandomColor();
+          if (!colors.includes(newColor)) colors.push(newColor);
+          else i--;
+        }
+
+        let teams = [];
+        let team_id = "";
+
+        // form teams, teams of 3
+        let newTeam =[participants[0]];
+        for (let i = 1; i < participants.length; i++) {
+
+          // completed a new team
+          // TODO: get MAX_TEAM_SIZE from instructor!
+          if (i % MAX_TEAM_SIZE == 0) {
+            team_id = Teams.insert({
+              activity_id: _id,
+              timestamp: new Date().getTime(),
+              members: newTeam.map(pid => ({pid, confirmed: false})),
+              color: colors[teams.length],
+              responses: []
+            });
+
+            teams.push(team_id);
+
+            newTeam = [participants[i]];
+          }
+          
+          // add new member to team
+          else {
+            newTeam.push(participants[i]);
+          }
+        }
+
+        // only 1 participant left, create team of MAX_TEAM_SIZE + 1
+        if (newTeam.length === 1) {
+          Teams.update(team_id, {
+            $push: {
+              members: {username: newTeam[0], confirmed: false}
+            }
+          });
+        }
+
+        // last team is of MAX_TEAM_SIZE or less
+        else if (newTeam.length <= MAX_TEAM_SIZE) {
+          team_id = Teams.insert({
+            activity_id: _id,
+            timestamp: new Date().getTime(),
+            members: newTeam.map(pid => ({pid, confirmed: false})),
+            color: colors[teams.length],
+            responses: []
+          });
+
+          teams.push(team_id);
+        }
+
+
+        // start and update activity on database
+        Activities.update(_id, {
+          $set: {
+            teams
+          }
+        }, (error) => {
+          if (!error) {
+            console.log('Teams created!');
+          } else {
+            console.log(error);
+          }
+        });
       }
 
     } 
