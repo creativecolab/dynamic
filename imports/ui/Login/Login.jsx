@@ -109,11 +109,12 @@ class Login extends Component {
     return (
       <Wrapper>
         <h3 id="navbar">Dynamic</h3>
-        <h2>Session: {code}</h2>
+        <h2 id="session">Session: </h2>
+        <h2 id="u-container">{code}</h2>
         <form id="pid-form" onSubmit={(evt) => this.login(evt)}>
           <div id="pid" className="field-container">
             {this.renderUsernameTaken()}
-            <label className="field-title" htmlFor="pid">Student PID:</label>
+            <label className="field-title" htmlFor="pid" id="pid">Student PID:</label>
             <div className="input-container">
               <input className="u-container" type="text" name="pid" placeholder="i.e., A12345678" id="pid" value={this.state.pid} onChange={(evt) => this.handleChange(evt)}/>
             </div>

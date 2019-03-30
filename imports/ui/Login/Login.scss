@@ -54,10 +54,21 @@
     text-align: center; 
     padding: 10px; 
   }
+
+  #u-container{
+    border-radius: 25px;
+    border: 2px solid black;
+    display: block; 
+    padding: 4%; 
+    color: black; 
+    font-size: 0.9em; 
+    font-weight: bolder; 
+    margin-bottom: 15%; 
+  }
   
   #next_button{
     padding: 4% 14% 4% 14%;
-    margin-top: 80%;
+    margin-top: 90%;
     text-align: center; 
     font-family: 'PT Sans Narrow', sans-serif; 
     font-weight: bold; 
@@ -65,4 +76,16 @@
     border-radius: 25px;
     background-color: #EBEBEB; 
     border: none;
+  }
+
+  #pid{
+    color: black; 
+    font-size: 0.9em; 
+  }
+
+  #session{
+    color: black; 
+    font-size: 0.9em; 
+    font-weight: 100; 
+    margin-top: 40%; 
   }
