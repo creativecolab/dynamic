@@ -8,7 +8,7 @@ import Sessions from '../../api/sessions';
 import Color from '../Color';
 import Activity from '../Activity/Activity';
 
-import './Landing.scss';
+import '../Landing/Landing.scss';
 
 class ChooseUsername extends Component {
   // static propTypes = {
@@ -91,12 +91,13 @@ class ChooseUsername extends Component {
     if (!this.props.session) return "";
 
     // user entered their name!
+    // at this point, user is logged in!
     if (ready) {
 
       // get status and participants of session
-      const { _id, participants } = this.props.session;
+      const { _id } = this.props.session;
 
-      return <Activity username={username} session_id={_id} participants={participants}/>
+      return <Activity username={username} session_id={_id} />
 
       // // session is active!
       // // TODO: decide between redirect or this

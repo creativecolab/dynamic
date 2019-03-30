@@ -8,7 +8,7 @@ import Sessions from '../../api/sessions';
 import users from '../../api/users';
 import Icebreaker from './Components/Icebreaker/Icebreaker';
 
-class Activity extends Component {
+export default class Activity extends Component {
   static propTypes = {
     username:  PropTypes.string.isRequired,
     session_id: PropTypes.string.isRequired,
@@ -17,9 +17,17 @@ class Activity extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentActivity: this.props.session.activities[0], // id of the running activity
-      activityCount: 0,
+      currentActivity: null, // id of the running activity
     }
+  }
+
+  componentDidMount() {
+    // get current activity
+    const currentActivity = Activities.findOne({session_id: this.props.session_id});
+    console.log(currentActivity)
+    this.setState({
+      currentActivity
+    });
   }
 
   endActivity() {
@@ -100,6 +108,7 @@ class Activity extends Component {
   // needs a current activity
   render() {
     console.log('render!');
+    return <div>{this.state.currentActivity}</div>
     if (this.props.session.status === 0) {
       return <Wrapper>Waiting for activities...</Wrapper>
     }
@@ -114,7 +123,7 @@ class Activity extends Component {
   }
 }
 
-export default withTracker((props) => {
-  const session = Sessions.findOne(props.session_id);
-  return {session};
-})(Activity);
+// export default withTracker((props) => {
+//   const session = Sessions.findOne(props.session_id);
+//   return {session};
+// })(Activity);
