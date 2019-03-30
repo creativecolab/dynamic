@@ -46,7 +46,48 @@ Meteor.methods({
   }
 });
 
+function updateRoster() {
+
+  // hard-coded roster for testing
+  const roster = [{
+    name: 'Gustavo Umbelino',
+    pid: 'gus'
+  },
+  {
+    name: 'Vivian Ta',
+    pid: 'viv'
+  },
+  {
+    name: 'Samuel Blake',
+    pid: 'sam'
+  }];
+
+  // iterate through users in roster
+  roster.map(user => {
+
+    // find user in database
+    const dbuser = Users.findOne({pid: user.pid});
+
+    // user already exists
+    if (dbuser) return;
+
+    // insert to database
+    Users.insert({
+      name: user.name,
+      pid: user.pid,
+      teammates: []
+    }, () => {
+      console.log(user.name + ' inserted to mongo!')
+    })
+  });
+
+}
+
 Meteor.startup(() => {
+
+  // update roster on startup
+  updateRoster();
+
   //clearCollections();
   // If the Links collection is empty, add some data.
 

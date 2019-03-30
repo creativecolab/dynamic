@@ -23,7 +23,7 @@ class ChooseUsername extends Component {
     this.state = {
       username: '',
       taken: false,
-      ready: localStorage.getItem('username') != null
+      ready: false //localStorage.getItem('username') != null
     };
   }
 
@@ -47,7 +47,8 @@ class ChooseUsername extends Component {
     if (user) {
       console.log('User exists!');
       this.setState({
-        taken: true
+        taken: true,
+        ready: true
       });
     } else {
       Users.insert({
@@ -56,7 +57,7 @@ class ChooseUsername extends Component {
       }, () => {
         
         // save username locally
-        localStorage.setItem('username', username);
+        // localStorage.setItem('username', username);
 
         // add user to session
         Sessions.update(this.props.session._id, {
@@ -85,7 +86,7 @@ class ChooseUsername extends Component {
     const { ready } = this.state;
 
     // TODO: might be a problem
-    const username = this.state.username || localStorage.getItem("username");
+    const username = this.state.username;// || localStorage.getItem("username");
 
     // session not available yet TODO: return loading component
     if (!this.props.session) return "";
@@ -94,23 +95,10 @@ class ChooseUsername extends Component {
     // at this point, user is logged in!
     if (ready) {
 
-      // get status and participants of session
+      // get session_id
       const { _id } = this.props.session;
 
       return <Activity username={username} session_id={_id} />
-
-      // // session is active!
-      // // TODO: decide between redirect or this
-      // if (status === 1) {
-        
-      // }
-      
-      // // waiting for instructor... TODO: make this a component
-      // else {
-      //   return (
-      //     <Wrapper><h1>Waiting for more people to join...</h1><h2>There are currently {this.props.session.participants.length}</h2></Wrapper>
-      //   )
-      // }
     }
 
     return (

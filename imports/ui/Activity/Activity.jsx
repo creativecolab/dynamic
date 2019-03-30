@@ -5,31 +5,99 @@ import Wrapper from '..//Wrapper/Wrapper'
 import TeamBox from "./Components/TeamBox/TeamBox";
 import Activities from '../../api/activities';
 import Sessions from '../../api/sessions';
-import users from '../../api/users';
+import Users from '../../api/users';
 import Icebreaker from './Components/Icebreaker/Icebreaker';
 import './Activity.scss';
 
 export default class Activity extends Component {
 
   static propTypes = {
-    username:  PropTypes.string.isRequired,
+    pid: PropTypes.string.isRequired,
     session_id: PropTypes.string.isRequired,
   }
 
   constructor(props) {
     super(props);
+    const { pid } = props;
     this.state = {
+      username: Users.findOne({pid}).name,
       currentActivity: null, // id of the running activity
     }
   }
 
+  // get data from db
   componentDidMount() {
-    // get current activity
+    // get current activity from backend
     const currentActivity = Activities.findOne({session_id: this.props.session_id});
-    console.log(currentActivity)
     this.setState({
       currentActivity
     });
+  }
+
+ 
+
+  renderActivity() {
+
+    const { pid, session } = this.props;
+
+    const currentActivity = this.state.currentActivity; // get the activity we are going to run
+
+    // TODO: maybe...
+    // if (activity.status === 1) {
+    //   return "Ongoing activity, wait for the next one...";
+    // }
+
+    if (!activity) return <Wrapper>Oops!<br/>The instructor forgot to create activities.</Wrapper>
+
+    //TODO: consider adding a boolean to activity
+    // e.g., requires_team
+    if (activity.name === "brainstorm") {
+      console.log("Starting brainstorming");
+
+      //allow a confirm box to pop up once all teammates are confirmed...this confirmation with signal that this team is ready
+      // this.setState(state => {
+      //   activeStudentCount: state.activeStudentCount + 1
+      // });
+
+      return <Icebreaker _id={activity._id} pid={pid} participants={session.participants} />
+    }
+
+    else {
+      return "Invalid activity"
+    }
+
+  }
+
+  prettyPrint() {
+    if (!this.state.currentActivity) return "";
+    return <div>
+      <b>{this.state.username}</b>
+      <div>_id: {this.state.currentActivity._id}</div>
+      <div>name: {this.state.currentActivity.name}</div>
+      <div>status: {this.state.currentActivity.status}</div>
+      <div>session_id: {this.state.currentActivity.session_id}</div>
+      <div>created: {(new Date().getTime() - this.state.currentActivity.timestamp) / 1000} secs ago</div>
+      <div>teams: {this.state.currentActivity.teams.map(team => <div>{team}</div>)}</div>
+    </div>
+  }
+
+  // needs a current activity
+  render() {
+    console.log('render! [Activity]');
+    return <div>{this.prettyPrint()}</div>
+    if (this.props.session.status === 0) {
+      return <Wrapper>Waiting for activities...
+        <img id="moving-logo" src="./dynamic.gif" class="center"/>
+      </Wrapper>
+    }
+    if (this.props.session.status === 2) {
+      return <Wrapper>No activites left...</Wrapper>
+    }
+    return (
+      <Wrapper>
+        {this.renderActivity()}
+      </Wrapper>
+    )
   }
 
   endActivity() {
@@ -75,59 +143,4 @@ export default class Activity extends Component {
     }
   }
 
-  renderActivity() {
-
-    const { username, session } = this.props;
-
-    const activity = Activities.findOne(this.state.currentActivity); // get the activity we are going to run
-
-    // TODO: maybe...
-    // if (activity.status === 1) {
-    //   return "Ongoing activity, wait for the next one...";
-    // }
-
-    if (!activity) return <Wrapper>Oops!<br/>The instructor forgot to create activities.</Wrapper>
-
-    //TODO: consider adding a boolean to activity
-    // e.g., requires_team
-    if (activity.name === "brainstorm") {
-      console.log("Starting brainstorming");
-
-      //allow a confirm box to pop up once all teammates are confirmed...this confirmation with signal that this team is ready
-      // this.setState(state => {
-      //   activeStudentCount: state.activeStudentCount + 1
-      // });
-
-      return <Icebreaker _id={activity._id} username={username} participants={session.participants} />
-    }
-
-    else {
-      return "Invalid activity"
-    }
-
-  }
-
-  // needs a current activity
-  render() {
-    console.log('render!');
-    return <div>{this.state.currentActivity}</div>
-    if (this.props.session.status === 0) {
-      return <Wrapper>Waiting for activities...
-        <img id="moving-logo" src="./dynamic.gif" class="center"/>
-      </Wrapper>
-    }
-    if (this.props.session.status === 2) {
-      return <Wrapper>No activites left...</Wrapper>
-    }
-    return (
-      <Wrapper>
-        {this.renderActivity()}
-      </Wrapper>
-    )
-  }
 }
-
-// export default withTracker((props) => {
-//   const session = Sessions.findOne(props.session_id);
-//   return {session};
-// })(Activity);
