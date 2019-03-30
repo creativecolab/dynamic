@@ -8,7 +8,7 @@ import Sessions from '../../api/sessions';
 import Color from '../Color';
 import Activity from '../Activity/Activity';
 
-import '../Landing/Landing.scss';
+import './ChooseUsername.scss';
 
 class ChooseUsername extends Component {
   // static propTypes = {
@@ -114,17 +114,19 @@ class ChooseUsername extends Component {
     }
 
     return (
-      <Wrapper>
-        <h1 id="title-dynamic">Dynamic!</h1>
+      
+ <Wrapper>
+   <h3 id="navbar">Dynamic</h3>
         <h2>Session: {code}</h2>
+
         <form id="username-form" onSubmit={(evt) => this.saveUser(evt)}>
           <div id="username" className="field-container">
             {this.renderUsernameTaken()}
-            <label className="field-title" htmlFor="username">Username</label>
+            <label className="field-title" htmlFor="username">Username: </label>
             <div className="input-container">
-              <input id="i-container" type="text" name="username" placeholder="Enter your username" id="username" value={this.state.username} onChange={(evt) => this.handleChange(evt)}/>
+              <input className="u-container" type="text" name="username" placeholder="Enter your username" id="username" value={this.state.username} onChange={(evt) => this.handleChange(evt)}/>
             </div>
-            <input id="next-button" type="submit" value="Continue"/>
+            <input id="next_button" type="submit" value="Continue"/>
           </div>
         </form>
       </Wrapper>
