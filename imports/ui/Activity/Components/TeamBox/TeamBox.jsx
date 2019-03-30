@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Teams from '../../../../api/teams';
 import Color from '../../../Color';
+import Users from '../../../../api/users';
 
 export default class TeamBox extends Component {
   static propTypes = {
@@ -12,7 +13,8 @@ export default class TeamBox extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      teammates: Teams.findOne(props.team_id).members.filter(member => member.username !== props.username)
+      teammates: Teams.findOne(props.team_id).members
+      .filter(member => member.pid !== props.pid)
     };
   }
 
@@ -25,9 +27,13 @@ export default class TeamBox extends Component {
     }); 
 
     if (confirmedAll) {
-      this.props.confirm(this.props.team_id);
+      this.props.confirm();
     }
 
+  }
+
+  getNameFromPid(pid) {
+    return Users.findOne({pid}).name;
   }
 
   // sets team member's state confirmed to true
@@ -37,7 +43,7 @@ export default class TeamBox extends Component {
     this.setState((state) => {
       // look for teammate and update state
       state.teammates.forEach((member) => {
-        if (member.username === username) {
+        if (this.getNameFromPid(member.pid) === username) {
           member.confirmed = true;
         }
       }); 
@@ -46,64 +52,24 @@ export default class TeamBox extends Component {
   }
 
   render() {
-    if (!this.props.team_id) return "";
+    if (!this.props.team_id) return "Something went wrong...";
 
     const team = Teams.findOne(this.props.team_id);
 
     return (
       <div>
-        <Color color={team.color} username={this.props.username} />
+        <Color color={team.color} username={this.getNameFromPid(this.props.pid)} />
         Find your teammates:
+        <div>
         {this.state.teammates.map(teammate => {
-          if (!teammate.confirmed) return <div onClick={(evt) => this.handleConfirmed(evt)} key={teammate.username}><b>{teammate.username}</b></div>;
-          else return <div key={teammate.username}><b>Found {teammate.username}</b></div>;
+          if (!teammate.confirmed) return <button key={teammate.pid} onClick={(evt) => this.handleConfirmed(evt)}><b>{this.getNameFromPid(teammate.pid)}</b></button>;
+          else return <div key={teammate.pid}><b>Found {this.getNameFromPid(teammate.pid)}</b></div>;
         })}
-          <div>
-            <br/>Click on their names when you find them!
-          </div>
+        </div>
+        <div>
+          <br/>Click on their names when you find them!
+        </div>
         </div>
   )
   }
 }
-
-
-// import React from 'react'
-// import PropTypes from 'prop-types'
-
-
-// export default function TeamBox(props) {
-
-  
-// }
-
-// class TeamBox extends Component {
-//   static propTypes = {
-//     username: PropTypes.string.isRequired,
-//     team: PropTypes.array.isRequired,
-//   }
-
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       confirmed: false,
-//       found: ""
-//     }
-//   }
-
-//   render() {
-//     if (!props.team) return "";
-//     return (
-//       <div>
-//         Find your teammates, {props.username}:
-//         {props.team.members.filter(username => {
-//           return username !== props.username;
-//         }).map(username => {
-//           return <div onClick={(evt) => this.setState({found = "Found"})} key={username}><b>{this.state.found} + {username}</b></div>
-//         })}
-//           <div>
-//             <br/>Click on their names when you find them!
-//           </div>
-//         </div>
-//     )
-//   }
-// }

@@ -18,24 +18,26 @@ class Icebreaker extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      confirmed: false
+      confirmed: false,
+      allConfirmed: props.team.members.filter(member => member.confirmed === false).length === 0
     }
   }
 
   // called when a team is formed
-  confirmTeam = (team_id) => {
+  confirmTeam = () => {
     console.log('Here!!');
-    const team = Teams.findOne(team_id, {sort: {timestamp: -1}});
 
-    team.members.forEach(member => {
-      if (member.username === this.props.username) {
+    let updatedTeam = this.props.team;
+
+    updatedTeam.members.forEach(member => {
+      if (member.pid === this.props.pid) {
         member.confirmed = true;
       }
     });
 
-    Teams.update(team_id, {
+    Teams.update(this.props.team._id, {
       $set: {
-        members: team.members
+        members: updatedTeam.members
       }
     });
     
@@ -49,23 +51,14 @@ class Icebreaker extends Component {
     return "tbd";
   }
 
-  // creates teams
-  formTeams() {
-
-    // const team =
-
-    // return this user's team to render
-    // return team._id;
-
-  } 
-
   render() {
-    if (!this.props.team) return "Forming teams...";
-    else return <TeamBox confirm={false} username={this.props.pid} team_id={this.props.team._id}/>
+    if (!this.props.team) return "You have not been assigned a team for this activity.";
+    if (this.state.allConfirmed) return "Everyone confirmed! Great :)";
+    if (this.state.confirmed) return "Someone in your team has not confirmed yet...";
+    return <TeamBox confirm={this.confirmTeam} pid={this.props.pid} team_id={this.props.team._id}/>
     
     if (!this.state.currentTeam) return <Wrapper>There is an activity in progress.<br/>Please wait for the next one!</Wrapper>;
     if (this.props.allConfirmed) return <Responses />;
-    if (this.state.confirmed) return <Wrapper>Share with your team something about yourself that they would not be able to find online</Wrapper>
     else return <TeamBox confirm={this.confirmTeam} username={this.props.username} team_id={this.state.currentTeam}/>
   }
 }
