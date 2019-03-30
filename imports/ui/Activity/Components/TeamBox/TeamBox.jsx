@@ -33,6 +33,8 @@ export default class TeamBox extends Component {
   }
 
   getNameFromPid(pid) {
+    const user = Users.findOne({pid});
+    if (!user) return "OH MY!";
     return Users.findOne({pid}).name;
   }
 

@@ -6,6 +6,7 @@ import TeamBox from "./Components/TeamBox/TeamBox";
 import Activities from '../../api/activities';
 import Sessions from '../../api/sessions';
 import Users from '../../api/users';
+import Clock from '../Clock/Clock';
 import Icebreaker from './Components/Icebreaker/Icebreaker';
 import './Activity.scss';
 
@@ -20,6 +21,7 @@ class Activity extends Component {
     super(props);
     const { pid, session_id } = props;
     this.state = {
+      timeLeft: 0,
       session: Sessions.findOne(session_id),
       username: Users.findOne({pid}).name,
       currentActivity: null, // id of the running activity
@@ -34,28 +36,14 @@ class Activity extends Component {
     this.setState({
       currentActivity
     });
+
+    // tick every second
+    this.timerID = setInterval(
+      () => this.tick(),
+      1000
+    );
   }
 
- 
-
-  renderActivity() {
-
-    const { pid, currentActivity } = this.props;
-
-    if (!currentActivity) return <div>Waiting for activities...<img id="moving-logo" src="./dynamic.gif" className="center"/></div>
-
-    //TODO: consider adding a boolean to activity
-    // e.g., requires_team
-    if (currentActivity.name === "brainstorm") {
-      console.log("Starting brainstorming");
-      return <Icebreaker _id={currentActivity._id} pid={pid} />
-    }
-
-    else {
-      return "Invalid activity"
-    }
-
-  }
 
   prettyPrint() {
     if (!this.props.currentActivity) return "No active activity yet.";
@@ -70,23 +58,38 @@ class Activity extends Component {
     </div>
   }
 
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
+
+  tick() {
+    if (!this.props.currentActivity) return;
+    const { startTime } = this.props.currentActivity;
+    this.setState({
+      timeLeft: parseInt(Math.abs(startTime - new Date().getTime()) / 1000)
+    });
+  }
+
   // needs a current activity
   render() {
-    console.log('render! [Activity]');
-    // return <div>{this.prettyPrint()}</div>
-    // if (this.props.session.status === 0) {
-    //   return <Wrapper>Waiting for activities...
-    //     <img id="moving-logo" src="./dynamic.gif" class="center"/>
-    //   </Wrapper>
-    // }
-    // if (this.props.session.status === 2) {
-    //   return <Wrapper>No activites left...</Wrapper>
-    // }
-    return (
-      <Wrapper>
-        {this.renderActivity()}
-      </Wrapper>
-    )
+
+    const { pid, currentActivity } = this.props;
+
+    if (!currentActivity) return <Wrapper>Waiting for activities...<img id="moving-logo" src="./dynamic.gif" className="center"/></Wrapper>
+
+    //TODO: consider adding a boolean to activity
+    // e.g., requires_team
+    if (currentActivity.name === "brainstorm") {
+      console.log("Starting brainstorming");
+      return (
+        <Wrapper>
+          <Clock timeLeft={this.state.timeLeft}/>
+          <Icebreaker _id={currentActivity._id} pid={pid} />
+        </Wrapper>
+      )
+    } else {
+      return "Something went wrong. Invalid activity."
+    }
   }
 
   endActivity() {

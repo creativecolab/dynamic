@@ -54,7 +54,7 @@ class Icebreaker extends Component {
   render() {
     if (!this.props.team) return "You have not been assigned a team for this activity.";
     if (this.props.allConfirmed) return "Everyone confirmed! Great :)";
-    if (this.state.confirmed) return "Someone in your team has not confirmed yet...";
+    if (this.state.confirmed) return "Great, you found everyone! Now wait for your teammates to find you.";
     return <TeamBox confirm={this.confirmTeam} pid={this.props.pid} team_id={this.props.team._id}/>
     
     if (!this.state.currentTeam) return <Wrapper>There is an activity in progress.<br/>Please wait for the next one!</Wrapper>;

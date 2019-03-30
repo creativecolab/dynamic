@@ -114,9 +114,9 @@ class Login extends Component {
         <form id="pid-form" onSubmit={(evt) => this.login(evt)}>
           <div id="pid" className="field-container">
             {this.renderUsernameTaken()}
-            <label className="field-title" htmlFor="pid" id="pid">Student PID:</label>
+            <label className="field-title" htmlFor="pid">Student PID:</label>
             <div className="input-container">
-              <input className="u-container" type="text" name="pid" placeholder="i.e., A12345678" id="pid" value={this.state.pid} onChange={(evt) => this.handleChange(evt)}/>
+              <input className="u-container" type="text" name="pid" placeholder="i.e., A12345678" value={this.state.pid} onChange={(evt) => this.handleChange(evt)}/>
             </div>
             <input id="next_button" type="submit" value="Continue"/>
           </div>

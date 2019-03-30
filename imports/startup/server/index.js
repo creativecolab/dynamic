@@ -58,6 +58,14 @@ function updateRoster() {
     pid: 'viv'
   },
   {
+    name: 'Eric Truong',
+    pid: 'eric'
+  },
+  {
+    name: 'Steven Dow',
+    pid: 'steven'
+  },
+  {
     name: 'Samuel Blake',
     pid: 'sam'
   }];
@@ -106,7 +114,8 @@ Meteor.startup(() => {
         const session = Sessions.findOne(_id);
         Activities.update(session.activities[0], {
           $set: {
-            status: 1
+            status: 1,
+            startTime: new Date().getTime()
           }
         });
       }
@@ -197,7 +206,7 @@ Meteor.startup(() => {
         if (newTeam.length === 1) {
           Teams.update(team_id, {
             $push: {
-              members: {username: newTeam[0], confirmed: false}
+              members: {pid: newTeam[0], confirmed: false}
             }
           });
         }
