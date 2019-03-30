@@ -28,20 +28,19 @@ class Activity extends Component {
     }
   }
 
-  // get data from db
-  componentDidMount() {
-    console.log('componentDidMount');
-    // get current activity from backend
-    const currentActivity = Activities.findOne({session_id: this.props.session_id});
-    this.setState({
-      currentActivity
-    });
-
-    // tick every second
-    this.timerID = setInterval(
-      () => this.tick(),
-      1000
-    );
+  // will run when currentActivity is available
+  componentDidUpdate(prevProps) {
+    if (!prevProps.currentActivity && this.props.currentActivity) {
+      const { currentActivity } = this.props;
+      this.setState({
+        timeLeft: 60 - parseInt(Math.abs(currentActivity.startTime - new Date().getTime()) / 1000)
+      }, () => {
+        this.timerID = setInterval(
+          () => this.tick(),
+          1000
+        );
+      });
+    }
   }
 
 
@@ -63,10 +62,19 @@ class Activity extends Component {
   }
 
   tick() {
-    if (!this.props.currentActivity) return;
-    const { startTime } = this.props.currentActivity;
+    if (this.state.timeLeft <= 0) {
+      Activities.update(this.props.currentActivity._id, {
+        $set: {
+          status: 2
+        }
+      });
+      this.setState({
+        timeLeft: 60
+      });
+      return;
+    };
     this.setState({
-      timeLeft: parseInt(Math.abs(startTime - new Date().getTime()) / 1000)
+      timeLeft: this.state.timeLeft - 1
     });
   }
 
@@ -80,10 +88,9 @@ class Activity extends Component {
     //TODO: consider adding a boolean to activity
     // e.g., requires_team
     if (currentActivity.name === "brainstorm") {
-      console.log("Starting brainstorming");
       return (
         <Wrapper>
-          <Clock timeLeft={this.state.timeLeft}/>
+          {this.state.timeLeft > 0 && <Clock timeLeft={this.state.timeLeft}/>}
           <Icebreaker _id={currentActivity._id} pid={pid} />
         </Wrapper>
       )
@@ -139,6 +146,6 @@ class Activity extends Component {
 
 export default withTracker(props => {
   const session_id = props.session_id;
-  const currentActivity = Activities.findOne({session_id, status: 1});
+  const currentActivity = Activities.findOne({session_id, status: { $in: [1, 2] }}, { sort: { status: 1 }});
   return {currentActivity}
 })(Activity);

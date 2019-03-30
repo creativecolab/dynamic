@@ -1,5 +1,50 @@
 #clock {
   position: absolute;
+  color: white;
   top: 10px;
   right: 10px;
+  font-size: 24px;
+  z-index: 0;
+  height: 40px;
+  width: 40px;
+  display: flex;
+  text-align: center;
+  border: solid 2px;
+  border-radius: 40px;
+
+  div {
+    margin: auto;
+  }
+
+}
+
+.low {
+  box-shadow: 0 0 0 rgba(255, 255, 255, 0.4);
+  animation: pulse 2s infinite;
+}
+
+@-webkit-keyframes pulse {
+  0% {
+    -webkit-box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+  }
+  70% {
+      -webkit-box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+  }
+  100% {
+      -webkit-box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
+}
+@keyframes pulse {
+  0% {
+    -moz-box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+  }
+  70% {
+      -moz-box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+      box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+  }
+  100% {
+      -moz-box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+      box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
 }

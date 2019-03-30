@@ -26,6 +26,7 @@ class Session extends Component {
       timestamp: new Date().getTime(),
       team_size: 3, // TODO: default value?
       status: 0,
+      startTime: 0,
       teams: []
     });
 

@@ -10,8 +10,8 @@ export default class Clock extends Component {
 
   render() {
     return (
-      <div id="clock">
-        {this.props.timeLeft}
+      <div id="clock" className={this.props.timeLeft < 10? "low" : "high"}>
+        <div>{this.props.timeLeft}</div>
       </div>
     )
   }
