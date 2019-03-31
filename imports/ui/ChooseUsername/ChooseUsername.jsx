@@ -98,13 +98,15 @@ class ChooseUsername extends Component {
       // get session_id
       const { _id } = this.props.session;
 
+      // session is over...
+      if (this.props.session.status === 2) return <Wrapper><h2>Thanks for participating... please fill out this survey.</h2></Wrapper>
+
       return <Activity username={username} session_id={_id} />
     }
 
     return (
-      
- <Wrapper>
-   <h3 id="navbar">Dynamic</h3>
+      <Wrapper>
+        <h3 id="navbar">Dynamic</h3>
         <h2>Session: {code}</h2>
         <form id="username-form" onSubmit={(evt) => this.saveUser(evt)}>
           <div id="username" className="field-container">

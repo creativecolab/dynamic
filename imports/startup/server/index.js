@@ -7,7 +7,6 @@ import Sessions from '../../api/sessions';
 import Users from '../../api/users';
 import Teams from '../../api/teams';
 
-
 import './register-api'
 
 function insertLink(title, url) {
@@ -96,13 +95,9 @@ Meteor.startup(() => {
   // update roster on startup
   updateRoster();
 
-  //clearCollections();
-  // If the Links collection is empty, add some data.
-
-  // const bound = Meteor.bindEnvironment((setTimeout) => {set});
-
+  // handles session start/end
   const sessionCursor = Sessions.find({});
-  const handle = sessionCursor.observeChanges({
+  sessionCursor.observeChanges({
     changed(_id, update) {
       console.log(_id + " updated.");
       console.log(update);
@@ -123,14 +118,60 @@ Meteor.startup(() => {
     } 
   });
 
+  // speeds up activity based on teams ready
+  Teams.find({}).observeChanges({
+    changed(_id, update) {
+
+      // get current activity in context
+      const activity_id = Teams.findOne(_id).activity_id;
+
+      // get number of teams that have not confirmed yet
+      const num_not_confirmed = Teams.find({activity_id, 'members.confirmed': false}).count();
+      console.log(num_not_confirmed + ' teams haven\'t confirmed yet.');
+
+      // everyone confirmed, no need to wait
+      if (num_not_confirmed === 0 && Activities.findOne(activity_id).status === 2) {
+        Activities.update(activity_id, {
+          $set: {
+            status: 3
+          }
+        });
+      }
+    }
+  });
+
+  
+
+  // called to end an activity phase
+  const endPhase = Meteor.bindEnvironment((activity_id, status) => {
+    console.log('Starting status ' + status)
+    Activities.update(activity_id, {
+      $set: {
+        status,
+        startTime: new Date().getTime()
+      }
+    });
+    clearInterval(this.timerID);
+  });
+
+  // handles team formation
   const activitiesCursor = Activities.find({});
   activitiesCursor.observeChanges({
     changed(_id, update) {
       console.log(_id + " updated. [Activity]");
       console.log(update);
 
-      // start activity! aka form teams
+      // let input phase last for 10 seconds
       if (update.status === 1) {
+        console.log('[ACTIVITY STARTED]')
+        this.timerID = setInterval(
+          () => endPhase(_id, 2),
+          10 * 1000
+        );
+      }
+
+      // start activity! aka form teams
+      if (update.status === 2) {
 
         // helper function to shuffle array
         // reference: https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array
@@ -239,11 +280,36 @@ Meteor.startup(() => {
         });
       }
 
+      // activity just ended
+      if (update.status === 3) {
+        
+         // get session in context
+         const session = Sessions.findOne({activities: _id});
+
+         // get next activity
+         const nextActivity = Activities.findOne({session_id: session._id, status: 0}, {sort: {timestamp: 1}});
+ 
+         // no activities left!! end session...
+         if (!nextActivity) {
+           Sessions.update(session._id, {
+             $set: {
+               status: 2
+             }
+           });
+         }
+         
+         // start next activity!
+         else {
+           Activities.update(nextActivity._id, {
+             $set: {
+               status: 1
+             }
+           });
+         }
+      }
+
     } 
   });
-
-  // After five seconds, stop keeping the count.
-  
 
 
   if (Links.find().count() === 0) {

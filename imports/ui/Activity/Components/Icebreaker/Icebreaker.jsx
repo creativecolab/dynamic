@@ -4,7 +4,7 @@ import { Meteor } from 'meteor/meteor';
 import TeamBox from '../TeamBox/TeamBox';
 import Wrapper from '../../../Wrapper/Wrapper';
 import Teams from '../../../../api/teams';
-import Responses from './Components/Responses'
+import ResponsesHandler from './Components/ResponsesHandler'
 import { withTracker } from 'meteor/react-meteor-data';
 import Activities from '../../../../api/activities';
 
@@ -18,9 +18,19 @@ class Icebreaker extends Component {
 
   constructor(props) {
     super(props);
-    console.log('CONSTRUCTOR');
+    console.log('CONSTRUCTOR [ICEBREAKER]');
     this.state = {
       confirmed: false
+    }
+  }
+
+  // when new activity starts...
+  componentDidUpdate(prevProps) {
+    if (prevProps.currentActivity.status !==  this.props.currentActivity.status) {
+      console.log('Updating!! [ICEBREAKER]');
+      this.setState({
+        confirmed: false
+      });
     }
   }
 
@@ -50,15 +60,16 @@ class Icebreaker extends Component {
   }
 
   render() {
-    const { team, allConfirmed, currentActivity } = this.props;
+    const { team, allConfirmed, currentActivity, pid } = this.props;
     if (!currentActivity) return "Oops! This activity doesn't exist.";
-    if (currentActivity.status === 1) return <Responses />;
+    if (currentActivity.status === 1) return <ResponsesHandler pid={pid} session_id={currentActivity.session_id} activity_id={currentActivity._id} />;
     if (currentActivity.status === 2) {
       if (!team) return "You have not been assigned a team for this activity.";
       if (allConfirmed) return "Everyone confirmed! Great :)";
       if (this.state.confirmed) return "Great, you found everyone! Now wait for your teammates to find you.";
-      return <TeamBox confirm={this.confirmTeam} pid={this.props.pid} team_id={this.props.team._id}/>
+      return <TeamBox confirm={this.confirmTeam} pid={pid} team_id={team._id}/>
     }
+    return "Take turns now!";
   }
 }
 

@@ -19,28 +19,14 @@ class Activity extends Component {
 
   constructor(props) {
     super(props);
+    console.log('CONSTRUCTOR [ACTIVITY]');
     const { pid, session_id } = props;
     this.state = {
       timeLeft: 0,
-      duration: 15,
+      duration: 10,
       session: Sessions.findOne(session_id),
       username: Users.findOne({pid}).name,
       currentActivity: null, // id of the running activity
-    }
-  }
-
-  // will run when currentActivity is available
-  componentDidUpdate(prevProps) {
-    if (!prevProps.currentActivity && this.props.currentActivity) {
-      const { currentActivity } = this.props;
-      this.setState({
-        timeLeft: this.state.duration - parseInt(Math.abs(currentActivity.startTime - new Date().getTime()) / 1000)
-      }, () => {
-        this.timerID = setInterval(
-          () => this.tick(),
-          1000
-        );
-      });
     }
   }
 
@@ -65,18 +51,7 @@ class Activity extends Component {
 
   // called every second
   tick() {
-    if (this.state.timeLeft <= 0) {
-      Activities.update(this.props.currentActivity._id, {
-        $set: {
-          status: 2
-        }
-      });
-      this.setState({
-        duration: 30,
-        timeLeft: 30 - parseInt(Math.abs(this.props.currentActivity.startTime - new Date().getTime()) / 1000)
-      });
-      return;
-    };
+    if (!this.props.currentActivity) clearInterval(this.timerID);
     this.setState({
       timeLeft: this.state.duration - parseInt(Math.abs(this.props.currentActivity.startTime - new Date().getTime()) / 1000)
     });

@@ -101,11 +101,15 @@ class Login extends Component {
     if (ready) {
 
       // get session_id
-      const { _id } = this.props.session;
+      const { _id, status } = this.props.session;
+
+      // session is over...
+      if (status === 2) return <Wrapper><h2>Thanks for participating... please fill out this survey.</h2></Wrapper>
 
       return <Activity pid={pid} session_id={_id} />
     }
 
+    // TODO: add signup button
     return (
       <Wrapper>
         <h3 id="navbar">Dynamic</h3>
