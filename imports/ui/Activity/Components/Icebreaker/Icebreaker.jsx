@@ -26,53 +26,57 @@ class Icebreaker extends Component {
 
   // called when a team is formed
   confirmTeam = () => {
-    console.log('Here!!');
 
+    // make a copy of current team
     let updatedTeam = this.props.team;
-
     updatedTeam.members.forEach(member => {
       if (member.pid === this.props.pid) {
         member.confirmed = true;
       }
     });
 
+    // update on database
     Teams.update(this.props.team._id, {
       $set: {
         members: updatedTeam.members
       }
     });
     
+    // confirmed team
     this.setState({
       confirmed: true
     });
 
   }
 
-  renderResponses() {
-    return "tbd";
-  }
-
   render() {
-    if (Activities.findOne(this.props._id).status === 1) {
-    if (!this.props.team) return "You have not been assigned a team for this activity.";
-    if (this.props.allConfirmed) return "Everyone confirmed! Great :)";
-    if (this.state.confirmed) return "Great, you found everyone! Now wait for your teammates to find you.";
-    return <TeamBox confirm={this.confirmTeam} pid={this.props.pid} team_id={this.props.team._id}/>
+    const { team, allConfirmed, currentActivity } = this.props;
+    if (!currentActivity) return "Oops! This activity doesn't exist.";
+    if (currentActivity.status === 1) return <Responses />;
+    if (currentActivity.status === 2) {
+      if (!team) return "You have not been assigned a team for this activity.";
+      if (allConfirmed) return "Everyone confirmed! Great :)";
+      if (this.state.confirmed) return "Great, you found everyone! Now wait for your teammates to find you.";
+      return <TeamBox confirm={this.confirmTeam} pid={this.props.pid} team_id={this.props.team._id}/>
     }
-    return "hi there.";
   }
 }
 
 
 // TODO: clean this up
 export default withTracker(props => {
+
+  // get current activity
+  const currentActivity = Activities.findOne(props._id);
+
+  // get this user's team
   const team = Teams.findOne({
     activity_id: props._id,
     "members.pid": props.pid
   });
 
+  // check if all confirmed
   let allConfirmed = false;
   if (team) allConfirmed = team.members.filter(member => member.confirmed === false).length === 0;
-  return {team, allConfirmed};
-
+  return {team, currentActivity, allConfirmed};
 })(Icebreaker);
