@@ -4,6 +4,8 @@ import Teams from '../../../../api/teams';
 import Color from '../../../Color';
 import Users from '../../../../api/users';
 
+import './TeamBox.scss';
+
 export default class TeamBox extends Component {
   static propTypes = {
     team_id: PropTypes.string.isRequired,
@@ -59,17 +61,16 @@ export default class TeamBox extends Component {
     const team = Teams.findOne(this.props.team_id);
 
     return (
-      <div>
+        <div> 
         <Color color={team.color} username={this.getNameFromPid(this.props.pid)} />
-        Find your teammates:
-        <div>
-        {this.state.teammates.map(teammate => {
-          if (!teammate.confirmed) return <button key={teammate.pid} onClick={(evt) => this.handleConfirmed(evt)}><b>{this.getNameFromPid(teammate.pid)}</b></button>;
-          else return <div key={teammate.pid}><b>Found {this.getNameFromPid(teammate.pid)}</b></div>;
-        })}
+        <div id="team-container">
+        Tap the teammates you’ve found
         </div>
         <div>
-          <br/>Click on their names when you find them!
+        {this.state.teammates.map(teammate => {
+          if (!teammate.confirmed) return <button className="button" key={teammate.pid} onClick={(evt) => this.handleConfirmed(evt)}><b>{this.getNameFromPid(teammate.pid)}</b></button>;
+          else return <div key={teammate.pid}><b>Found {this.getNameFromPid(teammate.pid)}</b></div>;
+        })}
         </div>
         </div>
   )

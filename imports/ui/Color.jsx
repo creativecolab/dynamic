@@ -1,12 +1,17 @@
 import React, { Component } from 'react'
+import './Color.scss';
 
 export default class Color extends Component {
   render() {
     return (
-      <div style={{ display: 'flex', zIndex: "-1", position: 'absolute', top: 0, left: 0, fontSize: '50px', width: '100%', paddingBottom: '30px', paddingTop: '50px', height: '100px', color: 'white', backgroundColor: this.props.color}}>
-        <div style={{margin: 'auto'}}>
+      <div>
+      <h3 id="navbar">Dynamic</h3>
+      <div id="color-bar" style={{backgroundColor: this.props.color}}>
+        <p>Find others with this color.</p>
+        <div id="center-user">
           {this.props.username}
         </div> 
+      </div>
       </div>
     )
   }
