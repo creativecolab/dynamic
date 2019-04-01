@@ -87,8 +87,11 @@ class Login extends Component {
   }
 
   signup() {    
-    const { code } = this.props.session;
-    window.location = '/' + {code} + '/signup';
+    const { code } = this.props.match.params;
+    console.log(code);
+    //TODO: fix this...
+    // redirects to: http://localhost:3000/[object%20Object]/signup
+    window.location = "/" + {code} + "/signup";
   }
 
   render() {

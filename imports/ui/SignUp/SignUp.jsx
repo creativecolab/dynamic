@@ -35,13 +35,21 @@ class SignUp extends Component {
     }
 
     // add the user-entered info into the database
-    saveUser() {    
+    saveUser(evt) {    
         evt.preventDefault();
         console.log(JSON.stringify(this.state));
+
+        if (Users.findOne({pid: this.state.pid})) {
+            console.log('User already exists');
+            return;
+        }
+
         Users.insert({
+            name: this.state.firstname + " " + this.state.lastname,
             ...this.state
         });
-        
+
+        window.location = '/';
     }
 
     render() {
@@ -70,7 +78,7 @@ class SignUp extends Component {
     }
 }
 
-export default withTracker((props) => {
+export default SignUp; /* withTracker((props) => {
     const pid = Users.findOne({pid: props.match.params.pid});
     return { pid }
-})(SignUp);
+})(SignUp);*/
