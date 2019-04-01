@@ -94,6 +94,10 @@ export default withTracker(props => {
     hotseat = props.pid;
   }
 
+  //hotseat = team.members[0];
+
+  console.log('Currently in the hotseat: ' + hotseat);
+
 /*
   // iterate through teammates
   let hotseat = null;
