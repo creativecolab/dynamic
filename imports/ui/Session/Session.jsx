@@ -19,6 +19,12 @@ class Session extends Component {
     const name = 'Icebreaker';
     const session_id = this.props.session._id;
 
+    // session is over
+    if (this.props.session.status === 2) {
+      console.log('Session is over, can\'t add more activities!');
+      return;
+    }
+
     // add new activity to db
     const activity = Activities.insert({
       name,

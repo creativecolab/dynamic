@@ -23,6 +23,12 @@ class InstructorUI extends Component {
     evt.preventDefault();
     const { session_code } = this.state;
 
+    // invalid session code
+    if (session_code === "") {
+      console.log("Invalid session name!");
+      return;
+    }
+
     const session = Sessions.findOne({code: session_code});
 
     // session already exists!
