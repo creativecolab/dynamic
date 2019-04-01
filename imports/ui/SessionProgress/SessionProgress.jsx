@@ -13,6 +13,13 @@ class SessionProgress extends Component {
     // code: PropTypes.string.isRequired,
   }
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      duration: -1
+    }
+  }
+
   mapActivities() {
     const { activities } = this.props;
     if (!activities) return ""; 
@@ -31,6 +38,17 @@ class SessionProgress extends Component {
         status: 1
       }
     });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!prevProps.currentActivity && this.props.currentActivity) {
+      this.setState({
+        duration: 10
+      }, () => {
+        // tick
+        console.log('Duration set!');
+      });
+    }
   }
 
   getInstructions(status) {
