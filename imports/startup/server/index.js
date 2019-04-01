@@ -280,9 +280,18 @@ Meteor.startup(() => {
         });
       }
 
-      // activity just ended
+      // discussion time!
       if (update.status === 3) {
-        
+        console.log('[DISCUSSION TIME]')
+        this.timerID = setInterval(
+          () => endPhase(_id, 4),
+          10 * 1000
+        );
+      }
+
+      // activity just ended
+      if (update.status === 4) {
+
          // get session in context
          const session = Sessions.findOne({activities: _id});
 

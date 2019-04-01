@@ -82,6 +82,6 @@ class Activity extends Component {
 
 export default withTracker(props => {
   const session_id = props.session_id;
-  const currentActivity = Activities.findOne({session_id, status: { $in: [1, 2] }}, { sort: { status: 1 }});
+  const currentActivity = Activities.findOne({session_id, status: { $in: [1, 2, 3] }}, { sort: { status: 1 }});
   return {currentActivity}
 })(Activity);

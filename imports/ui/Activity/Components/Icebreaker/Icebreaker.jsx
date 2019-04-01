@@ -4,7 +4,8 @@ import { Meteor } from 'meteor/meteor';
 import TeamBox from '../TeamBox/TeamBox';
 import Wrapper from '../../../Wrapper/Wrapper';
 import Teams from '../../../../api/teams';
-import ResponsesHandler from './Components/ResponsesHandler'
+import ResponsesHandler from './Components/ResponsesHandler';
+import ResponsesVote from '../ResponsesVote/ResponsesVote';
 import { withTracker } from 'meteor/react-meteor-data';
 import Activities from '../../../../api/activities';
 
@@ -69,7 +70,10 @@ class Icebreaker extends Component {
       if (this.state.confirmed) return "Great, you found everyone! Now wait for your teammates to find you.";
       return <TeamBox confirm={this.confirmTeam} pid={pid} team_id={team._id}/>
     }
-    return "Take turns now!";
+    if (currentActivity.status === 3) {
+      return <ResponsesVote pid={pid} team_id={team.id} />
+    }
+    return "Not supposed to be here!";
   }
 }
 

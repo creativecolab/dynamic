@@ -115,6 +115,6 @@ export default withTracker((props) => {
   const session = Sessions.findOne({code});
   if (!session) return {};
   const activities = Activities.find({session_id: session._id}).fetch();
-  const currentActivity = Activities.findOne({session_id: session._id, status: { $in: [1, 2] }}, { sort: { status: 1 }});
+  const currentActivity = Activities.findOne({session_id: session._id, status: { $in: [1, 2, 3] }}, { sort: { status: 1 }});
   return {session, activities, currentActivity};
 })(SessionProgress);
