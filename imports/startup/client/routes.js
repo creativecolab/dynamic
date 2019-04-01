@@ -8,6 +8,7 @@ import Login from '../../ui/Login/Login';
 import InstructorUI from '../../ui/InstructorUI/InstructorUI';
 import Session from '../../ui/Session/Session';
 import SessionProgress from '../../ui/SessionProgress/SessionProgress';
+import SignUp from '../../ui/SignUp/SignUp';
 
 export const renderRoutes = () => (
     <Router>
@@ -16,6 +17,7 @@ export const renderRoutes = () => (
           <Route exact path="/" component={Landing} />
           <Route exact path="/instructor" component={InstructorUI} />
           <Route exact path="/:code" component={Login} />
+          <Route exact path="/:code/signup" component={SignUp} />
           <Route exact path="/:code/edit" component={Session} />
           <Route exact path="/:code/view" component={SessionProgress} />
         </Switch>

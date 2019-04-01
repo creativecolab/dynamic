@@ -66,7 +66,7 @@ class Activity extends Component {
 
     //TODO: consider adding a boolean to activity
     // e.g., requires_team
-    if (currentActivity.name === "brainstorm") {
+    if (currentActivity.name === "Icebreaker") {
       return (
         <Wrapper>
           {this.state.timeLeft >= 0 && <Clock timeLeft={this.state.timeLeft}/>}
