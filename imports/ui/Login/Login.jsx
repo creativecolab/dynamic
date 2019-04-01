@@ -131,7 +131,7 @@ class Login extends Component {
           </div>
         </form>
         <h3 className="field-title" htmlFor="signup">Invalid PID? Try Registering here</h3>
-        <button onClick={() => this.signup()} id="signup-button">Register!</button>
+        <button id="next-button" onClick={() => this.signup()} id="signup-button">Register!</button>
       </Wrapper>
     )
   }

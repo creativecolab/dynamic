@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import Responses from '../../../../../api/responses';
 import Activities from '../../../../../api/activities';
 
+import './ResponsesHandler.scss';
+
 export default class ResponsesHandler extends Component {
   // static propTypes = {
   // }
@@ -67,19 +69,20 @@ export default class ResponsesHandler extends Component {
   render() {
     return (
       <div>
+        <h3 id="navbar">Dynamic</h3>
         <h2>Please enter two truths and one lie about yourself to share with your team. Feel free to update your responses.</h2>
         <form id="icebreaker-form" onSubmit={(evt) => this.saveReponses(evt)}>
           <div id="icebreaker" className="field-container">
             <label className="field-title" htmlFor="truth">Truths:</label>
             <div className="input-container">
-              <input className="u-container" type="text" name="truth1" placeholder="i.e., I am taking DSGN 100"  value={this.state.truth1} onChange={(evt) => this.handleTruth1(evt)}/>
+              <input id="input-container" className="u-container" type="text" name="truth1" placeholder="i.e., I am taking DSGN 100"  value={this.state.truth1} onChange={(evt) => this.handleTruth1(evt)}/>
             </div>
             <div className="input-container">
-              <input className="u-container" type="text" name="truth2" placeholder="i.e., I go to UCSD"  value={this.state.truth2} onChange={(evt) => this.handleTruth2(evt)}/>
+              <input id="input-container" className="u-container" type="text" name="truth2" placeholder="i.e., I go to UCSD"  value={this.state.truth2} onChange={(evt) => this.handleTruth2(evt)}/>
             </div>
-            <label className="field-title" htmlFor="lies">Lie:</label>
+            <label className="field-title" htmlFor="lies" id= "lies">Lie:</label>
             <div className="input-container">
-              <input className="u-container" type="text" name="lie" placeholder="i.e., I have been to Mexico"  value={this.state.lie} onChange={(evt) => this.handleLie(evt)}/>
+              <input id="input-container" className="u-container" type="text" name="lie" placeholder="i.e., I have been to Mexico"  value={this.state.lie} onChange={(evt) => this.handleLie(evt)}/>
             </div>
             <input id="next_button" type="submit" value="Save"/>
           </div>

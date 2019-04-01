@@ -62,15 +62,15 @@ export default class TeamBox extends Component {
 
     return (
         <div> 
-        <Color color={team.color} username={this.getNameFromPid(this.props.pid)} />
+        <div><Color color={team.color} username={this.getNameFromPid(this.props.pid)} /></div>
         <div id="team-container">
-        Tap the teammates you’ve found
-        </div>
-        <div>
+        <span>Tap the teammates you’ve found</span>
+        <div id="button-container">
         {this.state.teammates.map(teammate => {
           if (!teammate.confirmed) return <button className="button" key={teammate.pid} onClick={(evt) => this.handleConfirmed(evt)}><b>{this.getNameFromPid(teammate.pid)}</b></button>;
-          else return <div key={teammate.pid}><b>Found {this.getNameFromPid(teammate.pid)}</b></div>;
+          else return <div key={teammate.pid}><b className="button-click">{this.getNameFromPid(teammate.pid)}</b></div>;
         })}
+        </div>
         </div>
         </div>
   )
