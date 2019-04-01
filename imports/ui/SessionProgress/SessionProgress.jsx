@@ -33,13 +33,29 @@ class SessionProgress extends Component {
     });
   }
 
+  getInstructions(status) {
+    if (status === 1) {
+      return "Write TWO truths and ONE lie about yourself!";
+    }
+    if (status === 2) {
+      return "Find your teammates!!";
+    }
+    if (status === 3) {
+      return "Try to guess the LIE!";
+    }
+    if (status === 4) {
+      return "Done!";
+    }
+  }
+
   renderInfo() {
     const { session } = this.props;
     if (!session) return "Oh.";
 
-    if (session.status === 2) return "Finished";
+    if (session.status === 2) return <h1>The session is over! Please follow the link and fill out our survey! Thanks :)</h1>;
 
     if (session.status === 0) return (<div>
+      <h1>Session code: {this.props.match.params.code}</h1>
       <div id="status">Ready to begin</div>
       <ol>
         {this.mapActivities()}
@@ -57,8 +73,9 @@ class SessionProgress extends Component {
 
     if (session.status === 1) return (
       <div>
-        {this.props.currentActivity.name}<br/>
-        {this.props.currentActivity.status}
+        <div>{this.props.currentActivity.name}</div>
+        <h1>{this.getInstructions(this.props.currentActivity.status)}</h1>
+        <div>Session code: {this.props.match.params.code}</div>
       </div>
     );
   }
@@ -68,7 +85,6 @@ class SessionProgress extends Component {
     return (
       <Wrapper>
         <button onClick={() => this.edit()} id="back-button">edit</button>
-        <h1>Session code: {this.props.match.params.code}</h1>
         {this.renderInfo()}
       </Wrapper>
     )
