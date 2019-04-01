@@ -21,13 +21,15 @@ export default class ResponsesHandler extends Component {
       this.state = {
         truth1: '',
         truth2: '',
-        lie: ''
+        lie: '',
+        saved: false
       };
     } else {
       this.state = {
         truth1: prevResponses.truth1,
         truth2: prevResponses.truth2,
-        lie: prevResponses.lie
+        lie: prevResponses.lie,
+        saved: false
       };
     }
   }
@@ -54,6 +56,10 @@ export default class ResponsesHandler extends Component {
     evt.preventDefault();
     console.log(JSON.stringify(this.state));
 
+    this.setState({
+      saved: true
+    });
+
     Responses.insert({
       pid: this.props.pid,
       timestamp: new Date().getTime(),
@@ -62,6 +68,16 @@ export default class ResponsesHandler extends Component {
       activity_type: Activities.findOne(this.props.activity_id).name,
       ...this.state
     });
+  }
+
+  renderSaved = () => {
+    if (this.state.saved) {
+      return <p style={{color:"green"}}>Saved!</p>
+    }
+  }
+
+  componentDidUpdate(){
+    setTimeout(() => this.setState({saved: false}), 5000);
   }
 
   render() {
@@ -82,6 +98,7 @@ export default class ResponsesHandler extends Component {
               <input className="u-container" type="text" name="lie" placeholder="i.e., I have been to Mexico"  value={this.state.lie} onChange={(evt) => this.handleLie(evt)}/>
             </div>
             <input id="next_button" type="submit" value="Save"/>
+            {this.renderSaved()}
           </div>
         </form>
       </div>

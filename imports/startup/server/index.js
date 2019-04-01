@@ -101,6 +101,8 @@ function updateRoster() {
 
 Meteor.startup(() => {
 
+  clearCollections();
+
   // update roster on startup
   updateRoster();
 
@@ -147,9 +149,7 @@ Meteor.startup(() => {
         });
       }
     }
-  });
-
-  
+  }); 
 
   // called to end an activity phase
   const endPhase = Meteor.bindEnvironment((activity_id, status) => {
@@ -202,6 +202,8 @@ Meteor.startup(() => {
         const MAX_TEAM_SIZE = 3;
         const MAX_NUM_TEAMS = 50;
 
+        //--- SET COLORS ---//
+
         // set of team colors
         const colors = [];
 
@@ -222,6 +224,8 @@ Meteor.startup(() => {
           if (!colors.includes(newColor)) colors.push(newColor);
           else i--;
         }
+
+        //--- FORM TEAMS ---//
 
         let teams = [];
         let team_id = "";
@@ -294,7 +298,7 @@ Meteor.startup(() => {
         console.log('[DISCUSSION TIME]')
         this.timerID = setInterval(
           () => endPhase(_id, 4),
-          20 * 1000
+          60 * 1000
         );
       }
 

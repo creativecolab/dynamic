@@ -43,7 +43,7 @@ export default class TeamBox extends Component {
   // sets team member's state confirmed to true
   handleConfirmed(evt) {
     const username = evt.target.innerText;
-    console.log(username);
+    console.log("Found " + username);
     this.setState((state) => {
       // look for teammate and update state
       state.teammates.forEach((member) => {
