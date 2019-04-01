@@ -5,6 +5,9 @@ import Wrapper from '../Wrapper/Wrapper'
 import { withTracker } from 'meteor/react-meteor-data';
 import '../assets/_main.scss';
 
+import './SignUp.scss';
+
+
 class SignUp extends Component {
 
     constructor(props) {
@@ -70,7 +73,7 @@ class SignUp extends Component {
                 <div className="input-container">
                     <input className="u-container" type="text" name="pid" placeholder="A12345689"  value={this.state.pid} onChange={(evt) => this.handlePID(evt)}/>
                 </div>
-                <input id="next_button" type="submit" value="Save"/>
+                <input id="signup_button" type="submit" value="Register"/>
             </div>
             </form>
         </Wrapper>
@@ -78,7 +81,4 @@ class SignUp extends Component {
     }
 }
 
-export default SignUp; /* withTracker((props) => {
-    const pid = Users.findOne({pid: props.match.params.pid});
-    return { pid }
-})(SignUp);*/
+export default SignUp;

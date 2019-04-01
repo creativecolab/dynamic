@@ -87,11 +87,9 @@ class Login extends Component {
   }
 
   signup() {    
-    const { code } = this.props.match.params;
+    const { code } = this.props.session;
     console.log(code);
-    //TODO: fix this...
-    // redirects to: http://localhost:3000/[object%20Object]/signup
-    window.location = "/" + {code} + "/signup";
+    window.location = "/" + code + "/signup";
   }
 
   render() {
@@ -117,14 +115,11 @@ class Login extends Component {
       return <Activity pid={pid} session_id={_id} />
     }
 
-    // TODO: add signup button
     return (
       <Wrapper>
         <h3 id="navbar">Dynamic</h3>
         <h2 id="session">Session: </h2>
         <h2 id="u-container">{code}</h2>
-        <h2 className="field-title" htmlFor="signup">Need to Register your PID? Click here:</h2>
-        <button onClick={() => this.signup()} id="signup-button">Register!</button>
         <form id="pid-form" onSubmit={(evt) => this.login(evt)}>
           <div id="pid" className="field-container">
             {this.renderUsernameTaken()}
@@ -135,6 +130,8 @@ class Login extends Component {
             <input id="next_button" type="submit" value="Continue"/>
           </div>
         </form>
+        <h3 className="field-title" htmlFor="signup">Invalid PID? Try Registering here</h3>
+        <button onClick={() => this.signup()} id="signup-button">Register!</button>
       </Wrapper>
     )
   }
