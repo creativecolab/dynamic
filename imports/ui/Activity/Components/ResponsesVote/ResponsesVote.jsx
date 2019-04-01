@@ -87,20 +87,23 @@ export default withTracker(props => {
   const teammatePids = team.members.map(m => m.pid).filter(pid => pid !== props.pid);
   console.log('teammate pids: ' + teammatePids);
 
-  let hotseat;
+  /*let hotseat;
   if (teammatePids.length > 0) {
     hotseat = teammatePids[0];
   } else {
     hotseat = props.pid;
-  }
+  }*/
 
-  //hotseat = team.members[0];
 
-  console.log('Currently in the hotseat: ' + hotseat);
+  //hotseat = team.members[0].pid;
 
-/*
+  //if (hotseatPids.includes(team.members[0].pid))
+
+
+  //console.log('Currently in the hotseat: ' + hotseat);
+
   // iterate through teammates
-  let hotseat = null;
+  let hotseat;
   let i = 0;
   for (i = 0; i < team.members.length; i++) {
 
@@ -123,7 +126,7 @@ export default withTracker(props => {
       // check if every teammate has voted
       for (var j = 0; j < teammatePids.length; j++) {
         if (!voters.includes(teammatePids[j])) {
-          console.log(teammatePids[j] + 'has not voted for ' + h)
+          console.log(teammatePids[j] + 'has not voted for ' + hotseat);
           hotseat = team.members[i].pid;
           console.log("not everyone has voted for " + team.members[i].pid);
           break;
@@ -143,7 +146,7 @@ export default withTracker(props => {
   }
 
   console.log('Hotseat pid is ' + hotseat);
-*/
+
 
   // helper function to shuffle array
   // reference: https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array

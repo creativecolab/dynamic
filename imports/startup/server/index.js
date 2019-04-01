@@ -101,8 +101,6 @@ function updateRoster() {
 
 Meteor.startup(() => {
 
-  clearCollections();
-
   // update roster on startup
   updateRoster();
 
