@@ -41,6 +41,7 @@ class SignUp extends Component {
         Users.insert({
             ...this.state
         });
+        
     }
 
     render() {

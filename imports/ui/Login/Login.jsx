@@ -21,7 +21,6 @@ class Login extends Component {
       pid: '',
       ready: false,
       invalid: false,
-      signup: false,
       localUser: localStorage.getItem('pid')
     };
   }
