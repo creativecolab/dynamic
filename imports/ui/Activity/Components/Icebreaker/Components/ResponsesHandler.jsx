@@ -53,6 +53,7 @@ export default class ResponsesHandler extends Component {
   saveReponses(evt) {
     evt.preventDefault();
     console.log(JSON.stringify(this.state));
+
     Responses.insert({
       pid: this.props.pid,
       timestamp: new Date().getTime(),

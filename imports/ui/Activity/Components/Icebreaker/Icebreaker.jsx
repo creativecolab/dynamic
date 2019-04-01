@@ -65,13 +65,14 @@ class Icebreaker extends Component {
     if (!currentActivity) return "Oops! This activity doesn't exist.";
     if (currentActivity.status === 1) return <ResponsesHandler pid={pid} session_id={currentActivity.session_id} activity_id={currentActivity._id} />;
     if (currentActivity.status === 2) {
-      if (!team) return "You have not been assigned a team for this activity.";
+      if (!team) return "You have not been assigned a team for this activity. Please wait for the next one.";
       if (allConfirmed) return "Everyone confirmed! Great :)";
       if (this.state.confirmed) return "Great, you found everyone! Now wait for your teammates to find you.";
       return <TeamBox confirm={this.confirmTeam} pid={pid} team_id={team._id}/>
     }
     if (currentActivity.status === 3) {
-      return <ResponsesVote pid={pid} team_id={team.id} />
+      if (!team) return "You have not been assigned a team for this activity. Please wait for the next one.";
+      return <ResponsesVote pid={pid} session_id={currentActivity.session_id} activity_id={currentActivity._id} team_id={team._id} />
     }
     return "Not supposed to be here!";
   }

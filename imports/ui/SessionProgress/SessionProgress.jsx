@@ -73,6 +73,7 @@ class SessionProgress extends Component {
     if (session.status === 2) return <h1>The session is over! Please follow the link and fill out our survey! Thanks :)</h1>;
 
     if (session.status === 0) return (<div>
+      <h1>Go to <u>tinyurl.com/dsgn100dynamic</u></h1>
       <h1>Session code: {this.props.match.params.code}</h1>
       <div id="status">Ready to begin</div>
       <ol>

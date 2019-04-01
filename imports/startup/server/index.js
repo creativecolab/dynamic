@@ -50,22 +50,32 @@ function updateRoster() {
   // hard-coded roster for testing
   const roster = [{
     name: 'Gustavo Umbelino',
+    firstname: 'Gustavo',
+    lastname: 'Umbelino',
     pid: 'gus'
   },
   {
     name: 'Vivian Ta',
+    firstname: 'Vivian',
+    lastname: 'Ta',
     pid: 'viv'
   },
   {
     name: 'Eric Truong',
+    firstname: 'Eric',
+    lastname: 'Truong',
     pid: 'eric'
   },
   {
     name: 'Steven Dow',
+    firstname: 'Steven',
+    lastname: 'Dow',
     pid: 'steven'
   },
   {
     name: 'Samuel Blake',
+    firstname: 'Samuel',
+    lastname: 'Blake',
     pid: 'sam'
   }];
 
@@ -80,8 +90,7 @@ function updateRoster() {
 
     // insert to database
     Users.insert({
-      name: user.name,
-      pid: user.pid,
+      ...user,
       teammates: []
     }, () => {
       console.log(user.name + ' inserted to mongo!')
@@ -166,7 +175,7 @@ Meteor.startup(() => {
         console.log('[ACTIVITY STARTED]')
         this.timerID = setInterval(
           () => endPhase(_id, 2),
-          10 * 1000
+          60 * 1000
         );
       }
 
@@ -285,7 +294,7 @@ Meteor.startup(() => {
         console.log('[DISCUSSION TIME]')
         this.timerID = setInterval(
           () => endPhase(_id, 4),
-          10 * 1000
+          20 * 1000
         );
       }
 
