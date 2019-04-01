@@ -19,34 +19,34 @@ export default class ResponsesHandler extends Component {
     // set state with previous values, if they exist
     if (!prevResponses) {
       this.state = {
-        truth: '',
-        lie1: '',
-        lie2: ''
+        truth1: '',
+        truth2: '',
+        lie: ''
       };
     } else {
       this.state = {
-        truth: prevResponses.truth,
-        lie1: prevResponses.lie1,
-        lie2: prevResponses.lie2
+        truth1: prevResponses.truth1,
+        truth2: prevResponses.truth2,
+        lie: prevResponses.lie
       };
     }
   }
 
-  handleTruth(evt) {
+  handleTruth1(evt) {
     this.setState({
-      truth: evt.target.value
+      truth1: evt.target.value
     });
   }
 
-  handleLie1(evt) {
+  handleTruth2(evt) {
     this.setState({
-      lie1: evt.target.value
+      truth2: evt.target.value
     });
   }
 
-  handleLie2(evt) {
+  handleLie(evt) {
     this.setState({
-      lie2: evt.target.value
+      lie: evt.target.value
     });
   }
 
@@ -66,19 +66,19 @@ export default class ResponsesHandler extends Component {
   render() {
     return (
       <div>
-        <h2>Please enter one lie and two truths about yourself to share with your team. Feel free to update your responses.</h2>
+        <h2>Please enter two truths and one lie about yourself to share with your team. Feel free to update your responses.</h2>
         <form id="icebreaker-form" onSubmit={(evt) => this.saveReponses(evt)}>
           <div id="icebreaker" className="field-container">
-            <label className="field-title" htmlFor="truth">Truth:</label>
+            <label className="field-title" htmlFor="truth">Truths:</label>
             <div className="input-container">
-              <input className="u-container" type="text" name="truth" placeholder="i.e., I have been to Mexico"  value={this.state.truth} onChange={(evt) => this.handleTruth(evt)}/>
-            </div>
-            <label className="field-title" htmlFor="lie1">Lies:</label>
-            <div className="input-container">
-              <input className="u-container" type="text" name="lie1" placeholder="i.e., I have been to Mexico"  value={this.state.lie1} onChange={(evt) => this.handleLie1(evt)}/>
+              <input className="u-container" type="text" name="truth1" placeholder="i.e., I am taking DSGN 100"  value={this.state.truth1} onChange={(evt) => this.handleTruth1(evt)}/>
             </div>
             <div className="input-container">
-              <input className="u-container" type="text" name="lie2" placeholder="i.e., I have been to Mexico"  value={this.state.lie2} onChange={(evt) => this.handleLie2(evt)}/>
+              <input className="u-container" type="text" name="truth2" placeholder="i.e., I go to UCSD"  value={this.state.truth2} onChange={(evt) => this.handleTruth2(evt)}/>
+            </div>
+            <label className="field-title" htmlFor="lies">Lie:</label>
+            <div className="input-container">
+              <input className="u-container" type="text" name="lie" placeholder="i.e., I have been to Mexico"  value={this.state.lie} onChange={(evt) => this.handleLie(evt)}/>
             </div>
             <input id="next_button" type="submit" value="Save"/>
           </div>

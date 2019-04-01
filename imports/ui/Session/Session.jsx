@@ -16,7 +16,7 @@ class Session extends Component {
   addActivity(evt) {
     evt.preventDefault();
 
-    const name = 'brainstorm';
+    const name = 'Icebreaker';
     const session_id = this.props.session._id;
 
     // add new activity to db

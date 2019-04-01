@@ -21,6 +21,7 @@ class Login extends Component {
       pid: '',
       ready: false,
       invalid: false,
+      signup: false,
       localUser: localStorage.getItem('pid')
     };
   }
@@ -86,6 +87,11 @@ class Login extends Component {
     }
   }
 
+  signup() {    
+    const { code } = this.props.session;
+    window.location = '/' + {code} + '/signup';
+  }
+
   render() {
 
     // session not available yet TODO: return loading component
@@ -94,7 +100,7 @@ class Login extends Component {
     const { code } = this.props.session;
     const { ready } = this.state;
 
-    const pid = this.state.pid;// || localStorage.getItem("pid");
+    const pid = this.state.pid; // || localStorage.getItem("pid");
 
     // user entered their name!
     // at this point, user is logged in!
@@ -115,6 +121,8 @@ class Login extends Component {
         <h3 id="navbar">Dynamic</h3>
         <h2 id="session">Session: </h2>
         <h2 id="u-container">{code}</h2>
+        <h2 className="field-title" htmlFor="signup">Need to Register your PID? Click here:</h2>
+        <button onClick={() => this.signup()} id="signup-button">Register!</button>
         <form id="pid-form" onSubmit={(evt) => this.login(evt)}>
           <div id="pid" className="field-container">
             {this.renderUsernameTaken()}
