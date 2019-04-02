@@ -6,6 +6,8 @@ import Responses from '../../../../api/responses';
 import Users from '../../../../api/users';
 import { withTracker } from 'meteor/react-meteor-data';
 
+import './ResponsesVote.scss';
+
 class ResponsesVote extends Component {
   static propTypes = {
     team_id: PropTypes.string.isRequired,
@@ -19,6 +21,7 @@ class ResponsesVote extends Component {
 
     this.state = {
       hotseat_index: 0,
+      voted: false
     };
   }
 
@@ -89,6 +92,9 @@ class ResponsesVote extends Component {
         }
       }, () => {
         console.log('Vote submitted!');
+        this.setState({
+          voted: true
+        });
       });
 
       // update the number of people voted 
@@ -113,6 +119,19 @@ class ResponsesVote extends Component {
       console.log('You already voted!');
     }
       
+  }
+
+  // set voted when props available
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.hotseat_index !== this.state.hotseat_index) {
+      const response = this.props.responses[this.state.hotseat_index];
+      const options = response.options;
+      if (!options) return;
+      const voted = options.filter(opt => opt.votes.includes(this.props.pid)).length > 0;
+      this.setState({
+        voted
+      });
+    }
   }
 
   // clear tick when not rendered
@@ -144,18 +163,35 @@ class ResponsesVote extends Component {
   // and if everyone has, wait a bit before changing the hotseat
   renderTeammatesResponses() {
     const response = this.props.responses[this.state.hotseat_index];
+
+    if (!response) return <div>No response recorded!</div>;
+
     const options = response.options;
 
-    if (!options) return <div>No response recorded!</div>;
+    if (!options) return <div>{this.getHotseatName()} did not submit a complete response.</div>;
+
     if (!this.match()) {
-      return <div>{this.shuffle(options.map((opt, index) => {
-        return <button className="button" key={index} onClick={(evt) => this.handleVote(evt, opt.lie, index)}>{opt.text}</button>;
-      }))}</div>
+      return (<div>
+          <h1>{this.getHotseatName()}</h1>
+          {this.state.voted && <div>You already voted for this person!</div>}
+          {!this.state.voted && <div>Click on the option you think is a lie:</div>}
+          {
+            this.shuffle(options.map((opt, index) => {
+              if (!opt.text) return;
+              return <button className="button" key={index} onClick={(evt) => this.handleVote(evt, opt.lie, index)}>{opt.text}</button>;
+            }))
+          }
+        </div>);
     } else {
-      // TODO: display the people who voted for an option
-      return <div>{options.map((opt, index) => {
-        return <button className="button" key={index}>{opt.text}<span> +{opt.votes.length}</span></button>
-      })}</div>
+      return (<div>
+        <h1>Your score: {'X'}</h1>
+        {options.map((opt, index) => {
+          if (!opt.text) return;
+          return (<button className="button" key={index}>{opt.text}
+            <span className="votes">{opt.votes.length > 0? '+' + opt.votes.length : ''}</span>
+          </button>);
+        })}
+      </div>)
     }
     
   }
@@ -177,6 +213,10 @@ class ResponsesVote extends Component {
     return this.props.pid === this.props.team.members[this.state.hotseat_index].pid
   }
 
+  getHotseatName() {
+    return Users.findOne({pid: this.props.team.members[this.state.hotseat_index].pid}).name;
+  }
+
   render() {
     // if (this.props.done) return "Yay!!";
     if (!this.props.team) return "Loading...";
@@ -184,13 +224,10 @@ class ResponsesVote extends Component {
     return (
       <div>
         <div>
-          <button onClick={() => this.handleNext()}>next</button>
-          <button onClick={() => this.handlePrev()}>prev</button>
+          <button id="prev" onClick={() => this.handlePrev()}>prev</button>
+          <button id="next" onClick={() => this.handleNext()}>next</button>
         </div>
-        {this.match() && <div>You said...</div>}
-        {!this.match() && <div>{Users.findOne({pid: this.props.team.members[this.state.hotseat_index].pid}).name} says...</div>}
         {this.renderTeammatesResponses()}
-        {!this.match() && <div>Click on the option you think is a lie.</div>}
       </div>
     )
   }
@@ -201,80 +238,8 @@ export default withTracker(props => {
   // get team object
   const team = Teams.findOne(props.team_id);
 
-  // get responses from all team members
-  // const responses = team.members.map(m => ({pid: m.pid, response: Responses.findOne({pid: m.pid, session_id: this.props.session_id},
-  //   {sort: {timestamp: -1}})}));
-
-  const responses = team.members.map(m => Responses.findOne({pid: m.pid, session_id: props.session_id}, {sort: {timestamp: -1}}));
-
-  // get current votes
-  // const hotseatPids = team.responses.map(resp => resp.hotseat);
-  // console.log('hotseat pids: ' + hotseatPids);
-  // const teammatePids = team.members.map(m => m.pid).filter(pid => pid !== props.pid);
-  // console.log('teammate pids: ' + teammatePids);
-
-  /*let hotseat;
-  if (teammatePids.length > 0) {
-    hotseat = teammatePids[0];
-  } else {
-    hotseat = props.pid;
-  }
-
-
-  //hotseat = team.members[0].pid;
-
-  //if (hotseatPids.includes(team.members[0].pid))
-
-
-  //console.log('Currently in the hotseat: ' + hotseat);
-
-  // iterate through teammates
-  let hotseat;
-  let i = 0;
-  for (i = 0; i < team.members.length; i++) {
-
-    console.log('Checking...' + team.members[i].pid)
-    
-    // teammate hasn't been in hotseat...
-    if (!hotseatPids.includes(team.members[i].pid)) {
-      hotseat = team.members[i].pid;
-      console.log(team.members[i].pid + " hasnt been in hotseat yet!");
-      break;
-    }
-
-    // has been in hotseat, but has everyone voted already?
-    else {
-
-      // get current voters
-      const voters = team.responses.filter(resp => resp.hotseat === team.members[i].pid).map(resp => resp.voter);
-      console.log('voters: ' + voters);
-
-      // check if every teammate has voted
-      for (var j = 0; j < teammatePids.length; j++) {
-        if (!voters.includes(teammatePids[j])) {
-          console.log(teammatePids[j] + 'has not voted for ' + hotseat);
-          hotseat = team.members[i].pid;
-          console.log("not everyone has voted for " + team.members[i].pid);
-          break;
-        }
-      }
-
-      // found hotseat above
-      if (hotseat != null) break;
-      
-    }
-     
-  }
-
-  if (i === team.members.length) {
-    console.log('everyone voted and has been in hotseat!');
-    // return {done: true}
-  }
-
-  console.log('Hotseat pid is ' + hotseat);
-
-  */
-  //return {options, hotseat};
+  // get all responses from the team
+  const responses = team.members.map(m => Responses.findOne({pid: m.pid, session_id: props.session_id}, {sort: {timestamp: -1}}) || []);
 
   return {team, responses};
 

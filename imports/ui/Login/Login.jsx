@@ -59,9 +59,9 @@ class Login extends Component {
   login(evt) {
     evt.preventDefault();
 
-    const { pid } = this.state;
+    const { pid, firstname, lastname } = this.state;
 
-    if (pid.length === 0) return;
+    if (pid.length === 0 /*|| firstname.length === 0 || lastname.length === 0*/) return;
 
     // find user by pid on database
     const user = Users.findOne({pid});
