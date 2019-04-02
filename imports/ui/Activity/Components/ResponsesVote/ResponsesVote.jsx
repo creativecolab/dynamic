@@ -99,21 +99,31 @@ class ResponsesVote extends Component {
       });
 
       // update the number of people voted 
-      this.setState({
-        numVoted: this.state.numVoted + 1
-      });
+      // this.setState({
+      //   numVoted: this.state.numVoted + 1
+      // });
+
+      // get responses from database rather than state
+      // filter by hotseat
+      const numVoted = this.props.team.responses.filter(resp => resp.hotseat === this.state.hotseat);
 
       // see if we should move on
-      if (this.state.numVoted + 1 === this.props.team.members.length - 1) {
+      console.log(numVoted + 'People voted!!!');
+      if (numVoted + 1 === this.props.team.members.length - 1) {
         // everyone who could vote has voted, set a timer then move on to next person
-        console.log("Wait 30 seconds.");
+        console.log("Wait 10 seconds.");
         // TODO change this from hardcoding??
-        setTimeout(this.getNextHotseat(), 30 * 1000);
+        this.timer = setTimeout(this.getNextHotseat(), 10 * 1000);
       } 
     } else {
         console.log('You already voted!');
     }
   }
+
+    // clear tick when not rendered
+    componentWillUnmount() {
+      clearTimeout(this.timer);
+    }
 
   // choose the next hotseat
   getNextHotseat() {
@@ -139,17 +149,14 @@ class ResponsesVote extends Component {
   // and if everyone has, wait a bit before changing the hotseat
   renderTeammatesResponses() {
     if (this.props.pid !== this.state.hotseat) {
-      console.log(this.state.options);
-      {this.state.options.map((opt, index) => {
+      return <div>{this.state.options.map((opt, index) => {
         return <button className="button" key={index} onClick={(evt) => this.handleVote(evt, opt.lie)}>{opt.text}</button>;
-      })}
+      })}</div>
     } else {
-      console.log(this.state.options);
-      // TODO display the people who voted for an option
-      {this.state.options.map((opt, index) => {
+      // TODO: display the people who voted for an option
+      return <div>{this.state.options.map((opt, index) => {
         return <button className="button" key={index} onClick={(evt) => this.handleVote(evt, opt.lie)}>{opt.text}</button>
-
-      })}
+      })}</div>
     }
     
   }

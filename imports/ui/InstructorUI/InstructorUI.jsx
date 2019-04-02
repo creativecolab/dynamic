@@ -37,7 +37,8 @@ class InstructorUI extends Component {
       return;
     }
 
-    Sessions.insert({
+    // create session
+    const session_id = Sessions.insert({
       code: session_code,
       timestamp: new Date().getTime(),
       participants: [],
@@ -50,6 +51,31 @@ class InstructorUI extends Component {
         size: 3
       });
     });
+
+
+    // create 3 default activities
+    const activities = [];
+    for (var i = 0; i < 3; i++) {
+      const activity = Activities.insert({
+        name: 'Icebreaker',
+        session_id,
+        timestamp: new Date().getTime(),
+        team_size: 3, // TODO: default value?
+        status: 0,
+        startTime: 0,
+        teams: []
+      });
+      activities.push(activity);
+    }
+
+    // add new activity to this session, necessary? good?
+    Sessions.update(session_id, {
+      $set: {
+        activities
+      }
+    });
+
+
   }
 
   //update the session_code state so we know where to go

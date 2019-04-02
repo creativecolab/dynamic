@@ -18,22 +18,36 @@ class SessionListItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      redirect: false
+      edit: false,
+      view: false,
     };
   } 
 
   editSession() {
     this.setState({
-      redirect: true
+      edit: true
+    });
+  }
+
+  viewSession() {
+    this.setState({
+      view: true
     });
   }
 
   renderRedirect = () => {
-    if (this.state.redirect) {
+    if (this.state.edit) {
       return <Redirect to={{
         pathname: '/' + this.props.code + '/edit'
       }}/>
     }
+
+    if (this.state.view) {
+      return <Redirect to={{
+        pathname: '/' + this.props.code + '/view'
+      }}/>
+    }
+
   }
 
   // this should be it's own component, with its own view
@@ -63,6 +77,7 @@ class SessionListItem extends Component {
         Code: {code} | Status: {status} {" "}
         <button onClick={() => this.startSession()}>start</button>
         <button onClick={() => this.editSession()}>edit</button>
+        <button onClick={() => this.viewSession()}>view</button>
       </div>
     )
   }

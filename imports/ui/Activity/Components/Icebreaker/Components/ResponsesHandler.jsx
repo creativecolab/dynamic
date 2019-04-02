@@ -78,8 +78,13 @@ export default class ResponsesHandler extends Component {
     }
   }
 
+  // clear tick when not rendered
+  componentWillUnmount() {
+    clearTimeout(this.timer);
+  }
+
   componentDidUpdate(){
-    setTimeout(() => this.setState({saved: false}), 5000);
+    this.timer = setTimeout(() => this.setState({saved: false}), 5000);
   }
 
   render() {

@@ -7,7 +7,8 @@ import Sessions from '../../api/sessions';
 import Users from '../../api/users';
 import Teams from '../../api/teams';
 
-import './register-api'
+import './register-api';
+// TODO: add collection for timers
 
 function insertLink(title, url) {
   Links.insert({ title, url, createdAt: new Date() });
@@ -154,13 +155,13 @@ Meteor.startup(() => {
   // called to end an activity phase
   const endPhase = Meteor.bindEnvironment((activity_id, status) => {
     console.log('Starting status ' + status)
+    
     Activities.update(activity_id, {
       $set: {
         status,
         startTime: new Date().getTime()
       }
     });
-    clearInterval(this.timerID);
   });
 
   // handles team formation
@@ -173,7 +174,8 @@ Meteor.startup(() => {
       // let input phase last for 10 seconds
       if (update.status === 1) {
         console.log('[ACTIVITY STARTED]')
-        this.timerID = setInterval(
+        clearTimeout(this.timerID);
+        this.timerID = setTimeout(
           () => endPhase(_id, 2),
           60 * 1000
         );
@@ -296,8 +298,9 @@ Meteor.startup(() => {
 
       // discussion time!
       if (update.status === 3) {
-        console.log('[DISCUSSION TIME]')
-        this.timerID = setInterval(
+        console.log('[DISCUSSION TIME]');
+        clearTimeout(this.timerID);
+        this.timerID = setTimeout(
           () => endPhase(_id, 4),
           60 * 1000
         );
