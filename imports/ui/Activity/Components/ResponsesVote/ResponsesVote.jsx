@@ -180,8 +180,8 @@ class ResponsesVote extends Component {
 
   getStyle(lie) {
     if (this.state.voted) {
-      if (lie) return {color: 'green'};
-      else return {color: 'red'}
+      if (lie) return {color: 'red'};
+      else return {color: 'green'}
     }
     return {}
   }
@@ -201,13 +201,15 @@ class ResponsesVote extends Component {
     if (!this.match()) {
       return (<div>
           <h1>{this.getHotseatName()}</h1>
-          {this.state.voted && <div>You already voted for this person!</div>}
+          {/* {this.state.voted && <div>You already voted for this person!</div>} */}
           {!this.state.voted && <div>Click on the option you think is a lie:</div>}
           {
             this.shuffle(options.map((opt, index) => {
               if (!opt.text) return;
-              //this is very confusing, sorry
-              return <button className="button" style={this.getStyle(opt.lie)} key={index} onClick={(evt) => this.handleVote(evt, opt.lie, index)}>{opt.text}</button>;
+              // this is confusing, sorry!
+              return (<button className="button" style={this.getStyle(opt.lie)} key={index} onClick={(evt) => this.handleVote(evt, opt.lie, index)}>
+                {this.state.voted? opt.lie? "LIE: " + opt.text : "TRUTH: " + opt.text : opt.text }
+              </button>);
             }))
           }
         </div>);
