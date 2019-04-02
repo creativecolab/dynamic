@@ -68,7 +68,7 @@
   
   #next_button{
     padding: 4% 14% 4% 14%;
-    margin-top: 10%;
+    margin-top: 30%;
     text-align: center; 
     font-family: 'PT Sans Narrow', sans-serif; 
     font-weight: bold; 
@@ -76,6 +76,7 @@
     border-radius: 25px;
     background-color: #EBEBEB; 
     border: none;
+    margin-bottom: 20%; 
   }
 
   #pid{
@@ -83,9 +84,16 @@
     font-size: 0.9em; 
   }
 
-  #session{
+  h2{
     color: black; 
-    font-size: 0.9em; 
-    font-weight: 100; 
+    font-size: 1.0em; 
+    font-weight: 900; 
     margin-top: 40%; 
+    margin-bottom: 30%; 
+    border-bottom: 1px solid grey;
+    padding-bottom: 15%; 
+  }
+
+  #padding{
+    padding-bottom: 10%; 
   }

@@ -118,20 +118,25 @@ class Login extends Component {
     return (
       <Wrapper>
         <h3 id="navbar">Dynamic</h3>
-        <h2 id="session">Session: </h2>
-        <h2 id="u-container">{code}</h2>
+        <h2>Session: {code} </h2>
         <form id="pid-form" onSubmit={(evt) => this.login(evt)}>
           <div id="pid" className="field-container">
             {this.renderUsernameTaken()}
-            <label className="field-title" htmlFor="pid">Student PID:</label>
-            <div className="input-container">
+            <label className="field-title" htmlFor="first">What's your first name?</label>
+            <div className="input-container" id="padding">
+              <input className="u-container" type="text" name="first" placeholder="Steven" value={this.state.first} onChange={(evt) => this.handleFirst(evt)}/>
+            </div>
+            <label className="field-title" htmlFor="last">What's your last name?</label>
+            <div className="input-container" id="padding">
+              <input className="u-container" type="text" name="last" placeholder="Dow" value={this.state.last} onChange={(evt) => this.handleLast(evt)}/>
+            </div>
+            <label className="field-title" htmlFor="pid">What's your PID:</label>
+            <div className="input-container"id="padding">
               <input className="u-container" type="text" name="pid" placeholder="i.e., A12345678" value={this.state.pid} onChange={(evt) => this.handleChange(evt)}/>
             </div>
             <input id="next_button" type="submit" value="Continue"/>
           </div>
         </form>
-        <h3 className="field-title" htmlFor="signup">Invalid PID? Try Registering here</h3>
-        <button id="next-button" onClick={() => this.signup()} id="signup-button">Register!</button>
       </Wrapper>
     )
   }
