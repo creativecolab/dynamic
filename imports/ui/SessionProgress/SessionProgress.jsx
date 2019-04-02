@@ -51,6 +51,25 @@ class SessionProgress extends Component {
     }
   }
 
+  // advance the status of the activity
+  advanceActivity() {
+
+    // get the current status, increment if possible
+    const currStatus = this.props.currentActivity.status;
+    console.log("Status of activity " + this.props.currentActivity.name + "is " + currStatus);
+
+    if (currStatus + 1 != 5) {
+
+      console.log("Activity status of " + this.props.currentActivity.name + "advanced to " + currStatus);
+
+      Activities.update(this.props.currentActivity._id, {
+        $set: { status: currStatus + 1 }
+      });
+    } else {
+      console.log("Can no longer advance the status of " + this.props.currentActivity.name);
+    }
+  }
+
   getInstructions(status) {
     if (status === 1) {
       return "Write TWO truths and ONE lie about yourself!";
@@ -95,6 +114,7 @@ class SessionProgress extends Component {
         <div>{this.props.currentActivity.name}</div>
         <h1>{this.getInstructions(this.props.currentActivity.status)}</h1>
         <div>Session code: {this.props.match.params.code}</div>
+        <button onClick={() => this.advanceActivity(this.props.currentActivity)}>Advance Activity</button>
       </div>
     );
   }
