@@ -118,7 +118,7 @@ class Login extends Component {
     return (
       <Wrapper>
         <h3 id="navbar">Dynamic</h3>
-        <h2>Session: {code} </h2>
+        <h4>Session: {code} </h4>
         <form id="pid-form" onSubmit={(evt) => this.login(evt)}>
           <div id="pid" className="field-container">
             {this.renderUsernameTaken()}
