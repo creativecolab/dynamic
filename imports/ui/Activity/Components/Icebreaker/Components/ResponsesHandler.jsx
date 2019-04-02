@@ -28,9 +28,9 @@ export default class ResponsesHandler extends Component {
       };
     } else {
       this.state = {
-        truth1: prevResponses.truth1,
-        truth2: prevResponses.truth2,
-        lie: prevResponses.lie,
+        truth1: prevResponses.options[0].text,
+        truth2: prevResponses.options[1].text,
+        lie: prevResponses.options[2].text,
         saved: false
       };
     }
