@@ -14,9 +14,53 @@ class ResponsesVote extends Component {
     pid: PropTypes.string.isRequired,
   }
 
+  constructor(props) {
+    super(props);
+
+    console.log("First Hotseat is " + this.props.team.members[0].pid);
+
+    this.state = {
+      hotseat: this.props.team.members[0].pid,
+      hotseatCount: 1,
+      options: this.retrieveOptions(this.props.team.members[0].pid),
+      numVoted: 0
+    };
+  }
+
+  retrieveOptions(hotseat) {
+    // helper function to shuffle array
+    // reference: https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array
+    const shuffle = (a) => {
+      for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    // get this person responses and shuffle into options
+    // let responses = Responses.findOne({pid: hotseat,session_id: this.props.session_id, activity_id: this.props.activity_id},
+    //                                   {sort: {timestamp: -1}});
+    let responses = Responses.findOne({pid: hotseat,session_id: this.props.session_id},
+                                      {sort: {timestamp: -1}});
+    console.log(responses);
+
+    if (!responses) {
+      // console.log(hotseat + ' did not submit a response!');
+      responses = {truth1: '', truth2: '', lie: ''};
+    }
+
+    let options = shuffle([{text: responses.truth1, lie: false}, {text: responses.truth2, lie: false}, {text: responses.lie, lie: true}]);
+
+    options = options.map(o => (o.text === '')? {text: 'NO RESPONSE', lie: o.lie} : {text: o.text, lie: o.lie});
+    console.log(options);
+
+    return options;
+  }
+
   handleVote(evt, lie) {
 
-    if (this.props.pid === this.props.hotseat) {
+    if (this.props.pid === this.state.hotseat) {
       console.log('You can\'t vote on your own!');
       return;
     }
@@ -26,48 +70,99 @@ class ResponsesVote extends Component {
     console.log(responses);
 
     // get only responses by this pid to current pid being voted on
-    const voted = responses.filter(vote => vote.hotseat === this.props.hotseat)
+    const voted = responses.filter(vote => vote.hotseat === this.state.hotseat)
                            .filter(vote => vote.voter === this.props.pid);
 
     if (voted == false) {
 
       // change color!
       if (lie) {
-        console.log('yaya!!');
+        console.log('yaya!! You guessed right!');
         evt.target.style.color = 'green';
       } else {
+        console.log('noooo!! You guessed wrong! :(');
         evt.target.style.color = 'red';
       }
 
+      // save this response 
+      // TODO track the amount of time it took
       Teams.update(this.props.team_id, {
         $push: {
           responses: {
-            hotseat: this.props.hotseat,
-            voter: this.props.pid
+            hotseat: this.state.hotseat,
+            voter: this.props.pid,
+            correct: lie
           }
         }
       }, () => {
         console.log('Vote submitted!');
       });
+
+      // update the number of people voted 
+      this.setState({
+        numVoted: this.state.numVoted + 1
+      });
+
+      // see if we should move on
+      if (this.state.numVoted + 1 === this.props.team.members.length - 1) {
+        // everyone who could vote has voted, set a timer then move on to next person
+        console.log("Wait 30 seconds.");
+        // TODO change this from hardcoding??
+        setTimeout(this.getNextHotseat(), 30 * 1000);
+      } 
     } else {
-      console.log('You already voted!');
+        console.log('You already voted!');
     }
+  }
 
+  // choose the next hotseat
+  getNextHotseat() {
+    if (this.state.hotseatCount === this.props.team.members.length) {
+      // everyone has been in the hotseat, we're done
+    } else {
+      //get the next team member up for being in the hotseat and their options
+      const next_hotseat = this.props.team.members[this.state.hotseatCount].pid;
+      const next_options = this.retrieveOptions(next_hotseat);
+
+      //update the states
+      this.setState({
+        hotseat: next_hotseat,
+        options: next_options,
+        hotseatCount: this.state.hotseatCount + 1,
+        numVoted: 0
+      });
+    }
+  }
+
+  // depending on who is in the hotseat, render either votable responses or trackable responses
+  // also keep track of how many people have voted for this user. i.e., keep rendering if not everyone has voted, 
+  // and if everyone has, wait a bit before changing the hotseat
+  renderTeammatesResponses() {
+    if (this.props.pid !== this.state.hotseat) {
+      console.log(this.state.options);
+      {this.state.options.map((opt, index) => {
+        return <button className="button" key={index} onClick={(evt) => this.handleVote(evt, opt.lie)}>{opt.text}</button>;
+      })}
+    } else {
+      console.log(this.state.options);
+      // TODO display the people who voted for an option
+      {this.state.options.map((opt, index) => {
+        return <button className="button" key={index} onClick={(evt) => this.handleVote(evt, opt.lie)}>{opt.text}</button>
+
+      })}
+    }
     
-
   }
 
   render() {
     // if (this.props.done) return "Yay!!";
-    if (!this.props.hotseat || !this.props.options) return "Loading...";
+    if (!this.state.hotseat || !this.state.options) return "Loading...";
     return (
       <div>
-        {(this.props.pid === this.props.hotseat) && <div>Wait for your teammates to vote.</div>}
-        {(this.props.pid !== this.props.hotseat) && <div>{Users.findOne({pid: this.props.hotseat}).firstname} says...</div>}
-        {this.props.options.map((opt, index) => {
-          return <button className="button" key={index} onClick={(evt) => this.handleVote(evt, opt.lie)}>{opt.text}</button>;
-        })}
-        {(this.props.pid !== this.props.hotseat) && <div>Click on the option you think is a lie.</div>}
+        {(this.props.pid === this.state.hotseat) && <div>Wait for your teammates to vote.</div>}
+        {(this.props.pid !== this.state.hotseat) && <div>{Users.findOne({pid: this.state.hotseat}).name} says...</div>}
+        {this.renderTeammatesResponses()}
+        {(this.props.pid !== this.state.hotseat) && <div>Click on the option you think is a lie.</div>}
       </div>
     )
   }
@@ -82,17 +177,17 @@ export default withTracker(props => {
   const team = Teams.findOne(props.team_id);
 
   // get current votes
-  const hotseatPids = team.responses.map(resp => resp.hotseat);
-  console.log('hotseat pids: ' + hotseatPids);
-  const teammatePids = team.members.map(m => m.pid).filter(pid => pid !== props.pid);
-  console.log('teammate pids: ' + teammatePids);
+  // const hotseatPids = team.responses.map(resp => resp.hotseat);
+  // console.log('hotseat pids: ' + hotseatPids);
+  // const teammatePids = team.members.map(m => m.pid).filter(pid => pid !== props.pid);
+  // console.log('teammate pids: ' + teammatePids);
 
   /*let hotseat;
   if (teammatePids.length > 0) {
     hotseat = teammatePids[0];
   } else {
     hotseat = props.pid;
-  }*/
+  }
 
 
   //hotseat = team.members[0].pid;
@@ -147,32 +242,9 @@ export default withTracker(props => {
 
   console.log('Hotseat pid is ' + hotseat);
 
+  */
+  //return {options, hotseat};
 
-  // helper function to shuffle array
-  // reference: https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array
-  const shuffle = (a) => {
-    for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  }
-
-  // get this person responses and shuffle into options
-  let responses = Responses.findOne({pid: hotseat, session_id: props.session_id, activity_type}, {sort: {timestamp: -1}});
-  console.log(responses);
-
-  if (!responses) {
-    // console.log(hotseat + ' did not submit a response!');
-    responses = {truth1: '', truth2: '', lie: ''};
-  }
-
-
-  let options = shuffle([{text: responses.truth1, lie: false}, {text: responses.truth2, lie: false}, {text: responses.lie, lie: true}]);
-  console.log(options);
-
-  options = options.map(o => (o.text === '')? {text: 'NO RESPONSE', lie: o.lie} : {text: o.text, lie: o.lie});
-
-  return {options, hotseat};
+  return {activity_type, team};
 
 })(ResponsesVote);

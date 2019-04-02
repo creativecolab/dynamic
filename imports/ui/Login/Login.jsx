@@ -18,11 +18,28 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      firstname: '',
+      lastname: '',
       pid: '',
       ready: false,
       invalid: false,
       localUser: localStorage.getItem('pid')
     };
+  }
+
+
+  // update the pid as the user types
+  handleFirstName(evt) {
+    this.setState({
+      firstname: evt.target.value
+    });
+  }
+
+  // update the last name as the user types
+  handleLastName(evt) {
+    this.setState({
+      lastname: evt.target.value
+    });
   }
 
   // update the pid as the user types
@@ -73,8 +90,20 @@ class Login extends Component {
       });
 
     } else {
-      this.setState({
-        invalid: true
+      Users.insert({
+        name: this.state.firstname + ' ' + this.state.lastname,
+        pid: this.state.pid,
+        teammates: []
+      });
+      // add user to session
+      Sessions.update(this.props.session._id, {
+        $push: {
+          participants: pid
+        }
+      }, () => {
+        this.setState({
+          ready: true
+        });
       });
     }    
   }
@@ -124,11 +153,11 @@ class Login extends Component {
             {this.renderUsernameTaken()}
             <label className="field-title" htmlFor="first">What's your first name?</label>
             <div className="input-container" id="padding">
-              <input className="u-container" type="text" name="first" placeholder="Steven" value={this.state.first} onChange={(evt) => this.handleFirst(evt)}/>
+              <input className="u-container" type="text" name="first" placeholder="Steven" value={this.state.first} onChange={(evt) => this.handleFirstName(evt)}/>
             </div>
             <label className="field-title" htmlFor="last">What's your last name?</label>
             <div className="input-container" id="padding">
-              <input className="u-container" type="text" name="last" placeholder="Dow" value={this.state.last} onChange={(evt) => this.handleLast(evt)}/>
+              <input className="u-container" type="text" name="last" placeholder="Dow" value={this.state.last} onChange={(evt) => this.handleLastName(evt)}/>
             </div>
             <label className="field-title" htmlFor="pid">What's your PID:</label>
             <div className="input-container"id="padding">

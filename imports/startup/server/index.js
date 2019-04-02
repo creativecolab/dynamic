@@ -101,6 +101,8 @@ function updateRoster() {
 
 Meteor.startup(() => {
 
+  //clearCollections(); 
+
   // update roster on startup
   updateRoster();
 
@@ -229,6 +231,7 @@ Meteor.startup(() => {
         let team_id = "";
 
         // form teams, teams of 3
+        // TODO when left with 2 people, create two teams of 4
         let newTeam =[participants[0]];
         for (let i = 1; i < participants.length; i++) {
 
