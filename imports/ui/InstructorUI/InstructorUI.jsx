@@ -2,8 +2,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Wrapper from '../Wrapper/Wrapper';
 import { withTracker } from 'meteor/react-meteor-data';
+
 import Sessions from "../../api/sessions";
 import SessionListItem from './Components/SessionListItem';
+import Logs from "../../api/logs";
 
 
 class InstructorUI extends Component {
@@ -75,6 +77,14 @@ class InstructorUI extends Component {
       }
     });
 
+    //track the session that was created
+    const new_log = Logs.insert({
+      log_type: "Session Created",
+      code: session_code,
+      timestamp: new Date().getTime(),
+    });
+
+    console.log(new_log);
 
   }
 

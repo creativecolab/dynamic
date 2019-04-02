@@ -8,6 +8,7 @@ import './SessionProgress.scss';
 import Activities from '../../api/activities';
 import Sessions from '../../api/sessions';
 import Users from '../../api/users';
+import Logs from "../../api/logs";
 
 
 class SessionProgress extends Component {
@@ -40,6 +41,15 @@ class SessionProgress extends Component {
         status: 1
       }
     });
+
+    //track the session that a session had started 
+    const new_log = Logs.insert({
+      log_type: "Session Started",
+      code: this.props.match.params.code,
+      timestamp: new Date().getTime(),
+    });
+
+    console.log(new_log);
   }
 
   componentDidUpdate(prevProps) {
