@@ -19,6 +19,15 @@ class ResponsesVote extends Component {
   constructor(props) {
     super(props);
 
+    // const response = this.props.responses;
+    // const options = response.options;
+    // if (!options) return;
+    // const voted = options.filter(opt => opt.votes.includes(this.props.pid)).length > 0;
+    // this.setState({
+    //   voted
+    // });
+    
+
     this.state = {
       hotseat_index: 0,
       voted: false
@@ -132,6 +141,17 @@ class ResponsesVote extends Component {
         voted
       });
     }
+
+    // if (!prevProps.responses && this.props.responses) {
+    //   const response = this.props.responses[this.state.hotseat_index];
+    //   const options = response.options;
+    //   if (!options) return;
+    //   const voted = options.filter(opt => opt.votes.includes(this.props.pid)).length > 0;
+    //   this.setState({
+    //     voted
+    //   });
+    // }
+
   }
 
   // clear tick when not rendered
@@ -158,6 +178,14 @@ class ResponsesVote extends Component {
     }
   }
 
+  getStyle(lie) {
+    if (this.state.voted) {
+      if (lie) return {color: 'green'};
+      else return {color: 'red'}
+    }
+    return {}
+  }
+
   // depending on who is in the hotseat, render either votable responses or trackable responses
   // also keep track of how many people have voted for this user. i.e., keep rendering if not everyone has voted, 
   // and if everyone has, wait a bit before changing the hotseat
@@ -178,7 +206,8 @@ class ResponsesVote extends Component {
           {
             this.shuffle(options.map((opt, index) => {
               if (!opt.text) return;
-              return <button className="button" key={index} onClick={(evt) => this.handleVote(evt, opt.lie, index)}>{opt.text}</button>;
+              //this is very confusing, sorry
+              return <button className="button" style={this.getStyle(opt.lie)} key={index} onClick={(evt) => this.handleVote(evt, opt.lie, index)}>{opt.text}</button>;
             }))
           }
         </div>);
