@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+
+import Clock from '../../../../Clock/Clock';
+
 import Responses from '../../../../../api/responses';
 import Activities from '../../../../../api/activities';
 
@@ -89,13 +92,18 @@ export default class ResponsesHandler extends Component {
   }
 
   componentDidUpdate(){
-    this.timer = setTimeout(() => this.setState({saved: false}), 5000);
+    this.timer = setTimeout(() => 
+      this.setState({
+        saved: false
+      }),
+    5000);
   }
 
   render() {
     return (
       <div>
         <h3 id="navbar">Dynamic</h3>
+        <Clock end_time={(new Date().getTime() + 60*1000)} />
         <h2 id="paddingh">Please enter two truths and one lie about yourself to share with your team. Feel free to update your responses.</h2>
         <form id="icebreaker-form" onSubmit={(evt) => this.saveReponses(evt)}>
           <div id="icebreaker" className="field-container">

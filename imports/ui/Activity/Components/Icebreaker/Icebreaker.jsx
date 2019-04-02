@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
+
 import TeamBox from '../TeamBox/TeamBox';
 import Wrapper from '../../../Wrapper/Wrapper';
-import Teams from '../../../../api/teams';
 import ResponsesHandler from './Components/ResponsesHandler';
 import ResponsesVote from '../ResponsesVote/ResponsesVote';
-import { withTracker } from 'meteor/react-meteor-data';
+
+import Teams from '../../../../api/teams';
 import Activities from '../../../../api/activities';
 
 
