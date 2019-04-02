@@ -86,15 +86,15 @@ export default class ResponsesHandler extends Component {
     return (
       <div>
         <h3 id="navbar">Dynamic</h3>
-        <h2>Please enter two truths and one lie about yourself to share with your team. Feel free to update your responses.</h2>
+        <h2 id="paddingh">Please enter two truths and one lie about yourself to share with your team. Feel free to update your responses.</h2>
         <form id="icebreaker-form" onSubmit={(evt) => this.saveReponses(evt)}>
           <div id="icebreaker" className="field-container">
             <label className="field-title" htmlFor="truth">Truths:</label>
             <div className="input-container">
-              <input id="input-container" className="u-container" type="text" name="truth1" placeholder="i.e., I am taking DSGN 100"  value={this.state.truth1} onChange={(evt) => this.handleTruth1(evt)}/>
+              <input id="input-container" className="u-container" type="text" name="truth1" placeholder="i.e., I used to do improv"  value={this.state.truth1} onChange={(evt) => this.handleTruth1(evt)}/>
             </div>
             <div className="input-container">
-              <input id="input-container" className="u-container" type="text" name="truth2" placeholder="i.e., I go to UCSD"  value={this.state.truth2} onChange={(evt) => this.handleTruth2(evt)}/>
+              <input id="input-container" className="u-container" type="text" name="truth2" placeholder="i.e., I snore in my sleep"  value={this.state.truth2} onChange={(evt) => this.handleTruth2(evt)}/>
             </div>
             <label className="field-title" htmlFor="lies" id= "lies">Lie:</label>
             <div className="input-container">
