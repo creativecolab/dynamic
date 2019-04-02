@@ -17,63 +17,58 @@ class ResponsesVote extends Component {
   constructor(props) {
     super(props);
 
-    console.log("First Hotseat is " + this.props.team.members[0].pid);
-
     this.state = {
-      hotseat: this.props.team.members[0].pid,
-      hotseatCount: 1,
-      options: this.retrieveOptions(this.props.team.members[0].pid),
-      numVoted: 0
+      hotseat_index: 0,
     };
   }
 
-  retrieveOptions(hotseat) {
-    // helper function to shuffle array
-    // reference: https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array
-    const shuffle = (a) => {
-      for (let i = a.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [a[i], a[j]] = [a[j], a[i]];
-      }
-      return a;
+  // helper function to shuffle array
+  // reference: https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array
+  shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
     }
-
-    // get this person responses and shuffle into options
-    // let responses = Responses.findOne({pid: hotseat,session_id: this.props.session_id, activity_id: this.props.activity_id},
-    //                                   {sort: {timestamp: -1}});
-    let responses = Responses.findOne({pid: hotseat,session_id: this.props.session_id},
-                                      {sort: {timestamp: -1}});
-    console.log(responses);
-
-    if (!responses) {
-      // console.log(hotseat + ' did not submit a response!');
-      responses = {truth1: '', truth2: '', lie: ''};
-    }
-
-    let options = shuffle([{text: responses.truth1, lie: false}, {text: responses.truth2, lie: false}, {text: responses.lie, lie: true}]);
-
-    options = options.map(o => (o.text === '')? {text: 'NO RESPONSE', lie: o.lie} : {text: o.text, lie: o.lie});
-    console.log(options);
-
-    return options;
+    return a;
   }
 
-  handleVote(evt, lie) {
+  // retrieveOptions(hotseat) {
 
-    if (this.props.pid === this.state.hotseat) {
+  //   // get this person responses and shuffle into options
+  //   // let responses = Responses.findOne({pid: hotseat,session_id: this.props.session_id, activity_id: this.props.activity_id},
+  //   //                                   {sort: {timestamp: -1}});
+  //   let response = 
+  //   console.log(response);
+
+  //   if (!response) {
+  //     // console.log(hotseat + ' did not submit a response!');
+  //     return [];
+  //   }
+
+  //   // let options = shuffle([{text: responses.truth1, lie: false}, {text: responses.truth2, lie: false}, {text: responses.lie, lie: true}]);
+
+  //   // options = options.map(o => (o.text === '')? {text: 'NO RESPONSE', lie: o.lie} : {text: o.text, lie: o.lie});
+  //   // console.log(options);
+
+  //   return response.options;
+  // }
+
+  handleVote(evt, lie, index) {
+
+    if (this.props.pid === this.props.team.members[this.state.hotseat_index].pid) {
       console.log('You can\'t vote on your own!');
       return;
     }
 
-    // get all responses
-    const responses = Teams.findOne({_id: this.props.team_id}).responses;
-    console.log(responses);
+    // // get all responses
+    // const responses = Teams.findOne({_id: this.props.team_id}).responses;
+    // console.log(responses);
+    const response = this.props.responses[this.state.hotseat_index];
+    const options = response.options;
 
-    // get only responses by this pid to current pid being voted on
-    const voted = responses.filter(vote => vote.hotseat === this.state.hotseat)
-                           .filter(vote => vote.voter === this.props.pid);
+    const voted = options.filter(opt => opt.votes.includes(this.props.pid)).length > 0;
 
-    if (voted == false) {
+    if (!voted) {
 
       // change color!
       if (lie) {
@@ -84,15 +79,13 @@ class ResponsesVote extends Component {
         evt.target.style.color = 'red';
       }
 
+      options[index].votes.push(this.props.pid);
+
       // save this response 
       // TODO track the amount of time it took
-      Teams.update(this.props.team_id, {
-        $push: {
-          responses: {
-            hotseat: this.state.hotseat,
-            voter: this.props.pid,
-            correct: lie
-          }
+      Responses.update(response._id, {
+        $set: {
+          options,
         }
       }, () => {
         console.log('Vote submitted!');
@@ -105,25 +98,27 @@ class ResponsesVote extends Component {
 
       // get responses from database rather than state
       // filter by hotseat
-      const numVoted = this.props.team.responses.filter(resp => resp.hotseat === this.state.hotseat);
+      // const numVoted = this.props.team.responses.filter(resp => resp.hotseat === this.state.hotseat).length;
 
-      // see if we should move on
-      console.log(numVoted + 'People voted!!!');
-      if (numVoted + 1 === this.props.team.members.length - 1) {
-        // everyone who could vote has voted, set a timer then move on to next person
-        console.log("Wait 10 seconds.");
-        // TODO change this from hardcoding??
-        this.timer = setTimeout(this.getNextHotseat(), 10 * 1000);
-      } 
+      // // see if we should move on
+      // console.log(numVoted + ' people voted!!!');
+      // if (numVoted + 1 === this.props.team.members.length - 1) {
+      //   // everyone who could vote has voted, set a timer then move on to next person
+      //   console.log("Wait 10 seconds.");
+      //   // TODO change this from hardcoding??
+      //   this.timer = setTimeout(this.getNextHotseat(), 10 * 1000);
+      // }
+
     } else {
-        console.log('You already voted!');
+      console.log('You already voted!');
     }
+      
   }
 
-    // clear tick when not rendered
-    componentWillUnmount() {
-      clearTimeout(this.timer);
-    }
+  // clear tick when not rendered
+  componentWillUnmount() {
+    clearTimeout(this.timer);
+  }
 
   // choose the next hotseat
   getNextHotseat() {
@@ -148,28 +143,54 @@ class ResponsesVote extends Component {
   // also keep track of how many people have voted for this user. i.e., keep rendering if not everyone has voted, 
   // and if everyone has, wait a bit before changing the hotseat
   renderTeammatesResponses() {
-    if (this.props.pid !== this.state.hotseat) {
-      return <div>{this.state.options.map((opt, index) => {
-        return <button className="button" key={index} onClick={(evt) => this.handleVote(evt, opt.lie)}>{opt.text}</button>;
-      })}</div>
+    const response = this.props.responses[this.state.hotseat_index];
+    const options = response.options;
+
+    if (!options) return <div>No response recorded!</div>;
+    if (!this.match()) {
+      return <div>{this.shuffle(options.map((opt, index) => {
+        return <button className="button" key={index} onClick={(evt) => this.handleVote(evt, opt.lie, index)}>{opt.text}</button>;
+      }))}</div>
     } else {
       // TODO: display the people who voted for an option
-      return <div>{this.state.options.map((opt, index) => {
-        return <button className="button" key={index} onClick={(evt) => this.handleVote(evt, opt.lie)}>{opt.text}</button>
+      return <div>{options.map((opt, index) => {
+        return <button className="button" key={index}>{opt.text}<span> +{opt.votes.length}</span></button>
       })}</div>
     }
     
   }
 
+  handleNext() {
+    this.setState({
+      hotseat_index: (this.state.hotseat_index + 1) % this.props.team.members.length
+    });
+  }
+
+  handlePrev() {
+    const hotseat_index = this.state.hotseat_index === 0? this.props.team.members.length - 1 : this.state.hotseat_index - 1;
+    this.setState({
+      hotseat_index
+    });
+  }
+
+  match() {
+    return this.props.pid === this.props.team.members[this.state.hotseat_index].pid
+  }
+
   render() {
     // if (this.props.done) return "Yay!!";
-    if (!this.state.hotseat || !this.state.options) return "Loading...";
+    if (!this.props.team) return "Loading...";
+    if (!this.props.responses) return "No response recorded.";
     return (
       <div>
-        {(this.props.pid === this.state.hotseat) && <div>Wait for your teammates to vote.</div>}
-        {(this.props.pid !== this.state.hotseat) && <div>{Users.findOne({pid: this.state.hotseat}).name} says...</div>}
+        <div>
+          <button onClick={() => this.handleNext()}>next</button>
+          <button onClick={() => this.handlePrev()}>prev</button>
+        </div>
+        {this.match() && <div>You said...</div>}
+        {!this.match() && <div>{Users.findOne({pid: this.props.team.members[this.state.hotseat_index].pid}).name} says...</div>}
         {this.renderTeammatesResponses()}
-        {(this.props.pid !== this.state.hotseat) && <div>Click on the option you think is a lie.</div>}
+        {!this.match() && <div>Click on the option you think is a lie.</div>}
       </div>
     )
   }
@@ -177,11 +198,14 @@ class ResponsesVote extends Component {
 
 export default withTracker(props => {
 
-  // only get responses of the same type of activity
-  const activity_type = Activities.findOne(props.activity_id).name;
-
   // get team object
   const team = Teams.findOne(props.team_id);
+
+  // get responses from all team members
+  // const responses = team.members.map(m => ({pid: m.pid, response: Responses.findOne({pid: m.pid, session_id: this.props.session_id},
+  //   {sort: {timestamp: -1}})}));
+
+  const responses = team.members.map(m => Responses.findOne({pid: m.pid, session_id: props.session_id}, {sort: {timestamp: -1}}));
 
   // get current votes
   // const hotseatPids = team.responses.map(resp => resp.hotseat);
@@ -252,6 +276,6 @@ export default withTracker(props => {
   */
   //return {options, hotseat};
 
-  return {activity_type, team};
+  return {team, responses};
 
 })(ResponsesVote);

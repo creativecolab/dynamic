@@ -174,8 +174,8 @@ Meteor.startup(() => {
       // let input phase last for 10 seconds
       if (update.status === 1) {
         console.log('[ACTIVITY STARTED]')
-        clearTimeout(this.timerID);
-        this.timerID = setTimeout(
+        // clearTimeout(this.timerID);
+        this.timer1 = setTimeout(
           () => endPhase(_id, 2),
           60 * 1000
         );
@@ -299,8 +299,8 @@ Meteor.startup(() => {
       // discussion time!
       if (update.status === 3) {
         console.log('[DISCUSSION TIME]');
-        clearTimeout(this.timerID);
-        this.timerID = setTimeout(
+        clearTimeout(this.timer1);
+        this.timer2 = setTimeout(
           () => endPhase(_id, 4),
           60 * 1000
         );
