@@ -151,13 +151,14 @@ class Login extends Component {
           <div id="pid" className="field-container">
             {this.renderUsernameTaken()}
             <div className="container">
-            <label className="field-title" htmlFor="first" id="push">What is your name? </label>
+            <label className="field-title" htmlFor="first" 
+            >What is your name? </label>
             <div className="input-container" id="padding">
-              <input className="u-container" type="text" name="first" placeholder="Steven Dow" value={this.state.name} onChange={(evt) => this.handleName(evt)}/>
+              <input className="u-container" type="text" name="first" placeholder="King Triton" value={this.state.name} onChange={(evt) => this.handleName(evt)}/>
             </div><br></br>
             <label className="field-title" htmlFor="pid">What is your PID?</label>
             <div className="input-container"id="padding">
-              <input className="u-container" type="text" name="pid" placeholder="i.e., A12345678" value={this.state.pid} onChange={(evt) => this.handleChange(evt)}/>
+              <input className="u-container" type="text" name="pid" placeholder="A12345678" value={this.state.pid} onChange={(evt) => this.handleChange(evt)}/>
             </div>
             </div>
             <input id="next_button" type="submit" value="Continue"/>
