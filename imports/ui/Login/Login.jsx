@@ -147,21 +147,18 @@ class Login extends Component {
     return (
       <Wrapper>
         <h3 id="navbar">Dynamic</h3>
-        <h4>Session: {code} </h4>
         <form id="pid-form" onSubmit={(evt) => this.login(evt)}>
           <div id="pid" className="field-container">
             {this.renderUsernameTaken()}
-            <label className="field-title" htmlFor="first">What's your first name?</label>
+            <div className="container">
+            <label className="field-title" htmlFor="first" id="push">What is your name? </label>
             <div className="input-container" id="padding">
-              <input className="u-container" type="text" name="first" placeholder="Steven" value={this.state.first} onChange={(evt) => this.handleFirstName(evt)}/>
-            </div>
-            <label className="field-title" htmlFor="last">What's your last name?</label>
-            <div className="input-container" id="padding">
-              <input className="u-container" type="text" name="last" placeholder="Dow" value={this.state.last} onChange={(evt) => this.handleLastName(evt)}/>
-            </div>
-            <label className="field-title" htmlFor="pid">What's your PID:</label>
+              <input className="u-container" type="text" name="first" placeholder="Steven Dow" value={this.state.name} onChange={(evt) => this.handleName(evt)}/>
+            </div><br></br>
+            <label className="field-title" htmlFor="pid">What is your PID?</label>
             <div className="input-container"id="padding">
               <input className="u-container" type="text" name="pid" placeholder="i.e., A12345678" value={this.state.pid} onChange={(evt) => this.handleChange(evt)}/>
+            </div>
             </div>
             <input id="next_button" type="submit" value="Continue"/>
           </div>
