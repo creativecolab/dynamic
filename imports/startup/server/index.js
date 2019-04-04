@@ -6,6 +6,7 @@ import Activities from '../../api/activities';
 import Sessions from '../../api/sessions';
 import Users from '../../api/users';
 import Teams from '../../api/teams';
+import Logs from '../../api/logs';
 
 import './register-api';
 // TODO: add collection for timers
@@ -122,9 +123,18 @@ Meteor.startup(() => {
         Activities.update(session.activities[0], {
           $set: {
             status: 1,
+            timestamp: new Date().getTime(),
             startTime: new Date().getTime()
           }
         });
+
+        Logs.insert({
+          status: 1,
+          message: 'Session started',
+          session_id: session._id,
+          timestamp: new Date().getTime() 
+        });
+
       }
 
     } 
@@ -133,6 +143,21 @@ Meteor.startup(() => {
   // speeds up activity based on teams ready
   Teams.find({}).observeChanges({
     changed(_id, update) {
+
+      // set team formation time
+      if (update.members) {
+        // if all confirmed, set team formation time
+        if (update.members.map(x => x.confirmed).reduce((res, x) => res && x)) {
+          const team = Teams.findOne(_id);
+          const activity = Activities.findOne(team.activity_id);
+          Teams.update(team._id, {
+            $set: {
+              teamFormationTime: new Date().getTime() - activity.startTime
+            }
+          });
+
+        }
+      }
 
       // get current activity in context
       const activity_id = Teams.findOne(_id).activity_id;
@@ -145,7 +170,8 @@ Meteor.startup(() => {
       if (num_not_confirmed === 0 && Activities.findOne(activity_id).status === 2) {
         Activities.update(activity_id, {
           $set: {
-            status: 3
+            status: 3,
+            startTime: new Date().getTime()
           }
         });
       }
@@ -155,11 +181,9 @@ Meteor.startup(() => {
   // called to end an activity phase
   const endPhase = Meteor.bindEnvironment((activity_id, status) => {
     console.log('Starting status ' + status)
-    
     Activities.update(activity_id, {
       $set: {
-        status,
-        startTime: new Date().getTime()
+        status
       }
     });
   });
@@ -171,7 +195,7 @@ Meteor.startup(() => {
       console.log(_id + " updated. [Activity]");
       console.log(update);
 
-      // let input phase last for 10 seconds
+      // let input phase last for 60 seconds
       if (update.status === 1) {
         console.log('[ACTIVITY STARTED]')
         // clearTimeout(this.timerID);
@@ -307,7 +331,7 @@ Meteor.startup(() => {
       }
 
       // activity just ended
-      if (update.status === 4) {
+      if (update.status === 5) {
 
          // get session in context
          const session = Sessions.findOne({activities: _id});
@@ -328,7 +352,8 @@ Meteor.startup(() => {
          else {
            Activities.update(nextActivity._id, {
              $set: {
-               status: 1
+               status: 1,
+               startTime: new Date().getTime()
              }
            });
          }

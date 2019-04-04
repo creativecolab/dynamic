@@ -14,7 +14,7 @@ import './Icebreaker.scss';
 class Icebreaker extends Component {
   static propTypes = {
     _id: PropTypes.string.isRequired,
-    pid: PropTypes.string.isRequired,
+    pid: PropTypes.string.isRequired
   }
 
   constructor(props) {
@@ -73,6 +73,10 @@ class Icebreaker extends Component {
     if (currentActivity.status === 3) {
       if (!team) return "You have not been assigned a team for this activity. Please wait for the next one.";
       return <ResponsesVote pid={pid} session_id={currentActivity.session_id} activity_id={currentActivity._id} team_id={team._id} />
+    }
+    if (currentActivity.status === 4) {
+      if (!team) return "You have not been assigned a team for this activity. Please wait for the next one.";
+      return <div>Great job! Check out the stats!</div>
     }
     return "Not supposed to be here!";
   }

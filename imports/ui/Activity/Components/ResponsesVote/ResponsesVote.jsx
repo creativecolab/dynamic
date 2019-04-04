@@ -218,7 +218,8 @@ class ResponsesVote extends Component {
         </div>);
     } else {
       return (<div>
-        <h1>Your score: {'X'}</h1>
+        <h1>You are on the hot seat!</h1>
+        <div>Wait while people discuss and vote on your statements.</div>
         {options.map((opt, index) => {
           if (!opt.text) return;
           return (<button className="button" key={index}>{opt.text}
@@ -255,12 +256,13 @@ class ResponsesVote extends Component {
     // if (this.props.done) return "Yay!!";
     if (!this.props.team) return "Loading...";
     if (!this.props.responses) return "No response recorded.";
+    const { hotseat_index } = this.state;
     return (
       <div>
-        <Clock end_time={(new Date().getTime() + 120*1000)} />
+        {/* <Clock end_time={(new Date().getTime() + 120*1000)} /> */}
         <div>
-          <button id="prev" onClick={() => this.handlePrev()}>prev</button>
-          <button id="next" onClick={() => this.handleNext()}>next</button>
+          {hotseat_index > 0 && <button id="prev" onClick={() => this.handlePrev()}>prev</button>}
+          {hotseat_index < this.props.responses.length - 1 && <button id="next" onClick={() => this.handleNext()}>next</button>}
         </div>
         {this.renderTeammatesResponses()}
       </div>

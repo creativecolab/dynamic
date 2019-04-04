@@ -22,14 +22,11 @@ class Activity extends Component {
     console.log('CONSTRUCTOR [ACTIVITY]');
     const { pid, session_id } = props;
     this.state = {
-      timeLeft: 0,
-      duration: 10,
       session: Sessions.findOne(session_id),
       username: Users.findOne({pid}).name,
       currentActivity: null, // id of the running activity
     }
   }
-
 
   prettyPrint() {
     if (!this.props.currentActivity) return "No active activity yet.";
@@ -44,17 +41,18 @@ class Activity extends Component {
     </div>
   }
 
-  // clear tick when not rendered
-  componentWillUnmount() {
-    clearInterval(this.timerID);
-  }
-
-  // called every second
-  tick() {
-    if (!this.props.currentActivity) clearInterval(this.timerID);
-    this.setState({
-      timeLeft: this.state.duration - parseInt(Math.abs(this.props.currentActivity.startTime - new Date().getTime()) / 1000)
-    });
+  renderClock() {
+    const { currentActivity } = this.props;
+    let totalTime = 0;
+    if (currentActivity.status === 1) {
+      totalTime = 60;
+    } else if (currentActivity.status === 3) {
+      totalTime = 60;
+    } else {
+      return "";
+    }
+    // console.log("Start time: " + currentActivity.startTime);
+    return <Clock startTime={this.props.currentActivity.startTime} totalTime={totalTime}/>
   }
 
   // needs a current activity
@@ -69,7 +67,7 @@ class Activity extends Component {
     if (currentActivity.name === "Icebreaker") {
       return (
         <Wrapper>
-          {/* {this.state.timeLeft >= 0 && <Clock timeLeft={this.state.timeLeft}/>} */}
+          {this.renderClock()}
           <Icebreaker _id={currentActivity._id} pid={pid} />
         </Wrapper>
       )
@@ -82,6 +80,6 @@ class Activity extends Component {
 
 export default withTracker(props => {
   const session_id = props.session_id;
-  const currentActivity = Activities.findOne({session_id, status: { $in: [1, 2, 3] }}, { sort: { status: 1 }});
+  const currentActivity = Activities.findOne({session_id, status: { $in: [1, 2, 3, 4] }}, { sort: { status: 1 }});
   return {currentActivity}
 })(Activity);

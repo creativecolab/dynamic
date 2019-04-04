@@ -101,7 +101,6 @@ export default class ResponsesHandler extends Component {
     return (
       <div>
         <h3 id="navbar">Icebreaker</h3>
-        <Clock end_time={(new Date().getTime() + 60*1000)} />
         <div id="responsive">
         <div id="w_container">
         <h4>Write two truths and one lie about yourself.</h4>

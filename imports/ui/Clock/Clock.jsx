@@ -1,19 +1,22 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import CircularProgressbar from 'react-circular-progressbar';
+
 
 import './Clock.scss';
 
 export default class Clock extends Component {
   static propTypes = {
-    end_time: PropTypes.number.isRequired,
+    startTime: PropTypes.number.isRequired,
+    totalTime: PropTypes.number.isRequired,
   }
+
   constructor(props) {
     super(props);
     // use a state to track the time left
-    console.log(this.props.end_time);
     console.log(new Date().getTime());
     this.state = {
-      time_left: Math.round((this.props.end_time) - (new Date().getTime()) / 1000)
+      timeLeft: props.totalTime - parseInt(Math.abs(props.startTime - new Date().getTime()) / 1000)
     };
   }
 
@@ -32,16 +35,24 @@ export default class Clock extends Component {
   // decrease every second
   tick() {
     this.setState({
-      time_left: Math.round(((this.props.end_time) - (new Date().getTime())) / 1000)
+      timeLeft: this.props.totalTime - parseInt(Math.abs(this.props.startTime - new Date().getTime()) / 1000)
     });
   }
   
-  // TODO: color the clock
   render() {
+    const percentage = parseInt(100 - (this.state.timeLeft / this.props.totalTime) * 100);
+    // console.log(percentage);
     return (
-      <div id="clock" className={this.state.time_left < 15? "low" : "high"}>
-        <div>{this.state.time_left}</div>
-      </div>
+      <div id="clock">
+        <CircularProgressbar
+        percentage={percentage}
+        strokeWidth={50}
+        textForPercentage={null}
+        styles={{
+          path: { strokeLinecap: 'butt' },
+          text: { fill: '#000' },
+        }}/>
+      </div> 
     )
   }
 }

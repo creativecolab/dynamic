@@ -39,6 +39,7 @@ class SessionProgress extends Component {
   }
 
   startSession() {
+    if (this.props.session.participants.length < 2) return;
     Sessions.update(this.props.session._id, {
       $set: {
         status: 1
@@ -73,9 +74,9 @@ class SessionProgress extends Component {
     const currStatus = this.props.currentActivity.status;
     console.log("Status of activity " + this.props.currentActivity.name + "is " + currStatus);
 
-    if (currStatus + 1 != 5) {
+    if (currStatus + 1 != 6) {
 
-      console.log("Activity status of " + this.props.currentActivity.name + "advanced to " + currStatus);
+      console.log("Activity status of " + this.props.currentActivity.name + " advanced to " + currStatus + 1);
 
       Activities.update(this.props.currentActivity._id, {
         $set: { status: currStatus + 1 }
@@ -84,6 +85,15 @@ class SessionProgress extends Component {
       console.log("Can no longer advance the status of " + this.props.currentActivity.name);
     }
   }
+
+  // startNextActivity = () => {
+  //   Activities.update(this.props.currentActivity._id, {
+  //     $set: {
+  //       status: 5,
+  //       endTime: new Date().getTime()
+  //     }
+  //   });
+  // }
 
   getInstructions(status) {
     if (status === 1) {
@@ -106,7 +116,7 @@ class SessionProgress extends Component {
       )
     }
     if (status === 4) {
-      return <h1>Done!</h1>
+      return <h1>Stats page</h1>
     }
   }
 
@@ -162,6 +172,6 @@ export default withTracker((props) => {
   const session = Sessions.findOne({code});
   if (!session) return {};
   const activities = Activities.find({session_id: session._id}).fetch();
-  const currentActivity = Activities.findOne({session_id: session._id, status: { $in: [1, 2, 3] }}, { sort: { status: 1 }});
+  const currentActivity = Activities.findOne({session_id: session._id, status: { $in: [1, 2, 3, 4] }}, { sort: { status: 1 }});
   return {session, activities, currentActivity};
 })(SessionProgress);
