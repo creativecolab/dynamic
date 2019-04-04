@@ -95,12 +95,34 @@ class SessionProgress extends Component {
   //   });
   // }
 
+  renderClock() {
+    const { currentActivity } = this.props;
+    let totalTime = 0;
+    if (currentActivity.status === 1) {
+      totalTime = 60;
+    } else if (currentActivity.status === 3) {
+      totalTime = 60;
+    } else {
+      return "";
+    }
+    // console.log("Start time: " + currentActivity.startTime);
+    return <Clock startTime={this.props.currentActivity.startTime} big={true} totalTime={totalTime}/>
+  }
+
   getInstructions(status) {
+    const { currentActivity } = this.props;
     if (status === 1) {
       return (
         <div>
-          <Clock end_time={(new Date().getTime() + 60*1000)} />
-          <h1>Write TWO truths and ONE lie about yourself!</h1>
+          {this.renderClock()}
+          <h1>{currentActivity.name}</h1>
+          <div>2 Truths and 1 Lie</div>
+          <hr/>
+          <div>Instructions</div>
+          <div>
+            <h2>Write TWO interesting truths and ONE lie about yourself!</h2>
+            <h2>The goal is to make it hard for people to guess which is the lie.</h2>
+          </div>
         </div>
       )
     }
@@ -110,7 +132,7 @@ class SessionProgress extends Component {
     if (status === 3) {
       return (
         <div>
-          <Clock end_time={(new Date().getTime() + 120*1000)} />
+          {this.renderClock()}
           <h1>Try to guess the LIE!</h1>
         </div>
       )
@@ -123,22 +145,14 @@ class SessionProgress extends Component {
   renderInfo() {
     const { session } = this.props;
     if (!session) return "Oh.";
+    const numJoined = session.participants.length;
 
     if (session.status === 2) return <SessionEnd />;
 
     if (session.status === 0) return (<div>
       <h1>Go to <u>tinyurl.com/dsgn100dynamic</u></h1>
       <h1>Session code: {this.props.match.params.code}</h1>
-      <div id="status">Ready to begin</div>
-      <ol>
-        {this.mapActivities()}
-      </ol>
-      {session.participants.length > 0 && <div>
-        Just joined:
-        <ul>
-          {session.participants.reverse().map((pid, index) => (index < 4)? <li key={pid}>{Users.findOne({pid}).name}</li>: "")}
-        </ul>
-      </div>} 
+       <div><h1>{numJoined}</h1>{numJoined === 1? ' person has ' : ' people have '} joined</div>
       <button onClick={() => this.startSession()}>Begin</button>
     </div>);
 

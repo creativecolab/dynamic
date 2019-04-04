@@ -9,6 +9,11 @@ export default class Clock extends Component {
   static propTypes = {
     startTime: PropTypes.number.isRequired,
     totalTime: PropTypes.number.isRequired,
+    big: PropTypes.bool
+  }
+
+  static defaultProps = {
+    big: false
   }
 
   constructor(props) {
@@ -34,25 +39,58 @@ export default class Clock extends Component {
 
   // decrease every second
   tick() {
+    if (this.state.timeLeft <= 0) return;
     this.setState({
       timeLeft: this.props.totalTime - parseInt(Math.abs(this.props.startTime - new Date().getTime()) / 1000)
     });
   }
   
   render() {
-    const percentage = parseInt(100 - (this.state.timeLeft / this.props.totalTime) * 100);
-    // console.log(percentage);
-    return (
-      <div id="clock">
-        <CircularProgressbar
-        percentage={percentage}
-        strokeWidth={50}
-        textForPercentage={null}
-        styles={{
-          path: { strokeLinecap: 'butt' },
-          text: { fill: '#000' },
-        }}/>
-      </div> 
-    )
+    let percentage = parseInt(100 - (this.state.timeLeft / this.props.totalTime) * 100);
+    percentage = percentage < 0? 0 : percentage; 
+    if (!this.props.big) {
+      return (
+        <div id="clock">
+          <CircularProgressbar
+          percentage={percentage}
+          strokeWidth={50}
+          textForPercentage={null}
+          styles={{
+            path: { strokeLinecap: 'butt' },
+            text: { fill: '#000' },
+          }}/>
+        </div> 
+      )
+    } else {
+      return (<div id="big-clock">
+          <CircularProgressbar
+            percentage={percentage}
+            text={this.state.timeLeft}
+            strokeWidth={5}
+            styles={{
+              path: {
+                // Tweak path color:
+                stroke: '#f88',
+                // Tweak path to use flat or rounded ends:
+                strokeLinecap: 'butt',
+                // Tweak transition animation:
+                transition: 'stroke-dashoffset 0.5s ease 0s',
+              },
+              // Customize the circle behind the path
+              trail: {
+                // Tweak the trail color:
+                stroke: '#d6d6d6',
+              },
+              // Customize the text
+              text: {
+                // Tweak text color:
+                fill: '#f88',
+                // Tweak text size:
+                fontSize: '30px',
+              },
+            }}
+          />
+        </div>)
+    }
   }
 }
