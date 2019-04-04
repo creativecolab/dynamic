@@ -77,10 +77,10 @@ class SessionProgress extends Component {
 
     if (currStatus + 1 != 6) {
 
-      console.log("Activity status of " + this.props.currentActivity.name + " advanced to " + currStatus + 1);
+      console.log("Activity status of " + this.props.currentActivity.name + " advanced to " + (currStatus + 1));
 
       Activities.update(this.props.currentActivity._id, {
-        $set: { status: currStatus + 1 }
+        $set: { status: currStatus + 1, startTime: new Date().getTime() }
       });
     } else {
       console.log("Can no longer advance the status of " + this.props.currentActivity.name);
