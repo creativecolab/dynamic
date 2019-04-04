@@ -18,8 +18,7 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      firstname: '',
-      lastname: '',
+      name: '',
       pid: '',
       ready: false,
       invalid: false,
@@ -27,17 +26,11 @@ class Login extends Component {
     };
   }
 
-  // update the pid as the user types
-  handleFirstName(evt) {
-    this.setState({
-      firstname: evt.target.value
-    });
-  }
 
-  // update the last name as the user types
-  handleLastName(evt) {
+  // update the pid as the user types
+  handleName(evt) {
     this.setState({
-      lastname: evt.target.value
+      name: evt.target.value
     });
   }
 
@@ -58,7 +51,7 @@ class Login extends Component {
   login(evt) {
     evt.preventDefault();
 
-    const { pid, firstname, lastname } = this.state;
+    const { pid, name } = this.state;
 
     if (pid.length === 0 /*|| firstname.length === 0 || lastname.length === 0*/) return;
 
@@ -90,8 +83,8 @@ class Login extends Component {
 
     } else {
       Users.insert({
-        name: this.state.firstname + ' ' + this.state.lastname,
-        pid: this.state.pid,
+        name,
+        pid,
         teammates: []
       });
       // add user to session
@@ -125,7 +118,6 @@ class Login extends Component {
     // session not available yet TODO: return loading component
     if (!this.props.session) return "Loading...";
 
-    const { code } = this.props.session;
     const { ready } = this.state;
 
     const pid = this.state.pid; // || localStorage.getItem("pid");
@@ -150,7 +142,8 @@ class Login extends Component {
           <div id="pid" className="field-container">
             {this.renderUsernameTaken()}
             <div className="container">
-            <label className="field-title" htmlFor="first">What is your name? </label>
+            <label className="field-title" htmlFor="first" 
+            >What is your name? </label>
             <div className="input-container" id="padding">
               <input className="u-container" type="text" name="first" placeholder="King Triton" value={this.state.name} onChange={(evt) => this.handleName(evt)}/>
             </div><br></br>
