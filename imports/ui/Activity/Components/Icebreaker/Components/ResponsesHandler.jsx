@@ -72,9 +72,9 @@ export default class ResponsesHandler extends Component {
       session_id: this.props.session_id,
       activity_id: this.props.activity_id,
       activity_type: Activities.findOne(this.props.activity_id).name,
-      options: [{text: this.state.truth1, lie: false, votes: []},
-                {text: this.state.truth2, lie: false, votes: []},
-                {text: this.state.lie, lie: true, votes: []}]
+      options: [{text: this.state.truth1, lie: false, count: 0, votes: []},
+                {text: this.state.truth2, lie: false, count: 0, votes: []},
+                {text: this.state.lie, lie: true, count: 0, votes: []}]
     });
   }
 

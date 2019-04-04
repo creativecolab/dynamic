@@ -183,7 +183,8 @@ Meteor.startup(() => {
     console.log('Starting status ' + status)
     Activities.update(activity_id, {
       $set: {
-        status
+        status,
+        startTime: new Date().getTime()
       }
     });
   });

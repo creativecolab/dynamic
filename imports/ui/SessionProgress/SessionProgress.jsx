@@ -12,6 +12,7 @@ import Logs from "../../api/logs";
 
 import SessionEnd from './Components/SessionEnd';
 import TeamShapes from './Components/TeamShapes';
+import StatsPage from './Components/StatsPage';
 
 
 class SessionProgress extends Component {
@@ -138,7 +139,7 @@ class SessionProgress extends Component {
       )
     }
     if (status === 4) {
-      return <h1>Stats page</h1>
+      return <StatsPage session_id={this.props.session._id} activity_id={currentActivity._id} />
     }
   }
 

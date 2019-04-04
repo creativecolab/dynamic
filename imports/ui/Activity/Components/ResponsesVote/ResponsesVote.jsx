@@ -95,6 +95,7 @@ class ResponsesVote extends Component {
       }
 
       options[index].votes.push(this.props.pid);
+      options[index].count += 1; 
 
       // save this response 
       // TODO track the amount of time it took
