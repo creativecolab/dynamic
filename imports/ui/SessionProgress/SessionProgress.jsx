@@ -158,7 +158,7 @@ class SessionProgress extends Component {
     if (!this.props.session) return "TODO: Loading component";
     return (
       <Wrapper>
-        <img className="dynamic-logo" src="/dynamic.png" alt="Dynamic"/>
+        <img className="dynamic-logo" src="/small_dynamic.png" alt="Dynamic"/>
         {/* <button onClick={() => this.edit()} id="back-button">edit</button> */}
         {this.renderInfo()}
       </Wrapper>

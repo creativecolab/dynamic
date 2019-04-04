@@ -142,8 +142,7 @@ class Login extends Component {
           <div id="pid" className="field-container">
             {this.renderUsernameTaken()}
             <div className="container">
-            <label className="field-title" htmlFor="first" 
-            >What is your name? </label>
+            <label className="field-title" htmlFor="first">What is your name? </label>
             <div className="input-container" id="padding">
               <input className="u-container" type="text" name="first" placeholder="King Triton" value={this.state.name} onChange={(evt) => this.handleName(evt)}/>
             </div><br></br>
