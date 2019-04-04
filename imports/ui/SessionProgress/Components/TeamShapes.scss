@@ -1,0 +1,11 @@
+.shape-grid > div {
+  display: grid;
+  grid-template-columns: auto repeat(5, 1fr);
+  grid-template-rows: auto;
+}
+
+.shape-box {
+  min-width: 100px;
+  min-height: 100px;
+  margin: 20px;
+}

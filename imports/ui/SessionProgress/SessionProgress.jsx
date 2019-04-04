@@ -11,6 +11,7 @@ import Users from '../../api/users';
 import Logs from "../../api/logs";
 
 import SessionEnd from './Components/SessionEnd';
+import TeamShapes from './Components/TeamShapes';
 
 
 class SessionProgress extends Component {
@@ -66,7 +67,7 @@ class SessionProgress extends Component {
   }
 
   // advance the status of the activity
-  advanceActivity() {
+  advanceActivity = () => {
 
     // get the current status, increment if possible
     const currStatus = this.props.currentActivity.status;
@@ -94,7 +95,7 @@ class SessionProgress extends Component {
       )
     }
     if (status === 2) {
-      return <h1>Find your teammates!!</h1>
+      return <TeamShapes skip={this.advanceActivity} activity_id={this.props.currentActivity._id}/>
     }
     if (status === 3) {
       return (
@@ -135,10 +136,10 @@ class SessionProgress extends Component {
 
     if (session.status === 1) return (
       <div>
-        <div>{this.props.currentActivity.name}</div>
+        {/* <div>{this.props.currentActivity.name}</div> */}
         {this.getInstructions(this.props.currentActivity.status)}
-        <div>Session code: {this.props.match.params.code}</div>
-        <button onClick={() => this.advanceActivity(this.props.currentActivity)}>Advance Activity</button>
+        {/* <div>Session code: {this.props.match.params.code}</div> */}
+        <button onClick={() => this.advanceActivity(this.props.currentActivity)}>Skip to activity</button>
       </div>
     );
   }
@@ -147,6 +148,7 @@ class SessionProgress extends Component {
     if (!this.props.session) return "TODO: Loading component";
     return (
       <Wrapper>
+        <img className="dynamic-logo" src="/dynamic.png" alt="Dynamic"/>
         <button onClick={() => this.edit()} id="back-button">edit</button>
         {this.renderInfo()}
       </Wrapper>
