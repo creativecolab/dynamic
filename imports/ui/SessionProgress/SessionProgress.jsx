@@ -149,7 +149,7 @@ class SessionProgress extends Component {
     return (
       <Wrapper>
         <img className="dynamic-logo" src="/dynamic.png" alt="Dynamic"/>
-        <button onClick={() => this.edit()} id="back-button">edit</button>
+        {/* <button onClick={() => this.edit()} id="back-button">edit</button> */}
         {this.renderInfo()}
       </Wrapper>
     )
