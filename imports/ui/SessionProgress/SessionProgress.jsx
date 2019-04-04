@@ -10,6 +10,8 @@ import Sessions from '../../api/sessions';
 import Users from '../../api/users';
 import Logs from "../../api/logs";
 
+import SessionEnd from './Components/SessionEnd';
+
 
 class SessionProgress extends Component {
   static propTypes = {
@@ -111,7 +113,7 @@ class SessionProgress extends Component {
     const { session } = this.props;
     if (!session) return "Oh.";
 
-    if (session.status === 2) return <h1>The session is over! Please follow the link and fill out our survey! Thanks :)</h1>;
+    if (session.status === 2) return <SessionEnd />;
 
     if (session.status === 0) return (<div>
       <h1>Go to <u>tinyurl.com/dsgn100dynamic</u></h1>
