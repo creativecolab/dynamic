@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
 import TeamBox from '../TeamBox/TeamBox';
 import Wrapper from '../../../Wrapper/Wrapper';
-import Teams from '../../../../api/teams';
 import ResponsesHandler from './Components/ResponsesHandler';
 import ResponsesVote from '../ResponsesVote/ResponsesVote';
-import { withTracker } from 'meteor/react-meteor-data';
+import Teams from '../../../../api/teams';
 import Activities from '../../../../api/activities';
 
-
+import './Icebreaker.scss';
 
 class Icebreaker extends Component {
   static propTypes = {
@@ -65,9 +65,9 @@ class Icebreaker extends Component {
     if (!currentActivity) return "Oops! This activity doesn't exist.";
     if (currentActivity.status === 1) return <ResponsesHandler pid={pid} session_id={currentActivity.session_id} activity_id={currentActivity._id} />;
     if (currentActivity.status === 2) {
-      if (!team) return "You have not been assigned a team for this activity. Please wait for the next one.";
-      if (allConfirmed) return "Everyone confirmed! Great :)";
-      if (this.state.confirmed) return "Great, you found everyone! Now wait for your teammates to find you.";
+      if (!team) return <Wrapper>You have not been assigned a team.<br></br>Please wait for the next activity.<img id="movin-logo" src="./dynamic.gif" className="center"/></Wrapper>
+      if (allConfirmed) return <Wrapper>Everyone confirmed!<img id="moving-logo" src="./dynamic.gif" className="center"/></Wrapper>
+      if (this.state.confirmed) return <Wrapper>You've found everyone!<br></br>Wait for your teammates to find you.<img id="movin-logo" src="./dynamic.gif" className="center"/></Wrapper>
       return <TeamBox confirm={this.confirmTeam} pid={pid} team_id={team._id}/>
     }
     if (currentActivity.status === 3) {

@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { withTracker } from 'meteor/react-meteor-data';
+
+import Clock from '../../../Clock/Clock';
+
 import Teams from '../../../../api/teams';
 import Activities from '../../../../api/activities';
 import Responses from '../../../../api/responses';
 import Users from '../../../../api/users';
-import { withTracker } from 'meteor/react-meteor-data';
 
 import './ResponsesVote.scss';
 
@@ -254,6 +257,7 @@ class ResponsesVote extends Component {
     if (!this.props.responses) return "No response recorded.";
     return (
       <div>
+        <Clock end_time={(new Date().getTime() + 120*1000)} />
         <div>
           <button id="prev" onClick={() => this.handlePrev()}>prev</button>
           <button id="next" onClick={() => this.handleNext()}>next</button>

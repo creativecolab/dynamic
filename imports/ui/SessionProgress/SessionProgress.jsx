@@ -1,12 +1,15 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Wrapper from '../Wrapper/Wrapper';
+import Clock from '../Clock/Clock';
 import { withTracker } from 'meteor/react-meteor-data';
 
 import './SessionProgress.scss';
 import Activities from '../../api/activities';
 import Sessions from '../../api/sessions';
 import Users from '../../api/users';
+import Logs from "../../api/logs";
+
 
 class SessionProgress extends Component {
   static propTypes = {
@@ -38,6 +41,15 @@ class SessionProgress extends Component {
         status: 1
       }
     });
+
+    //track the session that a session had started 
+    const new_log = Logs.insert({
+      log_type: "Session Started",
+      code: this.props.match.params.code,
+      timestamp: new Date().getTime(),
+    });
+
+    console.log(new_log);
   }
 
   componentDidUpdate(prevProps) {
@@ -72,16 +84,26 @@ class SessionProgress extends Component {
 
   getInstructions(status) {
     if (status === 1) {
-      return "Write TWO truths and ONE lie about yourself!";
+      return (
+        <div>
+          <Clock end_time={(new Date().getTime() + 60*1000)} />
+          <h1>Write TWO truths and ONE lie about yourself!</h1>
+        </div>
+      )
     }
     if (status === 2) {
-      return "Find your teammates!!";
+      return <h1>Find your teammates!!</h1>
     }
     if (status === 3) {
-      return "Try to guess the LIE!";
+      return (
+        <div>
+          <Clock end_time={(new Date().getTime() + 120*1000)} />
+          <h1>Try to guess the LIE!</h1>
+        </div>
+      )
     }
     if (status === 4) {
-      return "Done!";
+      return <h1>Done!</h1>
     }
   }
 
@@ -112,7 +134,7 @@ class SessionProgress extends Component {
     if (session.status === 1) return (
       <div>
         <div>{this.props.currentActivity.name}</div>
-        <h1>{this.getInstructions(this.props.currentActivity.status)}</h1>
+        {this.getInstructions(this.props.currentActivity.status)}
         <div>Session code: {this.props.match.params.code}</div>
         <button onClick={() => this.advanceActivity(this.props.currentActivity)}>Advance Activity</button>
       </div>

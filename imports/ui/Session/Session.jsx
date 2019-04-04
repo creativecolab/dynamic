@@ -6,6 +6,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import './Session.scss';
 import Activities from '../../api/activities';
 import Sessions from '../../api/sessions';
+import Logs from "../../api/logs";
 
 class Session extends Component {
   static propTypes = {
@@ -42,6 +43,16 @@ class Session extends Component {
         activities: activity
       }
     });
+
+    //track the session that had an activity added
+    const new_log = Logs.insert({
+      log_type: "Activity Added to Session",
+      code: this.props.match.params.code,
+      activity: name,
+      timestamp: new Date().getTime(),
+    });
+
+    console.log(new_log);
 
   }
 

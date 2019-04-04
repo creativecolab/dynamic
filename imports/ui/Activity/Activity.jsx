@@ -62,7 +62,7 @@ class Activity extends Component {
 
     const { pid, currentActivity } = this.props;
 
-    if (!currentActivity) return <Wrapper>Waiting for activities...<img id="moving-logo" src="./dynamic.gif" className="center"/></Wrapper>
+    if (!currentActivity) return <Wrapper><h3 id="navbar">Dynamic</h3>Wait for your intrustor to begin.<img id="moving-logo" src="./dynamic.gif" className="center"/></Wrapper>
 
     //TODO: consider adding a boolean to activity
     // e.g., requires_team
