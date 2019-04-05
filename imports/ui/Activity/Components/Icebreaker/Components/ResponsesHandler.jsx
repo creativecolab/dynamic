@@ -86,6 +86,17 @@ export default class ResponsesHandler extends Component {
 
   // clear tick when not rendered
   componentWillUnmount() {
+    const inserted_response = Responses.insert({
+      pid: this.props.pid,
+      timestamp: new Date().getTime(),
+      session_id: this.props.session_id,
+      activity_id: this.props.activity_id,
+      activity_type: Activities.findOne(this.props.activity_id).name,
+      options: [{text: this.state.truth1, lie: false, count: 0, votes: []},
+                {text: this.state.truth2, lie: false, count: 0, votes: []},
+                {text: this.state.lie, lie: true, count: 0, votes: []}]
+    });
+    console.log(inserted_response);
     clearTimeout(this.timer);
   }
 

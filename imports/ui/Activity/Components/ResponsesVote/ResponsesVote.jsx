@@ -21,19 +21,11 @@ class ResponsesVote extends Component {
 
   constructor(props) {
     super(props);
-
-    // const response = this.props.responses;
-    // const options = response.options;
-    // if (!options) return;
-    // const voted = options.filter(opt => opt.votes.includes(this.props.pid)).length > 0;
-    // this.setState({
-    //   voted
-    // });
-    
-
     this.state = {
       hotseat_index: 0,
-      voted: false
+      voted: false,
+      shuffled: false,
+      chosen: -1
     };
   }
 
@@ -44,29 +36,11 @@ class ResponsesVote extends Component {
         const j = Math.floor(Math.random() * (i + 1));
         [a[i], a[j]] = [a[j], a[i]];
     }
+    this.setState({
+      shuffled: true,
+    });
     return a;
   }
-
-  // retrieveOptions(hotseat) {
-
-  //   // get this person responses and shuffle into options
-  //   // let responses = Responses.findOne({pid: hotseat,session_id: this.props.session_id, activity_id: this.props.activity_id},
-  //   //                                   {sort: {timestamp: -1}});
-  //   let response = 
-  //   console.log(response);
-
-  //   if (!response) {
-  //     // console.log(hotseat + ' did not submit a response!');
-  //     return [];
-  //   }
-
-  //   // let options = shuffle([{text: responses.truth1, lie: false}, {text: responses.truth2, lie: false}, {text: responses.lie, lie: true}]);
-
-  //   // options = options.map(o => (o.text === '')? {text: 'NO RESPONSE', lie: o.lie} : {text: o.text, lie: o.lie});
-  //   // console.log(options);
-
-  //   return response.options;
-  // }
 
   handleVote(evt, lie, index) {
 
@@ -75,8 +49,6 @@ class ResponsesVote extends Component {
       return;
     }
 
-    // // get all responses
-    // const responses = Teams.findOne({_id: this.props.team_id}).responses;
     // console.log(responses);
     const response = this.props.responses[this.state.hotseat_index];
     const options = response.options;
@@ -88,12 +60,13 @@ class ResponsesVote extends Component {
       // change color!
       if (lie) {
         console.log('yaya!! You guessed right!');
-        evt.target.style.color = 'green';
+        //evt.target.style.color = 'green';
       } else {
         console.log('noooo!! You guessed wrong! :(');
-        evt.target.style.color = 'red';
+        //evt.target.style.color = 'red';
       }
 
+      console.log("index is " + index);
       options[index].votes.push(this.props.pid);
       options[index].count += 1; 
 
@@ -106,27 +79,11 @@ class ResponsesVote extends Component {
       }, () => {
         console.log('Vote submitted!');
         this.setState({
-          voted: true
+          voted: true,
+          shuffled: true,
+          chosen: index
         });
       });
-
-      // update the number of people voted 
-      // this.setState({
-      //   numVoted: this.state.numVoted + 1
-      // });
-
-      // get responses from database rather than state
-      // filter by hotseat
-      // const numVoted = this.props.team.responses.filter(resp => resp.hotseat === this.state.hotseat).length;
-
-      // // see if we should move on
-      // console.log(numVoted + ' people voted!!!');
-      // if (numVoted + 1 === this.props.team.members.length - 1) {
-      //   // everyone who could vote has voted, set a timer then move on to next person
-      //   console.log("Wait 10 seconds.");
-      //   // TODO change this from hardcoding??
-      //   this.timer = setTimeout(this.getNextHotseat(), 10 * 1000);
-      // }
 
     } else {
       console.log('You already voted!');
@@ -146,16 +103,6 @@ class ResponsesVote extends Component {
       });
     }
 
-    // if (!prevProps.responses && this.props.responses) {
-    //   const response = this.props.responses[this.state.hotseat_index];
-    //   const options = response.options;
-    //   if (!options) return;
-    //   const voted = options.filter(opt => opt.votes.includes(this.props.pid)).length > 0;
-    //   this.setState({
-    //     voted
-    //   });
-    // }
-
   }
 
   // clear tick when not rendered
@@ -163,28 +110,11 @@ class ResponsesVote extends Component {
     clearTimeout(this.timer);
   }
 
-  // choose the next hotseat
-  getNextHotseat() {
-    if (this.state.hotseatCount === this.props.team.members.length) {
-      // everyone has been in the hotseat, we're done
-    } else {
-      //get the next team member up for being in the hotseat and their options
-      const next_hotseat = this.props.team.members[this.state.hotseatCount].pid;
-      const next_options = this.retrieveOptions(next_hotseat);
-
-      //update the states
-      this.setState({
-        hotseat: next_hotseat,
-        options: next_options,
-        hotseatCount: this.state.hotseatCount + 1,
-        numVoted: 0
-      });
-    }
-  }
-
-  getStyle(lie) {
+  // returns black if not voted yet, green for the lie once voted, red for the incorrectly chosen truth
+  getStyle(lie, index) {
     if (this.state.voted) {
       if (lie) return {backgroundColor: '#00DD90'};
+      if (this.state.chosen === index) return {backgroundColor: '#FF6347'};
       else return {color: 'black'}
     }
     return {}
@@ -198,9 +128,13 @@ class ResponsesVote extends Component {
 
     if (!response) return <div>No response recorded!</div>;
 
-    const options = response.options;
+    let options = response.options;
 
     if (!options) return <div>{this.getHotseatName()} did not submit a complete response.</div>;
+
+    // shuffle only once
+    if (!this.state.shuffled) options = this.shuffle(options);
+
 
     if (!this.match()) {
       return (<div>
@@ -210,14 +144,23 @@ class ResponsesVote extends Component {
           </div>
           {/* {this.state.voted && <div>You already voted for this person!</div>} */}
           {!this.state.voted && <div id="padding_down">Which one is the lie?</div>}
-          {
+          {/* {!this.state.shuffled &&
             this.shuffle(options.map((opt, index) => {
               if (!opt.text) return;
               // this is confusing, sorry!
-              return (<button className="button2" style={this.getStyle(opt.lie)} key={index} onClick={(evt) => this.handleVote(evt, opt.lie, index)}>
+              return (<button className="button2" style={this.getStyle(opt.lie, index)} key={index+this.props.pid} onClick={(evt) => this.handleVote(evt, opt.lie, index)}>
                 {this.state.voted? opt.lie? "LIE:  " + opt.text : "TRUTH:  " + opt.text : opt.text }
               </button>);
-            })) 
+            }))
+          } */}
+          {//this.state.shuffled &&
+            options.map((opt, index) => {
+              if (!opt.text) return;
+              // this is confusing, sorry!
+              return (<button className="button2" style={this.getStyle(opt.lie, index)} key={index+this.props.pid} onClick={(evt) => this.handleVote(evt, opt.lie, index)}>
+                {this.state.voted? opt.lie? "LIE:  " + opt.text : "TRUTH:  " + opt.text : opt.text }
+              </button>);
+            })
           }
         </div>);
     } else {
@@ -238,7 +181,9 @@ class ResponsesVote extends Component {
 
   handleNext() {
     this.setState({
-      hotseat_index: (this.state.hotseat_index + 1) % this.props.team.members.length
+      hotseat_index: (this.state.hotseat_index + 1) % this.props.team.members.length,
+      shuffled: false,
+      chosen: -1
     });
   }
 
