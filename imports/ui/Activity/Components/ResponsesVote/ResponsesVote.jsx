@@ -184,8 +184,8 @@ class ResponsesVote extends Component {
 
   getStyle(lie) {
     if (this.state.voted) {
-      if (lie) return {color: 'red'};
-      else return {color: 'green'}
+      if (lie) return {backgroundColor: '#00DD90'};
+      else return {color: 'black'}
     }
     return {}
   }
@@ -204,28 +204,32 @@ class ResponsesVote extends Component {
 
     if (!this.match()) {
       return (<div>
-          <h1>{this.getHotseatName()}</h1>
+          <div>
+          <big>{this.getHotseatName()}</big>
+          <h5>is in the hotseat</h5>
+          </div>
           {/* {this.state.voted && <div>You already voted for this person!</div>} */}
-          {!this.state.voted && <div>Click on the option you think is a lie:</div>}
+          {!this.state.voted && <div id="padding_down">Which one is the lie?</div>}
           {
             this.shuffle(options.map((opt, index) => {
               if (!opt.text) return;
               // this is confusing, sorry!
-              return (<button className="button" style={this.getStyle(opt.lie)} key={index} onClick={(evt) => this.handleVote(evt, opt.lie, index)}>
-                {this.state.voted? opt.lie? "LIE: " + opt.text : "TRUTH: " + opt.text : opt.text }
+              return (<button className="button2" style={this.getStyle(opt.lie)} key={index} onClick={(evt) => this.handleVote(evt, opt.lie, index)}>
+                {this.state.voted? opt.lie? "LIE:  " + opt.text : "TRUTH:  " + opt.text : opt.text }
               </button>);
-            }))
+            })) 
           }
         </div>);
     } else {
       return (<div>
-        <h1>You are on the hot seat!</h1>
-        <div>Wait while people discuss and vote on your statements.</div>
+        <big>{this.getHotseatName()}</big>
+        <h5>is in the hotseat</h5>
+        <div id="padding_down">Waiting for other guesses</div>
         {options.map((opt, index) => {
           if (!opt.text) return;
-          return (<button className="button" key={index}>{opt.text}
-            <span className="votes">{opt.votes.length > 0? '+' + opt.votes.length : ''}</span>
-          </button>);
+          return (<button className="button" key={index}>{opt.text}{''}{' '}
+          <span className="votes">{opt.votes.length > 0? '+' + opt.votes.length : ''}</span>
+        </button>);
         })}
       </div>)
     }
@@ -261,9 +265,10 @@ class ResponsesVote extends Component {
     return (
       <div>
         {/* <Clock end_time={(new Date().getTime() + 120*1000)} /> */}
+        <h3 id="navbar">Icebreaker</h3>
         <div>
-          {hotseat_index > 0 && <button id="prev" onClick={() => this.handlePrev()}>prev</button>}
-          {hotseat_index < this.props.responses.length - 1 && <button id="next" onClick={() => this.handleNext()}>next</button>}
+          {/* {hotseat_index > 0 && <button id="prev" onClick={() => this.handlePrev()}>prev</button>} */}
+          {hotseat_index < this.props.responses.length - 1 && <button id="next_but" onClick={() => this.handleNext()}>Next</button>}
         </div>
         {this.renderTeammatesResponses()}
       </div>
