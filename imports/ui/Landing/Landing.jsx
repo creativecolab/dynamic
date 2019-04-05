@@ -21,7 +21,7 @@ export default class Landing extends Component {
   //update the session_code state so we know where to go
   handleChange(evt) {
     this.setState({
-      session_code: evt.target.value}
+      session_code: evt.target.value.toUpperCase()}
     );
   }
 
@@ -29,7 +29,7 @@ export default class Landing extends Component {
   handleCodeEntry(evt) {
     evt.preventDefault();
 
-    const { session_code } = this.state;
+    const session_code = this.state.session_code.toLowerCase();
 
     if (session_code === "instructor") {
       console.log('NOOO!!');
@@ -60,7 +60,7 @@ export default class Landing extends Component {
   renderRedirect = () => {
     if (this.state.redirect) {
       return <Redirect to={{
-        pathname: '/' + this.state.session_code
+        pathname: '/' + this.state.session_code.toLowerCase()
       }}/>
     }
   }
@@ -82,7 +82,7 @@ export default class Landing extends Component {
           <div id="session-code" className="field-container">
             <label className="field-title" htmlFor="session-code">Session code:</label> 
             <div className="input-container">
-              <input id="i-container" type="text" name="session-code" placeholder="Enter your session code" value={this.state.session} onChange={(evt) => this.handleChange(evt)}/>
+              <input id="i-container" type="text" name="session-code" placeholder="Enter your session code" value={this.state.session_code.toUpperCase()} onChange={(evt) => this.handleChange(evt)}/>
             </div>
             {this.renderCodeNonexistant()}
             <input id="next-button" type="submit" value="Continue"/>

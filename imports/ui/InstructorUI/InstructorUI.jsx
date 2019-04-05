@@ -41,7 +41,7 @@ class InstructorUI extends Component {
 
     // create session
     const session_id = Sessions.insert({
-      code: session_code,
+      code: session_code.toLowerCase(),
       timestamp: new Date().getTime(),
       participants: [],
       activities: [],
