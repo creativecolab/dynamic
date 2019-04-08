@@ -21,11 +21,18 @@ class ResponsesVote extends Component {
 
   constructor(props) {
     super(props);
+    // TODO: Make options a state
+    // If hotseat index, then options are not shuffled
+    // If not hotseat index, then options are shuffled
+    // save options as state (deep copy), just pull those for component layout
+    // only update db in handleVote, make sure it stays in order
     this.state = {
       hotseat_index: 0,
       voted: false,
       shuffled: false,
-      chosen: -1
+      chosen: -1,
+      all_voted: false,
+      time_left: 5,
     };
   }
 
@@ -39,7 +46,7 @@ class ResponsesVote extends Component {
     // this.setState({
     //   shuffled: true,
     // });
-    console.log("The shuffled results are: " + a)
+    console.log("Shuffling");
     return a;
   }
 
@@ -117,15 +124,20 @@ class ResponsesVote extends Component {
 
   // clear tick when not rendered
   componentWillUnmount() {
-    clearTimeout(this.timer);
+    clearTimeout(this.timerID2);
   }
 
   // returns black if not voted yet, green for the lie once voted, red for the incorrectly chosen truth
   getStyle(lie, index) {
     if (this.state.voted) {
-      if (lie) return {backgroundColor: '#00DD90'};
-      if (this.state.chosen === index) return {backgroundColor: '#FF6347'};
-      else return {color: 'black'}
+      // if everyone has voted, do a full reveal. Red for Truths, Green for Lie
+      if (this.state.all_voted) {
+          if (lie) return {backgroundColor: '#00DD90'};
+          else return {backgroundColor: '#FF6347'};
+      }
+      //if (lie) return {backgroundColor: '#00DD90'};
+      if (this.state.chosen === index) return {backgroundColor: '#dddf38'};
+      else return {color: 'black'};
     }
     return {}
   }
@@ -136,12 +148,9 @@ class ResponsesVote extends Component {
   renderTeammatesResponses() {
 
     const response = this.props.responses[this.state.hotseat_index];
-
     if (!response) return <div>No response recorded!</div>;
-
     // Deep copy the options to not affect the db yet
     var options = JSON.parse(JSON.stringify(response.options));
-
     if (!options) return <div>{this.getHotseatName()} did not submit a complete response.</div>;
 
     console.log(options)
@@ -154,6 +163,7 @@ class ResponsesVote extends Component {
           </div>
           {!this.state.voted && <div id="padding_down">Which one is the lie?</div>}
           {this.state.voted && !this.allVoted() && <div id="padding_down">Waiting for other guesses</div>}
+          {this.state.voted && this.allVoted() && <div id="padding_down">All Votes in. Revealing in {this.state.time_left}</div>}
           { // shuffle if we haven't and we're not the hotseat client
             !this.state.shuffled &&
             this.shuffle(options).map((opt, index) => {
@@ -164,13 +174,13 @@ class ResponsesVote extends Component {
               </button>);
             })
           }
-          { // don't shuffle if we already have or if it's the hotseat client
+          { // don't shuffle if we already have
             this.state.shuffled &&
             options.map((opt, index) => {
               if (!opt.text) return;
               // this is confusing, sorry!
               return (<button className="button2" style={this.getStyle(opt.lie, index)} key={index+this.props.pid} onClick={(evt) => this.handleVote(evt, opt.lie, index)}>
-                {this.state.voted? opt.lie? "LIE:  " + opt.text : "TRUTH:  " + opt.text : opt.text }
+                {this.state.all_voted? opt.lie? "LIE:  " + opt.text : "TRUTH:  " + opt.text : opt.text }
               </button>);
             })
           }
@@ -192,27 +202,52 @@ class ResponsesVote extends Component {
     
   }
 
+  // handler for the next button. Updates who's in the hotseat
   handleNext() {
     this.setState({
       hotseat_index: (this.state.hotseat_index + 1) % this.props.team.members.length,
       shuffled: false,
-      chosen: -1
+      chosen: -1,
+      time_left: 5,
+      all_voted: false,
     });
   }
 
-  handlePrev() {
-    const hotseat_index = this.state.hotseat_index === 0? this.props.team.members.length - 1 : this.state.hotseat_index - 1;
-    this.setState({
-      hotseat_index
-    });
-  }
-
+  // checks if the current user is in the hotseat
   match() {
     return this.props.pid === this.props.team.members[this.state.hotseat_index].pid
   }
 
+  // used to check if everyone has voted. Will start a countdown once everyone has voted
   allVoted() {
-    return this.props.responses[this.state.hotseat_index].num_voted === this.props.team.members.length - 1;
+    if (this.state.all_voted) return true;
+    console.log("Checking if everyone has voted...");
+    if (this.props.responses[this.state.hotseat_index].num_voted === this.props.team.members.length - 1) {
+      console.log("Everyone has voted!!");
+      this.beginReveal();
+      return true;
+    }
+    return false;  
+  }
+
+  // starts a countdown from 5 to reveal the results
+  beginReveal() {
+    if (this.state.all_voted) return;
+    this.timerID1 = setInterval(() => {
+      if (this.state.time_left <= 0) return;
+      this.setState({
+        time_left: this.state.time_left - 1
+      });
+    }, 1000);
+    this.timerID2 = setTimeout(() => {
+      clearInterval(this.timerID1);
+      this.timerID1 = 0;
+      this.setState({
+        all_voted: true,
+        time_left: 5
+      })
+    }, 
+    5000);
   }
 
   getHotseatName() {
