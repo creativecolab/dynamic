@@ -65,7 +65,7 @@ class ResponsesVote extends Component {
         }
       });
 
-      console.log("index is " + index);
+      console.log("index receiving votes is " + index);
       options[index].votes.push(this.props.pid);
       options[index].count += 1; 
 
@@ -132,7 +132,7 @@ class ResponsesVote extends Component {
           {this.props.valid_ops === 0 && <div>No response recorded</div>}
           {this.props.valid_ops > 0 && !this.state.voted && <div id="padding_down">Which one is the lie?</div>}
           {this.props.valid_ops > 0 && this.state.voted && !this.allVoted() && <div id="padding_down">Waiting for other guesses</div>}
-          {this.props.valid_ops > 0 && this.state.voted && this.allVoted() && <div id="padding_down">All Votes in. Revealing in {this.state.time_left}</div>}
+          {this.props.valid_ops > 0 && this.state.voted && this.allVoted() && <div id="padding_down">All Votes in. Click to Reveal!</div>}
           {
             shuffled_options.map((opt, index) => {
               if (!opt.text) return;
@@ -181,14 +181,14 @@ class ResponsesVote extends Component {
         console.log(error);
       } else {
         console.log('Hotseat set!');
+        this.setState({
+          voted: false,
+          chosen: -1,
+          time_left: 5,
+          revealed: false,
+          correct: false
+        });
       }
-    });
-
-    this.setState({
-      chosen: -1,
-      time_left: 5,
-      revealed: false,
-      correct: false
     });
   }
 
@@ -273,24 +273,39 @@ export default withTracker(props => {
   // hotseat index, -1 = everyone voted
   let hotseat_index = -1;
   for (var i = 0; i < responses.length; i++) {
-    console.log('index ' + i);
-    console.log(responses[i]);
-
-    // no response recorded
-    if (responses[i] == false) {
-      console.log("NO Response!");
-      continue;
-    }
+    //console.log('index ' + i);
+    //console.log(responses[i]);
 
     // person hasn't been in hotseat yet
     if (!responses[i].hotseat) {
       hotseat_index = i;
+      //console.log("Hotseat index chosen: " + hotseat_index);
+      //console.log(responses[i]);
       break;
     }
 
+    // no response recorded
+    var empty = true;
+    responses[i].options.map((curr_option, curr_index) => {
+      //console.log("Response text: " + curr_option.text);
+      if (curr_option.text !== "") {
+        console.log("Non-empty response");
+        empty = false; 
+      }
+    });
+    if (empty) {
+      console.log("NO Response Options!");
+      console.log("this person won't be hotseat anymore");
+      console.log(responses[i]);
+      continue;
+    }
+
     // person has been in the hotseat, but not everyone has voted
-    else if (responses[i].num_voted < responses.length - 1) {
+    if (responses[i].num_voted < responses.length - 1) {
       hotseat_index = i;
+      // here is issue. num_voted not increased
+      console.log("Hotseat index remaining the same: " + hotseat_index);
+      //console.log(responses[i]);
       break;
     }
 
@@ -302,6 +317,7 @@ export default withTracker(props => {
     all_voted = responses[hotseat_index].num_voted === responses.length - 1;
   } catch (error) {
     console.log('Nope.');
+    console.log('Hotseat index is ' + hotseat_index);
   }
 
   let valid_ops = 0;
@@ -309,8 +325,13 @@ export default withTracker(props => {
     valid_ops = responses[hotseat_index].options.filter(opt => opt.text != "").length;
   } catch (error) {
     console.log('Nope.');
+    console.log('Hotseat index is ' + hotseat_index);
   }
 
+  console.log("New responses, all_voted, and valid_ops props are as follows: ");
+  console.log(responses[hotseat_index]);
+  console.log(all_voted);
+  console.log(valid_ops);
   return {team, responses, hotseat_index, all_voted, valid_ops};
 
 })(ResponsesVote);
