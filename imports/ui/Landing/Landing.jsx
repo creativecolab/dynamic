@@ -67,21 +67,43 @@ export default class Landing extends Component {
   }
 
   render() {
+
+    // USED FOR STYLING INPUT
     const invalid = this.state.invalid_code;
+
     return (
       <Wrapper>
         {this.renderRedirect()}
         <h1 id="title-dynamic">Dynamic!</h1>
         <img id="logo" src="./dynamic.png" alt=""/>
+
+        {/* FORM BEGINS HERE */}
         <form id="session-form" onSubmit={(evt) => this.handleCodeEntry(evt)}>
+
+          {/* FIRST INPUT */}
           <div id="session-code" className="field-container">
+
+            {/* INPUT LABEL */}
             <label className="field-title" htmlFor="session-code">Session code:</label> 
+
+            {/* DIV THAT HOLDS THE INPUT FIELD */}
             <div className="input-container">
-              <input className={invalid? "input-text-invalid" : "input-text"} type="text" name="session-code" placeholder="Enter your session code" value={this.state.session_code.toUpperCase()} onChange={(evt) => this.handleChange(evt)}/>
+
+              {/* INPUT FIELD, NOTE THAT THE CLASS CHANGES BASED ON THE STATE OF THIS COMPONENT */}
+              <input className={invalid? "input-text-invalid" : "input-text"} type="text"
+                name="session-code" placeholder="Enter your session code"
+                value={this.state.session_code.toUpperCase()} onChange={(evt) => this.handleChange(evt)}/>
+              
+              {/* MESSAGE THAT APPEARS IF THE INPUT IS INVALID, SOME INPUTS MIGHT NOT NEED THIS */}
               {invalid && <span className="invalid-input-message">A session with that code does not exist!</span>}
             </div>
-            <input className="small-button" type="submit" value="Continue"/>
+          
+          {/* FIRT INPUT ENDS HERE, MAKE A COPY OF THIS DIV IF YOU NEED MORE INPUTS IN THE FORM */}
           </div>
+
+          {/* CONTINUE BUTTON */}
+          <input className="small-button" type="submit" value="Continue"/>
+
         </form>
       </Wrapper>
     )
