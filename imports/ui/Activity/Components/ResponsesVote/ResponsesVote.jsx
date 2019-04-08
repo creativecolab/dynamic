@@ -153,7 +153,7 @@ class ResponsesVote extends Component {
           </div>
           {!this.state.voted && <div id="padding_down">Which one is the lie?</div>}
           { // shuffle if we haven't and we're not the hotseat client
-            !this.state.shuffled && !this.match() &&
+            !this.state.shuffled &&
             this.shuffle(options).map((opt, index) => {
               if (!opt.text) return;
               // this is confusing, sorry!
@@ -163,7 +163,7 @@ class ResponsesVote extends Component {
             })
           }
           { // don't shuffle if we already have or if it's the hotseat client
-            (this.state.shuffled || this.match()) &&
+            this.state.shuffled &&
             options.map((opt, index) => {
               if (!opt.text) return;
               // this is confusing, sorry!
