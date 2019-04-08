@@ -1,3 +1,17 @@
+// FONTS
+$font-stack:    'PT Sans Narrow', sans-serif;
+
+// MAIN COLORS
+$dynamic-red: #F05D5E;
+$dynamic-green: #00DD90;
+$dynamic-blue: #1E91D6;
+$dynamic-yellow: #FBF2C0;
+$dynamic-light-gray: #F0F0F0;
+$dynamic-gray: #EBEBEB;
+
+// SHADOWS
+$small-button-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
+
 .title-dynamic {
   text-align: center;
 }
@@ -19,7 +33,7 @@
   border-radius: 5px 5px 0 0;
   border: 0px;
   border-bottom: 2px solid black;
-  background: #F0F0F0;
+  background: $dynamic-light-gray;
   width: 80%;
   height: 10%; 
   margin: auto; 
@@ -27,14 +41,14 @@
   margin-top: 12px; 
   text-align: center; 
   font-size: 22px;
-  font-family: 'PT Sans Narrow', sans-serif; 
+  font-family: $font-stack;
 }
 
 .input-text-invalid {
   border-radius: 5px 5px 0 0;
   border: 0px;
-  border-bottom: 2px solid #F05D5E;
-  background: #F0F0F0;
+  border-bottom: 2px solid $dynamic-red;
+  background: $dynamic-light-gray;
   width: 80%;
   height: 10%; 
   margin: auto; 
@@ -42,8 +56,8 @@
   margin-top: 12px; 
   text-align: center; 
   font-size: 22px;
-  color: #F05D5E;
-  font-family: 'PT Sans Narrow', sans-serif; 
+  color: $dynamic-red;
+  font-family: $font-stack; 
 }
 
 .invalid-input-message {
@@ -51,7 +65,7 @@
   left: 8%;
   top: 100%;
   font-size: 20px;
-  color: #F05D5E;
+  color: $dynamic-red;
 
 }
 
@@ -59,10 +73,10 @@
   padding: 2% 7% 2% 7%;
   margin-top: 30%;
   text-align: center; 
-  font-family: 'PT Sans Narrow', sans-serif; 
+  font-family: $font-stack; 
   font-size: 22px; 
   border-radius: 5px;
-  background-color: #EBEBEB; 
+  background-color: $dynamic-gray; 
   border: none;
-  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
+  box-shadow: $small-button-shadow;
 }
