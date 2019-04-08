@@ -85,6 +85,7 @@ class ResponsesVote extends Component {
       Responses.update(response._id, {
         $set: {
           options,
+          num_voted: response.num_voted + 1
         }
       }, () => {
         console.log('Vote submitted!');
@@ -152,6 +153,7 @@ class ResponsesVote extends Component {
           <h5>is in the hotseat</h5>
           </div>
           {!this.state.voted && <div id="padding_down">Which one is the lie?</div>}
+          {this.state.voted && !this.allVoted() && <div id="padding_down">Waiting for other guesses</div>}
           { // shuffle if we haven't and we're not the hotseat client
             !this.state.shuffled &&
             this.shuffle(options).map((opt, index) => {
@@ -177,7 +179,8 @@ class ResponsesVote extends Component {
       return (<div>
         <big>{this.getHotseatName()}</big>
         <h5>is in the hotseat</h5>
-        <div id="padding_down">Waiting for other guesses</div>
+        {!this.allVoted() && <div id="padding_down">Waiting for other guesses</div>}
+        {this.allVoted() && <div id="padding_down">Everyone has guessed</div>}
         {options.map((opt, index) => {
           if (!opt.text) return;
           return (<button className="button" key={index}>{opt.text}{''}{' '}
@@ -208,6 +211,10 @@ class ResponsesVote extends Component {
     return this.props.pid === this.props.team.members[this.state.hotseat_index].pid
   }
 
+  allVoted() {
+    return this.props.responses[this.state.hotseat_index].num_voted === this.props.team.members.length - 1;
+  }
+
   getHotseatName() {
     return Users.findOne({pid: this.props.team.members[this.state.hotseat_index].pid}).name;
   }
@@ -216,7 +223,6 @@ class ResponsesVote extends Component {
     // if (this.props.done) return "Yay!!";
     if (!this.props.team) return "Loading...";
     if (!this.props.responses) return "No response recorded.";
-    //if (! (this.props.team.members.map(m => Responses.findOne({pid: m.pid, session_id: this.props.session_id}, {sort: {timestamp: -1}}) || [])) ) return "No response recorded.";
 
     const { hotseat_index } = this.state;
     return (
@@ -224,9 +230,7 @@ class ResponsesVote extends Component {
         {/* <Clock end_time={(new Date().getTime() + 120*1000)} /> */}
         <h3 id="navbar">Icebreaker</h3>
         <div>
-          {/* {hotseat_index > 0 && <button id="prev" onClick={() => this.handlePrev()}>prev</button>} */}
           {hotseat_index < this.props.responses.length - 1 && 
-           //hotseat_index < ( this.props.team.members.map( m => Responses.findOne({pid: m.pid, session_id: this.props.session_id}, {sort: {timestamp: -1}}) ) ) .length - 1 && 
           <button id="next_but" onClick={() => this.handleNext()}>Next</button>}
         </div>
         {this.renderTeammatesResponses()}

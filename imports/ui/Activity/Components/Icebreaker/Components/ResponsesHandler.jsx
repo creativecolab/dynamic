@@ -24,7 +24,7 @@ export default class ResponsesHandler extends Component {
       this.state = {
         truth1: '',
         truth2: '',
-        lie: '',
+        lie: '',        
         saved: false
       };
     } else {
@@ -75,7 +75,8 @@ export default class ResponsesHandler extends Component {
       activity_type: Activities.findOne(this.props.activity_id).name,
       options: [{text: this.state.truth1, lie: false, count: 0, votes: []},
                 {text: this.state.truth2, lie: false, count: 0, votes: []},
-                {text: this.state.lie, lie: true, count: 0, votes: []}]
+                {text: this.state.lie, lie: true, count: 0, votes: []}],
+      num_voted: 0,
     });
   }
 
@@ -95,7 +96,8 @@ export default class ResponsesHandler extends Component {
       activity_type: Activities.findOne(this.props.activity_id).name,
       options: [{text: this.state.truth1, lie: false, count: 0, votes: []},
                 {text: this.state.truth2, lie: false, count: 0, votes: []},
-                {text: this.state.lie, lie: true, count: 0, votes: []}]
+                {text: this.state.lie, lie: true, count: 0, votes: []}],
+      num_voted: 0,
     });
     console.log(inserted_response);
     clearTimeout(this.timer);
