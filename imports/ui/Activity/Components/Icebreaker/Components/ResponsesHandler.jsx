@@ -28,6 +28,7 @@ export default class ResponsesHandler extends Component {
         saved: false
       };
     } else {
+      console.log(prevResponses);
       this.state = {
         truth1: prevResponses.options[0].text,
         truth2: prevResponses.options[1].text,

@@ -36,23 +36,25 @@ class ResponsesVote extends Component {
         const j = Math.floor(Math.random() * (i + 1));
         [a[i], a[j]] = [a[j], a[i]];
     }
-    this.setState({
-      shuffled: true,
-    });
+    // this.setState({
+    //   shuffled: true,
+    // });
+    console.log("The shuffled results are: " + a)
     return a;
   }
 
-  handleVote(evt, lie, index) {
+  handleVote(evt, lie, text) {
 
     if (this.props.pid === this.props.team.members[this.state.hotseat_index].pid) {
       console.log('You can\'t vote on your own!');
       return;
     }
 
-    // console.log(responses);
+    // get the options of the hotseat 
     const response = this.props.responses[this.state.hotseat_index];
     const options = response.options;
 
+    // see if they've been voted on
     const voted = options.filter(opt => opt.votes.includes(this.props.pid)).length > 0;
 
     if (!voted) {
@@ -65,7 +67,15 @@ class ResponsesVote extends Component {
         console.log('noooo!! You guessed wrong! :(');
         //evt.target.style.color = 'red';
       }
-
+      
+      let index = -1;
+      options.map((curr_option, curr_index) => {
+        console.log("Response text: " + curr_option.text);
+        if (curr_option.text === text) {
+          console.log("Response text match!");
+          index = curr_index; 
+        }
+      });
       console.log("index is " + index);
       options[index].votes.push(this.props.pid);
       options[index].count += 1; 
@@ -84,7 +94,6 @@ class ResponsesVote extends Component {
           chosen: index
         });
       });
-
     } else {
       console.log('You already voted!');
     }
@@ -124,17 +133,17 @@ class ResponsesVote extends Component {
   // also keep track of how many people have voted for this user. i.e., keep rendering if not everyone has voted, 
   // and if everyone has, wait a bit before changing the hotseat
   renderTeammatesResponses() {
+
     const response = this.props.responses[this.state.hotseat_index];
 
     if (!response) return <div>No response recorded!</div>;
 
-    let options = response.options;
+    // Deep copy the options to not affect the db yet
+    var options = JSON.parse(JSON.stringify(response.options));
 
     if (!options) return <div>{this.getHotseatName()} did not submit a complete response.</div>;
 
-    // shuffle only once
-    if (!this.state.shuffled) options = this.shuffle(options);
-
+    console.log(options)
 
     if (!this.match()) {
       return (<div>
@@ -142,18 +151,19 @@ class ResponsesVote extends Component {
           <big>{this.getHotseatName()}</big>
           <h5>is in the hotseat</h5>
           </div>
-          {/* {this.state.voted && <div>You already voted for this person!</div>} */}
           {!this.state.voted && <div id="padding_down">Which one is the lie?</div>}
-          {/* {!this.state.shuffled &&
-            this.shuffle(options.map((opt, index) => {
+          { // shuffle if we haven't and we're not the hotseat client
+            !this.state.shuffled && !this.match() &&
+            this.shuffle(options).map((opt, index) => {
               if (!opt.text) return;
               // this is confusing, sorry!
-              return (<button className="button2" style={this.getStyle(opt.lie, index)} key={index+this.props.pid} onClick={(evt) => this.handleVote(evt, opt.lie, index)}>
+              return (<button className="button2" style={this.getStyle(opt.lie, index)} key={index+this.props.pid} onClick={(evt) => this.handleVote(evt, opt.lie, opt.text)}>
                 {this.state.voted? opt.lie? "LIE:  " + opt.text : "TRUTH:  " + opt.text : opt.text }
               </button>);
-            }))
-          } */}
-          {//this.state.shuffled &&
+            })
+          }
+          { // don't shuffle if we already have or if it's the hotseat client
+            (this.state.shuffled || this.match()) &&
             options.map((opt, index) => {
               if (!opt.text) return;
               // this is confusing, sorry!
@@ -206,6 +216,8 @@ class ResponsesVote extends Component {
     // if (this.props.done) return "Yay!!";
     if (!this.props.team) return "Loading...";
     if (!this.props.responses) return "No response recorded.";
+    //if (! (this.props.team.members.map(m => Responses.findOne({pid: m.pid, session_id: this.props.session_id}, {sort: {timestamp: -1}}) || [])) ) return "No response recorded.";
+
     const { hotseat_index } = this.state;
     return (
       <div>
@@ -213,7 +225,9 @@ class ResponsesVote extends Component {
         <h3 id="navbar">Icebreaker</h3>
         <div>
           {/* {hotseat_index > 0 && <button id="prev" onClick={() => this.handlePrev()}>prev</button>} */}
-          {hotseat_index < this.props.responses.length - 1 && <button id="next_but" onClick={() => this.handleNext()}>Next</button>}
+          {hotseat_index < this.props.responses.length - 1 && 
+           //hotseat_index < ( this.props.team.members.map( m => Responses.findOne({pid: m.pid, session_id: this.props.session_id}, {sort: {timestamp: -1}}) ) ) .length - 1 && 
+          <button id="next_but" onClick={() => this.handleNext()}>Next</button>}
         </div>
         {this.renderTeammatesResponses()}
       </div>

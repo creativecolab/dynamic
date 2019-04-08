@@ -102,7 +102,7 @@ class SessionProgress extends Component {
     if (currentActivity.status === 1) {
       totalTime = 60;
     } else if (currentActivity.status === 3) {
-      totalTime = 60;
+      totalTime = 120;
     } else {
       return "";
     }

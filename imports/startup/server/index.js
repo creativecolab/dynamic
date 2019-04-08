@@ -327,7 +327,7 @@ Meteor.startup(() => {
         clearTimeout(this.timer1);
         this.timer2 = setTimeout(
           () => endPhase(_id, 4),
-          60 * 1000
+          120 * 1000
         );
       }
 
