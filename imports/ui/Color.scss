@@ -1,12 +1,12 @@
 #color-bar{
     position: absolute;
-    font-size:50px;
+    // font-size:50px;
     width: 90%;
     padding: 5%; 
     top: 8%;
     left: 0;   
     height: 40%;
-    color: white;
+    color: black;
     text-align: center; 
     font-family: 'PT Sans Narrow', sans-serif; 
     font-weight: bolder; 
@@ -37,8 +37,8 @@
     padding-top: 20%; 
 }
 
-p{
-    color: white; 
+p {
+    color: black; 
     font-weight: bolder; 
-    font-size: 0.5em; 
+    font-size: 1em; 
 }

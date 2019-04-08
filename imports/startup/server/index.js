@@ -252,6 +252,15 @@ Meteor.startup(() => {
           else i--;
         }
 
+        const shapes = shuffle(['circle', 'cross', 'moon', 'square', 'star', 'triangle']);
+        const shapeColors = shuffle(['blue', 'brown', 'green', 'orange', 'purple', 'red']);
+        const colored_shapes = []
+        for (let i = 0; i < shapes.length; i++) {
+          for (let j = 0; j < shapeColors.length; j++) {
+            colored_shapes.push({shape: shapes[i], color: shapeColors[j]});
+          }
+        }
+
         //--- FORM TEAMS ---//
 
         let teams = [];
@@ -270,6 +279,8 @@ Meteor.startup(() => {
               timestamp: new Date().getTime(),
               members: newTeam.map(pid => ({pid, confirmed: false})),
               color: colors[teams.length],
+              shape: colored_shapes[teams.length].shape,
+              shapeColor: colored_shapes[teams.length].color,
               responses: []
             });
 
@@ -300,6 +311,8 @@ Meteor.startup(() => {
             timestamp: new Date().getTime(),
             members: newTeam.map(pid => ({pid, confirmed: false})),
             color: colors[teams.length],
+            shape: colored_shapes[teams.length].shape,
+            shapeColor: colored_shapes[teams.length].color,
             responses: []
           });
 

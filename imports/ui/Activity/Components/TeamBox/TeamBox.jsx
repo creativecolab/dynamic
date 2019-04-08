@@ -62,7 +62,10 @@ export default class TeamBox extends Component {
 
     return (
         <div> 
-        <div><Color color={team.color} username={this.getNameFromPid(this.props.pid)} /></div>
+        <div>
+          <Color shape={team.shape} color={team.shapeColor} username={this.getNameFromPid(this.props.pid)} />
+          {/* <img className="shape" src={"shapes/" + team.shape + "-solid-" + team.shapeColor + ".png.png"} alt={team.shapeColor + " " + team.shape}/> */}
+        </div>
         <div id="team-container">
         <span>Tap the teammates you’ve found</span>
         <div id="button-container">
