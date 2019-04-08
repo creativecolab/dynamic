@@ -8,7 +8,7 @@ export default class Color extends Component {
       <div>
       <h3 id="navbar">Dynamic</h3>
       <div id="color-bar">
-        <div>Find others with this shape</div>
+        <div>Find others with this shape and color</div>
         <img className="shape" src={"/shapes/" + shape + "-solid-" + color + ".png.png"} alt={color + " " + shape}/>
       </div>
       </div>

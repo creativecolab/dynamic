@@ -129,9 +129,10 @@ class ResponsesVote extends Component {
           <big>{this.getHotseatName()}</big>
           <h5>is in the hotseat</h5>
           </div>
-          {!this.state.voted && <div id="padding_down">Which one is the lie?</div>}
-          {this.state.voted && !this.allVoted() && <div id="padding_down">Waiting for other guesses</div>}
-          {this.state.voted && this.allVoted() && <div id="padding_down">All Votes in. Revealing in {this.state.time_left}</div>}
+          {this.props.valid_ops === 0 && <div>No response recorded</div>}
+          {this.props.valid_ops > 0 && !this.state.voted && <div id="padding_down">Which one is the lie?</div>}
+          {this.props.valid_ops > 0 && this.state.voted && !this.allVoted() && <div id="padding_down">Waiting for other guesses</div>}
+          {this.props.valid_ops > 0 && this.state.voted && this.allVoted() && <div id="padding_down">All Votes in. Revealing in {this.state.time_left}</div>}
           {
             shuffled_options.map((opt, index) => {
               if (!opt.text) return;
@@ -169,10 +170,17 @@ class ResponsesVote extends Component {
 
   // handler for the next button. Updates who's in the hotseat
   handleNext() {
+    console.log('Calling next!');
     const { responses, hotseat_index } = this.props;
     Responses.update(responses[hotseat_index]._id, {
       $set: {
         hotseat: true,
+      }
+    }, (error) => {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Hotseat set!');
       }
     });
 
@@ -248,6 +256,7 @@ class ResponsesVote extends Component {
         {this.renderTeammatesResponses()}
         {!amHotseat && this.props.all_voted && !this.state.revealed && <button className="small-button" onClick={() => this.handleReveal()}>Reveal Answers</button>}
         {this.state.revealed && <button className="small-button" onClick={() => this.handleNext()}>Next Hotseat</button>}
+        {!this.state.revealed && this.props.valid_ops === 0 && <button className="small-button" onClick={() => this.handleNext()}>Next Hotseat</button>}
       </div>
     )
   }
@@ -264,9 +273,14 @@ export default withTracker(props => {
   // hotseat index, -1 = everyone voted
   let hotseat_index = -1;
   for (var i = 0; i < responses.length; i++) {
+    console.log('index ' + i);
+    console.log(responses[i]);
 
     // no response recorded
-    if (!responses[i]) continue;
+    if (responses[i] == false) {
+      console.log("NO Response!");
+      continue;
+    }
 
     // person hasn't been in hotseat yet
     if (!responses[i].hotseat) {
@@ -290,6 +304,13 @@ export default withTracker(props => {
     console.log('Nope.');
   }
 
-  return {team, responses, hotseat_index, all_voted};
+  let valid_ops = 0;
+  try {
+    valid_ops = responses[hotseat_index].options.filter(opt => opt.text != "").length;
+  } catch (error) {
+    console.log('Nope.');
+  }
+
+  return {team, responses, hotseat_index, all_voted, valid_ops};
 
 })(ResponsesVote);
