@@ -7,6 +7,7 @@ import Responses from '../../../../api/responses';
 import Users from '../../../../api/users';
 
 import './ResponsesVote.scss';
+import '../../../assets/_main.scss';
 
 class ResponsesVote extends Component {
   static propTypes = {
@@ -25,10 +26,10 @@ class ResponsesVote extends Component {
     // only update db in handleVote, make sure it stays in order
     this.state = {
       voted: false,
-      all_voted: false,
       chosen: -1,
       time_left: 5,
-      revealed: false
+      revealed: false,
+      correct: false
     };
   }
 
@@ -68,6 +69,9 @@ class ResponsesVote extends Component {
       options[index].votes.push(this.props.pid);
       options[index].count += 1; 
 
+      let correct = false;
+      if (options[index].lie) correct = true;
+
       // save this response 
       // TODO: track the amount of time it took
       Responses.update(response._id, {
@@ -80,7 +84,8 @@ class ResponsesVote extends Component {
         console.log('Vote submitted!');
         this.setState({
           voted: true,
-          chosen: votedIndex
+          chosen: votedIndex,
+          correct
         });
       });
     } else {
@@ -157,7 +162,6 @@ class ResponsesVote extends Component {
     // this.beginReveal();
     this.setState({
       revealed: true,
-      correct: false,
       voted: false,
       chosen: -1
     });
@@ -175,8 +179,8 @@ class ResponsesVote extends Component {
     this.setState({
       chosen: -1,
       time_left: 5,
-      all_voted: false,
-      revealed: false
+      revealed: false,
+      correct: false
     });
   }
 
@@ -229,16 +233,21 @@ class ResponsesVote extends Component {
     const { hotseat_index } = this.props;
     if (hotseat_index === -1) return "Done! Wait for other teams.";
 
+    const amHotseat = this.props.pid === this.props.team.members[this.props.hotseat_index].pid;
+    const { correct } = this.state;
+
     return (
       <div>
         <h3 id="navbar">Icebreaker</h3>
         <div>
           
-        {this.props.all_voted && !this.state.revealed && <button id="next_but" onClick={() => this.handleReveal()}>Reveal Answers</button>}
-        {this.state.revealed && <button id="next_but" onClick={() => this.handleNext()}>Next Hotseat</button>}
+        {/* {this.state.revealed && !amHotseat && correct && <div>Awesome! You got it right!</div>} */}
+        {/* {this.state.revealed && !amHotseat && !correct && <div>Oh no! Better luck next time.</div>} */}
 
         </div>
         {this.renderTeammatesResponses()}
+        {!amHotseat && this.props.all_voted && !this.state.revealed && <button className="small-button" onClick={() => this.handleReveal()}>Reveal Answers</button>}
+        {this.state.revealed && <button className="small-button" onClick={() => this.handleNext()}>Next Hotseat</button>}
       </div>
     )
   }
