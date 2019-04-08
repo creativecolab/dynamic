@@ -76,7 +76,7 @@ class Icebreaker extends Component {
     }
     if (currentActivity.status === 4) {
       if (!team) return "You have not been assigned a team for this activity. Please wait for the next one.";
-      return <div>Great job! Check out the stats!</div>
+      return <Wrapper>Waiting for other teams<img id="moving-logo" src="./dynamic.gif" className="center"/></Wrapper>
     }
     return "Not supposed to be here!";
   }
