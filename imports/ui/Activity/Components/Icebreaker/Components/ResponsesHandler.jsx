@@ -59,6 +59,14 @@ export default class ResponsesHandler extends Component {
     });
   }
 
+  shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
   saveReponses(evt) {
     evt.preventDefault();
     console.log(JSON.stringify(this.state));
@@ -67,16 +75,23 @@ export default class ResponsesHandler extends Component {
       saved: true
     });
 
+    const options = [{text: this.state.truth1, lie: false, count: 0, votes: []},
+    {text: this.state.truth2, lie: false, count: 0, votes: []},
+    {text: this.state.lie, lie: true, count: 0, votes: []}];
+
+    var shuffled_options = JSON.parse(JSON.stringify(options));
+    this.shuffle(shuffled_options);
+
     Responses.insert({
       pid: this.props.pid,
       timestamp: new Date().getTime(),
       session_id: this.props.session_id,
       activity_id: this.props.activity_id,
       activity_type: Activities.findOne(this.props.activity_id).name,
-      options: [{text: this.state.truth1, lie: false, count: 0, votes: []},
-                {text: this.state.truth2, lie: false, count: 0, votes: []},
-                {text: this.state.lie, lie: true, count: 0, votes: []}],
+      options,
+      shuffled_options,
       num_voted: 0,
+      hotseat: false
     });
   }
 
@@ -88,16 +103,24 @@ export default class ResponsesHandler extends Component {
 
   // clear tick when not rendered
   componentWillUnmount() {
+
+    const options = [{text: this.state.truth1, lie: false, count: 0, votes: []},
+    {text: this.state.truth2, lie: false, count: 0, votes: []},
+    {text: this.state.lie, lie: true, count: 0, votes: []}];
+
+    var shuffled_options = JSON.parse(JSON.stringify(options));
+    this.shuffle(shuffled_options);
+
     const inserted_response = Responses.insert({
       pid: this.props.pid,
       timestamp: new Date().getTime(),
       session_id: this.props.session_id,
       activity_id: this.props.activity_id,
       activity_type: Activities.findOne(this.props.activity_id).name,
-      options: [{text: this.state.truth1, lie: false, count: 0, votes: []},
-                {text: this.state.truth2, lie: false, count: 0, votes: []},
-                {text: this.state.lie, lie: true, count: 0, votes: []}],
+      options,
+      shuffled_options,
       num_voted: 0,
+      hotseat: false
     });
     console.log(inserted_response);
     clearTimeout(this.timer);
@@ -108,7 +131,7 @@ export default class ResponsesHandler extends Component {
       this.setState({
         saved: false
       }),
-    5000);
+    10000);
   }
 
   render() {
