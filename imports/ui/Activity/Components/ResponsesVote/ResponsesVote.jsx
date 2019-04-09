@@ -5,6 +5,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import Teams from '../../../../api/teams';
 import Responses from '../../../../api/responses';
 import Users from '../../../../api/users';
+import Logs from '../../../../api/logs';
 
 import './ResponsesVote.scss';
 import '../../../assets/_main.scss';
@@ -47,11 +48,32 @@ class ResponsesVote extends Component {
     // see if they've been voted on
     const voted = options.filter(opt => opt.votes.includes(this.props.pid)).length > 0;
 
+    const user = Users.findOne({pid: this.props.pid});
+    console.log(user);
+    const new_points = user.points;
+    console.log(new_points+1);
+
     if (!voted) {
 
       // change color!
       if (lie) {
         console.log('yaya!! You guessed right!');
+        // give user some points
+        Users.update(user._id, {
+          $set: {
+            points: new_points + 1
+          }
+        }, () => {
+          console.log('Points added!');
+          //track the session that was created
+          const new_log = Logs.insert({
+            log_type: "Points Added",
+            code: this.props.session_id,
+            user: this.props.id,
+            timestamp: new Date().getTime(),
+          });
+          console.log(new_log);
+        });
       } else {
         console.log('noooo!! You guessed wrong! :(');
       }
@@ -85,7 +107,7 @@ class ResponsesVote extends Component {
         this.setState({
           voted: true,
           chosen: votedIndex,
-          correct
+          correct // for points
         });
       });
     } else {

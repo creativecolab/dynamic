@@ -54,31 +54,36 @@ function updateRoster() {
     name: 'Gustavo Umbelino',
     firstname: 'Gustavo',
     lastname: 'Umbelino',
-    pid: 'gus'
+    pid: 'gus',
+    points: 0
   },
   {
     name: 'Vivian Ta',
     firstname: 'Vivian',
     lastname: 'Ta',
-    pid: 'viv'
+    pid: 'viv',
+    points: 0
   },
   {
     name: 'Eric Truong',
     firstname: 'Eric',
     lastname: 'Truong',
-    pid: 'eric'
+    pid: 'eric',
+    points: 0
   },
   {
     name: 'Steven Dow',
     firstname: 'Steven',
     lastname: 'Dow',
-    pid: 'steven'
+    pid: 'steven',
+    points: 0
   },
   {
     name: 'Samuel Blake',
     firstname: 'Samuel',
     lastname: 'Blake',
-    pid: 'sam'
+    pid: 'sam',
+    points: 0
   }];
 
   // iterate through users in roster

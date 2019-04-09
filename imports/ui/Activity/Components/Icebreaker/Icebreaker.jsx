@@ -10,6 +10,7 @@ import Teams from '../../../../api/teams';
 import Activities from '../../../../api/activities';
 
 import './Icebreaker.scss';
+import users from '../../../../api/users';
 
 class Icebreaker extends Component {
   static propTypes = {
@@ -60,6 +61,12 @@ class Icebreaker extends Component {
 
   }
 
+  getTeammate(teammate_pid) {
+    const user = Users.findOne({pid: teammate_pid});
+    console.log(user);
+    return user;
+  }
+
   render() {
     const { team, allConfirmed, currentActivity, pid } = this.props;
     if (!currentActivity) return "Oops! This activity doesn't exist.";
@@ -76,7 +83,14 @@ class Icebreaker extends Component {
     }
     if (currentActivity.status === 4) {
       if (!team) return "You have not been assigned a team for this activity. Please wait for the next one.";
-      return <Wrapper>Waiting for next activity<img id="moving-logo" src="./dynamic.gif" className="center"/></Wrapper>
+      return (
+        <Wrapper>Waiting for next activity<img id="moving-logo" src="./dynamic.gif" className="center"/>
+        {
+          team.members.map(teammate => {
+            return <button className="button" key={teammate.pid}><b>{this.getTeammate(teammate.pid).name + ": " + this.getTeammate(teammate.pid).points}</b></button>;
+        })}
+        </Wrapper>
+      )
     }
     return "Not supposed to be here!";
   }
