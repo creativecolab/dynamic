@@ -7,8 +7,7 @@ import '../assets/_main.scss';
 import Sessions from '../../api/sessions';
 import Color from '../Color';
 import Activity from '../Activity/Activity';
-
-import './Login.scss';
+import '../assets/_main.scss';
 
 class Login extends Component {
   // static propTypes = {
@@ -131,28 +130,25 @@ class Login extends Component {
       const { _id, status } = this.props.session;
 
       // session is over...
-      if (status === 2) return <Wrapper><h2>Thanks for participating! Please fill out <a href="https://forms.gle/ATh7tQC5LFf547h19">this survey</a>.</h2></Wrapper>
+      if (status === 2) return <div><h2>Thanks for participating! Please fill out <a href="https://forms.gle/ATh7tQC5LFf547h19">this survey</a>.</h2></div>
 
       return <Activity pid={pid} session_id={_id} />
     }
 
     return (
       <Wrapper>
-        <h3 id="navbar">Dynamic</h3>
         <form id="pid-form" onSubmit={(evt) => this.login(evt)}>
-          <div id="pid" className="field-container">
+          <div id="pid-container" className="field-container">
             {this.renderUsernameTaken()}
-            <div className="container">
-            <label className="field-title" htmlFor="first">What is your name? </label>
-            <div className="input-container" id="padding">
-              <input className="u-container" type="text" name="first" placeholder="King Triton" value={this.state.name} onChange={(evt) => this.handleName(evt)}/>
+            <label className="field-title" htmlFor="name">What is your name? </label>
+            <div className="input-container">
+              <input className="input-text" type="text" name="name" placeholder="King Triton" value={this.state.name} onChange={(evt) => this.handleName(evt)}/>
             </div><br></br>
             <label className="field-title" htmlFor="pid">What is your PID?</label>
-            <div className="input-container"id="padding">
-              <input className="u-container" type="text" name="pid" placeholder="A12345678" value={this.state.pid} onChange={(evt) => this.handleChange(evt)}/>
+            <div className="input-container">
+              <input className="input-text" type="text" name="pid" placeholder="A12345678" value={this.state.pid} onChange={(evt) => this.handleChange(evt)}/>
             </div>
-            </div>
-            <input id="next_button" type="submit" value="Continue"/>
+            <input className="small-button" type="submit" value="Continue"/>
           </div>
         </form>
       </Wrapper>
