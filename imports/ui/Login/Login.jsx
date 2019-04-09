@@ -85,7 +85,8 @@ class Login extends Component {
       Users.insert({
         name,
         pid,
-        teammates: []
+        teammates: [],
+        points: 0
       });
       // add user to session
       Sessions.update(this.props.session._id, {

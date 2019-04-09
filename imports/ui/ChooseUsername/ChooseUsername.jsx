@@ -53,7 +53,8 @@ class ChooseUsername extends Component {
     } else {
       Users.insert({
         username,
-        teammates: []
+        teammates: [],
+        points: 0
       }, () => {
         
         // save username locally
