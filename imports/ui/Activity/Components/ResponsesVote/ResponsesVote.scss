@@ -34,7 +34,19 @@ h5{
 
 .votes {
   position: absolute;
-  right: 1em;
+    right: 1em;
+    top: -15px;
+    margin: auto;
+    background: blue;
+    border-radius: 5px;
+    color: white;
+    width: 20px;
+    line-height: 20px;
+    text-align: center;
+    font-weight: bold;
+    height: 20px;
+    text-align: center;
+    padding: 5px;
 }
 
 .hasSpan {

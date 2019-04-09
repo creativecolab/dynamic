@@ -72,9 +72,9 @@ class Icebreaker extends Component {
     if (!currentActivity) return "Oops! This activity doesn't exist.";
     if (currentActivity.status === 1) return <ResponsesHandler pid={pid} session_id={currentActivity.session_id} activity_id={currentActivity._id} />;
     if (currentActivity.status === 2) {
-      if (!team) return <Wrapper>You have not been assigned a team.<br></br>Please wait for the next activity.<img id="movin-logo" src="./dynamic.gif" className="center"/></Wrapper>
-      if (allConfirmed) return <Wrapper>Everyone confirmed!<img id="moving-logo" src="./dynamic.gif" className="center"/></Wrapper>
-      if (this.state.confirmed) return <Wrapper>You've found everyone!<br></br>Wait for your teammates to find you.<img id="movin-logo" src="./dynamic.gif" className="center"/></Wrapper>
+      if (!team) return <div>You have not been assigned a team.<br></br>Please wait for the next activity.<img id="movin-logo" src="./dynamic.gif" className="center"/></div>
+      if (allConfirmed) return <div>Everyone confirmed!<img id="moving-logo" src="./dynamic.gif" className="center"/></div>
+      if (this.state.confirmed) return <div>You've found everyone!<br></br>Wait for your teammates to find you.<img id="movin-logo" src="./dynamic.gif" className="center"/></div>
       return <TeamBox confirm={this.confirmTeam} pid={pid} team_id={team._id}/>;
     }
     if (currentActivity.status === 3) {
@@ -84,12 +84,13 @@ class Icebreaker extends Component {
     if (currentActivity.status === 4) {
       if (!team) return "You have not been assigned a team for this activity. Please wait for the next one.";
       return (
-        <Wrapper>Waiting for next activity<img id="moving-logo" src="./dynamic.gif" className="center"/>
+        <div>Waiting for next activity<img id="moving-logo" src="./dynamic.gif" className="center"/>
         {
           team.members.map(teammate => {
-            return <button className="button" key={teammate.pid}><b>{this.getTeammate(teammate.pid).name + ": " + this.getTeammate(teammate.pid).points}</b></button>;
+            const points = this.getTeammate(teammate.pid).points;
+            return <button className="button" key={teammate.pid}><b>{this.getTeammate(teammate.pid).name + ": " + points} {points === 1? 'point' : 'points'}</b></button>;
         })}
-        </Wrapper>
+        </div>
       )
     }
     return "Not supposed to be here!";

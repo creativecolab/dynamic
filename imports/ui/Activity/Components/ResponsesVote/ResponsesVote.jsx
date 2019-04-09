@@ -148,10 +148,6 @@ class ResponsesVote extends Component {
     // not in hotseat
     if (!this.match()) {
       return (<div>
-          <div>
-          <big>{this.getHotseatName()}</big>
-          <h5>is in the hotseat</h5>
-          </div>
           {this.props.valid_ops === 0 && <div>No response recorded</div>}
           {this.props.valid_ops > 0 && !this.state.voted && <div id="padding_down">Which one is the lie?</div>}
           {this.props.valid_ops > 0 && this.state.voted && !this.props.all_voted && <div id="padding_down">Waiting for other guesses</div>}
@@ -170,14 +166,12 @@ class ResponsesVote extends Component {
     // in the hotseat!
     else {
       return (<div>
-        <big>{this.getHotseatName()}</big>
-        <h5>is in the hotseat</h5>
         {!this.props.all_voted && <div id="padding_down">Waiting for other guesses</div>}
         {this.props.all_voted && <div id="padding_down">Everyone has guessed</div>}
         {options.map((opt, index) => {
           if (!opt.text) return;
           return (<button className="button" key={index}>{opt.text}{' '}
-          <span className="votes">{opt.votes.length > 0? '+' + opt.votes.length : ''}</span>
+          {opt.votes.length > 0 && <span className="votes"><div>{opt.votes.length > 0? opt.votes.length : ''}</div></span>}
         </button>);
         })}
       </div>)
@@ -260,6 +254,8 @@ class ResponsesVote extends Component {
         {/* {this.state.revealed && !amHotseat && !correct && <div>Oh no! Better luck next time.</div>} */}
 
         </div>
+        <big>{this.getHotseatName()}</big>
+        <h5>is in the hotseat</h5>
         {this.renderTeammatesResponses()}
         {!amHotseat && this.props.all_voted && !this.state.revealed && <button className="small-button" onClick={() => this.handleReveal()}>Reveal Answers</button>}
         {this.state.revealed && <button className="small-button" onClick={() => this.handleNext()}>Next Hotseat</button>}
@@ -300,6 +296,7 @@ export default withTracker(props => {
         empty = false; 
       }
     });
+
     if (empty) {
       console.log("NO Response Options!");
       console.log("this person won't be hotseat anymore");
