@@ -132,7 +132,7 @@ class Login extends Component {
       // session is over...
       if (status === 2) return <div><h2>Thanks for participating! Please fill out <a href="https://forms.gle/ATh7tQC5LFf547h19">this survey</a>.</h2></div>
 
-      return <Activity pid={pid} session_id={_id} />
+      return <Wrapper><Activity pid={pid} session_id={_id} /></Wrapper>
     }
 
     return (

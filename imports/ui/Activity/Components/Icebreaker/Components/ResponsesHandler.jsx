@@ -158,29 +158,29 @@ export default class ResponsesHandler extends Component {
 // </form>
 // </Wrapper> */}
 <div>
-<h3 id="navbar">Icebreaker</h3>
-<div id="responsive">
-<div id="w_container">
-<h4>Write two truths and one lie about yourself.</h4>
-<form id="icebreaker-form" onSubmit={(evt) => this.saveReponses(evt)}>
-  <div id="icebreaker" className="field-container">
-    <label className="label" htmlFor="truth">TWO TRUTHS</label>
-    <div className="input-container">
-      <input id="input-container" className="u-container" type="text" name="truth1" placeholder="i.e., I used to do improv"  value={this.state.truth1} onChange={(evt) => this.handleTruth1(evt)}/>
+  <h3 id="navbar">Icebreaker</h3>
+  <div id="responsive">
+    <div id="w_container">
+    <h4>Write two truths and one lie about yourself.</h4>
+    <form id="icebreaker-form" onSubmit={(evt) => this.saveReponses(evt)}>
+      <div id="icebreaker" className="field-container">
+        <label className="label" htmlFor="truth">TWO TRUTHS</label>
+        <div className="input-container">
+          <input id="input-container" className="u-container" type="text" name="truth1" placeholder="i.e., I used to do improv"  value={this.state.truth1} onChange={(evt) => this.handleTruth1(evt)}/>
+        </div>
+        <div className="input-container">
+          <input id="input-container" className="u-container" type="text" name="truth2" placeholder="i.e., I snore in my sleep"  value={this.state.truth2} onChange={(evt) => this.handleTruth2(evt)}/>
+        </div><br></br>
+        <label className="label" htmlFor="lies">ONE LIE</label>
+        <div className="input-container">
+          <input id="input-container" className="u-container" type="text" name="lie" placeholder="i.e., I have been to Mexico"  value={this.state.lie} onChange={(evt) => this.handleLie(evt)}/>
+        </div>
+        <input id="next_b" type="submit" value="Save"/>
+        {this.renderSaved()}
+      </div>
+    </form>
     </div>
-    <div className="input-container">
-      <input id="input-container" className="u-container" type="text" name="truth2" placeholder="i.e., I snore in my sleep"  value={this.state.truth2} onChange={(evt) => this.handleTruth2(evt)}/>
-    </div><br></br>
-    <label className="label" htmlFor="lies">ONE LIE</label>
-    <div className="input-container">
-      <input id="input-container" className="u-container" type="text" name="lie" placeholder="i.e., I have been to Mexico"  value={this.state.lie} onChange={(evt) => this.handleLie(evt)}/>
-    </div>
-    <input id="next_b" type="submit" value="Save"/>
-    {this.renderSaved()}
   </div>
-</form>
-</div>
-</div>
 </div>
     )
   }
