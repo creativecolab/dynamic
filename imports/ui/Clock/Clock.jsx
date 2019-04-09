@@ -54,10 +54,10 @@ export default class Clock extends Component {
           <CircularProgressbar
           percentage={percentage}
           strokeWidth={50}
-          textForPercentage={null}
+          text={this.state.timeLeft}
           styles={{
-            path: { strokeLinecap: 'butt' },
-            text: { fill: '#000' },
+            path: { strokeLinecap: 'butt', transition: 'stroke-dashoffset 0.5s ease 0s', stroke: '#1E91D6' },
+            text: { fill: '#000', fontSize: '60px'}
           }}/>
         </div> 
       )
@@ -70,7 +70,7 @@ export default class Clock extends Component {
             styles={{
               path: {
                 // Tweak path color:
-                stroke: '#f88',
+                stroke: '#1E91D6',
                 // Tweak path to use flat or rounded ends:
                 strokeLinecap: 'butt',
                 // Tweak transition animation:
@@ -84,9 +84,9 @@ export default class Clock extends Component {
               // Customize the text
               text: {
                 // Tweak text color:
-                fill: '#f88',
+                fill: '#1E91D6',
                 // Tweak text size:
-                fontSize: '30px',
+                fontSize: '60px',
               },
             }}
           />

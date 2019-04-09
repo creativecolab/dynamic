@@ -145,6 +145,7 @@ class ResponsesVote extends Component {
     const { options, shuffled_options } = response;
     if (!options) return <div>{this.getHotseatName()} did not submit a complete response.</div>;
 
+    // not in hotseat
     if (!this.match()) {
       return (<div>
           <div>
@@ -153,8 +154,8 @@ class ResponsesVote extends Component {
           </div>
           {this.props.valid_ops === 0 && <div>No response recorded</div>}
           {this.props.valid_ops > 0 && !this.state.voted && <div id="padding_down">Which one is the lie?</div>}
-          {this.props.valid_ops > 0 && this.state.voted && !this.allVoted() && <div id="padding_down">Waiting for other guesses</div>}
-          {this.props.valid_ops > 0 && this.state.voted && this.allVoted() && <div id="padding_down">All Votes in. Click to Reveal!</div>}
+          {this.props.valid_ops > 0 && this.state.voted && !this.props.all_voted && <div id="padding_down">Waiting for other guesses</div>}
+          {this.props.valid_ops > 0 && this.state.voted && this.props.all_voted && <div id="padding_down">All Votes in. Click to Reveal!</div>}
           {
             shuffled_options.map((opt, index) => {
               if (!opt.text) return;
@@ -164,12 +165,15 @@ class ResponsesVote extends Component {
             })
           }
         </div>);
-    } else {
+    }
+    
+    // in the hotseat!
+    else {
       return (<div>
         <big>{this.getHotseatName()}</big>
         <h5>is in the hotseat</h5>
-        {!this.allVoted() && <div id="padding_down">Waiting for other guesses</div>}
-        {this.allVoted() && <div id="padding_down">Everyone has guessed</div>}
+        {!this.props.all_voted && <div id="padding_down">Waiting for other guesses</div>}
+        {this.props.all_voted && <div id="padding_down">Everyone has guessed</div>}
         {options.map((opt, index) => {
           if (!opt.text) return;
           return (<button className="button" key={index}>{opt.text}{' '}
@@ -219,39 +223,20 @@ class ResponsesVote extends Component {
     return this.props.pid === this.props.team.members[this.props.hotseat_index].pid
   }
 
-  // used to check if everyone has voted. Will start a countdown once everyone has voted
-  allVoted() {
-    if (this.props.all_voted) return true;
-    console.log("Checking if everyone has voted...");
-    if (this.props.responses[this.props.hotseat_index].num_voted === this.props.team.members.length - 1) {
-      console.log("Everyone has voted!!");
-      // this.beginReveal();
-      return true;
-    }
-    return false;  
-  }
-
-  // starts a countdown from 5 to reveal the results
-  beginReveal() {
-    this.timerID1 = setInterval(() => {
-      if (this.state.time_left <= 0) return;
-      this.setState({
-        time_left: this.state.time_left - 1
-      });
-    }, 1000);
-    this.timerID2 = setTimeout(() => {
-      clearInterval(this.timerID1);
-      this.timerID1 = 0;
-      this.setState({
-        revealed: true,
-        time_left: 5
-      })
-    }, 
-    5000);
-  }
-
   getHotseatName() {
     return Users.findOne({pid: this.props.team.members[this.props.hotseat_index].pid}).name;
+  }
+
+  // new hotseat, reset state
+  componentDidUpdate(prevProps) {
+    if (prevProps.hotseat_index !== this.props.hotseat_index) {
+      this.setState({
+        chosen: -1,
+        revealed: false,
+        correct: false,
+        voted: false
+      });
+    }
   }
 
   render() {

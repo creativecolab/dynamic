@@ -15,14 +15,12 @@ export const renderRoutes = () => (
     <Router>
       <div>
         <Switch>
-          <Wrapper>
-            <Route exact path="/" component={Landing} />
-            <Route exact path="/instructor" component={InstructorUI} />
-            <Route exact path="/:code" component={Login} />
-            <Route exact path="/:code/signup" component={SignUp} />
-            <Route exact path="/:code/edit" component={Session} />
-            <Route exact path="/:code/view" component={SessionProgress} />
-          </Wrapper>
+          <Route exact path="/" component={Landing} />
+          <Route exact path="/instructor" component={InstructorUI} />
+          <Route exact path="/:code" component={Login} />
+          <Route exact path="/:code/signup" component={SignUp} />
+          <Route exact path="/:code/edit" component={Session} />
+          <Route exact path="/:code/view" component={SessionProgress} />
         </Switch>
       </div>
     </Router>

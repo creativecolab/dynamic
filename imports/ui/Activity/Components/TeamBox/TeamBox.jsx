@@ -67,13 +67,13 @@ export default class TeamBox extends Component {
           {/* <img className="shape" src={"shapes/" + team.shape + "-solid-" + team.shapeColor + ".png.png"} alt={team.shapeColor + " " + team.shape}/> */}
         </div>
         <div id="team-container">
-        <span>Tap the teammates you’ve found</span>
-        <div id="button-container">
-        {this.state.teammates.map(teammate => {
-          if (!teammate.confirmed) return <button className="button" key={teammate.pid} onClick={(evt) => this.handleConfirmed(evt)}><b>{this.getNameFromPid(teammate.pid)}</b></button>;
-          else return <div key={teammate.pid}><b className="button-click">{this.getNameFromPid(teammate.pid)}</b></div>;
-        })}
-        </div>
+          <span>Tap the teammates you’ve found</span>
+          <div id="button-container">
+            {this.state.teammates.map(teammate => {
+              if (!teammate.confirmed) return <button className="button" key={teammate.pid} onClick={(evt) => this.handleConfirmed(evt)}><b>{this.getNameFromPid(teammate.pid)}</b></button>;
+              else return <div key={teammate.pid}><b className="button-click">{this.getNameFromPid(teammate.pid)}</b></div>;
+            })}
+          </div>
         </div>
         </div>
   )

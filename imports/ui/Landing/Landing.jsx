@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Wrapper from '../Wrapper/Wrapper'
-import '../assets/_main.scss';
 import { Redirect } from 'react-router-dom'
 import Sessions from "../../api/sessions";
 
@@ -72,7 +71,7 @@ export default class Landing extends Component {
     const invalid = this.state.invalid_code;
 
     return (
-      <Wrapper>
+      <div>
         {this.renderRedirect()}
         <h1 id="title-dynamic">Dynamic!</h1>
         <img id="logo" src="./dynamic.png" alt=""/>
@@ -105,7 +104,7 @@ export default class Landing extends Component {
           <input className="small-button" type="submit" value="Continue"/>
 
         </form>
-      </Wrapper>
+      </div>
     )
   }
 }

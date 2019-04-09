@@ -104,7 +104,7 @@ class InstructorUI extends Component {
 
   render() {
     return (
-      <Wrapper>
+      <div>
         <h1>Manage Sessions</h1>
         <form id="session-form" onSubmit={(evt) => this.handleNewSession(evt)}>
           <div id="session-code" className="field-container">
@@ -122,7 +122,7 @@ class InstructorUI extends Component {
         <div>
           {this.mapSessions()}
         </div>
-      </Wrapper>
+      </div>
     )
   }
 }

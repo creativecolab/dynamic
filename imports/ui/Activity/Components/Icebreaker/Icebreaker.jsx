@@ -75,7 +75,7 @@ class Icebreaker extends Component {
       if (!team) return <Wrapper>You have not been assigned a team.<br></br>Please wait for the next activity.<img id="movin-logo" src="./dynamic.gif" className="center"/></Wrapper>
       if (allConfirmed) return <Wrapper>Everyone confirmed!<img id="moving-logo" src="./dynamic.gif" className="center"/></Wrapper>
       if (this.state.confirmed) return <Wrapper>You've found everyone!<br></br>Wait for your teammates to find you.<img id="movin-logo" src="./dynamic.gif" className="center"/></Wrapper>
-      return <TeamBox confirm={this.confirmTeam} pid={pid} team_id={team._id}/>
+      return <TeamBox confirm={this.confirmTeam} pid={pid} team_id={team._id}/>;
     }
     if (currentActivity.status === 3) {
       if (!team) return "You have not been assigned a team for this activity. Please wait for the next one.";
