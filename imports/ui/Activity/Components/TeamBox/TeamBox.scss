@@ -1,41 +1,8 @@
-#team-container{
-    padding-bottom: 8%; 
-    margin-bottom: 10%; 
-    position: absolute; 
-    margin-top: 15%; 
-    left: 10%; 
-    right: 10%; 
-}
-
-.button{
-    font-family: 'PT Sans Narrow', sans-serif; 
-    font-size: 0.8em; 
-    border-radius: 25px;
-    border: 2px solid black;
-    padding: 5% 8% 5% 8%; 
-    background-color: white; 
-    margin-bottom: 5%; 
-    display: block;
-    width: 100%;
-    position: relative;
-}
-
-span{
-    display:inline-block;
-    padding-bottom:6%;
-}
-
-.button-click{
-    font-family: 'PT Sans Narrow', sans-serif; 
-    font-size: 0.8em; 
-    border-radius: 25px;
-    border: 2px solid black;
-    color: black; 
-    padding: 5% 8% 5% 8%; 
-    background-color:#FBF2C0; 
-    margin-bottom: 5%; 
-    display: block;
-    width: 83%; 
-    left: 10%; 
-    right: 10%; 
+#underline-text{
+    width:80%;
+    height:2px;
+    margin-left: 10%;
+    margin-right: 10%;  
+    background: #D8D8D8;
+    margin-bottom: 3%; 
 }

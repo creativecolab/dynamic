@@ -6,11 +6,8 @@ export default class Color extends Component {
     const {shape, color} = this.props;
     return (
       <div>
-      <h3 id="navbar">Dynamic</h3>
-      <div id="color-bar">
-        <div>Find others with this shape and color</div>
+        <h2 id="text-spacing">Find others with this shape and color</h2>
         <img className="shape" src={"/shapes/" + shape + "-solid-" + color + ".png.png"} alt={color + " " + shape}/>
-      </div>
       </div>
     )
   }

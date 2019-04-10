@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Teams from '../../../../api/teams';
 import Color from '../../../Color';
 import Users from '../../../../api/users';
-
 import './TeamBox.scss';
 
 export default class TeamBox extends Component {
@@ -62,19 +61,14 @@ export default class TeamBox extends Component {
 
     return (
         <div> 
-        <div>
           <Color shape={team.shape} color={team.shapeColor} username={this.getNameFromPid(this.props.pid)} />
           {/* <img className="shape" src={"shapes/" + team.shape + "-solid-" + team.shapeColor + ".png.png"} alt={team.shapeColor + " " + team.shape}/> */}
-        </div>
-        <div id="team-container">
-          <span>Tap the teammates you’ve found</span>
-          <div id="button-container">
+          <span><h2>Tap the teammates you’ve found</h2></span>
+          <div id="underline-text"></div>
             {this.state.teammates.map(teammate => {
-              if (!teammate.confirmed) return <button className="button" key={teammate.pid} onClick={(evt) => this.handleConfirmed(evt)}><b>{this.getNameFromPid(teammate.pid)}</b></button>;
-              else return <div key={teammate.pid}><b className="button-click">{this.getNameFromPid(teammate.pid)}</b></div>;
+              if (!teammate.confirmed) return <button className="big-button" key={teammate.pid} onClick={(evt) => this.handleConfirmed(evt)}>{this.getNameFromPid(teammate.pid)}</button>;
+              else return <div key={teammate.pid}><button className="big-button-fill">{this.getNameFromPid(teammate.pid)}</button></div>;
             })}
-          </div>
-        </div>
         </div>
   )
   }

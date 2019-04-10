@@ -5,9 +5,7 @@ import Users from '../../api/users'
 import Wrapper from '../Wrapper/Wrapper'
 import '../assets/_main.scss';
 import Sessions from '../../api/sessions';
-import Color from '../Color';
 import Activity from '../Activity/Activity';
-import '../assets/_main.scss';
 
 class Login extends Component {
   // static propTypes = {
