@@ -149,7 +149,7 @@ export default class ResponsesHandler extends Component {
         <div className="input-container">
           <input className="input-text" type="text" name="lie" placeholder="i.e., I have been to Mexico"  value={this.state.lie} onChange={(evt) => this.handleLie(evt)}/>
         </div>
-        <input className="small-button" type="submit" value="Save"/>
+        <input className="small-button-paddingless" type="submit" value="Save"/>
         {this.renderSaved()}
     </form>
     </div>
