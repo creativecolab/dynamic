@@ -40,10 +40,8 @@ h4{
 
 h5{
   font-weight: bolder; 
-  font-size: 0.7em; 
+  font-size: 18px; 
   text-align: center; 
-  top: 0; 
-  padding-bottom: 10%;
 }
 
 input, button {
