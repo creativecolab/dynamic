@@ -4,7 +4,7 @@ import './Navbar.scss';
 export default class Navbar extends Component {
   render() {
     return (
-        <h3 className="navbar">Dynamic</h3> 
+        <h5 className="navbar">Dynamic</h5> 
     )
   }
 }

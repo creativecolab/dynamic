@@ -171,7 +171,7 @@ class ResponsesVote extends Component {
         {options.map((opt, index) => {
           if (!opt.text) return;
           return (<div className="text-box" key={index}>{opt.text}{' '}
-          {opt.votes.length > 0 && <span className="votes-box"><div>{opt.votes.length > 0? opt.votes.length : ''}</div></span>}
+          {opt.votes.length > 0 && <div className="votes-box">{opt.votes.length > 0? opt.votes.length : ''}</div>}
         </div>);
         })}
       </div>)

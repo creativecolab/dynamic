@@ -70,7 +70,7 @@ export default class Landing extends Component {
     const invalid = this.state.invalid_code;
 
     return (
-        <Wrapper> 
+        <div id="center-container"> 
         {this.renderRedirect()}
         <h1 id="title-dynamic">Dynamic!</h1>
         <img id="logo" src="./dynamic.png" alt=""/>
@@ -103,7 +103,7 @@ export default class Landing extends Component {
           <input className="small-button" type="submit" value="Continue"/>
 
         </form>
-        </Wrapper>
-    )
+        </div>
+    );
   }
 }
