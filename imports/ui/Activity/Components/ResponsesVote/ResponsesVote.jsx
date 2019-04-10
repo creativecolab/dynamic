@@ -159,7 +159,7 @@ class ResponsesVote extends Component {
         else return {backgroundColor: '#FF6347'};
     }
 
-    if (this.state.chosen === index) return {backgroundColor: '#dddf38'};
+    if (this.state.chosen === index) return {backgroundColor: '#FBF2C0'};
     // else return {color: 'black'};
     
     return {}
