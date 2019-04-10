@@ -8,6 +8,7 @@ import Sessions from '../../api/sessions';
 import Users from '../../api/users';
 import Clock from '../Clock/Clock';
 import Icebreaker from './Components/Icebreaker/Icebreaker';
+import OnboardingInstructions from './Components/OnboardingInstructions/OnboardingInstructions';
 import './Activity.scss';
 
 class Activity extends Component {
@@ -60,7 +61,7 @@ class Activity extends Component {
 
     const { pid, currentActivity } = this.props;
 
-    if (!currentActivity) return <div>Wait for your instructor to begin the activities.<img id="moving-logo" src="./dynamic.gif" className="center"/></div>
+    if (!currentActivity) return <OnboardingInstructions />
 
     //TODO: consider adding a boolean to activity
     // e.g., requires_team
