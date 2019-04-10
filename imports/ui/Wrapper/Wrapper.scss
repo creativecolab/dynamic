@@ -1,21 +1,3 @@
-// #wrapper {
-//   display: flex;
-//   flex-direction: column;
-//   height: 100vh;
-//   margin: 0;
-//   position: relative;
-// }
-
-// #inner {
-//   width: 100%;
-//   position: fixed;
-//   top: 50%;
-//   left: 0px;
-//   right: 0px;
-//   transform: translateY(-50%);
-//   margin: auto;
-// }
-
 #wrapper {
   display: flex;
   flex-direction: column;
@@ -34,14 +16,14 @@
   margin: auto;
 }
 
-.navbar{
-  background-color: #F6F6F6;
-  top: 0;
-  left: 0; 
-  margin: 0; 
-  width: 100%;
-  height: 45px; 
-  color: black; 
-  position: fixed; 
-  padding-top: 5%; 
-}
+// .navbar{
+//   background-color: #F6F6F6;
+//   top: 0;
+//   left: 0; 
+//   margin: 0; 
+//   width: 100%;
+//   height: 45px; 
+//   color: black; 
+//   position: fixed; 
+//   padding-top: 5%; 
+// }

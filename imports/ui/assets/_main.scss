@@ -116,9 +116,21 @@ $small-button-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
   box-shadow: $small-button-shadow;
 }
 
-.small-button-margin {
+.small-button-padding {
   padding: 2% 7% 2% 7%;
   margin-top: 10%;
+  text-align: center; 
+  font-family: $font-stack; 
+  font-size: 22px; 
+  border-radius: 5px;
+  background-color: $dynamic-gray; 
+  border: none;
+  box-shadow: $small-button-shadow;
+}
+
+.small-button-paddingless {
+  padding: 2% 7% 2% 7%;
+  margin-top: 15%;
   text-align: center; 
   font-family: $font-stack; 
   font-size: 22px; 
