@@ -201,13 +201,13 @@ Meteor.startup(() => {
       console.log(_id + " updated. [Activity]");
       console.log(update);
 
-      // let input phase last for 60 seconds
+      // let input phase last for 120 seconds
       if (update.status === 1) {
         console.log('[ACTIVITY STARTED]')
         // clearTimeout(this.timerID);
         this.timer1 = setTimeout(
           () => endPhase(_id, 2),
-          60 * 1000
+          120 * 1000
         );
       }
 

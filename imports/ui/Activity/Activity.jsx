@@ -45,7 +45,7 @@ class Activity extends Component {
     const { currentActivity } = this.props;
     let totalTime = 0;
     if (currentActivity.status === 1) {
-      totalTime = 60;
+      totalTime = 120;
     } else if (currentActivity.status === 3) {
       totalTime = 120;
     } else {

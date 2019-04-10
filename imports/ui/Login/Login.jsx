@@ -26,6 +26,7 @@ class Login extends Component {
 
   // update the pid as the user types
   handleName(evt) {
+    if (evt.target.value.length > 30) return;
     this.setState({
       name: evt.target.value
     });
@@ -33,6 +34,7 @@ class Login extends Component {
 
   // update the pid as the user types
   handleChange(evt) {
+    if (evt.target.value.length > 9) return;
     this.setState({
       pid: evt.target.value
     });
@@ -50,7 +52,7 @@ class Login extends Component {
 
     const { pid, name } = this.state;
 
-    if (pid.length === 0 /*|| firstname.length === 0 || lastname.length === 0*/) return;
+    if (pid.length === 0 /*|| name.length === 0 || lastname.length === 0*/) return;
 
     // find user by pid on database
     const user = Users.findOne({pid});
