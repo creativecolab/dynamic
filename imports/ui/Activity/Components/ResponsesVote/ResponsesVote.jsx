@@ -21,11 +21,6 @@ class ResponsesVote extends Component {
 
   constructor(props) {
     super(props);
-    // TODO: Make options a state
-    // If hotseat index, then options are not shuffled
-    // If not hotseat index, then options are shuffled
-    // save options as state (deep copy), just pull those for component layout
-    // only update db in handleVote, make sure it stays in order
     this.state = {
       voted: false,
       chosen: -1,
@@ -70,7 +65,7 @@ class ResponsesVote extends Component {
           const new_log = Logs.insert({
             log_type: "Points Added",
             code: this.props.session_id,
-            user: this.props.id,
+            user: this.props.pid,
             timestamp: new Date().getTime(),
           });
           console.log(new_log);
@@ -114,9 +109,8 @@ class ResponsesVote extends Component {
       
   }
 
-
+  // handler for the reveal button. Allows the clients to see which options are truths and which is the lie
   handleReveal() {
-    // this.beginReveal();
     this.setState({
       revealed: true,
       voted: false,
@@ -158,11 +152,11 @@ class ResponsesVote extends Component {
     }
 
     if (this.state.chosen === index) return {backgroundColor: '#FBF2C0'};
-    // else return {color: 'black'};
     
     return {}
   }
 
+  // returns the name of the user in the hotseat
   getHotseatName() {
     return Users.findOne({pid: this.props.team.members[this.props.hotseat_index].pid}).name;
   }
@@ -229,6 +223,7 @@ class ResponsesVote extends Component {
     
   }
 
+  // helper to show the people who have voted
   getVotesString(pids) {
     return pids.map(pid => Users.findOne({pid}).name).join(', ');
   }
@@ -264,8 +259,6 @@ class ResponsesVote extends Component {
 
     return (
       <div>
-        {/* {this.state.revealed && !amHotseat && correct && <div>Awesome! You got it right!</div>} */}
-        {/* {this.state.revealed && !amHotseat && !correct && <div>Oh no! Better luck next time.</div>} */}
         <div><h3>{this.getHotseatName()}</h3><h4>is in the hotseat</h4></div>
         {this.renderTeammatesResponses()}
         {!amHotseat && this.props.all_voted && !this.state.revealed && <button className="small-button-padding" onClick={() => this.handleReveal()}>Reveal Answers</button>}
@@ -287,21 +280,16 @@ export default withTracker(props => {
   // hotseat index, -1 = everyone voted
   let hotseat_index = -1;
   for (var i = 0; i < responses.length; i++) {
-    //console.log('index ' + i);
-    //console.log(responses[i]);
 
     // person hasn't been in hotseat yet
     if (!responses[i].hotseat) {
       hotseat_index = i;
-      //console.log("Hotseat index chosen: " + hotseat_index);
-      //console.log(responses[i]);
       break;
     }
 
     // no response recorded
     var empty = true;
     responses[i].options.map((curr_option, curr_index) => {
-      //console.log("Response text: " + curr_option.text);
       if (curr_option.text !== "") {
         console.log("Non-empty response");
         empty = false; 
@@ -320,7 +308,6 @@ export default withTracker(props => {
       hotseat_index = i;
       // here is issue. num_voted not increased
       console.log("Hotseat index remaining the same: " + hotseat_index);
-      //console.log(responses[i]);
       break;
     }
 
