@@ -19,7 +19,8 @@ class Login extends Component {
       pid: '',
       ready: false,
       invalid: false,
-      localUser: localStorage.getItem('pid')
+      localUser: localStorage.getItem('pid'),
+      preference: []
     };
   }
 

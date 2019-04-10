@@ -9,6 +9,7 @@ import Logs from '../../../../api/logs';
 
 import './ResponsesVote.scss';
 import '../../../assets/_main.scss';
+import ChooseTeammate from './Components/ChooseTeammate';
 
 class ResponsesVote extends Component {
   static propTypes = {
@@ -256,7 +257,7 @@ class ResponsesVote extends Component {
 
     // get hotseat from props
     const { hotseat_index } = this.props;
-    if (hotseat_index === -1) return <div>Done! Wait for other teams.<img id="movin-logo" src="./dynamic.gif" className="center"/></div>;
+    if (hotseat_index === -1) return <ChooseTeammate team_id={this.props.team._id} pid={this.props.pid} />;
 
     const amHotseat = this.props.pid === this.props.team.members[this.props.hotseat_index].pid;
     const { correct } = this.state;
