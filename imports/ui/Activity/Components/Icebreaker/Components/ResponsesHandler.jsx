@@ -38,21 +38,21 @@ export default class ResponsesHandler extends Component {
   }
 
   handleTruth1(evt) {
-    if (evt.target.value.length > 30) return;
+    if (evt.target.value.length > 35) return;
     this.setState({
       truth1: evt.target.value
     });
   }
 
   handleTruth2(evt) {
-    if (evt.target.value.length > 30) return;
+    if (evt.target.value.length > 35) return;
     this.setState({
       truth2: evt.target.value
     });
   }
 
   handleLie(evt) {
-    if (evt.target.value.length > 30) return;
+    if (evt.target.value.length > 35) return;
     this.setState({
       lie: evt.target.value
     });

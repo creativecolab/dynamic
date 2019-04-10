@@ -6,6 +6,24 @@ import Users from '../../../api/users';
 
 export default class StatsPage extends Component {
 
+  getTopUserPoints() {
+    const { activity_id } = this.props;
+    const teams = Teams.find({activity_id}).fetch();
+    var topUser = "";
+    var topPoints = 0;
+    teams.map(team => {
+      team.members.map(n => {
+        var curr_user = Users.findOne({pid: n.pid});
+        if (curr_user.points > topPoints) {
+          topUser = curr_user.name;
+          topPoints = curr_user.points;
+        }
+      });
+    });
+    if (topUser === "") return "No top user right now...";
+    else return topUser + ", with " + topPoints + " points";
+  }
+
   getBestLies() {
     const { activity_id } = this.props;
     const responses = Responses.find({activity_id}, { sort: {'options.count': -1 }}).fetch();
@@ -40,6 +58,7 @@ export default class StatsPage extends Component {
   render() {
     return (
       <div>
+        <div><b>Top Guesser</b>: {this.getTopUserPoints()}</div>
         <div><b>Best Lies</b>: {this.getBestLies()}</div>
         <div><b>Most Unique Truths</b>: {this.getUniqueTruths()}</div>
         <div><b>Fastest Teams</b>: {this.getFastestTeams()}</div>
