@@ -88,7 +88,7 @@ class Icebreaker extends Component {
         {
           team.members.map(teammate => {
             const points = this.getTeammate(teammate.pid).points;
-            return <button className="button" key={teammate.pid}><b>{this.getTeammate(teammate.pid).name + ": " + points} {points === 1? 'point' : 'points'}</b></button>;
+            return <div className="text-box" key={teammate.pid}><b>{this.getTeammate(teammate.pid).name + ":  " + points} {points === 1? 'point' : 'points'}</b></div>;
         })}
         </div>
       )
