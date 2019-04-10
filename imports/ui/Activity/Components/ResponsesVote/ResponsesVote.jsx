@@ -149,13 +149,13 @@ class ResponsesVote extends Component {
     if (!this.match()) {
       return (<div>
           {this.props.valid_ops === 0 && <div>No response recorded</div>}
-          {this.props.valid_ops > 0 && !this.state.voted && <div id="padding_down">Which one is the lie?</div>}
-          {this.props.valid_ops > 0 && this.state.voted && !this.props.all_voted && <div id="padding_down">Waiting for other guesses</div>}
-          {this.props.valid_ops > 0 && this.state.voted && this.props.all_voted && <div id="padding_down">All Votes in. Click to Reveal!</div>}
+          {this.props.valid_ops > 0 && !this.state.voted && <div><h2>Which one is the lie?</h2></div>}
+          {this.props.valid_ops > 0 && this.state.voted && !this.props.all_voted && <div><h2>Waiting for other guesses</h2></div>}
+          {this.props.valid_ops > 0 && this.state.voted && this.props.all_voted && <div><h2>All Votes in. Click to Reveal!</h2></div>}
           {
             shuffled_options.map((opt, index) => {
               if (!opt.text) return;
-              return (<button className="button2" style={this.getStyle(opt.lie, index)} key={index} onClick={(evt) => this.handleVote(evt, opt.lie, opt.text, index)}>
+              return (<button className="big-button" style={this.getStyle(opt.lie, index)} key={index} onClick={(evt) => this.handleVote(evt, opt.lie, opt.text, index)}>
                 {opt.text}
               </button>);
             })
@@ -166,13 +166,13 @@ class ResponsesVote extends Component {
     // in the hotseat!
     else {
       return (<div>
-        {!this.props.all_voted && <div id="padding_down">Waiting for other guesses</div>}
-        {this.props.all_voted && <div id="padding_down">Everyone has guessed</div>}
+        {!this.props.all_voted && <div>Waiting for other guesses</div>}
+        {this.props.all_voted && <div>Everyone has guessed</div>}
         {options.map((opt, index) => {
           if (!opt.text) return;
-          return (<button className="button" key={index}>{opt.text}{' '}
-          {opt.votes.length > 0 && <span className="votes"><div>{opt.votes.length > 0? opt.votes.length : ''}</div></span>}
-        </button>);
+          return (<div className="text-box" key={index}>{opt.text}{' '}
+          {opt.votes.length > 0 && <span className="votes-box"><div>{opt.votes.length > 0? opt.votes.length : ''}</div></span>}
+        </div>);
         })}
       </div>)
     }
@@ -240,22 +240,16 @@ class ResponsesVote extends Component {
 
     // get hotseat from props
     const { hotseat_index } = this.props;
-    if (hotseat_index === -1) return "Done! Wait for other teams.";
+    if (hotseat_index === -1) return <div>Done! Wait for other teams.<img id="movin-logo" src="./dynamic.gif" className="center"/></div>;
 
     const amHotseat = this.props.pid === this.props.team.members[this.props.hotseat_index].pid;
     const { correct } = this.state;
 
     return (
       <div>
-        <h3 id="navbar">Icebreaker</h3>
-        <div>
-          
         {/* {this.state.revealed && !amHotseat && correct && <div>Awesome! You got it right!</div>} */}
         {/* {this.state.revealed && !amHotseat && !correct && <div>Oh no! Better luck next time.</div>} */}
-
-        </div>
-        <big>{this.getHotseatName()}</big>
-        <h5>is in the hotseat</h5>
+        <h3>{this.getHotseatName()}<h4>is in the hotseat</h4></h3>
         {this.renderTeammatesResponses()}
         {!amHotseat && this.props.all_voted && !this.state.revealed && <button className="small-button" onClick={() => this.handleReveal()}>Reveal Answers</button>}
         {this.state.revealed && <button className="small-button" onClick={() => this.handleNext()}>Next Hotseat</button>}
