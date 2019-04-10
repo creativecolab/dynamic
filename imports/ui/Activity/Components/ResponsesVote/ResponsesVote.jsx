@@ -91,9 +91,6 @@ class ResponsesVote extends Component {
       options[index].votes.push(this.props.pid);
       options[index].count += 1; 
 
-      let correct = false;
-      if (options[index].lie) correct = true;
-
       // save this response 
       // TODO: track the amount of time it took
       Responses.update(response._id, {
@@ -107,7 +104,7 @@ class ResponsesVote extends Component {
         this.setState({
           voted: true,
           chosen: votedIndex,
-          correct // for points
+          correct: lie // for points
         });
       });
     } else {
@@ -122,7 +119,7 @@ class ResponsesVote extends Component {
     this.setState({
       revealed: true,
       voted: false,
-      chosen: -1
+      chosen: -1,
     });
   }
 
@@ -178,8 +175,13 @@ class ResponsesVote extends Component {
   renderPoints() {
     const curr_user = Users.findOne({pid: this.props.pid});
     const points = curr_user.points;
-    if (points !== 1) return <div><h2>You now have {points} points</h2></div>;
-    else return <div><h2>You now have {points} point</h2></div>;
+    if (this.state.correct) {
+      if (points !== 1) return <div><h2>You guessed right! You earned 1 point.<br/>Now you have {points} points!</h2></div>;
+      else return <div><h2>You guessed right! You earned 1 point.<br/>Now you have {points} point!</h2></div>;
+    } else {
+      if (points !== 1) return <div><h2>You guessed wrong!<br/>You still have {points} points.</h2></div>;
+      else return <div><h2>You guessed wrong!<br/>You still have {points} point.</h2></div>;
+    }
   }
 
   // depending on who is in the hotseat, render either votable responses or trackable responses
@@ -218,12 +220,16 @@ class ResponsesVote extends Component {
         {options.map((opt, index) => {
           if (!opt.text) return;
           return (<div className="text-box" key={index}>{opt.text}{' '}
-          {opt.votes.length > 0 && <div className="votes-box">{opt.votes.length > 0? opt.votes.length : ''}</div>}
+          {opt.votes.length > 0 && <div className="votes-box">{opt.votes.length > 0? this.getVotesString(opt.votes) : ''}</div>}
         </div>);
         })}
       </div>)
     }
     
+  }
+
+  getVotesString(pids) {
+    return pids.map(pid => Users.findOne({pid}).name).join(', ');
   }
 
   // new hotseat, reset state
@@ -259,7 +265,7 @@ class ResponsesVote extends Component {
       <div>
         {/* {this.state.revealed && !amHotseat && correct && <div>Awesome! You got it right!</div>} */}
         {/* {this.state.revealed && !amHotseat && !correct && <div>Oh no! Better luck next time.</div>} */}
-        <h3>{this.getHotseatName()}<h4>is in the hotseat</h4></h3>
+        <div><h3>{this.getHotseatName()}</h3><h4>is in the hotseat</h4></div>
         {this.renderTeammatesResponses()}
         {!amHotseat && this.props.all_voted && !this.state.revealed && <button className="small-button-padding" onClick={() => this.handleReveal()}>Reveal Answers</button>}
         {this.state.revealed && <button className="small-button-padding" onClick={() => this.handleNext()}>Next Hotseat</button>}
