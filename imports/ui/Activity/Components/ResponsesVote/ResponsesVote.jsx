@@ -261,9 +261,9 @@ class ResponsesVote extends Component {
         {/* {this.state.revealed && !amHotseat && !correct && <div>Oh no! Better luck next time.</div>} */}
         <h3>{this.getHotseatName()}<h4>is in the hotseat</h4></h3>
         {this.renderTeammatesResponses()}
-        {!amHotseat && this.props.all_voted && !this.state.revealed && <button className="small-button-margin" onClick={() => this.handleReveal()}>Reveal Answers</button>}
-        {this.state.revealed && <button className="small-button-margin" onClick={() => this.handleNext()}>Next Hotseat</button>}
-        {!this.state.revealed && this.props.valid_ops === 0 && <button className="small-button-margin" onClick={() => this.handleNext()}>Next Hotseat</button>}
+        {!amHotseat && this.props.all_voted && !this.state.revealed && <button className="small-button-padding" onClick={() => this.handleReveal()}>Reveal Answers</button>}
+        {this.state.revealed && <button className="small-button-padding" onClick={() => this.handleNext()}>Next Hotseat</button>}
+        {!this.state.revealed && this.props.valid_ops === 0 && <button className="small-button-padding" onClick={() => this.handleNext()}>Next Hotseat</button>}
       </div>
     )
   }
