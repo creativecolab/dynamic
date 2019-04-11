@@ -1,0 +1,22 @@
+#wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+    position: relative;
+  }
+  
+  #inner {
+    width: 100%;
+    position: fixed;
+    top: 50%;
+    left: 0px;
+    right: 0px;
+    transform: translateY(-50%);
+    margin: auto;
+  }
+
+  #dynamic-logo-big{
+      top: 5%; 
+      left: 5%; 
+  }

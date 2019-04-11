@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Wrapper from '../Wrapper/Wrapper';
 import { withTracker } from 'meteor/react-meteor-data';
 
 import Sessions from "../../api/sessions";
 import SessionListItem from './Components/SessionListItem';
 import Logs from "../../api/logs";
+import '../assets/_main.scss';
+import './InstructorUI.scss';
 
 
 class InstructorUI extends Component {
@@ -105,23 +106,26 @@ class InstructorUI extends Component {
   render() {
     return (
       <div>
+        {/* <div class="header"><img id="dynamic-logo-big" src="./dynamic_logo.png" alt=""/> */}
+        <div id="inner">
         <h1>Manage Sessions</h1>
+        <br></br>
         <form id="session-form" onSubmit={(evt) => this.handleNewSession(evt)}>
           <div id="session-code" className="field-container">
             <label className="field-title" htmlFor="session-code">New session code</label>
             <div className="input-container">
-              <input type="text" name="session-code" placeholder="Type your session code here" value={this.state.session_code} onChange={(evt) => this.handleSessionChange(evt)}/>
+              <input className="bigscreen-input-text" type="text" name="session-code" placeholder="Type your session code here" value={this.state.session_code} onChange={(evt) => this.handleSessionChange(evt)}/>
             </div>
           </div>
           <div id="submit" className="field-container">
-            <div className="input-container">
-              <input type="submit" name="submit" value="Create"/>
-            </div>
+          <input className="bigscreen-button" type="submit" value="Create"/>
           </div>
         </form>
+        <br></br>
         <div>
-          {this.mapSessions()}
+        {this.mapSessions()}
         </div>
+      </div>
       </div>
     )
   }

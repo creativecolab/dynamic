@@ -1,0 +1,26 @@
+// .header img {
+//     float: left; 
+//     width: 7%;
+//     height: 7%;
+//     padding-top: 50px; 
+//     padding-left: 50px; 
+//   }
+
+// .header h1 {
+//     position: fixed;
+//     top: 10%;
+//     left: 0px;
+//     right: 0px;
+//     transform: translateY(-50%);
+//     margin: auto;
+//   }
+
+#inner {
+    width: 100%;
+    position: fixed;
+    top: 50%;
+    left: 0px;
+    right: 0px;
+    transform: translateY(-50%);
+    margin: auto;
+  }

@@ -58,10 +58,29 @@ export default class StatsPage extends Component {
   render() {
     return (
       <div>
-        <div><b>Top Guesser</b>: {this.getTopUserPoints()}</div>
+        {/* <div><b>Top Guesser</b>: {this.getTopUserPoints()}</div>
         <div><b>Best Lies</b>: {this.getBestLies()}</div>
         <div><b>Most Unique Truths</b>: {this.getUniqueTruths()}</div>
-        <div><b>Fastest Teams</b>: {this.getFastestTeams()}</div>
+        <div><b>Fastest Teams</b>: {this.getFastestTeams()}</div> */}
+        <h1>2 Truths and 1 Lie</h1>
+          <br></br>
+          <h2>Top Guesser:</h2>
+          <div className="text-box-bigscreen-shrink">
+            <h2>{this.getTopUserPoints()}</h2>
+          </div>
+          <h2>Best Lies:</h2>
+          <div className="text-box-bigscreen-shrink">
+            <h2>{this.getBestLies()}</h2>
+          </div>
+          <h2>Most Unique Truths:</h2>
+          <div className="text-box-bigscreen-shrink">
+            <h2>{this.getUniqueTruths()}</h2>
+          </div>
+          <h2>Fastest Teams:</h2>
+          <div className="text-box-bigscreen-shrink">
+            <h2> {this.getFastestTeams()}</h2>
+          </div><br></br>
+          
       </div>
     )
   }

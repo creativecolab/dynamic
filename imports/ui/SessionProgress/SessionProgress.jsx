@@ -116,14 +116,16 @@ class SessionProgress extends Component {
       return (
         <div>
           {this.renderClock()}
-          <h1>{currentActivity.name}</h1>
-          <div>2 Truths and 1 Lie</div>
-          <hr/>
-          <div>Instructions</div>
-          <div>
+          <h1 id="header">{currentActivity.name}</h1>
+          <div id="font-size">2 Truths and 1 Lie</div>
+          <br></br>
+          <h2>Instructions:</h2>
+          <div className="text-box-bigscreen">
             <h2>Write TWO interesting truths and ONE lie about yourself!</h2>
+          </div><br></br>
+          <div className="text-box-bigscreen">
             <h2>The goal is to make it hard for people to guess which is the lie.</h2>
-          </div>
+          </div><br></br><br></br>
         </div>
       )
     }
@@ -134,7 +136,19 @@ class SessionProgress extends Component {
       return (
         <div>
           {this.renderClock()}
-          <h1>Try to guess the LIE!</h1>
+          <h1>2 Truths and 1 Lie</h1>
+          <div id="font-size">1 Person is in the hotseat</div>
+          <br></br>
+          <h2>Instructions:</h2>
+          <div className="text-box-bigscreen">
+            <h2>Select which of the 3 statements is the lie.</h2>
+          </div><br></br>
+          <div className="text-box-bigscreen">
+            <h2>When everyone has guessed, you'll be able to see who was right.</h2>
+          </div><br></br>
+          <div className="text-box-bigscreen">
+            <h2>Then continue to the next person in the hotseat.</h2>
+          </div><br></br><br></br>
         </div>
       )
     }
@@ -150,11 +164,19 @@ class SessionProgress extends Component {
 
     if (session.status === 2) return <SessionEnd />;
 
-    if (session.status === 0) return (<div>
-      <h1>Go to <u>tinyurl.com/dsgn100dynamic</u></h1>
-      <h1>Session code: {this.props.match.params.code}</h1>
-       <div><h1>{numJoined}</h1>{numJoined === 1? ' person has ' : ' people have '} joined</div>
-      <button onClick={() => this.startSession()}>Begin</button>
+    if (session.status === 0) return (
+    <div>
+      <h1 id="header">Dynamic</h1>
+      <h2>Enter url:</h2>
+      <div className="text-box-bigscreen">
+      <c>http://sodynamic.herokuapp.com</c>
+      </div>
+      <h2>Session code:</h2>
+      <div className="text-box-bigscreen">
+      <c>{this.props.match.params.code}</c>
+      </div>
+      <div id="spacing"><c>{numJoined}</c><br></br>{numJoined === 1? ' person has ' : ' people have '} joined</div>
+      <button className="bigscreen-button" onClick={() => this.startSession()}>Begin</button>
     </div>);
 
     if (!this.props.currentActivity) return "You should add activities"
@@ -164,7 +186,7 @@ class SessionProgress extends Component {
         {/* <div>{this.props.currentActivity.name}</div> */}
         {this.getInstructions(this.props.currentActivity.status)}
         {/* <div>Session code: {this.props.match.params.code}</div> */}
-        <button onClick={() => this.advanceActivity(this.props.currentActivity)}>Skip to activity</button>
+        <button className="bigscreen-button" onClick={() => this.advanceActivity(this.props.currentActivity)}>Skip to activity</button>
       </div>
     );
   }
@@ -172,11 +194,11 @@ class SessionProgress extends Component {
   render() {
     if (!this.props.session) return "TODO: Loading component";
     return (
-      <Wrapper>
-        <img className="dynamic-logo" src="/small_dynamic.png" alt="Dynamic"/>
-        {/* <button onClick={() => this.edit()} id="back-button">edit</button> */}
+      <div>
+        <div id="inner">
         {this.renderInfo()}
-      </Wrapper>
+        </div>
+      </div>
     )
   }
 }
