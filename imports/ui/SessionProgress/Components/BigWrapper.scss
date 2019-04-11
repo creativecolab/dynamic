@@ -1,4 +1,4 @@
-#wrapper {
+#big-wrapper {
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -6,7 +6,7 @@
     position: relative;
   }
   
-  #inner {
+  #inner-big {
     width: 100%;
     position: fixed;
     top: 50%;
@@ -16,7 +16,7 @@
     margin: auto;
   }
 
-  #dynamic-logo-big{
+  #dynamic-logo-big {
       top: 5%; 
       left: 5%; 
   }

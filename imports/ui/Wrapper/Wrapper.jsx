@@ -3,8 +3,8 @@ import './Wrapper.scss';
 
 export default function Wrapper(props) {
   return (
-    <div id="wrapper">
-      <div id="inner">
+    <div id="mobile-wrapper">
+      <div id="inner-mobile">
         {props.children}
       </div>
     </div>
