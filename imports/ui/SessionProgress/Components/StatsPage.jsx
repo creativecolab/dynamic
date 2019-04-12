@@ -26,9 +26,13 @@ export default class StatsPage extends Component {
 
   getBestLies() {
     const { activity_id } = this.props;
-    const responses = Responses.find({activity_id}, { sort: {'options.count': -1 }}).fetch();
+
+    // get responses, sort by num_voted
+    const responses = Responses.find({activity_id}, {sort: {num_voted: -1}}).fetch();
     if (!responses) return 'No good lies...';
+
     const lies = responses.map(re => re.options[2]).filter(opt => opt.count === 0);
+
     if (!lies) return 'No good lies...';
     if (!lies[0]) return 'No good lies...';
     return lies[0].text;
@@ -36,19 +40,35 @@ export default class StatsPage extends Component {
 
   getUniqueTruths() {
     const { activity_id } = this.props;
-    const responses = Responses.find({activity_id}, { sort: {'options.count': -1 }}).fetch();
-    if (!responses) return 'No good lies...';
-    // TODO: get both index 0 and 1
-    const truths = responses.map(re => re.options[0]).filter(opt => opt.count > 0);
+
+    // get responses
+    const responses = Responses.find({activity_id}).fetch();
+    if (!responses) return 'No unique truths...';
+
+    // get all truths
+    const truths0 = responses.map(re => re.options[0]).filter(opt => opt.count > 0);
+    const truths1 = responses.map(re => re.options[1]).filter(opt => opt.count > 0);
+    const truths = truths0.concat(truths1).sort((a, b) => b.count - a.count);
+
     if (!truths) return 'No unique truths...';
     if (!truths[0]) return 'No unique truths...';
-    //TODO: fix this
     return truths[0].text;
   }
 
+  // give top users points
+  addPoints(pid) {
+    Users.findOne({pid});
+  };
+
   getFastestTeams() {
     const { activity_id } = this.props;
-    const teams = Teams.find({activity_id}, {sort: {teamFormationTime: 1}}).fetch();
+
+    // get top 3 fastest teams
+    const teams = Teams.find({activity_id}, {
+      sort: { teamFormationTime: 1 },
+      limit: 3
+    }).fetch();
+
     return teams.map(team => {
       return <div key={team._id}>{team.members.map(n => Users.findOne({pid: n.pid}).name).join(', ')}:
       {' ' + parseInt(team.teamFormationTime / 1000)}s</div>
@@ -58,10 +78,6 @@ export default class StatsPage extends Component {
   render() {
     return (
       <div>
-        {/* <div><b>Top Guesser</b>: {this.getTopUserPoints()}</div>
-        <div><b>Best Lies</b>: {this.getBestLies()}</div>
-        <div><b>Most Unique Truths</b>: {this.getUniqueTruths()}</div>
-        <div><b>Fastest Teams</b>: {this.getFastestTeams()}</div> */}
         <h1>2 Truths and 1 Lie</h1>
           <br></br>
           <h2>Top Guesser:</h2>

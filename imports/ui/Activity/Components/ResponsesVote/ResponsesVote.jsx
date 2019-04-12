@@ -54,7 +54,7 @@ class ResponsesVote extends Component {
       // change color!
       if (lie) {
         console.log('yaya!! You guessed right!');
-        // give user some points
+        // give user some points, TODO: add session_id!
         Users.update(user._id, {
           $set: {
             points: new_points + 1
@@ -199,6 +199,11 @@ class ResponsesVote extends Component {
           {
             shuffled_options.map((opt, index) => {
               if (!opt.text) return;
+              if (this.state.revealed) {
+                return (<div className="text-box" style={this.getStyle(opt.lie, index)} key={index}>
+                  {opt.text}
+                </div>);
+              }
               return (<button className="big-button" style={this.getStyle(opt.lie, index)} key={index} onClick={(evt) => this.handleVote(evt, opt.lie, opt.text, index)}>
                 {opt.text}
               </button>);

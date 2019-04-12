@@ -2,12 +2,14 @@
 $font-stack: 'PT Sans Narrow', sans-serif;
 
 // MAIN COLORS
+$dynamic-black: #080808;
 $dynamic-red: #F05D5E;
 $dynamic-green: #00DD90;
 $dynamic-blue: #1E91D6;
 $dynamic-yellow: #FBF2C0;
 $dynamic-light-gray: #F0F0F0;
 $dynamic-gray: #EBEBEB;
+$dynamic-medium-gray: #5f6368;
 
 // SHADOWS
 $small-button-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
@@ -18,15 +20,14 @@ $small-button-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
 
 .field-container {
   margin-bottom: 16px;
-  // text-align: left!important;
 }
 
 .field-title {
-  color: rgb(95, 99, 104);
+  color: $dynamic-medium-gray;
 }
 
 .field-title-bold {
-  color: rgb(95, 99, 104);
+  color: $dynamic-medium-gray;
   font-weight: bolder; 
 }
 
@@ -37,7 +38,7 @@ $small-button-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
 .input-text {
   border-radius: 5px 5px 0 0;
   border: 0px;
-  border-bottom: 2px solid black;
+  border-bottom: 2px solid $dynamic-black;
   background: $dynamic-light-gray;
   width: 80%;
   height: 10%; 
@@ -46,13 +47,12 @@ $small-button-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
   margin-top: 12px; 
   text-align: center; 
   font-size: 22px;
-  font-family: $font-stack;
 }
 
 .bigscreen-input-text {
   border-radius: 5px 5px 0 0;
   border: 0px;
-  border-bottom: 2px solid black;
+  border-bottom: 2px solid $dynamic-black;
   background: $dynamic-light-gray;
   width: 20%;
   padding: 5px; 
@@ -60,11 +60,10 @@ $small-button-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
   margin-top: 12px; 
   text-align: center; 
   font-size: 22px;
-  font-family: $font-stack;
 }
 
-.text-box{
-  border: 2px solid black ;
+.text-box {
+  border: 2px solid $dynamic-black ;
   border-radius: 5px 5px 5px 5px;
   width: 80%;
   height: 10%; 
@@ -73,12 +72,15 @@ $small-button-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
   margin-top: 7%; 
   text-align: center; 
   font-size: 22px;
-  font-family: $font-stack;
   position: relative;
 }
 
+.correct {
+  border: 2px solid $dynamic-black ;
+}
+
 .text-box-bigscreen{
-  border: 2px solid black ;
+  border: 2px solid $dynamic-black ;
   border-radius: 5px 5px 5px 5px;
   width: 550px;
   height: 60px; 
@@ -86,19 +88,17 @@ $small-button-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
   padding-top: 10px; 
   padding-bottom: 10px; 
   text-align: center; 
-  font-family: $font-stack;
   position: relative;
 }
 
 .text-box-bigscreen-shrink{
-  border: 2px solid black ;
+  border: 2px solid $dynamic-black ;
   border-radius: 5px 5px 5px 5px;
   width: 550px;
   height: 40px; 
   padding-bottom: 18px; 
   margin: auto; 
   text-align: center; 
-  font-family: $font-stack;
   position: relative;
 }
 
@@ -133,7 +133,6 @@ $small-button-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
   text-align: center; 
   font-size: 22px;
   color: $dynamic-red;
-  font-family: $font-stack; 
 }
 
 .invalid-input-message {
@@ -149,7 +148,6 @@ $small-button-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
   padding: 2% 7% 2% 7%;
   margin-top: 30%;
   text-align: center; 
-  font-family: $font-stack; 
   font-size: 22px; 
   border-radius: 5px;
   background-color: $dynamic-gray; 
@@ -161,7 +159,6 @@ $small-button-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
   padding: 2% 7% 2% 7%;
   margin-top: 10%;
   text-align: center; 
-  font-family: $font-stack; 
   font-size: 22px; 
   border-radius: 5px;
   background-color: $dynamic-gray; 
@@ -173,7 +170,6 @@ $small-button-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
   padding: 2% 7% 2% 7%;
   margin-top: 15%;
   text-align: center; 
-  font-family: $font-stack; 
   font-size: 22px; 
   border-radius: 5px;
   background-color: $dynamic-gray; 
@@ -186,7 +182,6 @@ $small-button-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
   margin-top: 2%;
   margin-bottom: 2%;
   text-align: center; 
-  font-family: $font-stack; 
   font-size: 22px; 
   border-radius: 5px;
   background-color: $dynamic-gray; 
@@ -203,7 +198,6 @@ $small-button-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
   margin-top: 2%;
   margin-bottom: 2%;
   text-align: center; 
-  font-family: $font-stack; 
   font-size: 22px; 
   border-radius: 5px;
   background-color: $dynamic-yellow; 
@@ -219,11 +213,10 @@ $small-button-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
   padding: 7px 25px 7px 25px;
   margin-top: 5px; 
   text-align: center; 
-  font-family: $font-stack; 
   font-size: 22px; 
   border-radius: 5px;
   background-color: $dynamic-gray; 
   border: none;
   box-shadow: $small-button-shadow;
-  color: black;
+  color: $dynamic-black;
 }
