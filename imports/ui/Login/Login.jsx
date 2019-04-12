@@ -105,7 +105,8 @@ class Login extends Component {
             session: this.props.session._id,
             points: 0
           }
-        ]
+        ],
+        preference: []
       });
       // add user to session
       Sessions.update(this.props.session._id, {
