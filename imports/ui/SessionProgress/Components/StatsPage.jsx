@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import Teams from '../../../api/teams';
 import Responses from '../../../api/responses';
 import Users from '../../../api/users';
+import Wrapper from '../../Wrapper/Wrapper';
 
 export default class StatsPage extends Component {
 
@@ -90,27 +91,28 @@ export default class StatsPage extends Component {
 
   render() {
     return (
-      <div>
-        <h1>2 Truths and 1 Lie</h1>
-          <br></br>
-          <h2>Top Guesser:</h2>
-          <div className="text-box-bigscreen-shrink">
-            <h2>{this.getTopUserPoints()}</h2>
-          </div>
-          <h2>Best Lies:</h2>
-          <div className="text-box-bigscreen-shrink">
-            <h2>{this.getBestLies()}</h2>
-          </div>
-          <h2>Most Unique Truths:</h2>
-          <div className="text-box-bigscreen-shrink">
-            <h2>{this.getUniqueTruths()}</h2>
-          </div>
-          <h2>Fastest Teams:</h2>
-          <div className="text-box-bigscreen-shrink">
-            <h2> {this.getFastestTeams()}</h2>
-          </div><br></br>
-          
-      </div>
+      <Wrapper>
+        <div>
+          <h1>2 Truths and 1 Lie</h1>
+            <br></br>
+            <h2>Top Guesser:</h2>
+            <div className="text-box-bigscreen-shrink">
+              <h2>{this.getTopUserPoints()}</h2>
+            </div>
+            <h2>Best Lies:</h2>
+            <div className="text-box-bigscreen-shrink">
+              <h2>{this.getBestLies()}</h2>
+            </div>
+            <h2>Most Unique Truths:</h2>
+            <div className="text-box-bigscreen-shrink">
+              <h2>{this.getUniqueTruths()}</h2>
+            </div>
+            <h2>Fastest Teams:</h2>
+            <div className="text-box-bigscreen-shrink">
+              <h2> {this.getFastestTeams()}</h2>
+            </div><br></br>
+        </div>
+      </Wrapper>
     )
   }
 }

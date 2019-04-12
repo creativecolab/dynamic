@@ -150,7 +150,13 @@ class Login extends Component {
       const { _id, status } = this.props.session;
 
       // session is over...
-      if (status === 2) return <div><h2>Thanks for participating! Please fill out <a href="https://forms.gle/ATh7tQC5LFf547h19">this survey</a>.</h2></div>
+      if (status === 2) return (
+              <Wrapper>
+                <div>
+                  <h2>Thanks for participating! Please fill out <a href="https://forms.gle/ATh7tQC5LFf547h19">this survey</a>.</h2>
+                </div>
+              </Wrapper>
+      )
 
       return <Wrapper><Activity pid={pid} session_id={_id} /></Wrapper>
     }

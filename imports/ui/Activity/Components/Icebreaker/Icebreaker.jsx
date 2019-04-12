@@ -84,19 +84,22 @@ class Icebreaker extends Component {
     if (currentActivity.status === 4) {
       if (!team) return "You have not been assigned a team for this activity. Please wait for the next one.";
       return (
-        <div>Waiting for next activity<img id="moving-logo" src="./dynamic.gif" className="center"/>
-        {
-          team.members.map(teammate => {
-            const teammate_points_history = this.getTeammate(teammate.pid).points_history;
-            var points = 0;
-            teammate_points_history.map(curr_sess_points => {
-                if (curr_sess_points.session === currentActivity.session_id) {
-                  points = curr_sess_points.points;
-                }
-            });
-            return <div className="text-box" key={teammate.pid}><b>{this.getTeammate(teammate.pid).name + ":  " + points} {points === 1? 'point' : 'points'}</b></div>;
-        })}
-        </div>
+        <Wrapper>
+          <div>Waiting for next activity<img id="moving-logo" src="./dynamic.gif" className="center"/>
+          {
+            team.members.map(teammate => {
+              const teammate_points_history = this.getTeammate(teammate.pid).points_history;
+              var points = 0;
+              teammate_points_history.map(curr_sess_points => {
+                  if (curr_sess_points.session === currentActivity.session_id) {
+                    points = curr_sess_points.points;
+                  }
+              });
+              return <div className="text-box" key={teammate.pid}><b>{this.getTeammate(teammate.pid).name + ":  " + points} {points === 1? 'point' : 'points'}</b></div>;
+          })}
+          </div>
+        </Wrapper>
+        
       )
     }
     return "Not supposed to be here!";
