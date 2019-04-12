@@ -6,18 +6,31 @@ import Users from '../../../api/users';
 
 export default class StatsPage extends Component {
 
+  static propTypes = {
+    session_id: PropTypes.string.isRequired,
+    activity_id: PropTypes.string.isRequired
+  }
+
+  // finds and returns the user in the session with the most points so far
   getTopUserPoints() {
     const { activity_id } = this.props;
+    // get all teams in this activity
     const teams = Teams.find({activity_id}).fetch();
     var topUser = "";
     var topPoints = 0;
+    // check each teams members 
     teams.map(team => {
       team.members.map(n => {
         var curr_user = Users.findOne({pid: n.pid});
-        if (curr_user.points > topPoints) {
-          topUser = curr_user.name;
-          topPoints = curr_user.points;
-        }
+        // for each memory, find their points for this session, and see if is the greatest
+        curr_user.points_history.map(curr_user_point => {
+          if (curr_user_point.session === this.props.session_id) {
+            if (curr_user_point.points > topPoints) {
+              topUser = curr_user.name;
+              topPoints = curr_user_point.points;
+            }
+          }
+        });
       });
     });
     if (topUser === "") return "No top user right now...";

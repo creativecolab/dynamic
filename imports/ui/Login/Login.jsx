@@ -70,6 +70,16 @@ class Login extends Component {
         return;
       }
 
+      // prepare points for this session
+      Users.update(user._id, {
+        $push: {
+          points_history: {
+            session: this.props.session._id,
+            points: 0     
+          }
+        }
+      });
+
       // add user to session
       Sessions.update(this.props.session._id, {
         $push: {
@@ -81,12 +91,21 @@ class Login extends Component {
         });
       });
 
+
+
+
+
     } else {
       Users.insert({
         name,
         pid,
         teammates: [],
-        points: 0
+        points_history: [ 
+          {
+            session: this.props.session._id,
+            points: 0
+          }
+        ]
       });
       // add user to session
       Sessions.update(this.props.session._id, {

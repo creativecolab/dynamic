@@ -44,31 +44,37 @@ class ResponsesVote extends Component {
     // see if they've been voted on
     const voted = options.filter(opt => opt.votes.includes(this.props.pid)).length > 0;
 
-    const user = Users.findOne({pid: this.props.pid});
-    console.log(user);
-    const new_points = user.points;
-    console.log(new_points+1);
-
     if (!voted) {
 
       // change color!
       if (lie) {
         console.log('yaya!! You guessed right!');
         // give user some points
-        Users.update(user._id, {
-          $set: {
-            points: new_points + 1
+        const { pid, session_id } = this.props;
+        const user = Users.findOne({pid: pid});
+        console.log(user);
+        var new_points = 0;
+        var points_index = 0;
+        user.points_history.map((sess_point, index)  => {
+          if (this.props.session_id === sess_point.session) {
+            new_points = sess_point.points;
+            points_index = index;
           }
-        }, () => {
-          console.log('Points added!');
-          //track the session that was created
-          const new_log = Logs.insert({
-            log_type: "Points Added",
-            code: this.props.session_id,
-            user: this.props.pid,
-            timestamp: new Date().getTime(),
-          });
-          console.log(new_log);
+        });
+        new_points = new_points + 1;
+        console.log("New points will be" + new_points);
+        // call server method
+        Meteor.call('users.addPoints', {
+          user_id: user._id,
+          session_id: session_id,
+          points: new_points
+        }, (err, res) => {
+          if (err) {
+            alert(err);
+          } else {
+            // success!
+            console.log('Points added!');
+          }
         });
       } else {
         console.log('noooo!! You guessed wrong! :(');
@@ -166,10 +172,21 @@ class ResponsesVote extends Component {
     return this.props.pid === this.props.team.members[this.props.hotseat_index].pid
   }
 
+  // helper to show the people who have voted
+  getVotesString(pids) {
+    return pids.map(pid => Users.findOne({pid}).name).join(', ');
+  }
+
   // display the number of points someone has
   renderPoints() {
     const curr_user = Users.findOne({pid: this.props.pid});
-    const points = curr_user.points;
+    const curr_points_history = curr_user.points_history;
+    var points = 0;
+    curr_points_history.map(curr_point => {
+      if (curr_point.session === this.props.session_id) {
+        points = curr_point.points;
+      }
+    });
     if (this.state.correct) {
       if (points !== 1) return <div><h2>You guessed right! You earned 1 point.<br/>Now you have {points} points!</h2></div>;
       else return <div><h2>You guessed right! You earned 1 point.<br/>Now you have {points} point!</h2></div>;
@@ -221,11 +238,6 @@ class ResponsesVote extends Component {
       </div>)
     }
     
-  }
-
-  // helper to show the people who have voted
-  getVotesString(pids) {
-    return pids.map(pid => Users.findOne({pid}).name).join(', ');
   }
 
   // new hotseat, reset state
