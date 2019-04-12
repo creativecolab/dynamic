@@ -44,7 +44,25 @@ Meteor.methods({
     // );
     // console.log(Teams.findOne(team_id));
 
+  },
+
+  'users.addPoints' ({ user_id, session_id, points }) {
+    Users.update({_id: user_id, "points_history.session": session_id}, {
+      $set: {
+        "points_history.$.points": points
+      }
+    }, () => {
+      //track the session that was created
+      const new_log = Logs.insert({
+        log_type: "Points Added",
+        code: this.props.session_id,
+        user: this.props.pid,
+        timestamp: new Date().getTime(),
+      });
+    });
+
   }
+
 });
 
 function updateRoster() {
@@ -55,14 +73,15 @@ function updateRoster() {
     firstname: 'Gustavo',
     lastname: 'Umbelino',
     pid: 'gus',
-    points: 0
+    points_history: [],
+    preference: []
   },
   {
     name: 'Vivian Ta',
     firstname: 'Vivian',
     lastname: 'Ta',
     pid: 'viv',
-    points: 0,
+    points_history: [],
     preference: []
   },
   {
@@ -70,7 +89,7 @@ function updateRoster() {
     firstname: 'Eric',
     lastname: 'Truong',
     pid: 'eric',
-    points: 0,
+    points_history: [],
     preference: []
   },
   {
@@ -78,7 +97,7 @@ function updateRoster() {
     firstname: 'Steven',
     lastname: 'Dow',
     pid: 'steven',
-    points: 0,
+    points_history: [],
     preference: []
   },
   {
@@ -86,7 +105,7 @@ function updateRoster() {
     firstname: 'Samuel',
     lastname: 'Blake',
     pid: 'sam',
-    points: 0,
+    points_history: [],
     preference: []
   }];
 
