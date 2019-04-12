@@ -87,7 +87,13 @@ class Icebreaker extends Component {
         <div>Waiting for next activity<img id="moving-logo" src="./dynamic.gif" className="center"/>
         {
           team.members.map(teammate => {
-            const points = this.getTeammate(teammate.pid).points;
+            const teammate_points_history = this.getTeammate(teammate.pid).points_history;
+            var points = 0;
+            teammate_points_history.map(curr_sess_points => {
+                if (curr_sess_points.session === currentActivity.session_id) {
+                  points = curr_sess_points.points;
+                }
+            });
             return <div className="text-box" key={teammate.pid}><b>{this.getTeammate(teammate.pid).name + ":  " + points} {points === 1? 'point' : 'points'}</b></div>;
         })}
         </div>
