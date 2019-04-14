@@ -154,7 +154,7 @@ class Login extends Component {
       if (status === 2) return (
               <Wrapper>
                 <div>
-                  <h2>Thanks for participating! Please fill out <a href="https://forms.gle/ATh7tQC5LFf547h19">this survey</a>.</h2>
+                  <h2>Thanks for participating!<br/>Please fill out <a href="https://forms.gle/ATh7tQC5LFf547h19">this survey</a>.</h2>
                 </div>
               </Wrapper>
       )

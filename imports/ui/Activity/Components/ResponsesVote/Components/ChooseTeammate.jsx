@@ -78,7 +78,7 @@ export default class ChooseTeammate extends Component {
       <div>
         <h3>You are done!</h3>
         <hr/>
-        <div className="end-instructions">While you wait for other teams to finish, please select one teammate you would like to work with again in future activities:</div>
+        <div className="end-instructions">While you wait for other groups to finish, please select the person you MOST like to work with again:</div>
         <div>
           {this.renderOptions()}
         </div>

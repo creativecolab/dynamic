@@ -72,9 +72,9 @@ class Icebreaker extends Component {
     if (!currentActivity) return "Oops! This activity doesn't exist.";
     if (currentActivity.status === 1) return <ResponsesHandler pid={pid} session_id={currentActivity.session_id} activity_id={currentActivity._id} />;
     if (currentActivity.status === 2) {
-      if (!team) return <div>You have not been assigned a team.<br></br>Please wait for the next activity.<img id="movin-logo" src="./dynamic.gif" className="center"/></div>
-      if (allConfirmed) return <div>Everyone confirmed!<img id="moving-logo" src="./dynamic.gif" className="center"/></div>
-      if (this.state.confirmed) return <div>You've found everyone!<br></br>Wait for your teammates to find you.<img id="movin-logo" src="./dynamic.gif" className="center"/></div>
+      if (!team) return <div>You have not been assigned a team.<br/>Please wait for the next activity.<img id="movin-logo" src="./dynamic.gif" className="center"/></div>
+      if (allConfirmed) return <div>Everyone confirmed!<br/>Please wait for other teams.<img id="moving-logo" src="./dynamic.gif" className="center"/></div>
+      if (this.state.confirmed) return <div>You've found everyone!<br/>Wait for your teammates to find you.<img id="movin-logo" src="./dynamic.gif" className="center"/></div>
       return <TeamBox confirm={this.confirmTeam} pid={pid} team_id={team._id}/>;
     }
     if (currentActivity.status === 3) {

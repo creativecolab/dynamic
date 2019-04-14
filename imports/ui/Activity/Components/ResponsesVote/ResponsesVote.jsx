@@ -26,7 +26,8 @@ class ResponsesVote extends Component {
       chosen: -1,
       time_left: 5,
       revealed: false,
-      correct: false
+      correct: false,
+      timeLeft: 5
     };
   }
 
@@ -117,11 +118,28 @@ class ResponsesVote extends Component {
 
   // handler for the reveal button. Allows the clients to see which options are truths and which is the lie
   handleReveal() {
-    this.setState({
-      revealed: true,
-      voted: false,
-      chosen: -1,
+    console.log('Revealing result...');
+    const { responses, hotseat_index } = this.props;
+    Responses.update(responses[hotseat_index]._id, {
+      $set: {
+        revealed: true,
+      }
+    }, (error) => {
+      if (error) {
+        console.log(error);
+      }
     });
+
+    // in 5 seconds, show next button
+    this.timerID = setInterval(() => {
+      console.log('tick');
+      this.setState({
+        timeLeft: this.state.timeLeft - 1
+      });
+      if (this.state.timeLeft === 0) {
+        clearInterval(this.timerID);
+      } 
+    }, 1000);
   }
 
   // handler for the next button. Updates who's in the hotseat
@@ -135,15 +153,6 @@ class ResponsesVote extends Component {
     }, (error) => {
       if (error) {
         console.log(error);
-      } else {
-        console.log('Hotseat set!');
-        this.setState({
-          voted: false,
-          chosen: -1,
-          time_left: 5,
-          revealed: false,
-          correct: false
-        });
       }
     });
   }
@@ -151,8 +160,11 @@ class ResponsesVote extends Component {
   // returns black if not voted yet, green for the lie once voted, red for the incorrectly chosen truth
   getStyle(lie, index) {
 
+    const { responses, hotseat_index } = this.props;
+    const revealed = responses[hotseat_index].revealed;
+
     // if everyone has voted, do a full reveal. Red for Truths, Green for Lie
-    if (this.state.revealed) {
+    if (revealed) {
         if (lie) return {backgroundColor: '#00DD90'};
         else return {backgroundColor: '#FF6347'};
     }
@@ -201,6 +213,7 @@ class ResponsesVote extends Component {
   // and if everyone has, wait a bit before changing the hotseat
   renderTeammatesResponses() {
     const response = this.props.responses[this.props.hotseat_index];
+    const { revealed } = response;
     if (!response) return <div>No response recorded!</div>;
     const { options, shuffled_options } = response;
     if (!options) return <div>{this.getHotseatName()} did not submit a complete response.</div>;
@@ -208,15 +221,15 @@ class ResponsesVote extends Component {
     // not in hotseat
     if (!this.match()) {
       return (<div>
-          {this.props.valid_ops === 0 && <div>No response recorded.</div>}
-          {this.props.valid_ops > 0 && !this.state.voted && !this.state.revealed && <div><h2>Which one is the lie?</h2></div>}
-          {this.props.valid_ops > 0 && this.state.voted && !this.props.all_voted && <div><h2>Waiting for other guesses...</h2></div>}
-          {this.props.valid_ops > 0 && this.state.voted && this.props.all_voted && <div><h2>All Votes in. Click to Reveal!</h2></div>}
-          {this.state.revealed && this.renderPoints()}
+          {this.props.valid_ops === 0 && <div><h2>No response recorded!</h2></div>}
+          {this.props.valid_ops > 0 && !this.state.voted && !revealed && <div><h2>Which one is the lie?</h2></div>}
+          {this.state.voted && !this.props.all_voted && <div><h2>Waiting for other guesses...</h2></div>}
+          {this.props.all_voted && !revealed && <div><h2>Wait for {this.getHotseatName()} to reveal the answers</h2></div>}
+          {revealed && this.renderPoints()}
           {
             shuffled_options.map((opt, index) => {
               if (!opt.text) return;
-              if (this.state.revealed) {
+              if (revealed) {
                 return (<div className="text-box" style={this.getStyle(opt.lie, index)} key={index}>
                   {opt.text}
                 </div>);
@@ -232,11 +245,20 @@ class ResponsesVote extends Component {
     // in the hotseat!
     else {
       return (<div>
-        {!this.props.all_voted && <div>Waiting for other guesses...</div>}
-        {this.props.all_voted && <div>Everyone has guessed!</div>}
+        {this.props.valid_ops === 0 && <div><h2>No response recorded!</h2></div>}
+        {this.props.valid_ops > 0 && !this.props.all_voted && <div>Waiting for other guesses...</div>}
+        {this.props.all_voted && !revealed && <div>Everyone has guessed! Click to reveal answers.</div>}
+        {this.props.all_voted && revealed && this.state.timeLeft > 0 && <div>You will be able to advance in {this.state.timeLeft}</div>}
+        {this.props.all_voted && revealed && this.state.timeLeft === 0 && <div>Click next to continue</div>}
         {options.map((opt, index) => {
           if (!opt.text) return;
-          return (<div className="text-box" key={index}>{opt.text}{' '}
+          if (revealed) {
+            return (<div className="text-box" style={this.getStyle(opt.lie, index)} key={index}>
+              {opt.text}
+              {opt.votes.length > 0 && <div className="votes-box">{opt.votes.length > 0? this.getVotesString(opt.votes) : ''}</div>}
+            </div>);
+          }
+          return (<div className="text-box" key={index}>{opt.text}
           {opt.votes.length > 0 && <div className="votes-box">{opt.votes.length > 0? this.getVotesString(opt.votes) : ''}</div>}
         </div>);
         })}
@@ -252,7 +274,8 @@ class ResponsesVote extends Component {
         chosen: -1,
         revealed: false,
         correct: false,
-        voted: false
+        voted: false,
+        timeLeft: 5
       });
     }
   }
@@ -272,15 +295,16 @@ class ResponsesVote extends Component {
     if (hotseat_index === -1) return <ChooseTeammate team_id={this.props.team._id} pid={this.props.pid} />;
 
     const amHotseat = this.props.pid === this.props.team.members[this.props.hotseat_index].pid;
-    const { correct } = this.state;
+    const revealed = this.props.responses[this.props.hotseat_index].revealed;
 
     return (
       <div>
         <div><h3>{this.getHotseatName()}</h3><h4>is in the hotseat</h4></div>
         {this.renderTeammatesResponses()}
-        {!amHotseat && this.props.all_voted && !this.state.revealed && <button className="small-button-padding" onClick={() => this.handleReveal()}>Reveal Answers</button>}
-        {this.state.revealed && <button className="small-button-padding" onClick={() => this.handleNext()}>Next Hotseat</button>}
-        {!this.state.revealed && this.props.valid_ops === 0 && <button className="small-button-padding" onClick={() => this.handleNext()}>Next Hotseat</button>}
+        {amHotseat && this.props.all_voted && !revealed && <button className="small-button-padding" onClick={() => this.handleReveal()}>Reveal Answers</button>}
+        {amHotseat && this.props.all_voted && revealed && this.state.timeLeft > 0 && <button className="small-button-padding" disabled onClick={() => this.handleNext()}>Next Hotseat</button>}
+        {amHotseat && this.props.all_voted && revealed && this.state.timeLeft === 0 && <button className="small-button-padding" onClick={() => this.handleNext()}>Next Hotseat</button>}
+        {this.props.valid_ops === 0 && <button className="small-button-padding" onClick={() => this.handleNext()}>Next Hotseat</button>}
       </div>
     )
   }

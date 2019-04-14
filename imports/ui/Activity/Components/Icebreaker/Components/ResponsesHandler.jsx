@@ -90,7 +90,8 @@ export default class ResponsesHandler extends Component {
       options,
       shuffled_options,
       num_voted: 0,
-      hotseat: false
+      hotseat: false,
+      revealed: false
     });
   }
 
@@ -119,7 +120,8 @@ export default class ResponsesHandler extends Component {
       options,
       shuffled_options,
       num_voted: 0,
-      hotseat: false
+      hotseat: false,
+      revealed: false
     });
     console.log(inserted_response);
     clearTimeout(this.timer);

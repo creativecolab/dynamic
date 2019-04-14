@@ -78,10 +78,12 @@ export default class StatsPage extends Component {
     const { activity_id } = this.props;
 
     // get top 3 fastest teams
-    const teams = Teams.find({activity_id}, {
+    const teams = Teams.find({activity_id, teamFormationTime: { $gt: 0 }}, {
       sort: { teamFormationTime: 1 },
-      limit: 3
+      limit: 1
     }).fetch();
+
+    if (teams == false) return "No data";
 
     return teams.map(team => {
       return <div key={team._id}>{team.members.map(n => Users.findOne({pid: n.pid}).name).join(', ')}:
@@ -91,7 +93,7 @@ export default class StatsPage extends Component {
 
   render() {
     return (
-      <Wrapper>
+      <div>
         <div>
           <h1>2 Truths and 1 Lie</h1>
             <br></br>
@@ -112,7 +114,7 @@ export default class StatsPage extends Component {
               <h2> {this.getFastestTeams()}</h2>
             </div><br></br>
         </div>
-      </Wrapper>
+      </div>
     )
   }
 }

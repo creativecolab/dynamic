@@ -53,10 +53,10 @@ Meteor.methods({
       }
     }, () => {
       //track the session that was created
-      const new_log = Logs.insert({
+      Logs.insert({
         log_type: "Points Added",
-        code: this.props.session_id,
-        user: this.props.pid,
+        code: session_id,
+        user: Users.findOne(user_id).pid,
         timestamp: new Date().getTime(),
       });
     });
