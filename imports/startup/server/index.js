@@ -294,6 +294,7 @@ Meteor.startup(() => {
 
         let teams = [];
         let team_id = "";
+        let older_team_id = "";
 
         // form teams, teams of 3
         // TODO when left with 2 people, create two teams of 4
@@ -303,6 +304,9 @@ Meteor.startup(() => {
           // completed a new team
           // TODO: get MAX_TEAM_SIZE from instructor!
           if (i % MAX_TEAM_SIZE == 0) {
+            // second most-recent team created
+            older_team_id = team_id;
+            // most recent team created
             team_id = Teams.insert({
               activity_id: _id,
               timestamp: new Date().getTime(),
@@ -329,6 +333,20 @@ Meteor.startup(() => {
           Teams.update(team_id, {
             $push: {
               members: {pid: newTeam[0], confirmed: false}
+            }
+          });
+        }
+
+        // only 2 participants left, create 2 teams of MAX_TEAM_SIZE + 1
+        else if (newTeam.length === 2 && teams.length > 1) {
+          Teams.update(team_id, {
+            $push: {
+              members: {pid: newTeam[0], confirmed: false}
+            }
+          });
+          Teams.update(older_team_id, {
+            $push: {
+              members: {pid: newTeam[1], confirmed: false}
             }
           });
         }
