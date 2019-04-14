@@ -131,7 +131,7 @@ Meteor.methods({
 /* Meteor start-up function, called once server starts */
 Meteor.startup(() => {
 
-  clearCollections(); 
+  // clearCollections(); 
 
   // update roster on startup
   updateRoster();
