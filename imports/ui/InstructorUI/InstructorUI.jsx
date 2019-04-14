@@ -46,6 +46,7 @@ class InstructorUI extends Component {
       timestamp: new Date().getTime(),
       participants: [],
       activities: [],
+      round: 0,
       status: 0 // TODO: ENUM with status PENDING, DONE, IN_PROGRESS
     }, (data) => {
       console.log(data);

@@ -37,7 +37,7 @@ class Session extends Component {
       teams: []
     });
 
-    // add new activity to this session, necessary? good?
+    // add new activity to this session
     Sessions.update(session_id, {
       $push: {
         activities: activity

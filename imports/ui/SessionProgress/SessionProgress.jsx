@@ -23,7 +23,8 @@ class SessionProgress extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      duration: -1
+      duration: -1,
+      round: 0
     }
   }
 
@@ -43,7 +44,8 @@ class SessionProgress extends Component {
     if (this.props.session.participants.length < 2) return;
     Sessions.update(this.props.session._id, {
       $set: {
-        status: 1
+        status: 1,
+        round: 1
       }
     });
 
@@ -97,11 +99,19 @@ class SessionProgress extends Component {
   // }
 
   renderClock() {
-    const { currentActivity } = this.props;
+    const { currentActivity, session } = this.props;
     let totalTime = 0;
     if (currentActivity.status === 1) {
+      // collect input, 120 seconds on the first round, 60 seconds on following rounds
       totalTime = 120;
+      session.activities.map((act, index) => {
+        if (act === currentActivity._id) {
+          // if we're doing Icebreaker, and the we're not on the first one, give less time
+          if (currentActivity.name === 'Icebreaker' && index != 0) totalTime = 60;
+        }
+      });
     } else if (currentActivity.status === 3) {
+      // do the activity!!
       totalTime = 120;
     } else {
       return "";
@@ -110,14 +120,16 @@ class SessionProgress extends Component {
     return <Clock startTime={this.props.currentActivity.startTime} big={true} totalTime={totalTime}/>
   }
 
+  // instructions for activities
   getInstructions(status) {
     const { currentActivity } = this.props;
+    // input phase
     if (status === 1) {
       return (
         <div>
           {this.renderClock()}
           <h1 id="header">{currentActivity.name}</h1>
-          <div id="font-size">2 Truths and 1 Lie</div>
+          <div id="font-size">Round {this.props.session.round}: 2 Truths and 1 Lie</div>
           <br></br>
           <h2>Instructions:</h2>
           <div className="text-box-bigscreen">
@@ -129,14 +141,16 @@ class SessionProgress extends Component {
         </div>
       )
     }
+    // team-finding phase
     if (status === 2) {
       return <TeamShapes skip={this.advanceActivity} activity_id={this.props.currentActivity._id}/>
     }
+    // group discussion, 2T1L!
     if (status === 3) {
       return (
         <div>
           {this.renderClock()}
-          <h1>2 Truths and 1 Lie</h1>
+          <h1>Round {this.props.session.round}: 2 Truths and 1 Lie</h1>
           <div id="font-size">1 Person is in the hotseat</div>
           <br></br>
           <h2>Instructions:</h2>
@@ -152,6 +166,7 @@ class SessionProgress extends Component {
         </div>
       )
     }
+    // activity completed
     if (status === 4) {
       return <StatsPage session_id={this.props.session._id} activity_id={currentActivity._id} />
     }
@@ -162,8 +177,7 @@ class SessionProgress extends Component {
     if (!session) return "Oh.";
     const numJoined = session.participants.length;
 
-    if (session.status === 2) return <SessionEnd />;
-
+    // session not yet begun, provide details about what will happen
     if (session.status === 0) return (
     <div>
       <h1 id="header">Dynamic</h1>
@@ -181,6 +195,7 @@ class SessionProgress extends Component {
 
     if (!this.props.currentActivity) return "You should add activities"
 
+    // session started, render instructions for activities
     if (session.status === 1) return (
       <div>
         {/* <div>{this.props.currentActivity.name}</div> */}
@@ -189,6 +204,9 @@ class SessionProgress extends Component {
         <button className="bigscreen-button" onClick={() => this.advanceActivity(this.props.currentActivity)}>Skip to activity</button>
       </div>
     );
+
+    // session ended
+    if (session.status === 2) return <SessionEnd />;
   }
 
   render() {

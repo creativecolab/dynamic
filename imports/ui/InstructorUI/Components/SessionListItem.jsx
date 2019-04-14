@@ -64,7 +64,7 @@ class SessionListItem extends Component {
 
     // ready to start session!
     Sessions.update(this.props._id, {
-      $set: { status: 1 }
+      $set: { status: 1, round: 1 }
     });
     
   }

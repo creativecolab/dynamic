@@ -1,15 +1,26 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { withTracker } from 'meteor/react-meteor-data';
+
 import Teams from '../../../api/teams';
 import Responses from '../../../api/responses';
 import Users from '../../../api/users';
-import Wrapper from '../../Wrapper/Wrapper';
+import Sessions from '../../../api/sessions';
+
 
 export default class StatsPage extends Component {
 
   static propTypes = {
     session_id: PropTypes.string.isRequired,
     activity_id: PropTypes.string.isRequired
+  }
+
+  constructor(props) {
+    super(props);
+    const session = Sessions.findOne(this.props.session_id);
+    this.state = {
+      round: session.round
+    };
   }
 
   // finds and returns the user in the session with the most points so far
@@ -91,11 +102,20 @@ export default class StatsPage extends Component {
     });
   }
 
+  // upon exiting this page, update the round we are on 
+  componentWillUnmount() {
+    Sessions.update(this.props.session_id, {
+      $set: {
+        round: this.state.round + 1
+      }
+    });
+  }
+
   render() {
     return (
       <div>
         <div>
-          <h1>2 Truths and 1 Lie</h1>
+          <h1>Round {this.state.round}: 2 Truths and 1 Lie</h1>
             <br></br>
             <h2>Top Guesser:</h2>
             <div className="text-box-bigscreen-shrink">

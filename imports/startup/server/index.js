@@ -11,9 +11,7 @@ import Logs from '../../api/logs';
 import './register-api';
 // TODO: add collection for timers
 
-function insertLink(title, url) {
-  Links.insert({ title, url, createdAt: new Date() });
-}
+/* Helper Methods used just for Testing!! */
 
 //use when local collections get a bit cluttered
 function clearCollections() {
@@ -28,46 +26,9 @@ function clearCollections() {
   })
 }
 
-Meteor.methods({
-  'activity.start'({ activity_id }) {
-    // new SimpleSchema({
-    //   team_id: { type: String },
-    //   username: { type: String }
-    // }).validate({ team_id, username });
-
-    console.log(Activities.findOne(activity_id));
-    // Teams.rawCollection().update(team_id,
-    //   { $set: { "members.$[elem].confirmed": true } },
-    //   {
-    //     arrayFilters: [ { "elem.username": username } ]
-    //   }
-    // );
-    // console.log(Teams.findOne(team_id));
-
-  },
-
-  'users.addPoints' ({ user_id, session_id, points }) {
-    Users.update({_id: user_id, "points_history.session": session_id}, {
-      $set: {
-        "points_history.$.points": points
-      }
-    }, () => {
-      //track the session that was created
-      Logs.insert({
-        log_type: "Points Added",
-        code: session_id,
-        user: Users.findOne(user_id).pid,
-        timestamp: new Date().getTime(),
-      });
-    });
-
-  }
-
-});
-
+// hard-coded roster for testing
 function updateRoster() {
 
-  // hard-coded roster for testing
   const roster = [{
     name: 'Gustavo Umbelino',
     firstname: 'Gustavo',
@@ -129,9 +90,48 @@ function updateRoster() {
 
 }
 
+/* Meteor methods (server-side function, mostly database work) */
+Meteor.methods({
+  'activity.start'({ activity_id }) {
+    // new SimpleSchema({
+    //   team_id: { type: String },
+    //   username: { type: String }
+    // }).validate({ team_id, username });
+
+    console.log(Activities.findOne(activity_id));
+    // Teams.rawCollection().update(team_id,
+    //   { $set: { "members.$[elem].confirmed": true } },
+    //   {
+    //     arrayFilters: [ { "elem.username": username } ]
+    //   }
+    // );
+    // console.log(Teams.findOne(team_id));
+
+  },
+
+  'users.addPoints' ({ user_id, session_id, points }) {
+    Users.update({_id: user_id, "points_history.session": session_id}, {
+      $set: {
+        "points_history.$.points": points
+      }
+    }, () => {
+      //track the session that was created
+      Logs.insert({
+        log_type: "Points Added",
+        code: session_id,
+        user: Users.findOne(user_id).pid,
+        timestamp: new Date().getTime(),
+      });
+    });
+
+  }
+
+});
+
+/* Meteor start-up function, called once server starts */
 Meteor.startup(() => {
 
-  // clearCollections(); 
+  clearCollections(); 
 
   // update roster on startup
   updateRoster();
@@ -206,17 +206,6 @@ Meteor.startup(() => {
     }
   }); 
 
-  // called to end an activity phase
-  const endPhase = Meteor.bindEnvironment((activity_id, status) => {
-    console.log('Starting status ' + status)
-    Activities.update(activity_id, {
-      $set: {
-        status,
-        startTime: new Date().getTime()
-      }
-    });
-  });
-
   // handles team formation
   const activitiesCursor = Activities.find({});
   activitiesCursor.observeChanges({
@@ -224,13 +213,25 @@ Meteor.startup(() => {
       console.log(_id + " updated. [Activity]");
       console.log(update);
 
-      // let input phase last for 120 seconds
+      // let input phase last for 120 seconds the first round, 60 seconds other rounds
       if (update.status === 1) {
         console.log('[ACTIVITY STARTED]')
-        // clearTimeout(this.timerID);
+        let totalTime = 120;
+        const currentActivity = Activities.findOne({_id});
+        const session = Sessions.findOne({_id: currentActivity.session_id});
+        if (session) {
+          session.activities.map((act, index) => {
+            if (act === _id) {
+              // if we're doing Icebreaker, and the we're not on the first one, give less time
+              if (currentActivity.name === 'Icebreaker' && index != 0) totalTime = 60;
+              console.log("On round: " + (index + 1) + ", " + totalTime + " seconds allotted.");
+            }
+          });
+        }
+
         this.timer1 = setTimeout(
           () => endPhase(_id, 2),
-          120 * 1000
+          totalTime * 1000
         );
       }
 
@@ -404,26 +405,40 @@ Meteor.startup(() => {
     } 
   });
 
+  // called to end an activity phase
+  const endPhase = Meteor.bindEnvironment((activity_id, status) => {
+    console.log('Starting status ' + status)
+    Activities.update(activity_id, {
+      $set: {
+        status,
+        startTime: new Date().getTime()
+      }
+    });
+  });
 
-  if (Links.find().count() === 0) {
-    insertLink(
-      'Do the Tutorial',
-      'https://www.meteor.com/tutorials/react/creating-an-app'
-    );
-
-    insertLink(
-      'Follow the Guide',
-      'http://guide.meteor.com'
-    );
-
-    insertLink(
-      'Read the Docs',
-      'https://docs.meteor.com'
-    );
-
-    insertLink(
-      'Discussions',
-      'https://forums.meteor.com'
-    );
-  }
 });
+
+// function insertLink(title, url) {
+//   Links.insert({ title, url, createdAt: new Date() });
+// }
+  // if (Links.find().count() === 0) {
+  //   insertLink(
+  //     'Do the Tutorial',
+  //     'https://www.meteor.com/tutorials/react/creating-an-app'
+  //   );
+
+  //   insertLink(
+  //     'Follow the Guide',
+  //     'http://guide.meteor.com'
+  //   );
+
+  //   insertLink(
+  //     'Read the Docs',
+  //     'https://docs.meteor.com'
+  //   );
+
+  //   insertLink(
+  //     'Discussions',
+  //     'https://forums.meteor.com'
+  //   );
+  // }

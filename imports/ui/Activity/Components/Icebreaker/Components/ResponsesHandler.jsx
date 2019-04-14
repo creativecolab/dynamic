@@ -6,8 +6,11 @@ import Activities from '../../../../../api/activities';
 import './ResponsesHandler.scss';
 
 export default class ResponsesHandler extends Component {
-  // static propTypes = {
-  // }
+  static propTypes = {
+    pid: PropTypes.string.isRequired,
+    session_id: PropTypes.string.isRequired,
+    activity_id: PropTypes.string.isRequired,
+  }
 
   constructor(props) {
     super(props);
@@ -24,7 +27,8 @@ export default class ResponsesHandler extends Component {
         truth1: '',
         truth2: '',
         lie: '',        
-        saved: false
+        saved: false,
+        edit: false
       };
     } else {
       console.log(prevResponses);
@@ -32,29 +36,33 @@ export default class ResponsesHandler extends Component {
         truth1: prevResponses.options[0].text,
         truth2: prevResponses.options[1].text,
         lie: prevResponses.options[2].text,
-        saved: false
+        saved: false,
+        edit: true
       };
     }
   }
 
   handleTruth1(evt) {
-    if (evt.target.value.length > 35) return;
+    if (evt.target.value.length > 30) return;
     this.setState({
-      truth1: evt.target.value
+      truth1: evt.target.value,
+      saved: false
     });
   }
 
   handleTruth2(evt) {
-    if (evt.target.value.length > 35) return;
+    if (evt.target.value.length > 30) return;
     this.setState({
-      truth2: evt.target.value
+      truth2: evt.target.value,
+      saved: false
     });
   }
 
   handleLie(evt) {
-    if (evt.target.value.length > 35) return;
+    if (evt.target.value.length > 30) return;
     this.setState({
-      lie: evt.target.value
+      lie: evt.target.value,
+      saved: false
     });
   }
 
@@ -97,7 +105,7 @@ export default class ResponsesHandler extends Component {
 
   renderSaved = () => {
     if (this.state.saved) {
-      return <p id="save">Saved!</p>
+      return <p id="save" style={{color:'green'}}>Saved!</p>
     }
   }
 
@@ -127,18 +135,14 @@ export default class ResponsesHandler extends Component {
     clearTimeout(this.timer);
   }
 
-  componentDidUpdate(){
-    this.timer = setTimeout(() => 
-      this.setState({
-        saved: false
-      }),
-    10000);
-  }
+  componentDidUpdate(){}
 
   render() {
     return (
     <div>
-    <h2>Write two truths and one lie about yourself.</h2><br></br>
+    {!this.state.edit && <h2>Write two truths and one lie about yourself.</h2>}
+    {this.state.edit && <h2>Edit two truths and one lie about yourself.</h2>}
+    <h4>(In 30 characters or less)</h4><br></br>
     <form id="icebreaker-form" onSubmit={(evt) => this.saveReponses(evt)}>
         <label className="field-title" htmlFor="truth">TWO TRUTHS</label>
         <div className="input-container">

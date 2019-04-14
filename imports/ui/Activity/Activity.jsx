@@ -1,14 +1,15 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withTracker } from 'meteor/react-meteor-data';
-import Wrapper from '..//Wrapper/Wrapper'
-import TeamBox from "./Components/TeamBox/TeamBox";
+
 import Activities from '../../api/activities';
 import Sessions from '../../api/sessions';
 import Users from '../../api/users';
+
 import Clock from '../Clock/Clock';
 import Icebreaker from './Components/Icebreaker/Icebreaker';
 import OnboardingInstructions from './Components/OnboardingInstructions/OnboardingInstructions';
+
 import './Activity.scss';
 
 class Activity extends Component {
@@ -23,7 +24,6 @@ class Activity extends Component {
     console.log('CONSTRUCTOR [ACTIVITY]');
     const { pid, session_id } = props;
     this.state = {
-      session: Sessions.findOne(session_id),
       username: Users.findOne({pid}).name,
       currentActivity: null, // id of the running activity
     }
@@ -43,10 +43,17 @@ class Activity extends Component {
   }
 
   renderClock() {
-    const { currentActivity } = this.props;
+    const { currentActivity, currentSession } = this.props;
     let totalTime = 0;
     if (currentActivity.status === 1) {
+      // collect input, 120 seconds on the first round, 60 seconds on following rounds
       totalTime = 120;
+      currentSession.activities.map((act, index) => {
+        if (act === currentActivity._id) {
+          // if we're doing Icebreaker, and the we're not on the first one, give less time
+          if (currentActivity.name === 'Icebreaker' && index != 0) totalTime = 60;
+        }
+      });
     } else if (currentActivity.status === 3) {
       totalTime = 120;
     } else {
@@ -81,6 +88,7 @@ class Activity extends Component {
 
 export default withTracker(props => {
   const session_id = props.session_id;
+  const currentSession = Sessions.findOne(session_id);
   const currentActivity = Activities.findOne({session_id, status: { $in: [1, 2, 3, 4] }}, { sort: { status: 1 }});
-  return {currentActivity}
+  return {currentActivity, currentSession}
 })(Activity);

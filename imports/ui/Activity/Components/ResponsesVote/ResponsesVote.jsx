@@ -95,7 +95,6 @@ class ResponsesVote extends Component {
       options[index].count += 1; 
 
       // save this response 
-      // TODO: track the amount of time it took
       Responses.update(response._id, {
         $set: {
           options,
@@ -280,10 +279,8 @@ class ResponsesVote extends Component {
     }
   }
 
-  // clear tick when not rendered
-  componentWillUnmount() {
-    clearTimeout(this.timerID2);
-  }
+  // in case we need to do anything before component is unmounted
+  componentWillUnmount() {}
 
   render() {
     // if (this.props.done) return "Yay!!";
