@@ -193,6 +193,10 @@ class SessionProgress extends Component {
       <button className="bigscreen-button" onClick={() => this.startSession()}>Begin</button>
     </div>);
 
+    // session ended
+    if (session.status === 2) return <SessionEnd />;
+
+    // no activities
     if (!this.props.currentActivity) return "You should add activities"
 
     // session started, render instructions for activities
@@ -205,8 +209,6 @@ class SessionProgress extends Component {
       </div>
     );
 
-    // session ended
-    if (session.status === 2) return <SessionEnd />;
   }
 
   render() {
