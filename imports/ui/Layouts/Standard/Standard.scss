@@ -37,8 +37,8 @@
 
   .content {
     grid-area: content;
-    background: red;
-    color: white;
+    // display: flex;
+    background: $dynamic-red;
   }
 
   .footer {
@@ -47,7 +47,6 @@
     min-height: 100px;
     height: 15%;
     width: 100%;
-    background: $dynamic-light-gray;
   }
 
 }
