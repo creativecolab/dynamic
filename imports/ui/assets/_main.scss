@@ -13,7 +13,12 @@ $dynamic-medium-gray: #AAAAAA;
 $dynamic-dark-gray: #5f6368;
 
 // SHADOWS
-$small-button-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
+$button-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
+$button-shadow-active: 0px 2px 4px rgba(0, 0, 0, 0.5);
+
+// BUTTONS
+$button-height: 2em;
+$button-border-radius: 5px;
 
 .title-dynamic {
   text-align: center;
@@ -153,7 +158,7 @@ $small-button-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
   border-radius: 5px;
   background-color: $dynamic-gray; 
   border: none;
-  box-shadow: $small-button-shadow;
+  box-shadow: $button-shadow;
 }
 
 .small-button-padding {
@@ -164,7 +169,7 @@ $small-button-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
   border-radius: 5px;
   background-color: $dynamic-gray; 
   border: none;
-  box-shadow: $small-button-shadow;
+  box-shadow: $button-shadow;
 }
 
 .small-button-paddingless {
@@ -175,7 +180,7 @@ $small-button-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
   border-radius: 5px;
   background-color: $dynamic-gray; 
   border: none;
-  box-shadow: $small-button-shadow;
+  box-shadow: $button-shadow;
 }
 
 .big-button {
@@ -187,7 +192,7 @@ $small-button-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
   border-radius: 5px;
   background-color: $dynamic-gray; 
   border: none;
-  box-shadow: $small-button-shadow;
+  box-shadow: $button-shadow;
   font-size: normal; 
   position: relative;
   width: 80%;
@@ -203,7 +208,7 @@ $small-button-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
   border-radius: 5px;
   background-color: $dynamic-yellow; 
   border: none;
-  box-shadow: $small-button-shadow;
+  box-shadow: $button-shadow;
   font-size: normal; 
   position: relative;
   width: 80%;
@@ -218,6 +223,6 @@ $small-button-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
   border-radius: 5px;
   background-color: $dynamic-gray; 
   border: none;
-  box-shadow: $small-button-shadow;
+  box-shadow: $button-shadow;
   color: $dynamic-black;
 }

@@ -1,2 +1,17 @@
 @import '../../assets/main';
 
+.small-btn {
+  margin: auto;
+  min-width: 4em;
+  width: 30%;
+  height: $button-height;
+  line-height: $button-height;
+  text-align: center;
+  background: $dynamic-gray;
+  box-shadow: $button-shadow;
+  border-radius: $button-border-radius;
+}
+
+.small-btn:active {
+  box-shadow: $button-shadow-active;
+}

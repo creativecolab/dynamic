@@ -1,0 +1,53 @@
+@import '../../assets/main';
+
+.main {
+  height: 100%;
+  width: 100%;
+  color: $dynamic-black;
+  display: grid;
+  grid-template-areas: 'navbar'
+                       'content'
+                       'footer';
+  grid-template-rows: 1fr 10fr 1fr;
+
+  .navbar {
+    grid-area: navbar;
+    position: relative;
+    display: flex;
+    min-height: 100px;
+    height: 15%;
+    width: 100%;
+    background: $dynamic-light-gray;
+
+    .progress-status {
+      margin: auto;
+
+      .activity-name {
+        font-size: 1.5em;
+        font-weight: 600;
+      }
+
+      .session-progress {
+
+      }
+
+    }
+
+  }
+
+  .content {
+    grid-area: content;
+    background: red;
+    color: white;
+  }
+
+  .footer {
+    grid-area: footer;
+    display: flex;
+    min-height: 100px;
+    height: 15%;
+    width: 100%;
+    background: $dynamic-light-gray;
+  }
+
+}
