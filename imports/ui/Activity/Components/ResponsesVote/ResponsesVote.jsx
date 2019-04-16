@@ -248,7 +248,7 @@ class ResponsesVote extends Component {
         {this.props.valid_ops > 0 && !this.props.all_voted && <div>Waiting for other guesses...</div>}
         {this.props.all_voted && !revealed && <div>Everyone has guessed! Click to reveal answers.</div>}
         {this.props.all_voted && revealed && this.state.timeLeft > 0 && <div>You will be able to advance in {this.state.timeLeft}</div>}
-        {this.props.all_voted && revealed && this.state.timeLeft === 0 && <div>Click next to continue</div>}
+        {this.props.all_voted && revealed && this.state.timeLeft === 0 && <div>Click "Next Hotseat" to continue</div>}
         {options.map((opt, index) => {
           if (!opt.text) return;
           if (revealed) {

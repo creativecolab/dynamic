@@ -53,7 +53,7 @@ class Login extends Component {
 
     const { pid, name } = this.state;
 
-    if (pid.length === 0 /*|| name.length === 0 || lastname.length === 0*/) return;
+    if (pid.length === 0 || name.length === 0) return;
 
     // find user by pid on database
     const user = Users.findOne({pid});
@@ -98,6 +98,7 @@ class Login extends Component {
     } else {
       Users.insert({
         name,
+        timestamp: new Date().getTime(),
         pid,
         teammates: [],
         points_history: [ 
