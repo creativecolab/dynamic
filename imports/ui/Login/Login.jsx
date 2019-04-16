@@ -158,7 +158,7 @@ class Login extends Component {
                   <h2>Please consider filling out our survey</h2>
                   <img id="moving-logo" src="/dynamic.png" className="center"/>
                   <br></br>
-                  <a href="https://forms.gle/ATh7tQC5LFf547h19" className="small-button">Continue to survey</a>
+                  <a href="https://docs.google.com/forms/d/e/1FAIpQLSf57A3cyhOEYZVAlWu_qaOFuKuRVtdi2vuK05ozOjHrjs93-w/viewform" className="small-button">Continue to survey</a>
                 </div>
               </Wrapper>
       )
