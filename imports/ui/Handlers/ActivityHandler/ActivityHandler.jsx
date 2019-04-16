@@ -12,9 +12,10 @@ class ActivityHandler extends Component {
     activity_id: PropTypes.string.isRequired,
   }
 
+  // set duration based on activity status and session progress
   calculateDuration(activity, progress) {
 
-    // set duration based on activity status
+    // get activity status
     const { status } = activity;
 
     // get durations

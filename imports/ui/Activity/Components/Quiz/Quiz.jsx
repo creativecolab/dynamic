@@ -9,7 +9,7 @@ export default class Quiz extends Component {
     status: PropTypes.number.isRequired,          // status of this activity
     statusStartTime: PropTypes.number.isRequired, // start time of this status
     progress: PropTypes.number.isRequired,        // (index + 1) of activity in session's [Activity]
-    duration: PropTypes.number.isRequired,   // calculated in parent
+    duration: PropTypes.number.isRequired,        // calculated in parent
   }
 
   buttonAction = () => {
