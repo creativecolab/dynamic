@@ -9,7 +9,7 @@ import InstructorUI from '../../ui/InstructorUI/InstructorUI';
 import Session from '../../ui/Session/Session';
 import SessionProgress from '../../ui/SessionProgress/SessionProgress';
 import SignUp from '../../ui/SignUp/SignUp';
-import Quiz from '../../ui/Activity/Components/Quiz/Quiz';
+import ActivityHandler from '../../ui/Handlers/ActivityHandler/ActivityHandler';
 
 export const renderRoutes = () => (
     <Router>
@@ -17,7 +17,11 @@ export const renderRoutes = () => (
         <Switch>
             <Route exact path="/" component={Landing} />
             <Route exact path="/instructor" component={InstructorUI} />
-            <Route exact path="/sandbox" component={Quiz} />
+            <Route exact path="/sandbox" render={(props) => <ActivityHandler {...props}
+              pid={'gus'}
+              progress={2}
+              activity_id={"abcd"}/>}
+            />
             <Route exact path="/:code" component={Login} />
             <Route exact path="/:code/signup" component={SignUp} />
             <Route exact path="/:code/edit" component={Session} />

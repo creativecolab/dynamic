@@ -11,7 +11,7 @@ export default class Standard extends Component {
     buttonAction: PropTypes.func,
     buttonTxt: PropTypes.string,
     activityName: PropTypes.string,
-    sessionStatus: PropTypes.string,
+    sessionStatus: PropTypes.number,
     clockDuration: PropTypes.number,
     clockStartTime: PropTypes.number,
   }
@@ -73,7 +73,7 @@ export default class Standard extends Component {
         <nav className="navbar">
           <div className="progress-status">
             <div className="activity-name">{activityName.toUpperCase()}</div>
-            <div className="session-progress">{sessionStatus}</div>
+            <div className="session-progress">Round {sessionStatus}</div>
           </div>
           <MobileTimer startTime={clockStartTime} duration={clockDuration} />
         </nav>
