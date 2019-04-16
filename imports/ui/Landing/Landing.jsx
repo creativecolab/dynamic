@@ -73,7 +73,7 @@ export default class Landing extends Component {
         <Wrapper> 
         {this.renderRedirect()}
         <h1 id="title-dynamic">Dynamic!</h1>
-        <img id="logo" src="./dynamic.png" alt=""/>
+        <img id="logo" src="./small_dynamic.png" alt=""/>
 
         {/* FORM BEGINS HERE */}
         <form id="session-form" onSubmit={(evt) => this.handleCodeEntry(evt)}>
