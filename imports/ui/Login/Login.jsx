@@ -154,7 +154,11 @@ class Login extends Component {
       if (status === 2) return (
               <Wrapper>
                 <div>
-                  <h2>Thanks for participating!<br/>Please fill out <a href="https://forms.gle/ATh7tQC5LFf547h19">this survey</a>.</h2>
+                  <h1>That's it!</h1>
+                  <h2>Please consider filling out our survey</h2>
+                  <img id="moving-logo" src="/dynamic.png" className="center"/>
+                  <br></br>
+                  <a href="https://forms.gle/ATh7tQC5LFf547h19" className="small-button">Continue to survey</a>
                 </div>
               </Wrapper>
       )
