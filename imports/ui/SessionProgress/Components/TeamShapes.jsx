@@ -37,7 +37,7 @@ class TeamShapes extends Component {
         <h1>Find your team</h1>
         <div>Find others who have the same colored shape</div>
         {teams && <div className="shape-grid">{this.mapShapes(teams)}</div>}
-        {teams && <h2>{numTeams + '/' + teams.length}teams are ready!</h2>}
+        {teams && <h2>{numTeams + '/' + teams.length} teams are ready!</h2>}
         {/* <button onClick={() => this.props.skip()}>Skip to activity</button> */}
       </div>
     )
