@@ -1,6 +1,6 @@
 {
   "name": "Dynamic",
-  "start_url": "/",
+  "start_url": "/sandbox",
   "display": "fullscreen",
   "orientation": "portrait"
 }
