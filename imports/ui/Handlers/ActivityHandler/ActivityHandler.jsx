@@ -27,14 +27,12 @@ class ActivityHandler extends Component {
     if (status === ActivityEnums.status.INPUT_INDV)
         return progress === 1? durationIndv : durationIndv - durationOffsetIndv;
 
-    // team formation or summary phases
-    if (status === ActivityEnums.status.TEAM_FORMATION || status === ActivityEnums.status.SUMMARY)
-      return -1;
-
     // team input phase
     if (status === ActivityEnums.status.INPUT_TEAM)
-        return progress === 1? durationTeam : durationTeam - durationOffsetTeam;
-      
+      return progress === 1? durationTeam : durationTeam - durationOffsetTeam;
+    
+    return -1;
+    
   }
 
   render() {
@@ -76,7 +74,7 @@ export default withTracker(props => {
 
   // mock activity, TODO: make sure to add these fields to db
   const activity = {
-    status: 0,
+    status: 1,
     name: 'quiz',
     statusStartTime: new Date().getTime(),
     durationIndv: 20,

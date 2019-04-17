@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import Button from '../../Components/Button/Button';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
+import classNames from 'classnames/bind';
+
 
 import './Standard.scss';
 import MobileTimer from '../../Components/MobileTimer/MobileTimer';
@@ -8,66 +10,33 @@ import MobileTimer from '../../Components/MobileTimer/MobileTimer';
 export default class Standard extends Component {
   static propTypes = {
     hasFooter: PropTypes.bool,
+    hasTimer: PropTypes.bool,
     buttonAction: PropTypes.func,
     buttonTxt: PropTypes.string,
     activityName: PropTypes.string,
     sessionStatus: PropTypes.number,
     clockDuration: PropTypes.number,
     clockStartTime: PropTypes.number,
-  }
+    feedbackMsge: PropTypes.string,
+    feedbackClass: PropTypes.string,
+  };
 
   static defaultProps = {
     hasFooter: true,
-    buttonAction: () => {
-      console.log('Clicked!');
-    },
-    buttonTxt: 'Click me',
-    activityName: 'No activity',
-    sessionStatus: 'No status',
-    clockStartTime: new Date().getTime(),
-    clockDuration: 0
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      buttonAction: props.buttonAction,
-      buttonTxt: props.buttonTxt,
-      activityName: props.activityName,
-      sessionStatus: props.sessionStatus,
-      clockStartTime: props.clockStartTime,
-      clockDuration: props.clockDuration
-    }
-  }
-
-  // sets up the footer button, called from above
-  setUpButton(action, buttonTxt) {
-    this.setState({
-      buttonAction: action,
-      buttonTxt,
-    });
-  }
-
-  // sets up the navbar, called from above
-  setUpNavbar(activityName, sessionStatus) {
-    this.setState({
-      activityName,
-      sessionStatus
-    });
-  }
-
-  // start time: date().getTime() integer
-  setTimer(clockStartTime, clockDuration) {
-    this.setState({
-      clockStartTime,
-      clockDuration
-    });
-  }
+    hasTimer: true,
+    buttonAction: () => {console.log('Button action not set')},
+    buttonTxt: "Next",
+    feedbackClass: ""
+  };
 
   render() {
-    const { buttonTxt, buttonAction, activityName, sessionStatus } = this.state;
-    const { clockStartTime, clockDuration } = this.state;
-    const { hasFooter, hasTimer, children } = this.props;
+    const { activityName, sessionStatus } = this.props;
+    const { buttonTxt, buttonAction } = this.props;
+    const { feedbackMsge, feedbackClass } = this.props;
+    const { clockStartTime, clockDuration } = this.props;
+    const { hasFooter, hasTimer } = this.props;
+    const { children } = this.props;
+
     return (
       <div className="main">
         <nav className="navbar">
@@ -77,7 +46,10 @@ export default class Standard extends Component {
           </div>
           {hasTimer && <MobileTimer startTime={clockStartTime} duration={clockDuration} />}
         </nav>
-        <div className="content">{children}</div>
+        <div className="content">
+          {children}
+          <div className={classNames("feedback-msge", feedbackClass)}>{feedbackMsge}</div>
+        </div>
         {hasFooter && <footer className="footer">
           <Button size="small" onClick={buttonAction}>{buttonTxt}</Button>
         </footer>}

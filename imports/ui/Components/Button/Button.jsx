@@ -5,18 +5,29 @@ import './Button.scss';
 export default class Button extends Component {
   static propTypes = {
     onClick: PropTypes.func.isRequired,
+    active: PropTypes.bool,
+    disabled: PropTypes.bool,
     size: PropTypes.string,
   }
 
   static defaultProps = {
-    size: 'large'
+    size: 'large',
+    active: false,
+    disabled: false
+  }
+
+  getClassNames(size, active, disabled) {
+    let className = "btn";
+    if (size === "small") className += " btn-small";
+    else if (size === "large") className += " btn-large";
+    className += active? " btn-active" : "";
+    className += disabled? " btn-disabled" : "";
+    return className;
   }
 
   render() {
-    const { onClick, children, size } = this.props;
-    if (size === 'small')
-      return <div className="small-btn" onClick={onClick}>{children}</div>;
-    else 
-      return <div className="large-btn" onClick={onClick}>{children}</div>;
+    const { onClick, children, size, active, disabled } = this.props;
+    const classNames = this.getClassNames(size, active, disabled);
+    return <div className={classNames} onClick={onClick}><div>{children}</div></div>;
   }
 }

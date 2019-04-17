@@ -3,6 +3,7 @@ import Standard from '/imports/ui/Layouts/Standard/Standard';
 import ActivityEnums from '/imports/enums/activities';
 
 import PropTypes from 'prop-types'
+import InputButtons from '../Components/InputButtons/InputButtons';
 
 export default class Quiz extends Component {
   static propTypes = {
@@ -20,13 +21,17 @@ export default class Quiz extends Component {
     // set state based on status
     const { status } = props;
 
+    // TODO: set state selected & message here from db
+    const selected = null;
+    const submitted = null;
+    // const feedbackMsge = "You already submitted a response!";
+
     // individual input phase
     if (status === ActivityEnums.status.INPUT_INDV)
       this.state = {
         buttonAction: this.submitIndvInput,
         buttonTxt: 'Submit',
-        hasFooter: true,
-        hasTimer: true
+        selected
       }
 
     // team formation or summary phases
@@ -35,7 +40,8 @@ export default class Quiz extends Component {
         buttonAction: null,
         buttonTxt: null,
         hasFooter: false,
-        hasTimer: false
+        hasTimer: false,
+        selected
       }
 
     // team input phase
@@ -43,14 +49,44 @@ export default class Quiz extends Component {
       this.state = {
         buttonAction: this.submitTeamInput,
         buttonTxt: 'Submit',
-        hasFooter: true,
-        hasTimer: true
+        selected
       }
 
   }
 
+  handleInputSelection= id => {
+    if (this.state.submitted) {
+      this.setState({
+        feedbackMsge: "You already voted!",
+        feedbackClass: ""
+      });
+    } else {
+      this.setState({
+        selected: id,
+        feedbackMsge: ""
+      });
+    }
+  }
+
   submitIndvInput = () => {
-    console.log('Individual response submitted.');
+    // TODO: Set proper message/class
+    if (this.state.submitted) {
+      this.setState({
+        feedbackMsge: "You already voted!",
+        feedbackClass: ""
+      });
+    } else if (this.state.selected) {
+      this.setState({
+        submitted: true,
+        feedbackMsge: "Response submitted!",
+        feedbackClass: "good"
+      });
+    } else {
+      this.setState({
+        feedbackMsge: "Please select a choice.",
+        feedbackClass: "error"
+      });
+    }
   }
 
   submitTeamInput = () => {
@@ -100,8 +136,19 @@ export default class Quiz extends Component {
   renderContent(status) {
 
     // individual input phase
-    if (status === ActivityEnums.status.INPUT_INDV) 
-      return "Individual input";
+    if (status === ActivityEnums.status.INPUT_INDV) {
+      // TODO: fake options and prompt
+      const { submitted } = this.state;
+      const prompt = "What is the most likely answer you can think of in this situation, my friend?"
+      const options = [
+        {id: 'a', text: 'A. This one'},
+        {id: 'b', text: 'B. No, this one'},
+        {id: 'c', text: 'C. OMG, no! This one'},
+        {id: 'd', text: 'D. OK, fine. This one'},
+      ];
+      return <InputButtons prompt={prompt} options={options} handleSelection={this.handleInputSelection} freeze={submitted} />
+    }
+      
 
     // team formation or summary phases
     if (status === ActivityEnums.status.TEAM_FORMATION)

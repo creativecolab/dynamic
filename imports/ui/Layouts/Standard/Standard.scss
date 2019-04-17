@@ -37,8 +37,18 @@
 
   .content {
     grid-area: content;
-    // display: flex;
-    background: $dynamic-red;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .good {
+      color: $dynamic-green;
+    }
+
+    .error {
+      color: $dynamic-red;
+    }
+
   }
 
   .footer {
