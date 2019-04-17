@@ -28,6 +28,6 @@ export default class Button extends Component {
   render() {
     const { onClick, children, size, active, disabled } = this.props;
     const classNames = this.getClassNames(size, active, disabled);
-    return <div className={classNames} onClick={onClick}><div>{children}</div></div>;
+    return <div className={classNames} onClick={onClick}><div><a>{children}</a></div></div>;
   }
 }
