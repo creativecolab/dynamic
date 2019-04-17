@@ -11,6 +11,11 @@
   box-shadow: $button-shadow;
   border-radius: $button-border-radius;
   cursor: pointer;
+
+  div {
+    user-select: none;
+  }
+
 }
 
 .btn-small {
