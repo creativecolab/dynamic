@@ -1,0 +1,6 @@
+{
+  "name": "Dynamic",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "landscape"
+}
