@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withTracker } from 'meteor/react-meteor-data';
 
-import Activities from '../../../api/activities';
-import Quiz from '../../Activity/Components/Quiz/Quiz';
+import Activities from '/imports/api/activities';
+import Quiz from '/imports/ui/Activities/Quiz/Quiz';
+import ActivityEnums from '/imports/enums/activities';
 
 class ActivityHandler extends Component {
   static propTypes = {
@@ -23,15 +24,15 @@ class ActivityHandler extends Component {
     const { durationTeam, durationOffsetTeam} = activity;
 
     // individual input phase
-    if (status === 1)
+    if (status === ActivityEnums.status.INPUT_INDV)
         return progress === 1? durationIndv : durationIndv - durationOffsetIndv;
 
-    // team formation phase
-    if (status === 2 || status === 4)
+    // team formation or summary phases
+    if (status === ActivityEnums.status.TEAM_FORMATION || status === ActivityEnums.status.SUMMARY)
       return -1;
 
     // team input phase
-    if (status === 3)
+    if (status === ActivityEnums.status.INPUT_TEAM)
         return progress === 1? durationTeam : durationTeam - durationOffsetTeam;
       
   }
@@ -45,10 +46,10 @@ class ActivityHandler extends Component {
     const { activity } = this.props;
 
     // an activity id is required from parent
-    if (!activity_id) return "TODO: No Activity Component, should never be here";
+    if (!activity_id) return "TODO: Waiting for activity_id from parent.";
 
     // waiting for data
-    if (!activity) return "TODO: Loading... component";
+    if (!activity) return "TODO: Loading... component.";
 
     // get activity props
     const { name, status, statusStartTime } = activity;
@@ -57,7 +58,7 @@ class ActivityHandler extends Component {
     const duration = this.calculateDuration(activity);
 
     // render by activity name
-    if (name === "quiz") {
+    if (name === ActivityEnums.name.QUIZ) {
       return <Quiz
         pid={pid}
         status={status}
@@ -75,7 +76,7 @@ export default withTracker(props => {
 
   // mock activity, TODO: make sure to add these fields to db
   const activity = {
-    status: 1,
+    status: 0,
     name: 'quiz',
     statusStartTime: new Date().getTime(),
     durationIndv: 20,

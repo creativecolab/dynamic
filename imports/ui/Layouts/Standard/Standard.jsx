@@ -67,7 +67,7 @@ export default class Standard extends Component {
   render() {
     const { buttonTxt, buttonAction, activityName, sessionStatus } = this.state;
     const { clockStartTime, clockDuration } = this.state;
-    const { hasFooter, children } = this.props;
+    const { hasFooter, hasTimer, children } = this.props;
     return (
       <div className="main">
         <nav className="navbar">
@@ -75,7 +75,7 @@ export default class Standard extends Component {
             <div className="activity-name">{activityName.toUpperCase()}</div>
             <div className="session-progress">Round {sessionStatus}</div>
           </div>
-          <MobileTimer startTime={clockStartTime} duration={clockDuration} />
+          {hasTimer && <MobileTimer startTime={clockStartTime} duration={clockDuration} />}
         </nav>
         <div className="content">{children}</div>
         {hasFooter && <footer className="footer">
