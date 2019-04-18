@@ -1,28 +1,56 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { withTracker } from 'meteor/react-meteor-data';
+
 import ActivityHandler from '../ActivityHandler/ActivityHandler';
+
 import Logs from '/imports/api/logs';
 import Sessions from '/imports/api/sessions';
+
 import LogEnums from '/imports/enums/logs';
 import ActivityEnums from '/imports/enums/activities';
 import SessionEnums from '/imports/enums/sessions';
 
 class SessionHandler extends Component {
   static propTypes = {
+    location: PropTypes.shape({
+      state: PropTypes.shape({
+        pid: PropTypes.string
+      })
+    }),
     match: PropTypes.shape({
       params: PropTypes.shape({
         code: PropTypes.string.isRequired,
       }).isRequired,
     }).isRequired,
-    pid: PropTypes.string.isRequired
+    activity_id: PropTypes.string,
+    status: PropTypes.number,
+    progress: PropTypes.number,
+  }
+
+  static defaultProps = {
+    location: {
+      state: {
+        pid: null
+      }
+    }
+  }
+
+  constructor(props) {
+    super(props);
+    console.log(props);
   }
 
   render() {
 
     // check if user logged in
-    const { pid } = this.props;
-    if (!pid) return "TODO: Please login first."
-
+    let pid = null;
+    try {
+      pid = this.props.location.state.pid;
+    } catch (error) {
+      return "TODO: Please login first."
+    }
+    
     // extract session props
     const { status, progress } = this.props;
 
@@ -36,13 +64,16 @@ class SessionHandler extends Component {
       return <ActivityHandler pid={pid} progress={progress} activity_id={activity_id} />;
     else if (status === SessionEnums.status.FINISHED)
       return "TODO: Session is over, survey page."
+
+    return "TODO: Loading...";
   }
 }
 
 export default withTracker(props => {
 
   // get session code rom URL
-  const code = props.match.params.code;
+  // WARNING: first render doesn't have code
+  const { code } = props.match.params;
 
   // get session object from URL
   const session = Sessions.findOne({code});
@@ -65,14 +96,7 @@ export default withTracker(props => {
       ]
     }}, { sort: { status: 1 }});
   } catch (error) {
-    const text = "No session code " + code;
-    Logs.insert({
-      type: LogEnums.WARNING,
-      text,
-      timestamp: new Date().getTime(),
-    }, () => {
-      console.log(text);
-    });
+    console.log(error);
   }
 
   // extract _id and progress here so the Component doesn't update unnecessarily

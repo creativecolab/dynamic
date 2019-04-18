@@ -3,75 +3,193 @@ import PropTypes from 'prop-types'
 import Wrapper from '../Wrapper/Wrapper'
 import { Redirect } from 'react-router-dom'
 import Sessions from "../../api/sessions";
+import Users from "../../api/users";
 import '../assets/_main.scss';
 import './Landing.scss';
+import SessionHandler from '../Handlers/SessionHandler/SessionHandler';
 
 export default class Landing extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
-      session_code: '',
-      redirect: false,
-      invalid_code: false
+      code: '',
+      name: '',
+      pid: '',
+      invalid: false,
+      ready: false,
+      codeSubmitted: false
     };
   }
 
-  //update the session_code state so we know where to go
-  handleChange(evt) {
+  // update the code state so we know where to go
+  handleCode(evt) {
     this.setState({
-      session_code: evt.target.value.toUpperCase()}
-    );
+      code: evt.target.value.toUpperCase()
+    });
   }
 
-  //once the user enters the session code, go to that session's page
+  // update the pid as the user types
+  handleName(evt) {
+    if (evt.target.value.length > 30) return;
+    this.setState({
+      name: evt.target.value
+    });
+  }
+
+  // update the pid as the user types
+  handlePid(evt) {
+    if (evt.target.value.length > 9) return;
+    this.setState({
+      pid: evt.target.value.toUpperCase()
+    });
+  }
+
+  // once the user enters the session code, go to that session's page
   handleCodeEntry(evt) {
     evt.preventDefault();
 
-    const session_code = this.state.session_code.toLowerCase();
+    const code = this.state.code.toLowerCase();
 
-    if (session_code === "instructor") {
-      console.log('NOOO!!');
-    }
-
-    if (session_code === "") {
-      console.log('NOOO!!');
+    // handle invalid codes
+    if (code === "instructor" || code === "sandbox" || code === "") {
+      return;
     }
 
     // check if session exists
-    const session = Sessions.findOne({code: session_code});
+    const session = Sessions.findOne({code});
     if (session) {
       this.setState({
-        redirect: true,
-        invalid_code: false
+        codeSubmitted: true,
       });  
     } else {
-      console.log('Nope');
       this.setState({
-        invalid_code: true
+        invalid: true
       });
-      
     }
-     
   }
 
-  //will redirect to the enter username page if the redirect state is set
+  // will redirect to the main session page
   renderRedirect = () => {
-    if (this.state.redirect) {
+
+    const pid = this.state.pid.toLowerCase();
+    const code = this.state.code.toLowerCase();
+
+    if (this.state.ready) {
       return <Redirect to={{
-        pathname: '/' + this.state.session_code.toLowerCase()
+        pathname: '/' + this.state.code.toLowerCase(),
+        state: {pid}
       }}/>
     }
   }
 
-  render() {
+  // TODO: maybe -- use localStorage to suggest login
+  handleLogin(evt) {
+    evt.preventDefault();
 
-    // USED FOR STYLING INPUT
-    const invalid = this.state.invalid_code;
+    const { name } = this.state;
+    const pid = this.state.pid.toLowerCase();
+    const code = this.state.code.toLowerCase();
 
+    // TODO: invalid input, render error
+    if (pid.length === 0 || name.length === 0) return;
+
+    // find user by pid on database
+    const user = Users.findOne({pid});
+
+    // find current session
+    const session = Sessions.findOne({code});
+
+    // user exists!
+    if (user) {
+
+      // user is already a participant in this session!
+      if (session.participants.includes(pid)) {
+        this.setState({
+          ready: true
+        });
+      }
+      
+      // user haven't joined this session yet
+      else {
+
+        // prepare points for this session
+        Users.update(user._id, {
+          $push: {
+            points_history: {
+              session_id: session._id,
+              points: 0     
+            }
+          }
+        });
+
+        // add user to session
+        Sessions.update(session._id, {
+          $push: {
+            participants: pid
+          }
+        }, () => {
+          this.setState({
+            ready: true
+          });
+        });
+      }
+    }
+    
+    // creating user for the first time! AKA signup
+    else {
+
+      // create db object
+      Users.insert({
+        name,
+        pid,
+        timestamp: new Date().getTime(),
+        teammates: [],
+        points_history: [{
+          session_id: session._id,
+          points: 0
+        }],
+        preference: []
+      });
+
+      // add user to session
+      Sessions.update(session._id, {
+        $push: {
+          participants: pid
+        }
+      }, () => {
+        this.setState({
+          ready: true
+        });
+      });
+    }    
+  }
+
+  renderLogin() {
+    const { name, pid } = this.state;
     return (
-        <Wrapper> 
+      <Wrapper>
         {this.renderRedirect()}
+        <form id="pid-form" onSubmit={(evt) => this.handleLogin(evt)}>
+          <div id="pid-container" className="field-container">
+            <label className="field-title" htmlFor="name">What is your name? </label>
+            <div className="input-container">
+              <input className="input-text" type="text" name="name" placeholder="King Triton" value={name} onChange={(evt) => this.handleName(evt)}/>
+            </div><br></br>
+            <label className="field-title" htmlFor="pid">What is your PID?</label>
+            <div className="input-container">
+              <input className="input-text" type="text" name="pid" placeholder="A12345678" value={pid} onChange={(evt) => this.handlePid(evt)}/>
+            </div>
+            <input className="small-button" type="submit" value="Continue"/>
+          </div>
+        </form>
+      </Wrapper>
+    )
+  }
+
+  renderSessionCode() {
+    const { code, invalid } = this.state;
+    return (
+      <Wrapper>
         <h1 id="title-dynamic">Dynamic!</h1>
         <img id="logo" src="./small_dynamic.png" alt=""/>
 
@@ -90,7 +208,7 @@ export default class Landing extends Component {
               {/* INPUT FIELD, NOTE THAT THE CLASS CHANGES BASED ON THE STATE OF THIS COMPONENT */}
               <input className={invalid? "input-text-invalid" : "input-text"} type="text"
                 name="session-code" placeholder="Enter your session code"
-                value={this.state.session_code.toUpperCase()} onChange={(evt) => this.handleChange(evt)}/>
+                value={code} onChange={(evt) => this.handleCode(evt)}/>
               
               {/* MESSAGE THAT APPEARS IF THE INPUT IS INVALID, SOME INPUTS MIGHT NOT NEED THIS */}
               {invalid && <span className="invalid-input-message">A session with that code does not exist!</span>}
@@ -103,7 +221,16 @@ export default class Landing extends Component {
           <input className="small-button" type="submit" value="Continue"/>
 
         </form>
-        </Wrapper>
+      </Wrapper>
     );
+  }
+
+  render() {
+    const { codeSubmitted, ready } = this.state;
+    const pid = this.state.pid.toLowerCase();
+    const code = this.state.code.toLowerCase();
+    // if (ready) return <SessionHandler pid={pid} code={code}/>
+    if (codeSubmitted) return this.renderLogin();
+    else return this.renderSessionCode();
   }
 }

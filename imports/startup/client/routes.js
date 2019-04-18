@@ -10,6 +10,7 @@ import Session from '../../ui/Session/Session';
 import SessionProgress from '../../ui/SessionProgress/SessionProgress';
 import SignUp from '../../ui/SignUp/SignUp';
 import ActivityHandler from '../../ui/Handlers/ActivityHandler/ActivityHandler';
+import SessionHandler from '../../ui/Handlers/SessionHandler/SessionHandler';
 
 export const renderRoutes = () => (
     <Router>
@@ -22,8 +23,7 @@ export const renderRoutes = () => (
               progress={2}
               activity_id={"abcd"}/>}
             />
-            <Route exact path="/:code" component={Login} />
-            <Route exact path="/:code/signup" component={SignUp} />
+            <Route exact path="/:code" component={SessionHandler} />
             <Route exact path="/:code/edit" component={Session} />
             <Route exact path="/:code/view" component={SessionProgress} />
         </Switch>
