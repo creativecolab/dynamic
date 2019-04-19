@@ -50,7 +50,7 @@ class ActivityHandler extends Component {
     if (!activity) return "TODO: Loading... component.";
 
     // get activity props
-    const { name, status, statusStartTime } = activity;
+    const { _id, name, status, statusStartTime } = activity;
 
     // calculate progress
     const progress = activity.index + 1;
@@ -62,6 +62,7 @@ class ActivityHandler extends Component {
     if (name === ActivityEnums.name.QUIZ) {
       return <Quiz
         pid={pid}
+        activity_id={_id}
         status={status}
         statusStartTime={statusStartTime}
         sessionLength={sessionLength}

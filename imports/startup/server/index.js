@@ -493,9 +493,12 @@ Meteor.startup(() => {
     } 
   });
 
+  const debug = true;
+
   // called to end an activity phase
   const endPhase = Meteor.bindEnvironment((activity_id, status) => {
-    console.log('Starting status ' + status)
+    console.log('Starting status ' + status);
+    if (debug) return;
     Activities.update(activity_id, {
       $set: {
         status,

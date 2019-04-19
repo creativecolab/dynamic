@@ -7,16 +7,18 @@ export default class Button extends Component {
     onClick: PropTypes.func.isRequired,
     active: PropTypes.bool,
     disabled: PropTypes.bool,
+    order: PropTypes.string,
     size: PropTypes.string,
   }
 
   static defaultProps = {
     size: 'large',
     active: false,
+    order: '',
     disabled: false
   }
 
-  getClassNames(size, active, disabled) {
+  getClassNames({ size, active, disabled }) {
     let className = "btn";
     if (size === "small") className += " btn-small";
     else if (size === "large") className += " btn-large";
@@ -26,8 +28,8 @@ export default class Button extends Component {
   }
 
   render() {
-    const { onClick, children, size, active, disabled } = this.props;
-    const classNames = this.getClassNames(size, active, disabled);
-    return <div className={classNames} onClick={onClick}><div>{children}</div></div>;
+    const { onClick, children, order } = this.props;
+    const classNames = this.getClassNames(this.props);
+    return <div className={classNames} onClick={onClick}><strong>{order}</strong>{children}</div>;
   }
 }

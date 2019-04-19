@@ -1,12 +1,15 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withTracker } from 'meteor/react-meteor-data';
+import { Random } from 'meteor/random';
 
 import Sessions from "../../api/sessions";
 import SessionListItem from './Components/SessionListItem';
 import Logs from "../../api/logs";
 import '../assets/_main.scss';
 import './InstructorUI.scss';
+import Quizzes from '../../api/quizzes';
+
 
 
 class InstructorUI extends Component {
@@ -75,6 +78,41 @@ class InstructorUI extends Component {
         teams: []
       });
       activities.push(activity);
+
+
+      // create quizzes, since this is a quiz
+      Quizzes.insert({
+        activity_id: activity,
+        prompt: 'What is the most likely answer you can think of in this situation, my friend?',
+        options: [
+          {
+            text: "I don't understand.",
+            id: Random.id(),
+            responsesIndv: [],
+            responsesTeam: []
+          },
+          {
+            text: "I think this is the answer.",
+            id: Random.id(),
+            responsesIndv: [],
+            responsesTeam: []
+          },
+          {
+            text: "I am not sure if I understand the question.",
+            id: Random.id(),
+            responsesIndv: [],
+            responsesTeam: []
+          },
+          {
+            text: "Yeah, sure.",
+            id: Random.id(),
+            responsesIndv: [],
+            responsesTeam: []
+          }
+        ]
+      });
+
+
     }
 
     // add new activity to this session, necessary? good?

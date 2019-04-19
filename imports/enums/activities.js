@@ -1,4 +1,4 @@
-// Enums for Logs
+// Enums for Activities
 const ActivityEnums = {
 
   name: {

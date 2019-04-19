@@ -4,8 +4,9 @@
   margin: auto;
   min-width: 4em;
   max-width: 18em;
-  height: $button-height;
-  line-height: $button-height;
+  padding: $button-padding;
+  // height: $button-height;
+  // line-height: $button-height;
   text-align: center;
   background: $dynamic-gray;
   box-shadow: $button-shadow;
@@ -23,13 +24,9 @@
 
 .btn-large {
   margin: 0 auto 1em;
-  width: 100%;
+  // width: 100%;
   text-align: left;
-
-  // text div
-  div {
-    margin-left: 0.5em;
-  }
+  font-size: 22px;
 }
 
 .btn-active {

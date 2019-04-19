@@ -12,6 +12,7 @@ export default class InputButtons extends Component {
       text: PropTypes.string.isRequired,
     }).isRequired,).isRequired,
     handleSelection: PropTypes.func.isRequired,
+    list: PropTypes.bool,
     freeze: PropTypes.bool,
     selected: PropTypes.string,
     shuffle: PropTypes.bool,
@@ -20,6 +21,7 @@ export default class InputButtons extends Component {
   static defaultProps = {
     selected: null,
     shuffle: false,
+    list: false,
     freeze: false
   }
 
@@ -38,14 +40,26 @@ export default class InputButtons extends Component {
     });
   }
 
-  renderButtons(options, freeze) {
+  getLetter(list, index) {
+    if (!list) return '';
+    switch (index) {
+      case 0: return 'A. ';
+      case 1: return 'B. ';  
+      case 2: return 'C. ';  
+      case 3: return 'D. ';  
+      default: return '';
+    }
+  }
+
+  renderButtons({ options, list, freeze }) {
     const { selected } = this.state;
-    return options.map(opt => {
+    return options.map((opt, index) => {
       return (
         <Button
           onClick={() => this.handleSelection(opt.id)}
           active={opt.id === selected}
           disabled={freeze}
+          order={this.getLetter(list, index)}
           key={opt.id}>
             {opt.text}
         </Button>
@@ -54,13 +68,13 @@ export default class InputButtons extends Component {
   }
 
   render() {
-    const { options, freeze, prompt } = this.props;
+    const { prompt } = this.props;
     return (<div className="input-main">
       <div className="input-prompt">
         {prompt}
       </div>
       <div className="input-btns">
-        {this.renderButtons(options, freeze)}
+        {this.renderButtons(this.props)}
       </div>
     </div>);
   }

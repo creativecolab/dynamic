@@ -4,10 +4,12 @@ import ActivityEnums from '/imports/enums/activities';
 
 import PropTypes from 'prop-types'
 import InputButtons from '../Components/InputButtons/InputButtons';
+import quizzes from '../../../api/quizzes';
 
 export default class Quiz extends Component {
   static propTypes = {
     pid: PropTypes.string.isRequired,
+    activity_id: PropTypes.string.isRequired,     // to handle responses
     status: PropTypes.number.isRequired,          // status of this activity
     statusStartTime: PropTypes.number.isRequired, // start time of this status
     sessionLength: PropTypes.number.isRequired,   // length of this session in num of activities
@@ -76,7 +78,21 @@ export default class Quiz extends Component {
         feedbackMsge: "You already voted!",
         feedbackClass: ""
       });
-    } else if (this.state.selected) {
+    }
+    
+    // ready to save response
+    else if (this.state.selected) {
+
+
+      const { pid, activity_id } = this.props;
+
+      // insert response to db
+      // Responses.insert({
+      //   pid,
+      //   activity_id,
+      //   timestamp: new Date().getTime()
+      // });
+
       this.setState({
         submitted: true,
         feedbackMsge: "Response submitted!",
@@ -140,20 +156,20 @@ export default class Quiz extends Component {
   }
 
   // renders based on activity status
-  renderContent(status) {
+  renderContent({ status, activity_id }) {
 
     // individual input phase
     if (status === ActivityEnums.status.INPUT_INDV) {
       // TODO: fake options and prompt
       const { submitted } = this.state;
-      const prompt = "What is the most likely answer you can think of in this situation, my friend?"
-      const options = [
-        {id: 'a', text: 'A. This one'},
-        {id: 'b', text: 'B. No, this one'},
-        {id: 'c', text: 'C. OMG, no! This one'},
-        {id: 'd', text: 'D. OK, fine. This one'},
-      ];
-      return <InputButtons prompt={prompt} options={options} handleSelection={this.handleInputSelection} freeze={submitted} />
+
+      // find quiz for this activity
+      const quiz = Quizzes.findOne({ activity_id });
+
+      // no quiz found
+      if (!quiz) return "TODO: No quiz found.";
+
+      return <InputButtons prompt={quiz.prompt} options={quiz.options} list={true} handleSelection={this.handleInputSelection} freeze={submitted} />
     }
       
 
@@ -174,7 +190,7 @@ export default class Quiz extends Component {
   }
 
   render() {
-    const { status, statusStartTime, progress, duration, sessionLength } = this.props;
+    const { statusStartTime, progress, duration, sessionLength } = this.props;
     return (
       <Standard
         activityName="Quiz"
@@ -184,7 +200,7 @@ export default class Quiz extends Component {
         clockStartTime={statusStartTime}
         {...this.state}
       >
-        {this.renderContent(status)}
+        {this.renderContent(this.props)}
       </Standard>
     )
   }
