@@ -25,7 +25,7 @@ class SessionHandler extends Component {
     }).isRequired,
     activity_id: PropTypes.string,
     status: PropTypes.number,
-    progress: PropTypes.number,
+    length: PropTypes.number,
   }
 
   static defaultProps = {
@@ -52,7 +52,7 @@ class SessionHandler extends Component {
     }
     
     // extract session props
-    const { status, progress } = this.props;
+    const { status, length } = this.props;
 
     // extract activity props
     const { activity_id } = this.props;
@@ -61,7 +61,7 @@ class SessionHandler extends Component {
     if (status === SessionEnums.status.READY)
       return "TODO: Waiting for instructor to begin.";
     else if (status === SessionEnums.status.ACTIVE)
-      return <ActivityHandler pid={pid} progress={progress} activity_id={activity_id} />;
+      return <ActivityHandler pid={pid} sessionLength={length} activity_id={activity_id} />;
     else if (status === SessionEnums.status.FINISHED)
       return "TODO: Session is over, survey page."
 
@@ -78,10 +78,12 @@ export default withTracker(props => {
   // get session object from URL
   const session = Sessions.findOne({code});
 
-  // get session status
+  // get session status and progress
   let status = -1;
+  let length = -1;
   if (session) {
     status = session.status;
+    length = session.activities.length
   }
 
   // get current activity in session
@@ -89,10 +91,10 @@ export default withTracker(props => {
   try {
     activity = Activities.findOne({session_id: session._id, status: {
       $in: [
-        ActivityEnums.status.READY,
         ActivityEnums.status.INPUT_INDV,
         ActivityEnums.status.TEAM_FORMATION,
-        ActivityEnums.status.INPUT_TEAM
+        ActivityEnums.status.INPUT_TEAM,
+        ActivityEnums.status.SUMMARY,
       ]
     }}, { sort: { status: 1 }});
   } catch (error) {
@@ -101,14 +103,12 @@ export default withTracker(props => {
 
   // extract _id and progress here so the Component doesn't update unnecessarily
   let activity_id = null;
-  let progress = -1;
   try {
     activity_id = activity._id;
-    progress = activity.index + 1;
   } catch (error) {
     console.log(error);
   }
 
-  return { status, progress, activity_id };
+  return { status, length, activity_id };
 
 })(SessionHandler);

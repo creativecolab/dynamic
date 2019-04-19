@@ -10,6 +10,7 @@ export default class Quiz extends Component {
     pid: PropTypes.string.isRequired,
     status: PropTypes.number.isRequired,          // status of this activity
     statusStartTime: PropTypes.number.isRequired, // start time of this status
+    sessionLength: PropTypes.number.isRequired,   // length of this session in num of activities
     progress: PropTypes.number.isRequired,        // (index + 1) of activity in session's [Activity]
     duration: PropTypes.number.isRequired,        // calculated in parent
   }
@@ -105,6 +106,8 @@ export default class Quiz extends Component {
       // individual input phase
       if (status === ActivityEnums.status.INPUT_INDV) 
         this.setState({
+          feedbackClass: "",
+          feedbackMsge: "",
           buttonAction: this.submitIndvInput,
           buttonTxt: 'Submit',
           hasFooter: true,
@@ -114,6 +117,8 @@ export default class Quiz extends Component {
       // team formation or summary phases
       else if (status === ActivityEnums.status.TEAM_FORMATION || status === ActivityEnums.status.SUMMARY)
         this.setState({
+          feedbackClass: "",
+          feedbackMsge: "",
           buttonAction: null,
           buttonTxt: null,
           hasFooter: false,
@@ -123,6 +128,8 @@ export default class Quiz extends Component {
       // team input phase
       else if (status === ActivityEnums.status.INPUT_TEAM)
         this.setState({
+          feedbackClass: "",
+          feedbackMsge: "",
           buttonAction: this.submitTeamInput,
           buttonTxt: 'Submit',
           hasFooter: true,
@@ -167,11 +174,12 @@ export default class Quiz extends Component {
   }
 
   render() {
-    const { status, statusStartTime, progress, duration } = this.props;
+    const { status, statusStartTime, progress, duration, sessionLength } = this.props;
     return (
       <Standard
         activityName="Quiz"
         sessionStatus={progress}
+        sessionLength={sessionLength}
         clockDuration={duration}
         clockStartTime={statusStartTime}
         {...this.state}

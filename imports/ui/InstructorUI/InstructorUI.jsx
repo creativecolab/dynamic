@@ -17,22 +17,22 @@ class InstructorUI extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      session_code: ''
+      code: ''
     }
   }
 
   // insert new session to db
   handleNewSession(evt) {
     evt.preventDefault();
-    const { session_code } = this.state;
+    const { code } = this.state;
 
     // invalid session code
-    if (session_code === "") {
+    if (code === "") {
       console.log("Invalid session name!");
       return;
     }
 
-    const session = Sessions.findOne({code: session_code});
+    const session = Sessions.findOne({code: code});
 
     // session already exists!
     if (session) {
@@ -42,7 +42,7 @@ class InstructorUI extends Component {
 
     // create session
     const session_id = Sessions.insert({
-      code: session_code.toLowerCase(),
+      code: code.toLowerCase(),
       timestamp: new Date().getTime(),
       participants: [],
       activities: [],
@@ -51,7 +51,7 @@ class InstructorUI extends Component {
     }, (data) => {
       console.log(data);
       this.setState({
-        session_code: '',
+        code: '',
         size: 3
       });
     });
@@ -61,12 +61,17 @@ class InstructorUI extends Component {
     const activities = [];
     for (var i = 0; i < 3; i++) {
       const activity = Activities.insert({
-        name: 'Icebreaker',
+        name: 'quiz',
+        index: i,
         session_id,
         timestamp: new Date().getTime(),
         team_size: 3, // TODO: default value?
+        durationIndv: 20,
+        durationTeam: 30,
+        durationOffsetIndv: 5,
+        durationOffsetTeam: 10,
         status: 0,
-        startTime: 0,
+        statusStartTime: 0,
         teams: []
       });
       activities.push(activity);
@@ -82,7 +87,7 @@ class InstructorUI extends Component {
     //track the session that was created
     const new_log = Logs.insert({
       log_type: "Session Created",
-      code: session_code,
+      code,
       timestamp: new Date().getTime(),
     });
 
@@ -90,10 +95,10 @@ class InstructorUI extends Component {
 
   }
 
-  //update the session_code state so we know where to go
+  //update the code state so we know where to go
   handleSessionChange(evt) {
     this.setState({
-      session_code: evt.target.value
+      code: evt.target.value
     });
   }
 
@@ -115,7 +120,7 @@ class InstructorUI extends Component {
           <div id="session-code" className="field-container">
             <label className="field-title" htmlFor="session-code">New session code</label>
             <div className="input-container">
-              <input className="bigscreen-input-text" type="text" name="session-code" placeholder="Type your session code here" value={this.state.session_code} onChange={(evt) => this.handleSessionChange(evt)}/>
+              <input className="bigscreen-input-text" type="text" name="session-code" placeholder="Type your session code here" value={this.state.code} onChange={(evt) => this.handleSessionChange(evt)}/>
             </div>
           </div>
           <div id="submit" className="field-container">

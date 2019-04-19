@@ -15,6 +15,7 @@ export default class Standard extends Component {
     buttonTxt: PropTypes.string,
     activityName: PropTypes.string,
     sessionStatus: PropTypes.number,
+    sessionLength: PropTypes.number,
     clockDuration: PropTypes.number,
     clockStartTime: PropTypes.number,
     feedbackMsge: PropTypes.string,
@@ -26,11 +27,13 @@ export default class Standard extends Component {
     hasTimer: true,
     buttonAction: () => {console.log('Button action not set')},
     buttonTxt: "Next",
-    feedbackClass: ""
+    feedbackClass: "",
+    sessionStatus: 0,
+    sessionLength: 0
   };
 
   render() {
-    const { activityName, sessionStatus } = this.props;
+    const { activityName, sessionStatus, sessionLength } = this.props;
     const { buttonTxt, buttonAction } = this.props;
     const { feedbackMsge, feedbackClass } = this.props;
     const { clockStartTime, clockDuration } = this.props;
@@ -42,7 +45,7 @@ export default class Standard extends Component {
         <nav className="navbar">
           <div className="progress-status">
             <div className="activity-name">{activityName.toUpperCase()}</div>
-            <div className="session-progress">Round {sessionStatus}</div>
+            <div className="session-progress">Activity {sessionStatus} out of {sessionLength}</div>
           </div>
           {hasTimer && <MobileTimer startTime={clockStartTime} duration={clockDuration} />}
         </nav>

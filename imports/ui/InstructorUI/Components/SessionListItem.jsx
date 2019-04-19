@@ -57,14 +57,15 @@ class SessionListItem extends Component {
     const { participants } = this.props;
 
     // need participants!
-    if (participants.length < 2) {
-      console.log('Not enough participants!');
-      return;
-    }
+    if (participants.length < 2) return;
 
     // ready to start session!
     Sessions.update(this.props._id, {
-      $set: { status: 1, round: 1 }
+      $set: {
+        status: 1,
+        round: 1,
+        startTime: new Date().getTime()
+      }
     });
     
   }

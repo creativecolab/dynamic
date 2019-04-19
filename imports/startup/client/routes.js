@@ -3,12 +3,9 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 // route components
 import Landing from '../../ui/Landing/Landing';
-// import ChooseUsername from '../../ui/ChooseUsername/ChooseUsername';
-import Login from '../../ui/Login/Login';
 import InstructorUI from '../../ui/InstructorUI/InstructorUI';
 import Session from '../../ui/Session/Session';
 import SessionProgress from '../../ui/SessionProgress/SessionProgress';
-import SignUp from '../../ui/SignUp/SignUp';
 import ActivityHandler from '../../ui/Handlers/ActivityHandler/ActivityHandler';
 import SessionHandler from '../../ui/Handlers/SessionHandler/SessionHandler';
 

@@ -8,9 +8,9 @@ import ActivityEnums from '/imports/enums/activities';
 
 class ActivityHandler extends Component {
   static propTypes = {
+    activity_id: PropTypes.string,
     pid: PropTypes.string.isRequired,
-    progress: PropTypes.number.isRequired,
-    activity_id: PropTypes.string.isRequired,
+    sessionLength: PropTypes.number,
   }
 
   // set duration based on activity status and session progress
@@ -38,7 +38,7 @@ class ActivityHandler extends Component {
   render() {
 
     // get props from parent
-    const { activity_id, pid, progress } = this.props;
+    const { activity_id, pid, sessionLength } = this.props;
 
     // get activity object from withTracker
     const { activity } = this.props;
@@ -51,9 +51,12 @@ class ActivityHandler extends Component {
 
     // get activity props
     const { name, status, statusStartTime } = activity;
+
+    // calculate progress
+    const progress = activity.index + 1;
     
     // calculate duration
-    const duration = this.calculateDuration(activity);
+    const duration = this.calculateDuration(activity, progress);
 
     // render by activity name
     if (name === ActivityEnums.name.QUIZ) {
@@ -61,6 +64,7 @@ class ActivityHandler extends Component {
         pid={pid}
         status={status}
         statusStartTime={statusStartTime}
+        sessionLength={sessionLength}
         progress={progress}
         duration={duration}
       />;
@@ -70,19 +74,7 @@ class ActivityHandler extends Component {
 
 // updates component when activity changes
 export default withTracker(props => {
-  //TODO: const activity = Activities.findOne(props.activity_id);
-
-  // mock activity, TODO: make sure to add these fields to db
-  const activity = {
-    status: 1,
-    name: 'quiz',
-    statusStartTime: new Date().getTime(),
-    durationIndv: 20,
-    durationTeam: 30,
-    durationOffsetIndv: 10,
-    durationOffsetTeam: 5,
-  }
-
+  const activity = Activities.findOne(props.activity_id);
   return { activity };
 })(ActivityHandler);
 

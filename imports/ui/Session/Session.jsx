@@ -17,7 +17,7 @@ class Session extends Component {
   addActivity(evt) {
     evt.preventDefault();
 
-    const name = 'Icebreaker';
+    const name = 'quiz';
     const session_id = this.props.session._id;
 
     // session is over
@@ -29,11 +29,17 @@ class Session extends Component {
     // add new activity to db
     const activity = Activities.insert({
       name,
+      index: this.props.activities.length,
       session_id,
       timestamp: new Date().getTime(),
       team_size: 3, // TODO: default value?
       status: 0,
+      durationIndv: 20,
+      durationTeam: 30,
+      durationOffsetIndv: 5,
+      durationOffsetTeam: 10,
       startTime: 0,
+      statusStartTime: 0,
       teams: []
     });
 

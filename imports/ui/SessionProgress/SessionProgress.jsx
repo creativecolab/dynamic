@@ -10,6 +10,8 @@ import Sessions from '../../api/sessions';
 import Users from '../../api/users';
 import Logs from "../../api/logs";
 
+import ActivityEnums from '/imports/enums/activities';
+
 import SessionEnd from './Components/SessionEnd';
 import TeamShapes from './Components/TeamShapes';
 import StatsPage from './Components/StatsPage';
@@ -18,14 +20,6 @@ import StatsPage from './Components/StatsPage';
 class SessionProgress extends Component {
   static propTypes = {
     // code: PropTypes.string.isRequired,
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      duration: -1,
-      round: 0
-    }
   }
 
   mapActivities() {
@@ -45,7 +39,8 @@ class SessionProgress extends Component {
     Sessions.update(this.props.session._id, {
       $set: {
         status: 1,
-        round: 1
+        round: 1,
+        startTime: new Date().getTime()
       }
     });
 
@@ -57,17 +52,6 @@ class SessionProgress extends Component {
     });
 
     console.log(new_log);
-  }
-
-  componentDidUpdate(prevProps) {
-    if (!prevProps.currentActivity && this.props.currentActivity) {
-      this.setState({
-        duration: 10
-      }, () => {
-        // tick
-        console.log('Duration set!');
-      });
-    }
   }
 
   // advance the status of the activity
@@ -82,7 +66,7 @@ class SessionProgress extends Component {
       console.log("Activity status of " + this.props.currentActivity.name + " advanced to " + (currStatus + 1));
 
       Activities.update(this.props.currentActivity._id, {
-        $set: { status: currStatus + 1, startTime: new Date().getTime() }
+        $set: { status: currStatus + 1, statusStartTime: new Date().getTime() }
       });
     } else {
       console.log("Can no longer advance the status of " + this.props.currentActivity.name);
@@ -98,26 +82,35 @@ class SessionProgress extends Component {
   //   });
   // }
 
+  // set duration based on activity status and session progress
+  calculateDuration(activity) {
+
+    // get activity status
+    const { status, index } = activity;
+
+    // get durations
+    const { durationIndv, durationOffsetIndv} = activity;
+    const { durationTeam, durationOffsetTeam} = activity;
+
+    // individual input phase
+    if (status === ActivityEnums.status.INPUT_INDV)
+        return index === 0? durationIndv : durationIndv - durationOffsetIndv;
+
+    // team input phase
+    if (status === ActivityEnums.status.INPUT_TEAM)
+      return index === 0? durationTeam : durationTeam - durationOffsetTeam;
+    
+    return -1;
+    
+  }
+
   renderClock() {
-    const { currentActivity, session } = this.props;
-    let totalTime = 0;
-    if (currentActivity.status === 1) {
-      // collect input, 120 seconds on the first round, 60 seconds on following rounds
-      totalTime = 120;
-      session.activities.map((act, index) => {
-        if (act === currentActivity._id) {
-          // if we're doing Icebreaker, and the we're not on the first one, give less time
-          if (currentActivity.name === 'Icebreaker' && index != 0) totalTime = 60;
-        }
-      });
-    } else if (currentActivity.status === 3) {
-      // do the activity!!
-      totalTime = 120;
-    } else {
-      return "";
-    }
+    const { currentActivity } = this.props;
+
+    const duration = this.calculateDuration(currentActivity);
+
     // console.log("Start time: " + currentActivity.startTime);
-    return <Clock startTime={this.props.currentActivity.startTime} big={true} totalTime={totalTime}/>
+    return <Clock startTime={this.props.currentActivity.statusStartTime} big={true} totalTime={duration}/>
   }
 
   // instructions for activities

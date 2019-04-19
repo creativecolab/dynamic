@@ -1,5 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 
+import ActivityEnums from '../../enums/activities';
+
 import Activities from '../../api/activities';
 import Sessions from '../../api/sessions';
 import Users from '../../api/users';
@@ -7,22 +9,6 @@ import Teams from '../../api/teams';
 import Logs from '../../api/logs';
 
 import './register-api';
-// TODO: add collection for timers
-
-/* Helper Methods used just for Testing!! */
-
-//use when local collections get a bit cluttered
-function clearCollections() {
-  Activities.find({}).forEach(activitiy => {
-    Activities.remove(activitiy._id)
-  })
-  Sessions.find({}).forEach(session => {
-    Sessions.remove(session._id)
-  })
-  Users.find({}).forEach(user => {
-    Users.remove(user._id)
-  })
-}
 
 // hard-coded roster for testing
 function updateRoster() {
@@ -133,7 +119,10 @@ Meteor.methods({
 /* Meteor start-up function, called once server starts */
 Meteor.startup(() => {
 
-  clearCollections(); 
+  //TODO: NO MORE THIS
+  // IF WE PUSH THIS TO HEROKU,
+  // WE LOSE ALL OUR DATA!!!
+  //clearCollections(); 
 
   // update roster on startup
   updateRoster();
@@ -153,8 +142,8 @@ Meteor.startup(() => {
         Activities.update(session.activities[0], {
           $set: {
             status: 1,
-            timestamp: new Date().getTime(),
-            startTime: new Date().getTime()
+            startTime: new Date().getTime(),
+            statusStartTime: new Date().getTime()
           }
         });
 
@@ -182,7 +171,7 @@ Meteor.startup(() => {
           const activity = Activities.findOne(team.activity_id);
           Teams.update(team._id, {
             $set: {
-              teamFormationTime: new Date().getTime() - activity.startTime
+              teamFormationTime: new Date().getTime() - activity.statusStartTime
             }
           });
 
@@ -201,12 +190,34 @@ Meteor.startup(() => {
         Activities.update(activity_id, {
           $set: {
             status: 3,
-            startTime: new Date().getTime()
+            statusStartTime: new Date().getTime()
           }
         });
       }
     }
   }); 
+
+  // set duration based on activity status and session progress
+  function calculateDuration(activity) {
+
+    // get activity status
+    const { status, index } = activity;
+
+    // get durations
+    const { durationIndv, durationOffsetIndv} = activity;
+    const { durationTeam, durationOffsetTeam} = activity;
+
+    // individual input phase
+    if (status === ActivityEnums.status.INPUT_INDV)
+        return index === 0? durationIndv : durationIndv - durationOffsetIndv;
+
+    // team input phase
+    if (status === ActivityEnums.status.INPUT_TEAM)
+      return index === 0? durationTeam : durationTeam - durationOffsetTeam;
+    
+    return -1;
+    
+  }
 
   // handles team formation
   const activitiesCursor = Activities.find({});
@@ -215,25 +226,19 @@ Meteor.startup(() => {
       console.log(_id + " updated. [Activity]");
       console.log(update);
 
+      // get duration
+      let duration = 0;
+      if (update.status) {
+        const activity = Activities.findOne({_id});
+        duration = calculateDuration(activity);
+      }
+
       // let input phase last for 120 seconds the first round, 60 seconds other rounds
       if (update.status === 1) {
         console.log('[ACTIVITY STARTED]')
-        let totalTime = 120;
-        const currentActivity = Activities.findOne({_id});
-        const session = Sessions.findOne({_id: currentActivity.session_id});
-        if (session) {
-          session.activities.map((act, index) => {
-            if (act === _id) {
-              // if we're doing Icebreaker, and the we're not on the first one, give less time
-              if (currentActivity.name === 'Icebreaker' && index != 0) totalTime = 60;
-              console.log("On round: " + (index + 1) + ", " + totalTime + " seconds allotted.");
-            }
-          });
-        }
-
         this.timer1 = setTimeout(
           () => endPhase(_id, 2),
-          totalTime * 1000
+          duration * 1000
         );
       }
 
@@ -450,7 +455,7 @@ Meteor.startup(() => {
         clearTimeout(this.timer1);
         this.timer2 = setTimeout(
           () => endPhase(_id, 4),
-          120 * 1000
+          duration * 1000
         );
       }
 
@@ -467,7 +472,8 @@ Meteor.startup(() => {
          if (!nextActivity) {
            Sessions.update(session._id, {
              $set: {
-               status: 2
+               status: 2,
+               endTime: new Date().getTime()
              }
            });
          }
@@ -477,7 +483,8 @@ Meteor.startup(() => {
            Activities.update(nextActivity._id, {
              $set: {
                status: 1,
-               startTime: new Date().getTime()
+               startTime: new Date().getTime(),
+               statusStartTime: new Date().getTime()
              }
            });
          }
@@ -492,7 +499,7 @@ Meteor.startup(() => {
     Activities.update(activity_id, {
       $set: {
         status,
-        startTime: new Date().getTime()
+        statusStartTime: new Date().getTime()
       }
     });
   });
