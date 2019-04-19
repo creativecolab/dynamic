@@ -11,11 +11,7 @@
   background: $dynamic-gray;
   box-shadow: $button-shadow;
   border-radius: $button-border-radius;
-
-  div {
-    user-select: none;
-  }
-
+  user-select: none;
 }
 
 .btn-small {
