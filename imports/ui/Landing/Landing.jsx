@@ -15,6 +15,7 @@ export default class Landing extends Component {
       code: '',
       name: '',
       pid: '',
+      section: '',
       invalid: false,
       ready: false,
       codeSubmitted: false
@@ -33,6 +34,14 @@ export default class Landing extends Component {
     if (evt.target.value.length > 30) return;
     this.setState({
       name: evt.target.value
+    });
+  }
+
+  // update the section as the user types
+  handleSection(evt) {
+    if (evt.target.value.length > 5) return;
+    this.setState({
+      section: evt.target.value
     });
   }
 
@@ -72,7 +81,6 @@ export default class Landing extends Component {
   renderRedirect = () => {
 
     const pid = this.state.pid.toLowerCase();
-    const code = this.state.code.toLowerCase();
 
     if (this.state.ready) {
       return <Redirect to={{
@@ -86,12 +94,12 @@ export default class Landing extends Component {
   handleLogin(evt) {
     evt.preventDefault();
 
-    const { name } = this.state;
+    const { name, section } = this.state;
     const pid = this.state.pid.toLowerCase();
     const code = this.state.code.toLowerCase();
 
     // TODO: invalid input, render error
-    if (pid.length === 0 || name.length === 0) return;
+    if (pid.length === 0 || name.length === 0 || section.length === 0) return;
 
     // find user by pid on database
     const user = Users.findOne({pid});
@@ -118,7 +126,8 @@ export default class Landing extends Component {
             points_history: {
               session_id: session._id,
               points: 0     
-            }
+            },
+            section: this.state.section
           }
         });
 
@@ -142,6 +151,7 @@ export default class Landing extends Component {
       Users.insert({
         name,
         pid,
+        section,
         timestamp: new Date().getTime(),
         teammates: [],
         points_history: [{
@@ -165,7 +175,7 @@ export default class Landing extends Component {
   }
 
   renderLogin() {
-    const { name, pid } = this.state;
+    const { name, section, pid } = this.state;
     return (
       <Wrapper>
         {this.renderRedirect()}
@@ -174,6 +184,10 @@ export default class Landing extends Component {
             <label className="field-title" htmlFor="name">What is your name? </label>
             <div className="input-container">
               <input className="input-text" type="text" name="name" placeholder="King Triton" value={name} onChange={(evt) => this.handleName(evt)}/>
+            </div><br></br>
+            <label className="field-title" htmlFor="section">What section are you enrolled in? </label>
+            <div className="input-container">
+              <input className="input-text" type="text" name="section" placeholder="A00" value={section} onChange={(evt) => this.handleSection(evt)}/>
             </div><br></br>
             <label className="field-title" htmlFor="pid">What is your PID?</label>
             <div className="input-container">
