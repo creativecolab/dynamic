@@ -493,7 +493,8 @@ Meteor.startup(() => {
     } 
   });
 
-  const debug = true;
+  // debug flag, useful for styling
+  const debug = false;
 
   // called to end an activity phase
   const endPhase = Meteor.bindEnvironment((activity_id, status) => {
