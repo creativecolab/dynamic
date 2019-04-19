@@ -127,6 +127,8 @@ export default class Landing extends Component {
               session_id: session._id,
               points: 0     
             },
+          },
+          $set: {
             section: this.state.section
           }
         });

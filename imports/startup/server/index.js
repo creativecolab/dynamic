@@ -32,6 +32,7 @@ function updateRoster() {
     firstname: 'Gustavo',
     lastname: 'Umbelino',
     pid: 'gus',
+    section: 'A00',
     points_history: [],
     preference: []
   },
@@ -40,6 +41,7 @@ function updateRoster() {
     firstname: 'Vivian',
     lastname: 'Ta',
     pid: 'viv',
+    section: 'B00',
     points_history: [],
     preference: []
   },
@@ -48,6 +50,7 @@ function updateRoster() {
     firstname: 'Eric',
     lastname: 'Truong',
     pid: 'eric',
+    section: 'C00',
     points_history: [],
     preference: []
   },
@@ -56,6 +59,7 @@ function updateRoster() {
     firstname: 'Steven',
     lastname: 'Dow',
     pid: 'steven',
+    section: 'C00',
     points_history: [],
     preference: []
   },
@@ -64,6 +68,7 @@ function updateRoster() {
     firstname: 'Samuel',
     lastname: 'Blake',
     pid: 'sam',
+    section: 'B00',
     points_history: [],
     preference: []
   }];
@@ -121,7 +126,6 @@ Meteor.methods({
         timestamp: new Date().getTime(),
       });
     });
-
   }
 
 });
@@ -129,7 +133,7 @@ Meteor.methods({
 /* Meteor start-up function, called once server starts */
 Meteor.startup(() => {
 
-  // clearCollections(); 
+  clearCollections(); 
 
   // update roster on startup
   updateRoster();
@@ -249,7 +253,7 @@ Meteor.startup(() => {
         // get snapshot of participants in session
         const session_id = Activities.findOne(_id).session_id;
         const participants  = Sessions.findOne(session_id).participants;
-        shuffle(participants);
+        shuffle(participants); // TODO -- maybe shuffle after grouping into sections
         console.log("Participants: " + participants);
 
         // TODO: get these from instructor
@@ -290,12 +294,28 @@ Meteor.startup(() => {
 
         //--- FORM TEAMS ---//
 
+        // TODO, separate everyone by section
+        var session_sections = {}
+
+        for (let j = 0; j < participants.length; j++) {
+          var participant_section = Users.findOne({pid: participants[j]}).section;
+          if (!(session_sections.hasOwnProperty(participant_section))) {
+            //first time seeing this section
+            session_sections[participant_section] = [];
+          }
+          session_sections[participant_section].push(participants[j]);
+        }
+
+        console.log(session_sections);
+
+        // used to keep track of current and older teams for database
         let teams = [];
+        let oldTeam = [];
+        let olderTeam = [];
         let team_id = "";
         let older_team_id = "";
 
         // form teams, teams of 3
-        // TODO when left with 2 people, create two teams of 4
         let newTeam =[participants[0]];
         for (let i = 1; i < participants.length; i++) {
 
@@ -315,8 +335,21 @@ Meteor.startup(() => {
               responses: []
             });
 
+            //update the users teammates 
+            for (let k = 1; k < newTeam.length; k++) {
+              Users.update({pid: newTeam[k]}, {
+                $set: {
+                  teammates: newTeam.filter(teammate => teammate != newTeam[k])
+                }
+              });
+            }
+
+            // save this added team
             teams.push(team_id);
 
+            // keep track of older teams just in case
+            olderTeam = oldTeam
+            oldTeam = newTeam;
             newTeam = [participants[i]];
           }
           
@@ -333,18 +366,41 @@ Meteor.startup(() => {
               members: {pid: newTeam[0], confirmed: false}
             }
           });
+
+          //update the users teammates 
+          Users.update({pid: newTeam[0]}, {
+            $set: {
+              teammates: oldTeam
+            }
+          });
+
         }
 
         // only 2 participants left, create 2 teams of MAX_TEAM_SIZE + 1
         else if (newTeam.length === 2 && teams.length > 1) {
+          // add the first user
           Teams.update(team_id, {
             $push: {
               members: {pid: newTeam[0], confirmed: false}
             }
           });
+          //update the users teammates 
+          Users.update({pid: newTeam[0]}, {
+            $set: {
+              teammates: oldTeam
+            }
+          });
+
+          // add the second user
           Teams.update(older_team_id, {
             $push: {
               members: {pid: newTeam[1], confirmed: false}
+            }
+          });
+          //update the users teammates 
+          Users.update({pid: newTeam[0]}, {
+            $set: {
+              teammates: olderTeam
             }
           });
         }
@@ -360,6 +416,15 @@ Meteor.startup(() => {
             shapeColor: colored_shapes[teams.length].color,
             responses: []
           });
+
+          //update the users teammates 
+          for (let k = 1; k < newTeam.length; k++) {
+            Users.update({pid: newTeam[k]}, {
+              $set: {
+                teammates: newTeam.filter(teammate => teammate != newTeam[k])
+              }
+            });
+          }
 
           teams.push(team_id);
         }
