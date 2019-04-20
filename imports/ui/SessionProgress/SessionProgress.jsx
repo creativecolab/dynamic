@@ -19,7 +19,7 @@ import StatsPage from './Components/StatsPage';
 
 class SessionProgress extends Component {
   static propTypes = {
-    // code: PropTypes.string.isRequired,
+    //code: PropTypes.string.isRequired,
   }
 
   mapActivities() {
@@ -136,7 +136,9 @@ class SessionProgress extends Component {
     }
     // team-finding phase
     if (status === 2) {
-      return <TeamShapes skip={this.advanceActivity} activity_id={this.props.currentActivity._id}/>
+      return (
+        <TeamShapes skip={this.advanceActivity} activity_id={this.props.currentActivity._id}/>
+      )
     }
     // group discussion, 2T1L!
     if (status === 3) {
@@ -198,6 +200,7 @@ class SessionProgress extends Component {
         {/* <div>{this.props.currentActivity.name}</div> */}
         {this.getInstructions(this.props.currentActivity.status)}
         {/* <div>Session code: {this.props.match.params.code}</div> */}
+        { /* TODO maybe add session code an url */}
         <button className="bigscreen-button" onClick={() => this.advanceActivity(this.props.currentActivity)}>Skip to activity</button>
       </div>
     );

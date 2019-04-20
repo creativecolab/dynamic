@@ -119,11 +119,6 @@ Meteor.methods({
 /* Meteor start-up function, called once server starts */
 Meteor.startup(() => {
 
-  //TODO: NO MORE THIS
-  // IF WE PUSH THIS TO HEROKU,
-  // WE LOSE ALL OUR DATA!!!
-  //clearCollections(); 
-
   // update roster on startup
   updateRoster();
 
@@ -297,9 +292,7 @@ Meteor.startup(() => {
           }
         }
 
-        //--- FORM TEAMS ---//
-
-        // TODO, separate everyone by section
+        //--- SEPARATE EVERYONE BY SECTION ---//
         var session_sections = {}
 
         for (let j = 0; j < participants.length; j++) {
@@ -313,142 +306,156 @@ Meteor.startup(() => {
 
         console.log(session_sections);
 
-        // used to keep track of current and older teams for database
-        let teams = [];
-        let oldTeam = [];
-        let olderTeam = [];
-        let team_id = "";
-        let older_team_id = "";
+        //--- FORM TEAMS ---//
+        for (var section in session_sections) {
+          // make teams based on sections
+          if (session_sections.hasOwnProperty(section)) {
+            console.log(section + " -> " + session_sections[section]);
+            // used to keep track of current and older teams for database
+            var section_members = session_sections[section];
+            let teams = [];
+            let oldTeam = [];
+            let olderTeam = [];
+            let team_id = "";
+            let older_team_id = "";
 
-        // form teams, teams of 3
-        let newTeam =[participants[0]];
-        for (let i = 1; i < participants.length; i++) {
+            //shuffle(section_members); // TODO -- maybe shuffle after grouping into sections
+            //console.log("Participants: " + section_members);
 
-          // completed a new team
-          // TODO: get MAX_TEAM_SIZE from instructor!
-          if (i % MAX_TEAM_SIZE == 0) {
-            // second most-recent team created
-            older_team_id = team_id;
-            // most recent team created
-            team_id = Teams.insert({
-              activity_id: _id,
-              timestamp: new Date().getTime(),
-              members: newTeam.map(pid => ({pid, confirmed: false})),
-              color: colors[teams.length],
-              shape: colored_shapes[teams.length].shape,
-              shapeColor: colored_shapes[teams.length].color,
-              responses: []
-            });
+            // form teams, teams of 3
+            let newTeam =[section_members[0]];
+            for (let i = 1; i < section_members.length; i++) {
 
-            //update the users teammates 
-            for (let k = 1; k < newTeam.length; k++) {
-              Users.update({pid: newTeam[k]}, {
-                $set: {
-                  teammates: newTeam.filter(teammate => teammate != newTeam[k])
+              // completed a new team
+              // TODO: get MAX_TEAM_SIZE from instructor!
+              if (i % MAX_TEAM_SIZE == 0) {
+                // second most-recent team created
+                older_team_id = team_id;
+                // most recent team created
+                team_id = Teams.insert({
+                  activity_id: _id,
+                  timestamp: new Date().getTime(),
+                  members: newTeam.map(pid => ({pid, confirmed: false})),
+                  color: colors[teams.length],
+                  shape: colored_shapes[teams.length].shape,
+                  shapeColor: colored_shapes[teams.length].color,
+                  responses: []
+                });
+
+                //update the users teammates 
+                for (let k = 1; k < newTeam.length; k++) {
+                  Users.update({pid: newTeam[k]}, {
+                    $set: {
+                      teammates: newTeam.filter(teammate => teammate != newTeam[k])
+                    }
+                  });
+                }
+
+                // save this added team
+                teams.push(team_id);
+
+                // keep track of older teams just in case
+                olderTeam = oldTeam
+                oldTeam = newTeam;
+                newTeam = [participants[i]];
+              }
+              
+              // add new member to team
+              else {
+                newTeam.push(participants[i]);
+              }
+            }
+
+            // only 1 participant left, create team of MAX_TEAM_SIZE + 1
+            if (newTeam.length === 1 && teams.length > 0) {
+              Teams.update(team_id, {
+                $push: {
+                  members: {pid: newTeam[0], confirmed: false}
+                }
+              });
+
+              //update the users teammates 
+              Users.update({pid: newTeam[0]}, {
+                $push: {
+                  teammates: oldTeam
+                }
+              });
+
+            }
+
+            // only 2 participants left, create 2 teams of MAX_TEAM_SIZE + 1
+            else if (newTeam.length === 2 && teams.length > 1) {
+              // add the first user
+              Teams.update(team_id, {
+                $push: {
+                  members: {pid: newTeam[0], confirmed: false}
+                }
+              });
+              //update the users teammates 
+              Users.update({pid: newTeam[0]}, {
+                $push: {
+                  teammates: oldTeam
+                }
+              });
+
+              // add the second user
+              Teams.update(older_team_id, {
+                $push: {
+                  members: {pid: newTeam[1], confirmed: false}
+                }
+              });
+              //update the users teammates 
+              Users.update({pid: newTeam[0]}, {
+                $push: {
+                  teammates: olderTeam
                 }
               });
             }
 
-            // save this added team
-            teams.push(team_id);
+            // last team is of MAX_TEAM_SIZE or less
+            else if (newTeam.length <= MAX_TEAM_SIZE) {
+              team_id = Teams.insert({
+                activity_id: _id,
+                timestamp: new Date().getTime(),
+                members: newTeam.map(pid => ({pid, confirmed: false})),
+                color: colors[teams.length],
+                shape: colored_shapes[teams.length].shape,
+                shapeColor: colored_shapes[teams.length].color,
+                responses: []
+              });
 
-            // keep track of older teams just in case
-            olderTeam = oldTeam
-            oldTeam = newTeam;
-            newTeam = [participants[i]];
-          }
-          
-          // add new member to team
-          else {
-            newTeam.push(participants[i]);
-          }
-        }
+              //update the users teammates 
+              for (let k = 1; k < newTeam.length; k++) {
+                Users.update({pid: newTeam[k]}, {
+                  $push: {
+                    teammates: newTeam.filter(teammate => teammate != newTeam[k])
+                  }
+                });
+              }
 
-        // only 1 participant left, create team of MAX_TEAM_SIZE + 1
-        if (newTeam.length === 1) {
-          Teams.update(team_id, {
-            $push: {
-              members: {pid: newTeam[0], confirmed: false}
+              teams.push(team_id);
             }
-          });
 
-          //update the users teammates 
-          Users.update({pid: newTeam[0]}, {
-            $set: {
-              teammates: oldTeam
-            }
-          });
 
-        }
-
-        // only 2 participants left, create 2 teams of MAX_TEAM_SIZE + 1
-        else if (newTeam.length === 2 && teams.length > 1) {
-          // add the first user
-          Teams.update(team_id, {
-            $push: {
-              members: {pid: newTeam[0], confirmed: false}
-            }
-          });
-          //update the users teammates 
-          Users.update({pid: newTeam[0]}, {
-            $set: {
-              teammates: oldTeam
-            }
-          });
-
-          // add the second user
-          Teams.update(older_team_id, {
-            $push: {
-              members: {pid: newTeam[1], confirmed: false}
-            }
-          });
-          //update the users teammates 
-          Users.update({pid: newTeam[0]}, {
-            $set: {
-              teammates: olderTeam
-            }
-          });
-        }
-
-        // last team is of MAX_TEAM_SIZE or less
-        else if (newTeam.length <= MAX_TEAM_SIZE) {
-          team_id = Teams.insert({
-            activity_id: _id,
-            timestamp: new Date().getTime(),
-            members: newTeam.map(pid => ({pid, confirmed: false})),
-            color: colors[teams.length],
-            shape: colored_shapes[teams.length].shape,
-            shapeColor: colored_shapes[teams.length].color,
-            responses: []
-          });
-
-          //update the users teammates 
-          for (let k = 1; k < newTeam.length; k++) {
-            Users.update({pid: newTeam[k]}, {
+            // start and update activity on database
+            Activities.update(_id, {
               $set: {
-                teammates: newTeam.filter(teammate => teammate != newTeam[k])
+                teams
+              }
+            }, (error) => {
+              if (!error) {
+                console.log('Teams created!');
+                console.log(teams);
+              } else {
+                console.log(error);
               }
             });
           }
 
-          teams.push(team_id);
         }
-
-
-        // start and update activity on database
-        Activities.update(_id, {
-          $set: {
-            teams
-          }
-        }, (error) => {
-          if (!error) {
-            console.log('Teams created!');
-          } else {
-            console.log(error);
-          }
-        });
       }
 
+        
       // discussion time!
       if (update.status === 3) {
         console.log('[DISCUSSION TIME]');

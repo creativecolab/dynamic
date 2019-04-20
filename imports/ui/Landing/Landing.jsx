@@ -39,7 +39,7 @@ export default class Landing extends Component {
 
   // update the section as the user types
   handleSection(evt) {
-    if (evt.target.value.length > 5) return;
+    if (evt.target.value.length > 3) return;
     this.setState({
       section: evt.target.value
     });
@@ -94,9 +94,10 @@ export default class Landing extends Component {
   handleLogin(evt) {
     evt.preventDefault();
 
-    const { name, section } = this.state;
+    const { name } = this.state;
     const pid = this.state.pid.toLowerCase();
     const code = this.state.code.toLowerCase();
+    const section = this.state.section.toLowerCase();
 
     // TODO: invalid input, render error
     if (pid.length === 0 || name.length === 0 || section.length === 0) return;
@@ -187,9 +188,9 @@ export default class Landing extends Component {
             <div className="input-container">
               <input className="input-text" type="text" name="name" placeholder="King Triton" value={name} onChange={(evt) => this.handleName(evt)}/>
             </div><br></br>
-            <label className="field-title" htmlFor="section">What section are you enrolled in? </label>
+            <label className="field-title" htmlFor="section">What time is your section? </label>
             <div className="input-container">
-              <input className="input-text" type="text" name="section" placeholder="A00" value={section} onChange={(evt) => this.handleSection(evt)}/>
+              <input className="input-text" type="text" name="section" placeholder="2pm, 3pm, or 4pm" value={section} onChange={(evt) => this.handleSection(evt)}/>
             </div><br></br>
             <label className="field-title" htmlFor="pid">What is your PID?</label>
             <div className="input-container">
