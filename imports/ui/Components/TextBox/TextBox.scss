@@ -1,0 +1,11 @@
+@import '../../assets/main';
+
+.textbox{
+padding: 2px;
+border: 2px solid $dynamic-black; 
+border-radius: 5px; 
+}
+
+.invalid{
+border: 2px solid $dynamic-red; 
+}

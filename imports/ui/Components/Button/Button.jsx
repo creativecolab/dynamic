@@ -22,6 +22,7 @@ export default class Button extends Component {
     let className = "btn";
     if (size === "small") className += " btn-small";
     else if (size === "large") className += " btn-large";
+    else if (size === "tags") className += " btn-tags"; 
     className += active? " btn-active" : "";
     className += disabled? " btn-disabled" : "";
     return className;

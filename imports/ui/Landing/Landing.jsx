@@ -7,6 +7,7 @@ import Users from "../../api/users";
 import '../assets/_main.scss';
 import './Landing.scss';
 import SessionHandler from '../Handlers/SessionHandler/SessionHandler';
+import Tags from '../Components/Tags/Tags';
 
 export default class Landing extends Component {
   constructor(props) {
@@ -189,9 +190,10 @@ export default class Landing extends Component {
               <input className="input-text" type="text" name="name" placeholder="King Triton" value={name} onChange={(evt) => this.handleName(evt)}/>
             </div><br></br>
             <label className="field-title" htmlFor="section">What time is your section? </label>
-            <div className="input-container">
+            {/* <div className="input-container">
               <input className="input-text" type="text" name="section" placeholder="2pm, 3pm, or 4pm" value={section} onChange={(evt) => this.handleSection(evt)}/>
-            </div><br></br>
+            </div><br></br> */}
+            <Tags></Tags>
             <label className="field-title" htmlFor="pid">What is your PID?</label>
             <div className="input-container">
               <input className="input-text" type="text" name="pid" placeholder="A12345678" value={pid} onChange={(evt) => this.handlePid(evt)}/>
