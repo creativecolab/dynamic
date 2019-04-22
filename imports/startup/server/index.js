@@ -509,9 +509,14 @@ Meteor.startup(() => {
     if (debug) return;
     Activities.update(activity_id, {
       $set: {
-        status,
         statusStartTime: new Date().getTime()
       }
+    }, () => {
+      Activities.update(activity_id, {
+        $set: {
+          status,
+        }
+      });
     });
   });
 
