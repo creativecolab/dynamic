@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import './Waiting.scss'; 
 
 export default class Waiting extends Component {
   static propTypes = {
@@ -7,15 +8,15 @@ export default class Waiting extends Component {
   }
 
   static defaultProps ={
-      text: 'Waiting for your instructor to begin...'
+      text: 'Wait for your instructor to begin'
   }
 
   render() {
     const {text} = this.props; 
     return (
-      <div>
+      <div id="center-container">
       {text}
-      <img id="moving-logo" src="./dynamic.gif" alt=""/>
+      <div><img id="moving-logo" src="./dynamic.gif" alt=""/></div>
       </div>
     )
   }
