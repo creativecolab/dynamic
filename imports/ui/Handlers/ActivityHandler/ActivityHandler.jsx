@@ -39,7 +39,7 @@ class ActivityHandler extends Component {
   render() {
 
     // get props from parent
-    const { activity_id, pid, sessionLength } = this.props;
+    const { activity_id, pid, sessionLength, statusStartTime } = this.props;
 
     // get activity object from withTracker
     const { activity } = this.props;
@@ -51,7 +51,7 @@ class ActivityHandler extends Component {
     if (!activity) return <Loading />;
 
     // get activity props
-    const { _id, name, status, statusStartTime } = activity;
+    const { _id, name, status } = activity;
 
     // calculate progress
     const progress = activity.index + 1;
@@ -77,6 +77,9 @@ class ActivityHandler extends Component {
 // updates component when activity changes
 export default withTracker(props => {
   const activity = Activities.findOne(props.activity_id);
-  return { activity };
+  let statusStartTime = new Date().getTime();
+  if (activity)
+    statusStartTime = activity.statusStartTime;
+  return { activity, statusStartTime };
 })(ActivityHandler);
 
