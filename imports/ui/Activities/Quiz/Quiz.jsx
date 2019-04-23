@@ -5,6 +5,7 @@ import ActivityEnums from '/imports/enums/activities';
 import PropTypes from 'prop-types'
 import InputButtons from '../Components/InputButtons/InputButtons';
 import Quizzes from '../../../api/quizzes';
+import Responses from '../../../api/responses';
 import Teams from '../../../api/teams';
 import TeamFormation from '../Components/TeamFormation/TeamFormation';
 
@@ -24,20 +25,35 @@ export default class Quiz extends Component {
     super(props);
     
     // set state based on status
-    const { status } = props;
+    const { pid, status, activity_id } = props;
 
     // TODO: set state selected & message here from db
-    const selected = null;
-    const submitted = null;
+    let selected = null;
+    let submitted = false;
     // const feedbackMsge = "You already submitted a response!";
 
     // individual input phase
-    if (status === ActivityEnums.status.INPUT_INDV)
+    if (status === ActivityEnums.status.INPUT_INDV) {
+  
+      // get response, if available
+      const response = Responses.findOne({
+        pid,
+        activity_id,
+        type: 'indv'
+      });
+      console.log(response);
+      if (response) {
+        selected = response.selected;
+        submitted = true;
+      }
+
       this.state = {
         buttonAction: this.submitIndvInput,
         buttonTxt: 'Submit',
-        selected
+        selected,
+        submitted
       }
+    }
 
     // team formation or summary phases
     else if (status === ActivityEnums.status.TEAM_FORMATION || status === ActivityEnums.status.SUMMARY)
@@ -46,7 +62,7 @@ export default class Quiz extends Component {
         buttonTxt: null,
         hasFooter: false,
         hasTimer: false,
-        selected
+        selected,
       }
 
     // team input phase
@@ -54,7 +70,7 @@ export default class Quiz extends Component {
       this.state = {
         buttonAction: this.submitTeamInput,
         buttonTxt: 'Submit',
-        selected
+        selected,
       }
 
   }
@@ -74,8 +90,12 @@ export default class Quiz extends Component {
   }
 
   submitIndvInput = () => {
+
+    // extract submission vars
+    const { selected, submitted } = this.state;
+
     // TODO: Set proper message/class
-    if (this.state.submitted) {
+    if (submitted) {
       this.setState({
         feedbackMsge: "You already voted!",
         feedbackClass: ""
@@ -83,17 +103,40 @@ export default class Quiz extends Component {
     }
     
     // ready to save response
-    else if (this.state.selected) {
-
-
+    else if (selected) {
       const { pid, activity_id } = this.props;
 
+      // find quiz for this activity
+      const quiz = Quizzes.findOne({ activity_id });
+
+      // get option index
+      let index = -1;
+      quiz.options.map((opt, i) => {
+        if (selected === opt.id) index = i;
+      });
+
+      // increment votes for this option
+      Quizzes.update(quiz._id, {
+        $inc: {
+          [`options.${index}.countIndv`]: 1
+        }
+      }, (error) => {
+        if (error) console.log(error);
+        else console.log('Quiz updated!');
+      });
+
       // insert response to db
-      // Responses.insert({
-      //   pid,
-      //   activity_id,
-      //   timestamp: new Date().getTime()
-      // });
+      Responses.insert({
+        pid,
+        activity_id,
+        quiz_id: quiz._id,
+        timestamp: new Date().getTime(),
+        selected,
+        type: 'indv'
+      }, (error) => {
+        if (error) console.log(error);
+        else console.log('Response recorded!');
+      } );
 
       this.setState({
         submitted: true,
@@ -129,7 +172,9 @@ export default class Quiz extends Component {
           buttonAction: this.submitIndvInput,
           buttonTxt: 'Submit',
           hasFooter: true,
-          hasTimer: true
+          hasTimer: true,
+          selected: null,
+          submitted: false
         });
 
       // team formation or summary phases
@@ -140,7 +185,7 @@ export default class Quiz extends Component {
           buttonAction: null,
           buttonTxt: null,
           hasFooter: false,
-          hasTimer: false
+          hasTimer: false,
         });
 
       // team input phase
@@ -151,7 +196,9 @@ export default class Quiz extends Component {
           buttonAction: this.submitTeamInput,
           buttonTxt: 'Submit',
           hasFooter: true,
-          hasTimer: true
+          hasTimer: true,
+          selected: null,
+          submitted: false
         });
     }
     
@@ -162,16 +209,17 @@ export default class Quiz extends Component {
 
     // individual input phase
     if (status === ActivityEnums.status.INPUT_INDV) {
-      // TODO: fake options and prompt
-      const { submitted } = this.state;
+
+      // get current state
+      const { submitted, selected } = this.state;
 
       // find quiz for this activity
       const quiz = Quizzes.findOne({ activity_id });
 
       // no quiz found
-      if (!quiz) return "TODO: No quiz found.";
+      if (!quiz) return "No quiz found. Please refresh the page.";
 
-      return <InputButtons prompt={quiz.prompt} options={quiz.options} list={true} handleSelection={this.handleInputSelection} freeze={submitted} />
+      return <InputButtons prompt={quiz.prompt} selected={selected} options={quiz.options} list={true} handleSelection={this.handleInputSelection} freeze={submitted} />
     }
       
 

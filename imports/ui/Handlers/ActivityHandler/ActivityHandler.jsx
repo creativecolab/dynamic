@@ -5,6 +5,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import Activities from '/imports/api/activities';
 import Quiz from '/imports/ui/Activities/Quiz/Quiz';
 import ActivityEnums from '/imports/enums/activities';
+import Loading from '../../Components/Loading/Loading';
 
 class ActivityHandler extends Component {
   static propTypes = {
@@ -44,10 +45,10 @@ class ActivityHandler extends Component {
     const { activity } = this.props;
 
     // an activity id is required from parent
-    if (!activity_id) return "TODO: Waiting for activity_id from parent.";
+    if (!activity_id) return <Loading />;
 
     // waiting for data
-    if (!activity) return "TODO: Loading... component.";
+    if (!activity) return <Loading />;
 
     // get activity props
     const { _id, name, status, statusStartTime } = activity;

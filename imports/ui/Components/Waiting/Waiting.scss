@@ -1,16 +1,17 @@
-#moving-logo{
+#moving-logo {
     width: 100px; 
     height: 100px; 
     margin-top: 15%; 
 }
 
 #center-container{
-    width: 100%;
+    width: 90%;
     position: fixed;
     top: 50%;
     left: 0px;
     right: 0px;
     transform: translateY(-50%);
     margin: auto;
+    padding: 5%;
   }
 

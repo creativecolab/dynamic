@@ -88,26 +88,26 @@ class InstructorUI extends Component {
           {
             text: "I don't understand.",
             id: Random.id(),
-            responsesIndv: [],
-            responsesTeam: []
+            countIndv: 0,
+            countIndvTeam: 0
           },
           {
             text: "I think this is the answer.",
             id: Random.id(),
-            responsesIndv: [],
-            responsesTeam: []
+            countIndv: 0,
+            countTeam: 0
           },
           {
             text: "I am not sure if I understand the question.",
             id: Random.id(),
-            responsesIndv: [],
-            responsesTeam: []
+            countIndv: 0,
+            countTeam: 0
           },
           {
             text: "Yeah, sure.",
             id: Random.id(),
-            responsesIndv: [],
-            responsesTeam: []
+            countIndv: 0,
+            countTeam: 0
           }
         ]
       });

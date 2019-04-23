@@ -56,6 +56,9 @@ export default class StatsPage extends Component {
     const responses = Responses.find({activity_id}, {sort: {num_voted: -1}}).fetch();
     if (!responses) return 'No good lies...';
 
+    if (responses[0].quiz_id) return 'TODO: this is a quiz!';
+
+
     const lies = responses.map(re => re.options[2]).filter(opt => opt.count === 0);
 
     if (!lies) return 'No good lies...';
@@ -69,6 +72,8 @@ export default class StatsPage extends Component {
     // get responses
     const responses = Responses.find({activity_id}).fetch();
     if (!responses) return 'No unique truths...';
+
+    if (responses[0].quiz_id) return 'TODO: this is a quiz!';
 
     // get all truths
     const truths0 = responses.map(re => re.options[0]).filter(opt => opt.count > 0);

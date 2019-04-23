@@ -15,6 +15,7 @@ import ActivityEnums from '/imports/enums/activities';
 import SessionEnd from './Components/SessionEnd';
 import TeamShapes from './Components/TeamShapes';
 import StatsPage from './Components/StatsPage';
+import Loading from '../Components/Loading/Loading';
 
 
 class SessionProgress extends Component {
@@ -213,7 +214,7 @@ class SessionProgress extends Component {
   }
 
   render() {
-    if (!this.props.session) return "TODO: Loading component";
+    if (!this.props.session) return <Loading />;
     return (
       <div>
         <div id="inner">

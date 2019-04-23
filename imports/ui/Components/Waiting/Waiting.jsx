@@ -4,7 +4,7 @@ import './Waiting.scss';
 
 export default class Waiting extends Component {
   static propTypes = {
-    text: PropTypes.string.isRequired,
+    text: PropTypes.string,
   }
 
   static defaultProps ={
