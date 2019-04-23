@@ -193,7 +193,7 @@ export default class Landing extends Component {
             <div className="input-container">
               <input className="input-text" type="text" name="section" placeholder="2pm, 3pm, or 4pm" value={section} onChange={(evt) => this.handleSection(evt)}/>
             </div><br></br>
-            {/* <Tags></Tags> */}
+            {/* <Tags></Tags><br></br> */}
             <label className="field-title" htmlFor="pid">What is your PID?</label>
             <div className="input-container">
               <input className="input-text" type="text" name="pid" placeholder="A12345678" value={pid} onChange={(evt) => this.handlePid(evt)}/>
