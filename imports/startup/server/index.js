@@ -284,7 +284,7 @@ Meteor.startup(() => {
         }
 
         const shapes = shuffle(['circle', 'cross', 'moon', 'square', 'star', 'sun', 'heart', 'car', 'triangle']);
-        const shapeColors = shuffle(['blue', 'brown', 'green', 'orange', 'purple', 'red']);
+        const shapeColors = shuffle(['blue', 'green', 'orange', 'red']);
         const colored_shapes = []
         for (let i = 0; i < shapes.length; i++) {
           for (let j = 0; j < shapeColors.length; j++) {
