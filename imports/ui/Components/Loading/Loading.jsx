@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { css } from '@emotion/core';
 import DotLoader from 'react-spinners/DotLoader';
 import './Loading.scss'; 
@@ -10,7 +9,7 @@ const override = css`
     border-color: red;
 `;
 
-function Loading(props) {
+function Loading() {
   return (
     <div className='center-loader'>
     <DotLoader
@@ -21,10 +20,6 @@ function Loading(props) {
   )
 }
 
-Loading.propTypes = {
-    
-}
-
-export default Loading
+export default Loading;
 
 

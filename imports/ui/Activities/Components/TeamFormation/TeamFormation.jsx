@@ -1,12 +1,15 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { withTracker } from 'meteor/react-meteor-data';
+
 import Teams from '../../../../api/teams';
 import Users from '../../../../api/users';
 import Button from '../../../Components/Button/Button';
+import Loading from '/imports/ui/Components/Loading/Loading';
 import './TeamFormation.scss';
 
 
-export default class TeamFormation extends Component {
+class TeamFormation extends Component {
   static propTypes = {
     pid: PropTypes.string.isRequired,
     team_id: PropTypes.string.isRequired,
@@ -19,28 +22,40 @@ export default class TeamFormation extends Component {
     const team = Teams.findOne(props.team_id);
     const { pid } = props;
 
-    // 
+    // state always starts as false
     this.state = {
-      confirmed: team.members.filter(m => m.pid === pid)[0].confirmed,
       teammates: team.members
-      .filter(member => member.pid !== props.pid)
+      .filter(member => member.pid !== pid)
       .map(member => ({pid: member.pid, confirmed: false}))
     };
   }
 
   // check if confirmed
   componentDidUpdate() {
-
     let confirmedAll = true;
     this.state.teammates.forEach((member) => {
       if (!member.confirmed) confirmedAll = false;
     }); 
-
     if (confirmedAll) {
-      // this.props.confirm();
-      console.log('All confirmed!');
-    }
 
+      // get index of this user
+      let pidIndex = -1;
+      this.props.team.members.map((m, index) => {
+        if (m.pid === this.props.pid) {
+          pidIndex = index;
+        }
+      });
+
+      // update that index on db
+      Teams.update(this.props.team_id, {
+        $set : {
+          [`members.${pidIndex}.confirmed`]: true
+        }
+      }, (error) => {
+        if (error) console.log(error);
+        else console.log('All confirmed!');
+      });
+    }
   }
 
   getNameFromPid(pid) {
@@ -62,7 +77,8 @@ export default class TeamFormation extends Component {
   }
 
   renderTeammates() {
-    // if (this.state.all)
+    if (this.props.allConfirmed) return "Everyone in you team confirmed. Wait for everyone else.";
+    if (this.props.confirmed) return "Confirmed. Now wait for your teammates.";
     return this.state.teammates.map(m => (
       <Button
         key={m.pid}
@@ -74,9 +90,8 @@ export default class TeamFormation extends Component {
   }
 
   render() {
-    if (!this.props.team_id) return "Something went wrong...";
-
-    const team = Teams.findOne(this.props.team_id);
+    if (!this.props.team) return <Loading />;
+    const { team } = this.props;
     const { shape, shapeColor } = team;
 
     return (
@@ -90,3 +105,19 @@ export default class TeamFormation extends Component {
   )
   }
 }
+
+export default withTracker(props => {
+  const team = Teams.findOne(props.team_id);
+  let confirmed = false;
+  let allConfirmed = false;
+  try {
+    confirmed = team.members.filter(m => m.pid === pid)[0].confirmed;
+    allConfirmed = true;
+    team.members.forEach((member) => {
+      if (!member.confirmed) allConfirmed = false;
+    }); 
+  } catch (error) {
+    console.log(error);
+  }
+  return { team, confirmed, allConfirmed };
+})(TeamFormation);
