@@ -16,11 +16,11 @@ class TeamShapes extends Component {
     return <div>{teams.map(team => {
       if (team.members.map(x => x.confirmed).reduce((res, x) => res && x)) {
         return (<div key={team._id} className="shape-box">
-          <img src={"/shapes/" + team.shape + "-solid-" + team.shapeColor + ".png.png"} alt={team.shapeColor + " " + team.shape} />
+          <img src={"/shapes/" + team.shape + "-solid-" + team.shapeColor + ".png"} alt={team.shapeColor + " " + team.shape} />
         </div>);
       } else {
         return (<div key={team._id} className="shape-box">
-          <img src={"/shapes/" + team.shape + "-outline-" + team.shapeColor + ".png.png"} alt={team.shapeColor + " " + team.shape} />
+          <img src={"/shapes/" + team.shape + "-outline-" + team.shapeColor + ".png"} alt={team.shapeColor + " " + team.shape} />
         </div>);
       }
     })}</div>;

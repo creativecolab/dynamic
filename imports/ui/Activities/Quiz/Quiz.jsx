@@ -4,7 +4,9 @@ import ActivityEnums from '/imports/enums/activities';
 
 import PropTypes from 'prop-types'
 import InputButtons from '../Components/InputButtons/InputButtons';
-import quizzes from '../../../api/quizzes';
+import Quizzes from '../../../api/quizzes';
+import Teams from '../../../api/teams';
+import TeamFormation from '../Components/TeamFormation/TeamFormation';
 
 export default class Quiz extends Component {
   static propTypes = {
@@ -156,7 +158,7 @@ export default class Quiz extends Component {
   }
 
   // renders based on activity status
-  renderContent({ status, activity_id }) {
+  renderContent({ status, pid, activity_id }) {
 
     // individual input phase
     if (status === ActivityEnums.status.INPUT_INDV) {
@@ -174,8 +176,15 @@ export default class Quiz extends Component {
       
 
     // team formation or summary phases
-    if (status === ActivityEnums.status.TEAM_FORMATION)
-      return "Team formation";
+    if (status === ActivityEnums.status.TEAM_FORMATION) {
+
+      // look for this user's team
+      const team = Teams.findOne({activity_id, "members.pid": pid});
+
+      // joined after team formation
+      if (!team) return "TODO: Waiting for team formation";
+      return <TeamFormation team_id={team._id} pid={pid} />
+    }
 
     // team input phase
     if (status === ActivityEnums.status.INPUT_TEAM)

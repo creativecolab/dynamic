@@ -283,7 +283,7 @@ Meteor.startup(() => {
           else i--;
         }
 
-        const shapes = shuffle(['circle', 'cross', 'moon', 'square', 'star', 'triangle']);
+        const shapes = shuffle(['circle', 'cross', 'moon', 'square', 'star', 'sun', 'heart', 'car', 'triangle']);
         const shapeColors = shuffle(['blue', 'brown', 'green', 'orange', 'purple', 'red']);
         const colored_shapes = []
         for (let i = 0; i < shapes.length; i++) {
@@ -291,6 +291,7 @@ Meteor.startup(() => {
             colored_shapes.push({shape: shapes[i], color: shapeColors[j]});
           }
         }
+        shuffle(colored_shapes);
 
         //--- SEPARATE EVERYONE BY SECTION ---//
         var session_sections = {}
