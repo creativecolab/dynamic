@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import './TextBox.scss'; 
-import Tags from '../Tags/Tags';
 
 export default class TextBox extends Component {
   static propTypes = {
@@ -23,7 +22,6 @@ export default class TextBox extends Component {
     return (
       <div className={this.getClassNames(this.props.color)}>
       {children}
-      <Tags></Tags>
       </div>
     )
   }

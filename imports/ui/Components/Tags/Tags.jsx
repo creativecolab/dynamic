@@ -10,7 +10,7 @@ export default class Tags extends Component {
   }
 
   static defaultProps = {
-      options: ['2PM', '3PM','4PM']
+      options: ['A', 'B','C']
   }
 
   onClick=(opt)=>{ 

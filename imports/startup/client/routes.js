@@ -9,15 +9,16 @@ import SessionProgress from '../../ui/SessionProgress/SessionProgress';
 import ActivityHandler from '../../ui/Handlers/ActivityHandler/ActivityHandler';
 import SessionHandler from '../../ui/Handlers/SessionHandler/SessionHandler';
 import TextBox from '../../ui/Components/TextBox/TextBox.jsx'; 
+import Loading from '../../ui/Components/Loading/Loading.jsx'; 
 
 export const renderRoutes = () => (
     <Router>
       <div>
         <Switch>
             <Route exact path="/" component={Landing} />
-            <Route exact path="/vivian" render={(props) => <TextBox {...props}
-      
-            >hello</TextBox>}/>
+            {/* <Route exact path="/vivian" render={(props) => <TextBox {...props} color={'black'}>
+            hello</TextBox>}/> */}
+            <Route exact path="/vivian" render={(props) => <Loading></Loading>}/>
             <Route exact path="/instructor" component={InstructorUI} />
             <Route exact path="/sandbox" render={(props) => <ActivityHandler {...props}
               pid={'gus'}
