@@ -12,6 +12,7 @@ import ActivityEnums from '/imports/enums/activities';
 import SessionEnums from '/imports/enums/sessions';
 import Loading from '../../Components/Loading/Loading';
 import Waiting from '../../Components/Waiting/Waiting';
+import Survey from '../../Components/Survey/Survey';
 
 class SessionHandler extends Component {
   static propTypes = {
@@ -65,7 +66,7 @@ class SessionHandler extends Component {
     else if (status === SessionEnums.status.ACTIVE)
       return <ActivityHandler pid={pid} sessionLength={length} activity_id={activity_id} />;
     else if (status === SessionEnums.status.FINISHED)
-      return "TODO: Session is over, survey page." // TODO: make component
+      return <Survey />
 
     return <Loading />;
   }

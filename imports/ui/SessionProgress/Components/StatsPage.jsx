@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withTracker } from 'meteor/react-meteor-data';
+import { Chart } from "react-google-charts";
 
 import Teams from '../../../api/teams';
 import Responses from '../../../api/responses';
 import Users from '../../../api/users';
 import Sessions from '../../../api/sessions';
+import Quizzes from '../../../api/quizzes';
 
 
 export default class StatsPage extends Component {
@@ -118,12 +120,30 @@ export default class StatsPage extends Component {
     });
   }
 
+  getLetter(index) {
+    switch (index) {
+      case 0: return 'A';
+      case 1: return 'B';  
+      case 2: return 'C';  
+      case 3: return 'D';  
+      default: return '';
+    }
+  }
+
+  getData() {
+    const { activity_id } = this.props;
+    const quiz = Quizzes.findOne({activity_id});
+    let data = [["Option", "Individual Votes", "Team Votes"]];
+    quiz.options.map((opt, i) => data.push([this.getLetter(i), opt.countIndv, opt.countTeam]));
+    return data;
+  }
+
   render() {
     return (
       <div>
         <div>
-          <h1>Round {this.state.round}: 2 Truths and 1 Lie</h1>
-            <br></br>
+          <h1>Round {this.state.round}: Quiz</h1>
+            {/* <br></br>
             <h2>Top Guesser:</h2>
             <div className="text-box-bigscreen-shrink">
               <h2>{this.getTopUserPoints()}</h2>
@@ -135,7 +155,24 @@ export default class StatsPage extends Component {
             <h2>Most Unique Truths:</h2>
             <div className="text-box-bigscreen-shrink">
               <h2>{this.getUniqueTruths()}</h2>
-            </div>
+            </div> */}
+             <Chart
+              chartType="ColumnChart"
+              data={this.getData()}
+              options={{
+                colors: ['#1E91D6', '#F05D5E'],
+                vAxis: {
+                  title: 'Number of votes',
+                  minValue: 0,
+                },
+                hAxis: {
+                  title: 'Option',
+                },
+              }}
+              width="100%"
+              height="50%"
+              legendToggle
+            />
             <h2>Fastest Teams:</h2>
             <div className="text-box-bigscreen-shrink">
               <h2> {this.getFastestTeams()}</h2>

@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import './Survey.scss';
 
 
 export default class Survey extends Component {
-    
   render() {
     return (
       <div id="center-container">
