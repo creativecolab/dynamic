@@ -1,0 +1,32 @@
+@import '../../assets/main';
+
+a{
+    margin: auto;
+    min-width: 4em;
+    max-width: 18em;
+    padding: $button-padding;
+    text-align: center;
+    background: $dynamic-gray;
+    box-shadow: $button-shadow;
+    border-radius: $button-border-radius;
+    user-select: none;
+    color: black; 
+}
+
+#center-container{
+    width: 90%;
+    position: fixed;
+    top: 50%;
+    left: 0px;
+    right: 0px;
+    transform: translateY(-50%);
+    margin: auto;
+    padding: 5%;
+  }
+
+  #small-logo {
+    width: 100px; 
+    height: 100px; 
+    margin-bottom: 15%; 
+    margin-top: 15%; 
+}

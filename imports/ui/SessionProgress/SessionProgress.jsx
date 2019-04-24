@@ -128,7 +128,7 @@ class SessionProgress extends Component {
         <div>
           {this.renderClock()}
           <h1 id="header">{currentActivity.name}</h1>
-          <div id="font-size">Round {this.props.session.round}: 2 Truths and 1 Lie</div>
+          {/* <div id="font-size">Round {this.props.session.round}: 2 Truths and 1 Lie</div>
           <br></br>
           <h2>Instructions:</h2>
           <div className="text-box-bigscreen">
@@ -136,7 +136,13 @@ class SessionProgress extends Component {
           </div><br></br>
           <div className="text-box-bigscreen">
             <h2>The goal is to make it hard for people to guess which is the lie.</h2>
-          </div><br></br><br></br>
+          </div><br></br><br></br> */}
+          <div id="font-size">Round {this.props.session.round}: Quiz</div>
+          <br></br>
+          <h2>Instructions:</h2>
+          <div className="text-box-bigscreen">
+            <h2>Read through the question and select the correct answer on your device.</h2>
+          </div><br></br>
         </div>
       )
     }
