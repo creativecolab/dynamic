@@ -291,7 +291,7 @@ Meteor.startup(() => {
             colored_shapes.push({shape: shapes[i], color: shapeColors[j]});
           }
         }
-        shuffle(colored_shapes);
+        // shuffle(colored_shapes);
 
         //--- SEPARATE EVERYONE BY SECTION ---//
         var session_sections = {}

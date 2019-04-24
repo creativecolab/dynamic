@@ -13,6 +13,7 @@ import SessionEnums from '/imports/enums/sessions';
 import Loading from '../../Components/Loading/Loading';
 import Waiting from '../../Components/Waiting/Waiting';
 import Survey from '../../Components/Survey/Survey';
+import OnboardingInstructions from '../../Activities/Components/OnboardingInstructions/OnboardingInstructions';
 
 class SessionHandler extends Component {
   static propTypes = {
@@ -62,7 +63,7 @@ class SessionHandler extends Component {
 
     // render based on session status
     if (status === SessionEnums.status.READY)
-      return <Waiting />;
+      return <OnboardingInstructions />;
     else if (status === SessionEnums.status.ACTIVE)
       return <ActivityHandler pid={pid} sessionLength={length} activity_id={activity_id} />;
     else if (status === SessionEnums.status.FINISHED)

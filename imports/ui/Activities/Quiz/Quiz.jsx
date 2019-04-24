@@ -9,6 +9,8 @@ import Responses from '../../../api/responses';
 import Teams from '../../../api/teams';
 import TeamFormation from '../Components/TeamFormation/TeamFormation';
 import Waiting from '../../Components/Waiting/Waiting';
+import TextBoxes from '../Components/TextBoxes/TextBoxes';
+import ChooseTeammate from '../Components/ChooseTeammate/ChooseTeammate';
 
 export default class Quiz extends Component {
   static propTypes = {
@@ -251,7 +253,8 @@ export default class Quiz extends Component {
           hasFooter: true,
           hasTimer: true,
           selected: null,
-          submitted: false
+          submitted: false,
+          choseTeammate: false
         });
 
       // team formation or summary phases
@@ -264,7 +267,7 @@ export default class Quiz extends Component {
           hasFooter: false,
           hasTimer: false,
           selected: null,
-          submitted: false
+          submitted: false,
         });
 
       // team input phase
@@ -281,6 +284,11 @@ export default class Quiz extends Component {
         });
     }
     
+  }
+
+  // (id, options) -> text
+  getTextFromOpt(id, options) {
+    return options.filter(opt => opt.id === id)[0].text;
   }
 
   // renders based on activity status
@@ -329,11 +337,68 @@ export default class Quiz extends Component {
     }
 
     // summary phase
-    if (status === ActivityEnums.status.SUMMARY)
-      return "Summary";
+    if (status === ActivityEnums.status.SUMMARY) {
+
+      if (!this.state.choseTeammate) {
+
+        // look for this user's team
+        const team = Teams.findOne({activity_id, "members.pid": pid});
+
+        // joined after team formation
+        if (!team) return <Waiting text={"You have not been assigned a team. Please wait for the next activity."}/>;
+        return <ChooseTeammate team_id={team._id} pid={pid} handleChosen={this.handleChooseTeammate} />
+
+      }
+
+      // find quiz for this activity
+      const quiz = Quizzes.findOne({ activity_id });
+
+      // no quiz found
+      if (!quiz) return "No quiz found. Please refresh the page.";
+
+      const correctAnswer = quiz.options.filter(opt => opt.correct)[0].text;
+
+      // get response, if available
+      const responseIndv = Responses.findOne({
+        pid,
+        activity_id,
+        type: 'indv'
+      });
+      let indvAnswer = responseIndv? this.getTextFromOpt(responseIndv.selected, quiz.options) : "No response";
+
+      // get response, if available
+      const responseTeam = Responses.findOne({
+        pid,
+        activity_id,
+        type: 'team'
+      });
+      let teamAnswer = responseTeam? this.getTextFromOpt(responseTeam.selected, quiz.options) : "No response";
+
+      // TODO: VIVIAN LOOK HERE
+      // make boxes content
+      const boxes = [{
+        label: "You selected",
+        text: indvAnswer
+      },{
+        label: "Your team selected",
+        text: teamAnswer
+      },{
+        label: "Correct answer",
+        text: correctAnswer
+      }];
+
+      return <TextBoxes prompt={"How did you do?"} boxes={boxes} />;
+
+    }
 
     return "TODO: Status no recognized";
      
+  }
+
+  handleChooseTeammate = () => {
+    this.setState({
+      choseTeammate: true
+    });
   }
 
   render() {

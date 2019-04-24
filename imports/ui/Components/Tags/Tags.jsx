@@ -5,7 +5,7 @@ import './Tags.scss';
 
 export default class Tags extends Component {
   static propTypes = {
-    options: PropTypes.array,
+    options: PropTypes.array.isRequired,
     onSelection: PropTypes.func.isRequired,
   }
 
@@ -14,10 +14,6 @@ export default class Tags extends Component {
     this.state = {
       picked: '' 
     }
-  }
-
-  static defaultProps = {
-      options: ['A', 'B','C']
   }
 
   onClick=(opt)=>{ 
@@ -32,11 +28,7 @@ export default class Tags extends Component {
     return (
       <div className="tags-container">
         {this.props.options.map((opt)=> {
-          if (this.state.picked !== opt) {
-            return <Button key={opt} size="tags" onClick={()=>this.onClick(opt)}>{opt}</Button>
-          } else {
-            return <Button key={opt} size="tags" onClick={()=>this.onClick(opt)} active={true}>{opt}</Button>
-          }
+          return <Button key={opt} size="tags" onClick={()=>this.onClick(opt)} active={this.state.picked === opt}>{opt}</Button>
         })} 
       </div>
     )

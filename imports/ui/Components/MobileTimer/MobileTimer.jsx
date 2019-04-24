@@ -39,6 +39,7 @@ export default class MobileTimer extends Component {
   }
   
   render() {
+    if (this.state.timeLeft < 0) return "";
     let percentage = parseInt(100 - (this.state.timeLeft / this.props.duration) * 100);
     percentage = percentage < 0? 0 : percentage; 
     return (
