@@ -33,9 +33,9 @@ export default class Tags extends Component {
       <div className="tags-container">
         {this.props.options.map((opt)=> {
           if (this.state.picked !== opt) {
-            return <Button size="tags" onClick={()=>this.onClick(opt)}>{opt}</Button>
+            return <Button key={opt} size="tags" onClick={()=>this.onClick(opt)}>{opt}</Button>
           } else {
-            return <Button size="tags" onClick={()=>this.onClick(opt)} active={true}>{opt}</Button>
+            return <Button key={opt} size="tags" onClick={()=>this.onClick(opt)} active={true}>{opt}</Button>
           }
         })} 
       </div>

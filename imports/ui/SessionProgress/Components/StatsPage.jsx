@@ -139,6 +139,9 @@ export default class StatsPage extends Component {
   }
 
   render() {
+
+    const data = this.getData();
+
     return (
       <div>
         <div>
@@ -156,11 +159,12 @@ export default class StatsPage extends Component {
             <div className="text-box-bigscreen-shrink">
               <h2>{this.getUniqueTruths()}</h2>
             </div> */}
-             <Chart
+             {data && <Chart
               chartType="ColumnChart"
-              data={this.getData()}
+              data={data}
               options={{
                 colors: ['#1E91D6', '#F05D5E'],
+                chartArea: { width: '70%' },
                 vAxis: {
                   title: 'Number of votes',
                   minValue: 0,
@@ -172,8 +176,8 @@ export default class StatsPage extends Component {
               width="100%"
               height="50%"
               legendToggle
-            />
-            <h2>Fastest Teams:</h2>
+            />}
+            <h2>Fastest Team:</h2>
             <div className="text-box-bigscreen-shrink">
               <h2> {this.getFastestTeams()}</h2>
             </div><br></br>

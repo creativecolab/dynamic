@@ -263,6 +263,8 @@ export default class Quiz extends Component {
           buttonTxt: null,
           hasFooter: false,
           hasTimer: false,
+          selected: null,
+          submitted: false
         });
 
       // team input phase
