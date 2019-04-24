@@ -134,9 +134,9 @@ export default class StatsPage extends Component {
     const { activity_id } = this.props;
     const quiz = Quizzes.findOne({activity_id});
     let data = [["Option", "Individual Votes", "Team Votes"]];
-    const fakeData = [['A', 32, 45], ['B', 23, 12], ['C', 15, 17], ['D', 8, 6]];
-    fakeData.map((opt) => data.push(opt));
-    // quiz.options.map((opt, i) => data.push([this.getLetter(i), opt.countIndv, opt.countTeam]));
+    // const fakeData = [['A', 32, 45], ['B', 23, 12], ['C', 15, 17], ['D', 8, 6]];
+    // fakeData.map((opt) => data.push(opt));
+    quiz.options.map((opt, i) => data.push([this.getLetter(i), opt.countIndv, opt.countTeam]));
     return data;
   }
 
