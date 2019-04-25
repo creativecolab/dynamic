@@ -69,9 +69,9 @@ class InstructorUI extends Component {
         session_id,
         timestamp: new Date().getTime(),
         team_size: 3, // TODO: default value?
-        durationIndv: 20,
-        durationTeam: 30,
-        durationOffsetIndv: 5,
+        durationIndv: 70,
+        durationTeam: 70,
+        durationOffsetIndv: 10,
         durationOffsetTeam: 10,
         status: 0,
         statusStartTime: 0,

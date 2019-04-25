@@ -10,9 +10,9 @@ export default function OnboardingInstructions() {
         <hr/>
         <div>Let's do a dynamic group activity!<br/>Be ready to:</div>
         <ol className="instructions-ol">
-          <li>Answer a prompt (2 min)</li>
+          <li>Answer a prompt (1 min)</li>
           <li>Form teams. Be quick!</li>
-          <li>Discuss answers (2 min)</li>
+          <li>Discuss answers (1 min)</li>
         </ol>
         <div>Wait for instructor to begin.</div>
         <div><strong>Please do not refresh your browser!</strong></div>
