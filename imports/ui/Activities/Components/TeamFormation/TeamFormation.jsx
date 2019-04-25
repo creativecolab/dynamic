@@ -111,7 +111,7 @@ export default withTracker(props => {
   let confirmed = false;
   let allConfirmed = false;
   try {
-    confirmed = team.members.filter(m => m.pid === pid)[0].confirmed;
+    confirmed = team.members.filter(m => m.pid === props.pid)[0].confirmed;
     allConfirmed = true;
     team.members.forEach((member) => {
       if (!member.confirmed) allConfirmed = false;
