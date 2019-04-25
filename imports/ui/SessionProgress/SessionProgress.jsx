@@ -137,7 +137,7 @@ class SessionProgress extends Component {
           <div className="text-box-bigscreen">
             <h2>The goal is to make it hard for people to guess which is the lie.</h2>
           </div><br></br><br></br> */}
-          <div id="font-size">Round {this.props.session.round}: Quiz</div>
+          <div id="font-size">Round {this.props.session.round}: Individual Quiz</div>
           <br></br>
           <h2 id="bold-font">Question:</h2>
           <div className="text-box-bigscreen">
