@@ -6,6 +6,11 @@ border: 2px solid $dynamic-black;
 border-radius: 5px; 
 width: 80%;
 height: 10%; 
+display:inline-block;
+vertical-align:middle; 
+line-height: normal; 
+text-align:left; 
+margin-top:0; 
 }
 
 .invalid{
@@ -14,4 +19,14 @@ border: 2px solid $dynamic-red;
 border-radius: 5px; 
 width: 80%;
 height: 10%; 
+display:inline-block;
+vertical-align:middle; 
+line-height: normal; 
+}
+
+.textbox-prompt {
+text-align: left;
+margin-left: 1em; 
+margin-top: 1em; 
+margin-bottom: 0.5em; 
 }

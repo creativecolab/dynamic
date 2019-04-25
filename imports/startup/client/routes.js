@@ -18,9 +18,9 @@ export const renderRoutes = () => (
       <div>
         <Switch>
             <Route exact path="/" component={Landing} />
-            {/* <Route exact path="/vivian" render={(props) => <TextBox {...props} color={'black'}>
-            hello</TextBox>}/> */}
-            <Route exact path="/vivian" render={(props) => <Survey></Survey>}/>
+            <Route exact path="/vivian" render={(props) => <TextBox {...props} color={'black'} label={'TWO TRUTHS'}>
+            hello</TextBox>}/>
+            {/* <Route exact path="/vivian" render={(props) => <Survey></Survey>}/> */}
             <Route exact path="/instructor" component={InstructorUI} />
             <Route exact path="/sandbox" render={(props) => <ActivityHandler {...props}
               pid={'gus'}
