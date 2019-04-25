@@ -69,53 +69,130 @@ class InstructorUI extends Component {
         session_id,
         timestamp: new Date().getTime(),
         team_size: 3, // TODO: default value?
-        durationIndv: 70,
-        durationTeam: 70,
-        durationOffsetIndv: 10,
-        durationOffsetTeam: 10,
+        durationIndv: 60,
+        durationTeam: 60,
+        durationOffsetIndv: 0,
+        durationOffsetTeam: 0,
         status: 0,
         statusStartTime: 0,
         teams: []
       });
       activities.push(activity);
 
-
-      // create quizzes, since this is a quiz
-      Quizzes.insert({
-        activity_id: activity,
-        prompt: 'What is the most likely answer you can think of in this situation, my friend?',
-        options: [
-          {
-            text: "I don't understand.",
-            id: Random.id(),
-            countIndv: 0,
-            countIndvTeam: 0,
-            correct: false
-          },
-          {
-            text: "I think this is the answer.",
-            id: Random.id(),
-            countIndv: 0,
-            countTeam: 0,
-            correct: false
-          },
-          {
-            text: "I am not sure if I understand the question.",
-            id: Random.id(),
-            countIndv: 0,
-            countTeam: 0,
-            correct: false
-          },
-          {
-            text: "Yeah, sure.",
-            id: Random.id(),
-            countIndv: 0,
-            countTeam: 0,
-            correct: true
-          }
-        ]
-      });
-
+      // Question 1
+      if (i === 0) {
+        Quizzes.insert({
+          activity_id: activity,
+          prompt: 'According to Sutton, when you hit a creative wall, it might be helpful to',
+          options: [
+            {
+              text: "Impose more constraints",
+              id: Random.id(),
+              countIndv: 0,
+              countIndvTeam: 0,
+              correct: true
+            },
+            {
+              text: "Remove some constraints",
+              id: Random.id(),
+              countIndv: 0,
+              countTeam: 0,
+              correct: false
+            },
+            {
+              text: "Start a new project",
+              id: Random.id(),
+              countIndv: 0,
+              countTeam: 0,
+              correct: false
+            }
+          ]
+        });
+      } else if (i === 1) {
+        Quizzes.insert({
+          activity_id: activity,
+          prompt: 'According to Belle Beth Cooper, you can harness the power of constraints by',
+          options: [
+            {
+              text: "Expanding your team",
+              id: Random.id(),
+              countIndv: 0,
+              countIndvTeam: 0,
+              correct: true
+            },
+            {
+              text: "Pushing back your deadlines",
+              id: Random.id(),
+              countIndv: 0,
+              countTeam: 0,
+              correct: false
+            },
+            {
+              text: "Focusing on one small task at a time",
+              id: Random.id(),
+              countIndv: 0,
+              countTeam: 0,
+              correct: false
+            }
+          ]
+        });
+      } else if (i === 2) {
+        Quizzes.insert({
+          activity_id: activity,
+          prompt: 'Sutton describes an experimental event hosted by the San Francisco Opera House entitled, "Barely Opera" that was a big success. This is because',
+          options: [
+            {
+              text: "it upheld the traditional aesthetics of Opera culture",
+              id: Random.id(),
+              countIndv: 0,
+              countIndvTeam: 0,
+              correct: false
+            },
+            {
+              text: "it was done cheap, quick, and in a logistically challenging location",
+              id: Random.id(),
+              countIndv: 0,
+              countTeam: 0,
+              correct: true
+            },
+            {
+              text: "it took place in a big, formal setting",
+              id: Random.id(),
+              countIndv: 0,
+              countTeam: 0,
+              correct: false
+            }
+          ]
+        });
+      } else {
+        Quizzes.insert({
+          activity_id: activity,
+          prompt: 'According to Belle Beth Cooper, you can harness the power of constraints by',
+          options: [
+            {
+              text: "Expanding your team",
+              id: Random.id(),
+              countIndv: 0,
+              countIndvTeam: 0,
+              correct: true
+            },
+            {
+              text: "Pushing back your deadlines",
+              id: Random.id(),
+              countIndv: 0,
+              countTeam: 0,
+              correct: false
+            },
+            {
+              text: "Focusing on one small task at a time",
+              id: Random.id(),
+              countIndv: 0,
+              countTeam: 0,
+              correct: false
+            }
+          ]
+        });
+      }
 
     }
 

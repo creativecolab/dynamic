@@ -6,7 +6,7 @@ export default function OnboardingInstructions() {
   return (
     <div>
         <h3>Welcome to Dynamic!</h3>
-        <h2>Instructions</h2>
+        <h2><strong>Instructions</strong></h2>
         <hr/>
         <div>Let's do a dynamic group activity!<br/>Be ready to:</div>
         <ol className="instructions-ol">
@@ -14,8 +14,7 @@ export default function OnboardingInstructions() {
           <li>Form teams. Be quick!</li>
           <li>Discuss answers (1 min)</li>
         </ol>
-        <div>Wait for instructor to begin.</div>
-        <div><strong>Please do not refresh your browser!</strong></div>
+        <div><strong>Wait for the instructor to begin.</strong></div>
       </div>
   )
 }

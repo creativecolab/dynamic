@@ -1,32 +1,32 @@
 @import '../../assets/main';
+.textbox-main {
+  min-width: 4em;
+  max-width: 18em;
+  margin: 0 auto 1em;
 
-.textbox{
-padding: 3%;
-border: 2px solid $dynamic-black; 
-border-radius: 5px; 
-width: 80%;
-height: 10%; 
-display:inline-block;
-vertical-align:middle; 
-line-height: normal; 
-text-align:left; 
-margin-top:0; 
+  .textbox-label {
+    text-align: left;
+    font-weight: 600;
+    margin-bottom: 0.5em; 
+  }
+
+  .textbox-text {
+    padding: $button-padding;
+    border: 2px solid $dynamic-black;
+    border-radius: $button-border-radius;
+    text-align:left;
+    font-size: 22px;
+  }
+
 }
 
-.invalid{
-padding: 3%; 
-border: 2px solid $dynamic-red; 
-border-radius: 5px; 
-width: 80%;
-height: 10%; 
-display:inline-block;
-vertical-align:middle; 
-line-height: normal; 
-}
-
-.textbox-prompt {
-text-align: left;
-margin-left: 1em; 
-margin-top: 1em; 
-margin-bottom: 0.5em; 
+.invalid {
+  padding: 3%; 
+  border: 2px solid $dynamic-red; 
+  border-radius: 5px; 
+  width: 80%;
+  height: 10%; 
+  display:inline-block;
+  vertical-align:middle; 
+  line-height: normal; 
 }

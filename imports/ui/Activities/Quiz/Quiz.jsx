@@ -387,7 +387,7 @@ export default class Quiz extends Component {
         text: correctAnswer
       }];
 
-      return <TextBoxes prompt={"How did you do?"} boxes={boxes} />;
+      return <TextBoxes prompt={quiz.prompt} boxes={boxes} />;
 
     }
 

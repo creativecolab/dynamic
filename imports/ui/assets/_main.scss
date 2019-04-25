@@ -86,11 +86,11 @@ $button-border-radius: 5px;
   border: 2px solid $dynamic-black ;
 }
 
-.text-box-bigscreen{
+.text-box-bigscreen {
   border: 2px solid $dynamic-black ;
   border-radius: 5px 5px 5px 5px;
   width: 700px;
-  height: 60px; 
+  height: auto; 
   margin: auto; 
   padding-top: 10px; 
   padding-bottom: 10px; 

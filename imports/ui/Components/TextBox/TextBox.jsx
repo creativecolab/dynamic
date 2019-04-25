@@ -22,13 +22,13 @@ export default class TextBox extends Component {
       const{label} = this.props; 
       const{children}=this.props; 
     return (
-      <div className={this.getClassNames(this.props.color)}>
-      <div className="textbox-prompt"> 
-      {label}
-      </div>
-      <div className="textbox">
-      {children}
-      </div>
+      <div className="textbox-main">
+        <div className="textbox-label"> 
+          {label}
+        </div>
+        <div className="textbox-text">
+          {children}
+        </div>
       </div>
     )
   }

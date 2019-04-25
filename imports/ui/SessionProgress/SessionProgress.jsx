@@ -16,6 +16,7 @@ import SessionEnd from './Components/SessionEnd';
 import TeamShapes from './Components/TeamShapes';
 import StatsPage from './Components/StatsPage';
 import Loading from '../Components/Loading/Loading';
+import Quizzes from '../../api/quizzes';
 
 
 class SessionProgress extends Component {
@@ -122,12 +123,15 @@ class SessionProgress extends Component {
   // instructions for activities
   getInstructions(status) {
     const { currentActivity } = this.props;
+    if (!currentActivity) return "No activity";
+    const quiz = Quizzes.findOne({activity_id: currentActivity._id});
+    if (!quiz) return "No Quiz";
     // input phase
     if (status === 1) {
       return (
         <div>
           {this.renderClock()}
-          <h1 id="header">{currentActivity.name}</h1>
+          <h1>Round {this.props.session.round}: Quiz</h1>
           {/* <div id="font-size">Round {this.props.session.round}: 2 Truths and 1 Lie</div>
           <br></br>
           <h2>Instructions:</h2>
@@ -137,11 +141,11 @@ class SessionProgress extends Component {
           <div className="text-box-bigscreen">
             <h2>The goal is to make it hard for people to guess which is the lie.</h2>
           </div><br></br><br></br> */}
-          <div id="font-size">Round {this.props.session.round}: Individual Quiz</div>
+          <div id="font-size">Individual Response</div>
           <br></br>
           <h2 id="bold-font">Question:</h2>
           <div className="text-box-bigscreen">
-            <h2>This is the question.</h2>
+            <h2>{quiz.prompt}</h2>
           </div><br></br>
           <h2 id="bold-font">Instructions:</h2>
           <div className="text-box-bigscreen">
@@ -174,11 +178,11 @@ class SessionProgress extends Component {
           <div className="text-box-bigscreen">
             <h2>Then continue to the next person in the hotseat.</h2>
           </div><br></br><br></br> */}
-          <div id="font-size">Round {this.props.session.round}: Team Quiz</div>
+          <div id="font-size">Team Response</div>
           <br></br>
           <h2 id="bold-font">Question:</h2>
           <div className="text-box-bigscreen">
-            <h2>This is the question.</h2>
+            <h2>{quiz.prompt}</h2>
           </div><br></br>
           <h2 id="bold-font">Instructions:</h2>
           <div className="text-box-bigscreen">

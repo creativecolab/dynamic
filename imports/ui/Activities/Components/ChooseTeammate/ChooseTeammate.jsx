@@ -35,7 +35,7 @@ export default class ChooseTeammate extends Component {
 
     const user = Users.findOne({pid});
     if (votedPid === this.state.votedOn) {
-      console.log('Already voted on ' + this.getName(votedPid));
+      console.log('Already voted on ' + votedPid);
       return;
     }
 
@@ -51,7 +51,7 @@ export default class ChooseTeammate extends Component {
       if (error) {
         console.log(error);
       } else {
-        console.log('You voted on ' + this.getName(votedPid));
+        console.log('You voted on ' + votedPid);
         this.setState({
           votedOn: votedPid
         });
@@ -73,7 +73,9 @@ export default class ChooseTeammate extends Component {
     const { pid, team_id } = this.props;
     const team = Teams.findOne(team_id);
     const teammates = team.members.filter(member => member.pid !== pid);
-    return teammates.map(mate => <button style={this.getStyle(mate.pid)} key={mate.pid} className="big-button" onClick={() => this.handleVote(mate.pid)}>{this.getName(mate.pid)}</button>);
+    let opts = teammates.map(mate => <button style={this.getStyle(mate.pid)} key={mate.pid} className="big-button" onClick={() => this.handleVote(mate.pid)}>{this.getName(mate.pid)}</button>);
+    opts.push(<button style={this.getStyle('all')} key={'all'} className="big-button" onClick={() => this.handleVote('all')}>All</button>);
+    return opts;
   }
 
   render() {

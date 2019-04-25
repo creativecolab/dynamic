@@ -147,6 +147,14 @@ export default class StatsPage extends Component {
     if (!quiz) return <Loading />;
 
     const data = this.getData(quiz);
+    let correctIndex = -1;
+    let correctText = '';
+    quiz.options.map((opt, index) => {
+      if (opt.correct) {
+        correctIndex = index;
+        correctText = opt.text;
+      }
+    });
 
     return (
       <div>
@@ -156,7 +164,7 @@ export default class StatsPage extends Component {
             <h2 id="bold-font">{quiz.prompt}</h2>
           </div>
           <div>
-          <h2 id="font-size">{quiz.options.filter(opt => opt.correct)[0].text}</h2>
+          <h2 id="font-size"><strong>{this.getLetter(correctIndex)}</strong>. {correctText}</h2>
           </div>
             {/* <br></br>
             <h2>Top Guesser:</h2>
