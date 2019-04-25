@@ -194,7 +194,7 @@ class SessionProgress extends Component {
       </div>
       <h2>Session code:</h2>
       <div className="text-box-bigscreen">
-      <c>{this.props.match.params.code}</c>
+      <c>{(this.props.match.params.code).toUpperCase()}</c>
       </div>
       <div id="spacing"><c>{numJoined}</c><br></br>{numJoined === 1? ' person has ' : ' people have '} joined</div>
       <button className="bigscreen-button" onClick={() => this.startSession()}>Begin</button>

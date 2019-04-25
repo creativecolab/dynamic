@@ -18,7 +18,7 @@ function updateRoster() {
     firstname: 'Gustavo',
     lastname: 'Umbelino',
     pid: 'gus',
-    section: 'A00',
+    section: '2pm',
     points_history: [],
     preference: []
   },
@@ -27,7 +27,7 @@ function updateRoster() {
     firstname: 'Vivian',
     lastname: 'Ta',
     pid: 'viv',
-    section: 'B00',
+    section: '3pm',
     points_history: [],
     preference: []
   },
@@ -36,7 +36,7 @@ function updateRoster() {
     firstname: 'Eric',
     lastname: 'Truong',
     pid: 'eric',
-    section: 'C00',
+    section: '3pm',
     points_history: [],
     preference: []
   },
@@ -45,7 +45,7 @@ function updateRoster() {
     firstname: 'Steven',
     lastname: 'Dow',
     pid: 'steven',
-    section: 'C00',
+    section: '3pm',
     points_history: [],
     preference: []
   },
@@ -54,7 +54,7 @@ function updateRoster() {
     firstname: 'Samuel',
     lastname: 'Blake',
     pid: 'sam',
-    section: 'B00',
+    section: '2pm',
     points_history: [],
     preference: []
   }];
@@ -253,7 +253,6 @@ Meteor.startup(() => {
         // get snapshot of participants in session
         const session_id = Activities.findOne(_id).session_id;
         const participants  = Sessions.findOne(session_id).participants;
-        shuffle(participants); // TODO -- maybe shuffle after grouping into sections
         console.log("Participants: " + participants);
 
         // TODO: get these from instructor
@@ -298,27 +297,28 @@ Meteor.startup(() => {
 
         for (let j = 0; j < participants.length; j++) {
           var participant_section = Users.findOne({pid: participants[j]}).section;
-          if (!(session_sections.hasOwnProperty(participant_section))) {
+          if (!(session_sections.hasOwnProperty(participant_section.toLowerCase()))) {
             //first time seeing this section
-            session_sections[participant_section] = [];
+            session_sections[participant_section.toLowerCase()] = [];
           }
-          session_sections[participant_section].push(participants[j]);
+          session_sections[participant_section.toLowerCase()].push(participants[j]);
         }
 
         console.log(session_sections);
 
         //--- FORM TEAMS ---//
+        let teams = [];
+        let oldTeam = [];
+        let olderTeam = [];
+        let team_id = "";
+        let older_team_id = "";
         for (var section in session_sections) {
           // make teams based on sections
           if (session_sections.hasOwnProperty(section)) {
             console.log(section + " -> " + session_sections[section]);
             // used to keep track of current and older teams for database
             var section_members = session_sections[section];
-            let teams = [];
-            let oldTeam = [];
-            let olderTeam = [];
-            let team_id = "";
-            let older_team_id = "";
+            shuffle(section_members); // TODO -- maybe shuffle after grouping into sections
 
             //shuffle(section_members); // TODO -- maybe shuffle after grouping into sections
             //console.log("Participants: " + section_members);
@@ -352,23 +352,27 @@ Meteor.startup(() => {
                   });
                 }
 
-                // save this added team
-                teams.push(team_id);
-
                 // keep track of older teams just in case
                 olderTeam = oldTeam
                 oldTeam = newTeam;
-                newTeam = [participants[i]];
+
+                // save this added team
+                teams.push(team_id);
+
+                //onto next member
+                newTeam = [section_members[i]];
+
               }
               
               // add new member to team
               else {
-                newTeam.push(participants[i]);
+                newTeam.push(section_members[i]);
               }
             }
 
             // only 1 participant left, create team of MAX_TEAM_SIZE + 1
-            if (newTeam.length === 1 && teams.length > 0) {
+            if (newTeam.length === 1 && teams.length > 0 && oldTeam.length < 4) {
+
               Teams.update(team_id, {
                 $push: {
                   members: {pid: newTeam[0], confirmed: false}
@@ -376,16 +380,18 @@ Meteor.startup(() => {
               });
 
               //update the users teammates 
+              oldTeam.push(newTeam[0]);
               Users.update({pid: newTeam[0]}, {
                 $push: {
-                  teammates: oldTeam
+                  teammates: oldTeam.filter(teammate => teammate != newTeam[0])
                 }
               });
 
             }
 
             // only 2 participants left, create 2 teams of MAX_TEAM_SIZE + 1
-            else if (newTeam.length === 2 && teams.length > 1) {
+            else if (newTeam.length === 2 && teams.length > 1 && oldTeam.length < 4 && olderTeam.length < 4) {
+
               // add the first user
               Teams.update(team_id, {
                 $push: {
@@ -393,9 +399,10 @@ Meteor.startup(() => {
                 }
               });
               //update the users teammates 
+              oldTeam.push(newTeam[0]);
               Users.update({pid: newTeam[0]}, {
                 $push: {
-                  teammates: oldTeam
+                  teammates: oldTeam.filter(teammate => teammate != newTeam[0])
                 }
               });
 
@@ -406,9 +413,10 @@ Meteor.startup(() => {
                 }
               });
               //update the users teammates 
-              Users.update({pid: newTeam[0]}, {
+              olderTeam.push(newTeam[1]);
+              Users.update({pid: newTeam[1]}, {
                 $push: {
-                  teammates: olderTeam
+                  teammates: olderTeam.filter(teammate => teammate != newTeam[1])
                 }
               });
             }
@@ -425,6 +433,11 @@ Meteor.startup(() => {
                 responses: []
               });
 
+              // TODO make sure old team is tracked
+              // keep track of older teams just in case
+              olderTeam = oldTeam
+              oldTeam = newTeam;
+
               //update the users teammates 
               for (let k = 1; k < newTeam.length; k++) {
                 Users.update({pid: newTeam[k]}, {
@@ -434,28 +447,28 @@ Meteor.startup(() => {
                 });
               }
 
+              console.log("Team for section " + section + " is " + newTeam);
+
+              console.log(Teams.findOne(team_id));
+
               teams.push(team_id);
             }
-
-
-            // start and update activity on database
-            Activities.update(_id, {
-              $set: {
-                teams
-              }
-            }, (error) => {
-              if (!error) {
-                console.log('Teams created!');
-                console.log(teams);
-              } else {
-                console.log(error);
-              }
-            });
           }
 
         }
+        // start and update activity on database
+        Activities.update(_id, {
+          $set: {
+            teams
+          }
+        }, (error) => {
+          if (!error) {
+            console.log('Teams created!');
+          } else {
+            console.log(error);
+          }
+        });
       }
-
         
       // discussion time!
       if (update.status === 3) {
