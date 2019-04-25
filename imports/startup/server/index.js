@@ -447,10 +447,6 @@ Meteor.startup(() => {
                 });
               }
 
-              console.log("Team for section " + section + " is " + newTeam);
-
-              console.log(Teams.findOne(team_id));
-
               teams.push(team_id);
             }
           }
