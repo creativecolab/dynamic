@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withTracker } from 'meteor/react-meteor-data';
 import { Chart } from "react-google-charts";
-
+import Loading from '../../Components/Loading/Loading';
 import Teams from '../../../api/teams';
 import Responses from '../../../api/responses';
 import Users from '../../../api/users';
@@ -130,9 +130,7 @@ export default class StatsPage extends Component {
     }
   }
 
-  getData() {
-    const { activity_id } = this.props;
-    const quiz = Quizzes.findOne({activity_id});
+  getData(quiz) {
     let data = [["Option", "Individual Votes", "Team Votes"]];
     // const fakeData = [['A', 32, 45], ['B', 23, 12], ['C', 15, 17], ['D', 8, 6]];
     // fakeData.map((opt) => data.push(opt));
@@ -142,17 +140,23 @@ export default class StatsPage extends Component {
 
   render() {
 
-    const data = this.getData();
+    const { activity_id } = this.props;
+    if (!activity_id) return <Loading />;
+
+    const quiz = Quizzes.findOne({activity_id});
+    if (!quiz) return <Loading />;
+
+    const data = this.getData(quiz);
 
     return (
       <div>
         <div>
           <h1>Round {this.state.round}: Quiz</h1>
           <div>
-            <h2 id="bold-font">How do you like  D100?</h2>
+            <h2 id="bold-font">{quiz.prompt}</h2>
           </div>
           <div>
-          <h2 id="font-size">This is the answer.</h2>
+          <h2 id="font-size">{quiz.options.filter(opt => opt.correct)[0].text}</h2>
           </div>
             {/* <br></br>
             <h2>Top Guesser:</h2>
