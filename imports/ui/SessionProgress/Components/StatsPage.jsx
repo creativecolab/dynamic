@@ -134,9 +134,9 @@ export default class StatsPage extends Component {
     const { activity_id } = this.props;
     const quiz = Quizzes.findOne({activity_id});
     let data = [["Option", "Individual Votes", "Team Votes"]];
-    // const fakeData = [['A', 32, 45], ['B', 23, 12], ['C', 15, 17], ['D', 8, 6]];
-    // fakeData.map((opt) => data.push(opt));
-    quiz.options.map((opt, i) => data.push([this.getLetter(i), opt.countIndv, opt.countTeam]));
+    const fakeData = [['A', 32, 45], ['B', 23, 12], ['C', 15, 17], ['D', 8, 6]];
+    fakeData.map((opt) => data.push(opt));
+    // quiz.options.map((opt, i) => data.push([this.getLetter(i), opt.countIndv, opt.countTeam]));
     return data;
   }
 
@@ -148,6 +148,12 @@ export default class StatsPage extends Component {
       <div>
         <div>
           <h1>Round {this.state.round}: Quiz</h1>
+          <div>
+            <h2 id="bold-font">How do you like  D100?</h2>
+          </div>
+          <div>
+          <h2 id="font-size">This is the answer.</h2>
+          </div>
             {/* <br></br>
             <h2>Top Guesser:</h2>
             <div className="text-box-bigscreen-shrink">
@@ -166,7 +172,7 @@ export default class StatsPage extends Component {
               data={data}
               options={{
                 colors: ['#1E91D6', '#F05D5E'],
-                chartArea: { width: '70%' },
+                chartArea: { width: '60%' },
                 vAxis: {
                   title: 'Number of votes',
                   minValue: 0,
@@ -179,10 +185,12 @@ export default class StatsPage extends Component {
               height="50%"
               legendToggle
             />}
-            <h2>Fastest Team:</h2>
+            <br></br>
+            <h2 id="bold-font">Fastest Team:</h2>
             <div className="text-box-bigscreen-shrink">
               <h2> {this.getFastestTeams()}</h2>
-            </div><br></br>
+            </div>
+            <br></br>
         </div>
       </div>
     )

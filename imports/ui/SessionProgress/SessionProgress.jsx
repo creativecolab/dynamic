@@ -139,9 +139,13 @@ class SessionProgress extends Component {
           </div><br></br><br></br> */}
           <div id="font-size">Round {this.props.session.round}: Quiz</div>
           <br></br>
-          <h2>Instructions:</h2>
+          <h2 id="bold-font">Question:</h2>
           <div className="text-box-bigscreen">
-            <h2>Read through the question and select the correct answer on your device.</h2>
+            <h2>This is the question.</h2>
+          </div><br></br>
+          <h2 id="bold-font">Instructions:</h2>
+          <div className="text-box-bigscreen">
+            <h2>Read through the question and select the correct answer.</h2>
           </div><br></br>
         </div>
       )
@@ -157,8 +161,8 @@ class SessionProgress extends Component {
       return (
         <div>
           {this.renderClock()}
-          <h1>Round {this.props.session.round}: 2 Truths and 1 Lie</h1>
-          <div id="font-size">1 Person is in the hotseat</div>
+          <h1>Round {this.props.session.round}: Quiz</h1>
+          {/* <div id="font-size">1 Person is in the hotseat</div>
           <br></br>
           <h2>Instructions:</h2>
           <div className="text-box-bigscreen">
@@ -169,7 +173,17 @@ class SessionProgress extends Component {
           </div><br></br>
           <div className="text-box-bigscreen">
             <h2>Then continue to the next person in the hotseat.</h2>
-          </div><br></br><br></br>
+          </div><br></br><br></br> */}
+          <div id="font-size">Round {this.props.session.round}: Quiz</div>
+          <br></br>
+          <h2 id="bold-font">Question:</h2>
+          <div className="text-box-bigscreen">
+            <h2>This is the question.</h2>
+          </div><br></br>
+          <h2 id="bold-font">Instructions:</h2>
+          <div className="text-box-bigscreen">
+            <h2>Read through the question and work with your team to select the correct answer.</h2>
+          </div><br></br>
         </div>
       )
     }
