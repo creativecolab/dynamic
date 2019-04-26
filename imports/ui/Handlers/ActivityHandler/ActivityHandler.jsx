@@ -63,7 +63,7 @@ class ActivityHandler extends Component {
     if (name === ActivityEnums.name.QUIZ) {
       return <Quiz
         pid={pid}
-        activity_id={_id}
+        activity_id={activity_id}
         status={status}
         statusStartTime={statusStartTime}
         sessionLength={sessionLength}

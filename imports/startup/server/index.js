@@ -253,7 +253,7 @@ Meteor.startup(() => {
         // get snapshot of participants in session
         const session_id = Activities.findOne(_id).session_id;
         const participants  = Sessions.findOne(session_id).participants;
-        console.log("Participants: " + participants);
+        // console.log("Participants: " + participants);
 
         // TODO: get these from instructor
         const MAX_TEAM_SIZE = 3;
@@ -303,8 +303,19 @@ Meteor.startup(() => {
           }
           session_sections[participant_section.toLowerCase()].push(participants[j]);
         }
+        // console.log(session_sections);
 
-        console.log(session_sections);
+        // --- Order Object based on the size of sections (smaller sections last) --- //
+        var sortable = [];
+        for (var section in session_sections) {
+            sortable.push([section, session_sections[section]]);
+        }
+        // console.log("Unsorted: " + sortable);
+        
+        sortable.sort(function(section1, section2) {
+            return section1[1].length < section2[1].length;
+        });
+        // console.log("Sorted: " + sortable);
 
         //--- FORM TEAMS ---//
         let teams = [];
@@ -315,7 +326,7 @@ Meteor.startup(() => {
         for (var section in session_sections) {
           // make teams based on sections
           if (session_sections.hasOwnProperty(section)) {
-            console.log(section + " -> " + session_sections[section]);
+            // console.log(section + " -> " + session_sections[section]);
             // used to keep track of current and older teams for database
             var section_members = session_sections[section];
             shuffle(section_members); // TODO -- maybe shuffle after grouping into sections

@@ -351,6 +351,7 @@ export default class Quiz extends Component {
       }
 
       // find quiz for this activity
+      // console.log("The activity_id for this activity is " + activity_id);
       const quiz = Quizzes.findOne({ activity_id });
 
       // no quiz found

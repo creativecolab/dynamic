@@ -164,35 +164,35 @@ class InstructorUI extends Component {
             }
           ]
         });
-      } else {
-        Quizzes.insert({
-          activity_id: activity,
-          prompt: 'According to Belle Beth Cooper, you can harness the power of constraints by',
-          options: [
-            {
-              text: "Expanding your team",
-              id: Random.id(),
-              countIndv: 0,
-              countIndvTeam: 0,
-              correct: true
-            },
-            {
-              text: "Pushing back your deadlines",
-              id: Random.id(),
-              countIndv: 0,
-              countTeam: 0,
-              correct: false
-            },
-            {
-              text: "Focusing on one small task at a time",
-              id: Random.id(),
-              countIndv: 0,
-              countTeam: 0,
-              correct: false
-            }
-          ]
-        });
-      }
+      } // else {
+      //   Quizzes.insert({
+      //     activity_id: activity,
+      //     prompt: 'According to Belle Beth Cooper, you can harness the power of constraints by',
+      //     options: [
+      //       {
+      //         text: "Expanding your team",
+      //         id: Random.id(),
+      //         countIndv: 0,
+      //         countIndvTeam: 0,
+      //         correct: true
+      //       },
+      //       {
+      //         text: "Pushing back your deadlines",
+      //         id: Random.id(),
+      //         countIndv: 0,
+      //         countTeam: 0,
+      //         correct: false
+      //       },
+      //       {
+      //         text: "Focusing on one small task at a time",
+      //         id: Random.id(),
+      //         countIndv: 0,
+      //         countTeam: 0,
+      //         correct: false
+      //       }
+      //     ]
+      //   });
+      // }
 
     }
 
