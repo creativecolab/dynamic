@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { Restivus } from 'meteor/nimble:restivus';
 
 import ActivityEnums from '../../enums/activities';
 
@@ -9,6 +10,88 @@ import Teams from '../../api/teams';
 import Logs from '../../api/logs';
 
 import './register-api';
+
+function getPreference() {
+
+  let ret = 'name,pid,pref_0,name_0,not_pref_0,pref_1,name_1,not_pref_1,pref_2,name_2,not_pref_2\n';
+
+  const session = Sessions.findOne({code: "dsgn100"});
+  const { participants, activities } = session;
+  for (var i = 0; i < participants.length; i++) {
+
+    // find current user
+    const user = Users.findOne({pid: participants[i]});
+    ret += `"${user.name}","${user.pid.toUpperCase()}",`;
+
+    // iterate through activities
+    for (var a = 0; a < activities.length; a++) {
+
+      // append activity_id
+      // ret += activities[a] + ",";
+
+      // find team
+      const team = Teams.findOne({activity_id: activities[a], "members.pid": user.pid});
+
+      if (!team) {
+        // ret += "no_team\n";
+        continue;
+      }
+
+      // append team pids
+      // ret += `"${team.members.map(m => m.pid.toUpperCase())}",`;
+
+      let pref = "";
+      for (var j = 0; j < user.preference.length; j++) {
+        if (user.preference[j].activity_id === activities[a]) {
+          pref = user.preference[j].pid
+          break;
+        }
+      }
+
+      ret += pref.toUpperCase() + ",";
+      if (pref !== "" && pref !== "all")
+        ret += `"${Users.findOne({pid: pref}).name}",`;
+      else
+        ret += ",";
+
+      // not_pref
+      if (team) {
+        if (pref === 'all') ret += ",";
+        else ret += `"${team.members.filter(m => m.pid !== pref && m.pid !== user.pid).map(m => m.pid.toUpperCase())}",`;
+        // ret += `"${team.members.filter(m => m.pid !== pref && m.pid !== user.pid).map(m => Users.findOne({pid: m.pid}).name).toString()}"`;
+      }
+    }
+
+    ret += '\n';
+
+  }
+
+  return ret;
+
+}
+
+if (Meteor.isServer) {
+
+  // Global API configuration
+  var Api = new Restivus({
+    useDefaultAuth: true,
+    prettyJson: true
+  });
+
+  Api.addRoute('csv', {
+    get() {
+      return { 
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'text/csv',
+          'Content-Disposition': "attachment; filename=preferences.csv"
+        },
+        body: getPreference()
+       };
+    }
+  });
+
+}
 
 // hard-coded roster for testing
 function updateRoster() {
@@ -116,11 +199,13 @@ Meteor.methods({
 
 });
 
+
 /* Meteor start-up function, called once server starts */
 Meteor.startup(() => {
 
   // update roster on startup
-  updateRoster();
+  // updateRoster();
+  getPreference();
 
   // handles session start/end
   const sessionCursor = Sessions.find({});

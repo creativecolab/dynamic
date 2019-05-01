@@ -1,28 +1,29 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import Wrapper from '../Wrapper/Wrapper';
-import { withTracker } from 'meteor/react-meteor-data';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import Wrapper from "../Wrapper/Wrapper";
+import { withTracker } from "meteor/react-meteor-data";
 
-import './Session.scss';
-import Activities from '../../api/activities';
-import Sessions from '../../api/sessions';
+import "./Session.scss";
+import Activities from "../../api/activities";
+import Sessions from "../../api/sessions";
 import Logs from "../../api/logs";
+import Teams from "../../api/teams";
 
 class Session extends Component {
   static propTypes = {
     // code: PropTypes.string.isRequired,
-  }
+  };
 
   // add new activity to database
   addActivity(evt) {
     evt.preventDefault();
 
-    const name = 'quiz';
+    const name = "quiz";
     const session_id = this.props.session._id;
 
     // session is over
     if (this.props.session.status === 2) {
-      console.log('Session is over, can\'t add more activities!');
+      console.log("Session is over, can't add more activities!");
       return;
     }
 
@@ -55,23 +56,41 @@ class Session extends Component {
       log_type: "Activity Added to Session",
       code: this.props.match.params.code,
       activity: name,
-      timestamp: new Date().getTime(),
+      timestamp: new Date().getTime()
     });
 
     console.log(new_log);
-
   }
 
   mapActivities() {
     const { activities } = this.props;
-    if (!activities) return ""; 
-    return activities.map((act) => {
-      return <div  key={act._id}>Name: {act.name} | Status: {act.status}</div>;
+    if (!activities) return "";
+    return activities.map(act => {
+      return (
+        <div key={act._id}>
+          Name: {act.name} | Status: {act.status}
+        </div>
+      );
     });
   }
 
-  backToHome() {    
-    window.location = '/instructor';
+  backToHome() {
+    window.location = "/instructor";
+  }
+
+  mapPreference() {
+    return "";
+    const { session } = this.props;
+    if (!session) return "";
+    const teams = Teams.find({}).fetch();
+    return (
+      <div>
+        <strong>Average team formation time: </strong>
+        {teams.reduce((base, t) => {
+          console.log(base + " " + t);
+        })}
+      </div>
+    );
   }
 
   render() {
@@ -79,7 +98,9 @@ class Session extends Component {
     const { status, timestamp, participants } = this.props.session;
     return (
       <Wrapper>
-        <button onClick={() => this.backToHome()} id="back-button">back</button>
+        <button onClick={() => this.backToHome()} id="back-button">
+          back
+        </button>
         <h1>{this.props.match.params.code}</h1>
         <table>
           <tbody id="session-info">
@@ -97,34 +118,24 @@ class Session extends Component {
             </tr>
           </tbody>
         </table>
-        <div>
-          {this.mapActivities()}
-        </div>
-        <form id="activity-form" onSubmit={(evt) => this.addActivity(evt)}>
-          {/* <div id="activity-code" className="field-container">
-            <label className="field-title" htmlFor="activity-code">New activity</label>
-            <div className="input-container">
-              <select name="activity-code" id="activity-select">
-                <option defaultValue value="icebreaker">Icebreaker</option>
-              </select>
-            </div>
-          </div> */}
+        <div>{this.mapActivities()}</div>
+        <form id="activity-form" onSubmit={evt => this.addActivity(evt)}>
           <div id="submit" className="field-container">
             <div className="input-container">
-              <input type="submit" name="submit" value="Add activity"/>
+              <input type="submit" name="submit" value="Add activity" />
             </div>
           </div>
         </form>
+        <div>{this.mapPreference()}</div>
       </Wrapper>
-    )
+    );
   }
 }
 
-
-export default withTracker((props) => {
+export default withTracker(props => {
   const { code } = props.match.params;
-  const session = Sessions.findOne({code});
+  const session = Sessions.findOne({ code });
   if (!session) return {};
-  const activities = Activities.find({session_id: session._id}).fetch();
-  return {session, activities};
+  const activities = Activities.find({ session_id: session._id }).fetch();
+  return { session, activities };
 })(Session);

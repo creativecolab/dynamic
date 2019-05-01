@@ -1,15 +1,13 @@
-import React, { Component } from 'react'
+import React from 'react';
 
-export default class SessionEnd extends Component {
-  render() {
-    return (
-      <div>
+export default function SessionEnd() {
+  return (
+    <div>
       <h1>
-        That's it! <br></br> Please follow the link and fill out our survey.<br></br> Thank you for participating!
+        That&apos;s it! <br /> Please follow the link and fill out our survey.
+        <br /> Thank you for participating!
       </h1>
-      <img id="moving-logo" src="/dynamic.gif" className="center"/>
-      </div>
-    )
-  }
+      <img alt="" id="moving-logo" src="/dynamic.gif" className="center" />
+    </div>
+  );
 }
-
