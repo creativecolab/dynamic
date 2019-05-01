@@ -11,7 +11,13 @@ import './TeamFormation.scss';
 class TeamFormation extends Component {
   static propTypes = {
     pid: PropTypes.string.isRequired,
+    // eslint-disable-next-line react/forbid-prop-types
+    team: PropTypes.object,
     team_id: PropTypes.string.isRequired
+  };
+
+  static defaultProps = {
+    team: {}
   };
 
   constructor(props) {
@@ -32,12 +38,15 @@ class TeamFormation extends Component {
   // check if confirmed
   componentDidUpdate() {
     let confirmedAll = true;
+
     this.state.teammates.forEach(member => {
       if (!member.confirmed) confirmedAll = false;
     });
+
     if (confirmedAll) {
       // get index of this user
       let pidIndex = -1;
+
       this.props.team.members.map((m, index) => {
         if (m.pid === this.props.pid) {
           pidIndex = index;
@@ -74,13 +83,16 @@ class TeamFormation extends Component {
           member.confirmed = true;
         }
       });
+
       return state;
     });
   }
 
   renderTeammates() {
     if (this.props.allConfirmed) return 'Everyone in you team confirmed. Wait for everyone else.';
+
     if (this.props.confirmed) return 'Confirmed. Now wait for your teammates.';
+
     return this.state.teammates.map(m => (
       <Button key={m.pid} active={m.confirmed} onClick={() => this.handleConfirmed(m.pid)}>
         {this.getNameFromPid(m.pid)}
@@ -89,8 +101,10 @@ class TeamFormation extends Component {
   }
 
   render() {
-    if (!this.props.team) return <Loading />;
     const { team } = this.props;
+
+    if (!team) return <Loading />;
+
     const { shape, shapeColor } = team;
 
     return (
@@ -109,6 +123,7 @@ export default withTracker(props => {
   const team = Teams.findOne(props.team_id);
   let confirmed = false;
   let allConfirmed = false;
+
   try {
     confirmed = team.members.filter(m => m.pid === props.pid)[0].confirmed;
     allConfirmed = true;
@@ -118,5 +133,6 @@ export default withTracker(props => {
   } catch (error) {
     console.log(error);
   }
+
   return { team, confirmed, allConfirmed };
 })(TeamFormation);

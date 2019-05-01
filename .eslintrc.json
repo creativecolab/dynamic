@@ -3,7 +3,8 @@
     "airbnb",
     "prettier",
     "prettier/react",
-    "plugin:meteor/recommended"
+    "plugin:meteor/recommended",
+    "stylelint"
   ],
   "settings": {
     "import/resolver": {
@@ -16,6 +17,10 @@
     }
   },
   "rules": {
+    "camelcase": 0,
+    "node/no-unsupported-features/es-syntax": 0,
+    "react/no-did-update-set-state": 0,
+    "no-underscore-dangle": 0,
     "class-methods-use-this": 0,
     "no-console": 0,
     "prettier/prettier": [

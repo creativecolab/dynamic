@@ -2,16 +2,24 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
 
-import Activities from '/imports/api/activities';
-import Quiz from '/imports/ui/Activities/Quiz/Quiz';
-import ActivityEnums from '/imports/enums/activities';
+import Activities from '../../../api/activities';
+import Quiz from '../../Activities/Quiz/Quiz';
+import ActivityEnums from '../../../enums/activities';
 import Loading from '../../Components/Loading/Loading';
 
 class ActivityHandler extends Component {
   static propTypes = {
     activity_id: PropTypes.string,
+    // eslint-disable-next-line react/forbid-prop-types
+    activity: PropTypes.object,
     pid: PropTypes.string.isRequired,
     sessionLength: PropTypes.number
+  };
+
+  static defaultProps = {
+    activity_id: '',
+    sessionLength: 0,
+    activity: {}
   };
 
   // set duration based on activity status and session progress
@@ -48,7 +56,7 @@ class ActivityHandler extends Component {
     if (!activity) return <Loading />;
 
     // get activity props
-    const { _id, name, status, statusStartTime } = activity;
+    const { name, status, statusStartTime } = activity;
 
     // calculate progress
     const progress = activity.index + 1;
@@ -70,6 +78,8 @@ class ActivityHandler extends Component {
         />
       );
     }
+
+    return <Loading />;
   }
 }
 

@@ -46,6 +46,7 @@ export default class Quiz extends Component {
       });
       console.log(response);
       if (response) {
+        // eslint-disable-next-line prefer-destructuring
         selected = response.selected;
         submitted = true;
       }
@@ -78,6 +79,7 @@ export default class Quiz extends Component {
 
       console.log(response);
       if (response) {
+        // eslint-disable-next-line prefer-destructuring
         selected = response.selected;
         submitted = true;
       }
@@ -91,16 +93,120 @@ export default class Quiz extends Component {
     }
   }
 
-  handleInputSelection = id => {
-    if (this.state.submitted) {
+  // watch for status changes and update state
+  componentDidUpdate(prevProps) {
+    const { status } = this.props;
+    // check for status change
+    if (prevProps.status !== status) {
+      // individual input phase
+      if (status === ActivityEnums.status.INPUT_INDV)
+        this.setState({
+          feedbackClass: '',
+          feedbackMsge: '',
+          buttonAction: this.submitIndvInput,
+          buttonTxt: 'Submit',
+          hasFooter: true,
+          hasTimer: true,
+          selected: null,
+          submitted: false,
+          choseTeammate: false
+        });
+      // team formation or summary phases
+      else if (status === ActivityEnums.status.TEAM_FORMATION || status === ActivityEnums.status.SUMMARY)
+        this.setState({
+          feedbackClass: '',
+          feedbackMsge: '',
+          buttonAction: null,
+          buttonTxt: null,
+          hasFooter: false,
+          hasTimer: false,
+          selected: null,
+          submitted: false
+        });
+      // team input phase
+      else if (status === ActivityEnums.status.INPUT_TEAM)
+        this.setState({
+          feedbackClass: '',
+          feedbackMsge: '',
+          buttonAction: this.submitTeamInput,
+          buttonTxt: 'Submit',
+          hasFooter: true,
+          hasTimer: true,
+          selected: null,
+          submitted: false
+        });
+    }
+  }
+
+  // (id, options) -> text
+  getTextFromOpt(id, options) {
+    return options.filter(opt => opt.id === id)[0].text;
+  }
+
+  submitTeamInput = () => {
+    // extract submission vars
+    const { selected, submitted } = this.state;
+
+    // TODO: Set proper message/class
+    if (submitted) {
       this.setState({
         feedbackMsge: 'You already voted!',
         feedbackClass: ''
       });
+    }
+
+    // ready to save response
+    else if (selected) {
+      const { pid, activity_id } = this.props;
+
+      // find quiz for this activity
+      const quiz = Quizzes.findOne({ activity_id });
+
+      // get option index
+      let index = -1;
+      quiz.options.map((opt, i) => {
+        if (selected === opt.id) index = i;
+      });
+
+      // increment votes for this option
+      Quizzes.update(
+        quiz._id,
+        {
+          $inc: {
+            [`options.${index}.countTeam`]: 1
+          }
+        },
+        error => {
+          if (error) console.log(error);
+          else console.log('Quiz updated!');
+        }
+      );
+
+      // insert response to db
+      Responses.insert(
+        {
+          pid,
+          activity_id,
+          quiz_id: quiz._id,
+          timestamp: new Date().getTime(),
+          selected,
+          type: 'team'
+        },
+        error => {
+          if (error) console.log(error);
+          else console.log('Response recorded!');
+        }
+      );
+
+      this.setState({
+        submitted: true,
+        feedbackMsge: 'Response submitted!',
+        feedbackClass: 'good'
+      });
     } else {
       this.setState({
-        selected: id,
-        feedbackMsge: ''
+        feedbackMsge: 'Please select a choice.',
+        feedbackClass: 'error'
       });
     }
   };
@@ -173,125 +279,19 @@ export default class Quiz extends Component {
     }
   };
 
-  submitTeamInput = () => {
-    // extract submission vars
-    const { selected, submitted } = this.state;
-
-    // TODO: Set proper message/class
-    if (submitted) {
+  handleInputSelection = id => {
+    if (this.state.submitted) {
       this.setState({
         feedbackMsge: 'You already voted!',
         feedbackClass: ''
       });
-    }
-
-    // ready to save response
-    else if (selected) {
-      const { pid, activity_id } = this.props;
-
-      // find quiz for this activity
-      const quiz = Quizzes.findOne({ activity_id });
-
-      // get option index
-      let index = -1;
-      quiz.options.map((opt, i) => {
-        if (selected === opt.id) index = i;
-      });
-
-      // increment votes for this option
-      Quizzes.update(
-        quiz._id,
-        {
-          $inc: {
-            [`options.${index}.countTeam`]: 1
-          }
-        },
-        error => {
-          if (error) console.log(error);
-          else console.log('Quiz updated!');
-        }
-      );
-
-      // insert response to db
-      Responses.insert(
-        {
-          pid,
-          activity_id,
-          quiz_id: quiz._id,
-          timestamp: new Date().getTime(),
-          selected,
-          type: 'team'
-        },
-        error => {
-          if (error) console.log(error);
-          else console.log('Response recorded!');
-        }
-      );
-
-      this.setState({
-        submitted: true,
-        feedbackMsge: 'Response submitted!',
-        feedbackClass: 'good'
-      });
     } else {
       this.setState({
-        feedbackMsge: 'Please select a choice.',
-        feedbackClass: 'error'
+        selected: id,
+        feedbackMsge: ''
       });
     }
   };
-
-  // watch for status changes and update state
-  componentDidUpdate(prevProps) {
-    // check for status change
-    if (prevProps.status !== this.props.status) {
-      // set state based on new status
-      const { status } = this.props;
-
-      // individual input phase
-      if (status === ActivityEnums.status.INPUT_INDV)
-        this.setState({
-          feedbackClass: '',
-          feedbackMsge: '',
-          buttonAction: this.submitIndvInput,
-          buttonTxt: 'Submit',
-          hasFooter: true,
-          hasTimer: true,
-          selected: null,
-          submitted: false,
-          choseTeammate: false
-        });
-      // team formation or summary phases
-      else if (status === ActivityEnums.status.TEAM_FORMATION || status === ActivityEnums.status.SUMMARY)
-        this.setState({
-          feedbackClass: '',
-          feedbackMsge: '',
-          buttonAction: null,
-          buttonTxt: null,
-          hasFooter: false,
-          hasTimer: false,
-          selected: null,
-          submitted: false
-        });
-      // team input phase
-      else if (status === ActivityEnums.status.INPUT_TEAM)
-        this.setState({
-          feedbackClass: '',
-          feedbackMsge: '',
-          buttonAction: this.submitTeamInput,
-          buttonTxt: 'Submit',
-          hasFooter: true,
-          hasTimer: true,
-          selected: null,
-          submitted: false
-        });
-    }
-  }
-
-  // (id, options) -> text
-  getTextFromOpt(id, options) {
-    return options.filter(opt => opt.id === id)[0].text;
-  }
 
   // renders based on activity status
   renderContent({ status, pid, activity_id }) {
