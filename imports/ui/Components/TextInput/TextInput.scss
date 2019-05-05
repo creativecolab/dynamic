@@ -1,0 +1,33 @@
+@import '../../assets/main';
+
+.field-container {
+
+  min-width: 4em;
+    width: 100%;
+    max-width: 18em;
+    margin: 0 auto 1em;
+
+  .input-container {
+    position: relative;
+    margin-top: 0.5rem;
+  }
+  
+  .input-text {
+    outline: none;
+    border-radius: 5px 5px 0 0;
+    border: 0px;
+    border-bottom: 2px solid $dynamic-black;
+    background: $dynamic-light-gray;
+    padding: $button-padding;
+    font-family: $font-stack;
+    text-align: left;
+    font-size: 22px;
+    width: calc(100% - 2*#{$button-padding});
+  }
+
+  .invalid {
+    color: $dynamic-red;
+    border-bottom: 2px solid $dynamic-red;
+  }
+
+}

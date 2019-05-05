@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import Standard from '../../Layouts/Standard/Standard';
+import Mobile from '../../Layouts/Mobile/Mobile';
 import ActivityEnums from '../../../enums/activities';
 
 import InputButtons from '../Components/InputButtons/InputButtons';
@@ -44,7 +44,9 @@ export default class Quiz extends Component {
         activity_id,
         type: 'indv'
       });
+
       console.log(response);
+
       if (response) {
         // eslint-disable-next-line prefer-destructuring
         selected = response.selected;
@@ -78,6 +80,7 @@ export default class Quiz extends Component {
       });
 
       console.log(response);
+
       if (response) {
         // eslint-disable-next-line prefer-destructuring
         selected = response.selected;
@@ -96,6 +99,7 @@ export default class Quiz extends Component {
   // watch for status changes and update state
   componentDidUpdate(prevProps) {
     const { status } = this.props;
+
     // check for status change
     if (prevProps.status !== status) {
       // individual input phase
@@ -164,6 +168,7 @@ export default class Quiz extends Component {
 
       // get option index
       let index = -1;
+
       quiz.options.map((opt, i) => {
         if (selected === opt.id) index = i;
       });
@@ -232,6 +237,7 @@ export default class Quiz extends Component {
 
       // get option index
       let index = -1;
+
       quiz.options.map((opt, i) => {
         if (selected === opt.id) index = i;
       });
@@ -277,6 +283,12 @@ export default class Quiz extends Component {
         feedbackClass: 'error'
       });
     }
+  };
+
+  handleChooseTeammate = () => {
+    this.setState({
+      choseTeammate: true
+    });
   };
 
   handleInputSelection = id => {
@@ -325,6 +337,7 @@ export default class Quiz extends Component {
 
       // joined after team formation
       if (!team) return <Waiting text="You have not been assigned a team. Please wait for the next activity." />;
+
       return <TeamFormation team_id={team._id} pid={pid} />;
     }
 
@@ -359,6 +372,7 @@ export default class Quiz extends Component {
 
         // joined after team formation
         if (!team) return <Waiting text="You have not been assigned a team. Please wait for the next activity." />;
+
         return <ChooseTeammate team_id={team._id} pid={pid} handleChosen={this.handleChooseTeammate} />;
       }
 
@@ -410,16 +424,11 @@ export default class Quiz extends Component {
     return 'TODO: Status no recognized';
   }
 
-  handleChooseTeammate = () => {
-    this.setState({
-      choseTeammate: true
-    });
-  };
-
   render() {
     const { statusStartTime, progress, duration, sessionLength } = this.props;
+
     return (
-      <Standard
+      <Mobile
         activityName="Quiz"
         sessionStatus={progress}
         sessionLength={sessionLength}
@@ -428,7 +437,7 @@ export default class Quiz extends Component {
         {...this.state}
       >
         {this.renderContent(this.props)}
-      </Standard>
+      </Mobile>
     );
   }
 }

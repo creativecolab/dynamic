@@ -10,6 +10,7 @@
                        'footer';
   grid-template-rows: 1fr 10fr 1fr;
   user-select: none;
+  // background: linear-gradient(204.79deg, #B993D6 0%, #8CA6DB 100%);
 
 
   .navbar {
@@ -20,7 +21,7 @@
     height: 15%;
     width: 100%;
     background: $dynamic-light-gray;
-
+    text-align: center;
     .progress-status {
       margin: auto;
 
