@@ -25,8 +25,14 @@ export default class Landing extends Component {
 
   // update the code state so we know where to go
   handleCode = evt => {
+    // if (evt.target.value.length === 0) {
+    //   this.setState({
+    //     code: evt.target.value.toUpperCase()
+    //   });
+    // }
     this.setState({
-      code: evt.target.value.toUpperCase()
+      code: evt.target.value.toUpperCase(),
+      invalid: false
     });
   };
 
@@ -104,7 +110,7 @@ export default class Landing extends Component {
   };
 
   // TODO: maybe -- use localStorage to suggest login
-  handleLogin(evt) {
+  handleLogin = evt => {
     evt.preventDefault();
 
     const { name } = this.state;
@@ -198,54 +204,52 @@ export default class Landing extends Component {
         }
       );
     }
-  }
+  };
 
   renderLogin() {
     const { name, pid } = this.state;
 
     return (
-      <Wrapper>
+      <Mobile buttonAction={this.handleLogin} hasNavbar={false}>
         {this.renderRedirect()}
-        <form id="pid-form" onSubmit={evt => this.handleLogin(evt)}>
-          <div id="pid-container" className="field-container">
-            <label className="field-title" htmlFor="name">
-              What is your name?{' '}
-            </label>
-            <div className="input-container">
-              <input
-                className="input-text"
-                type="text"
-                name="name"
-                placeholder="King Triton"
-                value={name}
-                onChange={evt => this.handleName(evt)}
-              />
-            </div>
-            <br />
-            <label className="field-title" htmlFor="section">
-              What time is your section?{' '}
-            </label>
-            <div>
-              <Tags onSelection={evt => this.handleSection(evt)} options={['2PM', '3PM', '4PM']} />
-              <br />
-            </div>
-            <label className="field-title" htmlFor="pid">
-              What is your PID?
-            </label>
-            <div className="input-container">
-              <input
-                className="input-text"
-                type="text"
-                name="pid"
-                placeholder="A12345678"
-                value={pid}
-                onChange={evt => this.handlePid(evt)}
-              />
-            </div>
-            <input className="small-button" type="submit" value="Continue" />
+        <div id="pid-container" className="field-container ugh">
+          <label className="field-title" htmlFor="name">
+            What is your name?{' '}
+          </label>
+          <div className="input-container">
+            <input
+              className="input-text"
+              type="text"
+              name="name"
+              placeholder="King Triton"
+              value={name}
+              onChange={evt => this.handleName(evt)}
+            />
           </div>
-        </form>
-      </Wrapper>
+          <br />
+          <label className="field-title" htmlFor="section">
+            What time is your section?{' '}
+          </label>
+          <div>
+            <Tags onSelection={evt => this.handleSection(evt)} options={['2PM', '3PM', '4PM']} />
+            <br />
+          </div>
+          <label className="field-title" htmlFor="pid">
+            What is your PID?
+          </label>
+          <div className="input-container">
+            <input
+              className="input-text"
+              type="text"
+              name="pid"
+              placeholder="A12345678"
+              value={pid}
+              onChange={evt => this.handlePid(evt)}
+            />
+          </div>
+          {/* <input className="small-button" type="submit" value="Continue" /> */}
+        </div>
+      </Mobile>
     );
   }
 
@@ -288,7 +292,7 @@ export default class Landing extends Component {
     else
       return (
         <Mobile buttonAction={this.handleCodeEntry} hasNavbar={false}>
-          <JoinSection handleCode={this.handleCode} code={code} invalid={invalid} />
+          <JoinSection handleSubmit={this.handleCodeEntry} handleCode={this.handleCode} code={code} invalid={invalid} />
         </Mobile>
       );
     // else return this.renderSessionCode();

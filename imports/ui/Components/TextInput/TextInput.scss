@@ -25,6 +25,14 @@
     width: calc(100% - 2*#{$button-padding});
   }
 
+  .input-message {
+    position: absolute;
+    font-size: 20px;
+    bottom: calc(-20px - 0.5rem);
+    left: 0;
+    color: $dynamic-red;
+  }
+
   .invalid {
     color: $dynamic-red;
     border-bottom: 2px solid $dynamic-red;

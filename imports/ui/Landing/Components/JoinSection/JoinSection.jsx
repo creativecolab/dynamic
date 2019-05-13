@@ -28,6 +28,7 @@ const Logo = posed.div({
 export default class JoinSection extends Component {
   static propTypes = {
     handleCode: PropTypes.func.isRequired,
+    handleSubmit: PropTypes.func.isRequired,
     code: PropTypes.string,
     invalid: PropTypes.bool.isRequired
   };
@@ -48,14 +49,21 @@ export default class JoinSection extends Component {
 
   render() {
     const { visible } = this.state;
-    const { handleCode, code, invalid } = this.props;
+    const { handleCode, handleSubmit, code, invalid } = this.props;
 
     return (
       <div className="join-section-main">
         <Logo className="logo" pose={visible ? 'visible' : 'hidden'}>
           <img src="./favicon-196.png" alt="" />
         </Logo>
-        <TextInput name="session-code" onChange={handleCode} value={code} invalid={invalid} label="Session code" />
+        <TextInput
+          name="session-code"
+          onSubmit={handleSubmit}
+          onChange={handleCode}
+          value={code}
+          invalid={invalid}
+          label="Session code"
+        />
       </div>
     );
   }
