@@ -18,6 +18,7 @@
   },
   "rules": {
     "camelcase": 0,
+    "react/sort-comp": 0,
     "node/no-unsupported-features/es-syntax": 0,
     "react/no-did-update-set-state": 0,
     "no-underscore-dangle": 0,

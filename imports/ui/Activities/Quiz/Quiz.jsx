@@ -401,7 +401,6 @@ export default class Quiz extends Component {
       });
       const teamAnswer = responseTeam ? this.getTextFromOpt(responseTeam.selected, quiz.options) : 'No response';
 
-      // TODO: VIVIAN LOOK HERE
       // make boxes content
       const boxes = [
         {

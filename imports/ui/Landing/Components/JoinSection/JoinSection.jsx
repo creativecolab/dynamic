@@ -63,6 +63,7 @@ export default class JoinSection extends Component {
           value={code}
           invalid={invalid}
           label="Session code"
+          placeholder="CODE"
         />
       </div>
     );

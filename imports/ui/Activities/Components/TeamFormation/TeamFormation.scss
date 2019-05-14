@@ -1,9 +1,15 @@
 .team-formation-main {
   width: 90%;
   padding: 5%;
+
+  .shape-main {
+    text-align: center;
+  }
+  
+  .shape-img {
+    margin: 1em;
+    min-width: 100px;
+  }
+
 }
 
-.shape-img {
-  margin: 1em;
-  min-width: 100px;
-}

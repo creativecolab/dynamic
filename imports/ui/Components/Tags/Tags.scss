@@ -1,4 +1,19 @@
-.tags-container{
+.tags-scroll {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    padding: 0.2rem 0 1rem 0;
+}
+
+.tags-container {
     display: flex; 
-    flex-direction: row; 
+    flex-direction: row;
+    justify-content: space-between;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    padding: 0.2rem 0 1rem 0;
+}
+
+.tags-scroll::-webkit-scrollbar {
+    width: 0px;  /* Remove scrollbar space */
+    background: transparent;  /* Optional: just make scrollbar invisible */
 }

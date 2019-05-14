@@ -1,19 +1,22 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Button from '/imports/ui/Components/Button/Button';
+import Button from '../../../Components/Button/Button';
 
 import './InputButtons.scss';
 
 export default class InputButtons extends Component {
   static propTypes = {
     prompt: PropTypes.string.isRequired,
+    // eslint-disable-next-line react/no-unused-prop-types
     options: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.string.isRequired,
-        text: PropTypes.string.isRequired
+        text: PropTypes.string.isRequired,
+        badge: PropTypes.string
       }).isRequired
     ).isRequired,
     handleSelection: PropTypes.func.isRequired,
+    // eslint-disable-next-line react/no-unused-prop-types
     list: PropTypes.bool,
     freeze: PropTypes.bool,
     selected: PropTypes.string,
@@ -35,9 +38,11 @@ export default class InputButtons extends Component {
   }
 
   handleSelection(id) {
-    this.props.handleSelection(id);
+    const { handleSelection, freeze } = this.props;
 
-    if (this.props.freeze) return;
+    handleSelection(id);
+
+    if (freeze) return;
 
     this.setState({
       selected: id
@@ -69,6 +74,7 @@ export default class InputButtons extends Component {
         <Button
           onClick={() => this.handleSelection(opt.id)}
           active={opt.id === selected}
+          badge={opt.badge}
           disabled={freeze}
           order={this.getLetter(list, index)}
           key={opt.id}

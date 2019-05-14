@@ -9,6 +9,7 @@
   background: $dynamic-gray;
   box-shadow: $button-shadow;
   border-radius: $button-border-radius;
+  position: relative;
   user-select: none;
 }
 
@@ -28,6 +29,9 @@
 
 .btn:active:not(.btn-disabled) {
   box-shadow: $button-shadow-active;
+  .btn-badge {
+    // box-shadow: $button-shadow-active;
+  }
 }
 
 .btn-disabled {
@@ -35,6 +39,27 @@
 }
 
 .btn-tags {
-  margin-top: 1em; 
-  padding: 6px 1px 6px 1px; 
+  margin: 0;
+  min-width: 3em;
+  padding: 0.2rem;
+  margin-right: 0.2rem;
+  overflow: hidden;
+  max-width: min-content;
+  max-height: 1.4rem;
+
+}
+
+.btn-badge {
+  position: absolute;
+  bottom: -0.6rem;
+  right: -0.4rem;
+  border-radius: $button-border-radius;
+  background: $dynamic-blue;
+  padding: 0rem 0.2rem;
+  line-height: inherit;
+  max-width: -webkit-fill-available;
+  max-height: -webkit-fill-available;
+  overflow: hidden;
+  font-size: 0.8em;
+  color: $dynamic-white;
 }

@@ -1,26 +1,24 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import './Waiting.scss'; 
+import React from 'react';
+import PropTypes from 'prop-types';
+import './Waiting.scss';
 
-export default class Waiting extends Component {
-  static propTypes = {
-    text: PropTypes.string,
-  }
-
-  static defaultProps ={
-      text: 'Wait for your instructor to begin'
-  }
-
-  render() {
-    const {text} = this.props; 
-    return (
-      <div id="center-container">
-      {text}
-      <div><img id="moving-logo" src="./dynamic.gif" alt=""/></div>
+function Waiting(props) {
+  return (
+    <div className="waiting-main">
+      {props.text}
+      <div>
+        <img className="moving-logo" src="./dynamic.gif" alt="" />
       </div>
-    )
-  }
+    </div>
+  );
 }
 
+Waiting.propTypes = {
+  text: PropTypes.string
+};
 
+Waiting.defaultProps = {
+  text: 'Wait for your instructor to begin'
+};
 
+export default Waiting;

@@ -1,17 +1,13 @@
-#moving-logo {
-    width: 100px; 
-    height: 100px; 
-    margin-top: 15%; 
+.waiting-main {
+    flex-direction: column;
+    margin: auto;
+    text-align: center;
+    padding: 1rem;
 }
 
-#center-container{
-    width: 90%;
-    position: fixed;
-    top: 50%;
-    left: 0px;
-    right: 0px;
-    transform: translateY(-50%);
-    margin: auto;
-    padding: 5%;
-  }
+.moving-logo {
+    margin-top: 1rem;
+    width: 100px; 
+    height: 100px; 
+}
 

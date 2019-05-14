@@ -1,15 +1,14 @@
 @import '../../assets/main';
 
 .field-container {
-
   min-width: 4em;
-    width: 100%;
-    max-width: 18em;
-    margin: 0 auto 1em;
+  width: 100%;
+  max-width: 18em;
+  margin: 0 auto 1em;
 
   .input-container {
     position: relative;
-    margin-top: 0.5rem;
+    margin-top: 0.2rem;
   }
   
   .input-text {
@@ -27,8 +26,8 @@
 
   .input-message {
     position: absolute;
-    font-size: 20px;
-    bottom: calc(-20px - 0.5rem);
+    font-size: 0.8rem;
+    bottom: calc(-0.8rem - 0.5rem);
     left: 0;
     color: $dynamic-red;
   }

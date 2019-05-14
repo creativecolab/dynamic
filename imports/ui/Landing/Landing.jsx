@@ -8,6 +8,7 @@ import './Landing.scss';
 import Tags from '../Components/Tags/Tags';
 import JoinSection from './Components/JoinSection/JoinSection';
 import Mobile from '../Layouts/Mobile/Mobile';
+import TextInput from '../Components/TextInput/TextInput';
 
 export default class Landing extends Component {
   constructor(props) {
@@ -37,13 +38,13 @@ export default class Landing extends Component {
   };
 
   // update the pid as the user types
-  handleName(evt) {
+  handleName = evt => {
     if (evt.target.value.length > 30) return;
 
     this.setState({
       name: evt.target.value
     });
-  }
+  };
 
   // update the section as the user types
   handleSection(section) {
@@ -53,13 +54,13 @@ export default class Landing extends Component {
   }
 
   // update the pid as the user types
-  handlePid(evt) {
+  handlePid = evt => {
     if (evt.target.value.length > 9) return;
 
     this.setState({
       pid: evt.target.value.toUpperCase()
     });
-  }
+  };
 
   // once the user enters the session code, go to that session's page
   handleCodeEntry = evt => {
@@ -212,8 +213,35 @@ export default class Landing extends Component {
     return (
       <Mobile buttonAction={this.handleLogin} hasNavbar={false}>
         {this.renderRedirect()}
-        <div id="pid-container" className="field-container ugh">
-          <label className="field-title" htmlFor="name">
+        <div className="login-main">
+          {/* <div>Please fill the information below to participate</div>
+          <hr /> */}
+          <TextInput
+            name="name"
+            onSubmit={this.handleLogin}
+            onChange={this.handleName}
+            value={name}
+            invalid={false}
+            label="What is your name?"
+            placeholder="King Triton"
+          />
+          <TextInput
+            name="pid"
+            onSubmit={this.handleLogin}
+            onChange={this.handlePid}
+            value={pid}
+            invalid={false}
+            label="What is your PID?"
+            placeholder="A12345678"
+          />
+          <Tags
+            label="What time is your section?"
+            onSelection={evt => this.handleSection(evt)}
+            options={['2PM', '3PM', '4PM']}
+          />
+
+          {/* <div id="pid-container" className="field-container ugh"> */}
+          {/* <label className="field-title" htmlFor="name">
             What is your name?{' '}
           </label>
           <div className="input-container">
@@ -225,16 +253,8 @@ export default class Landing extends Component {
               value={name}
               onChange={evt => this.handleName(evt)}
             />
-          </div>
-          <br />
-          <label className="field-title" htmlFor="section">
-            What time is your section?{' '}
-          </label>
-          <div>
-            <Tags onSelection={evt => this.handleSection(evt)} options={['2PM', '3PM', '4PM']} />
-            <br />
-          </div>
-          <label className="field-title" htmlFor="pid">
+          </div> */}
+          {/* <label className="field-title" htmlFor="pid">
             What is your PID?
           </label>
           <div className="input-container">
@@ -247,7 +267,12 @@ export default class Landing extends Component {
               onChange={evt => this.handlePid(evt)}
             />
           </div>
+          <label className="field-title" htmlFor="section">
+            What time is your section?{' '}
+          </label> */}
+
           {/* <input className="small-button" type="submit" value="Continue" /> */}
+          {/* </div> */}
         </div>
       </Mobile>
     );
