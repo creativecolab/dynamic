@@ -10,6 +10,7 @@ import SessionProgress from '../../ui/SessionProgress/SessionProgress';
 import ActivityHandler from '../../ui/Handlers/ActivityHandler/ActivityHandler';
 import SessionHandler from '../../ui/Handlers/SessionHandler/SessionHandler';
 import TextBox from '../../ui/Components/TextBox/TextBox';
+import { UserContext } from '../../ui/Contexts/UserContext';
 
 // eslint-disable-next-line import/prefer-default-export
 export const renderRoutes = () => (

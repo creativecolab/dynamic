@@ -1,19 +1,18 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
 
 import ActivityHandler from '../ActivityHandler/ActivityHandler';
 
-import Logs from '/imports/api/logs';
-import Sessions from '/imports/api/sessions';
+import Sessions from '../../../api/sessions';
+import Activities from '../../../api/activities';
 
-import LogEnums from '/imports/enums/logs';
-import ActivityEnums from '/imports/enums/activities';
-import SessionEnums from '/imports/enums/sessions';
+import ActivityEnums from '../../../enums/activities';
+import SessionEnums from '../../../enums/sessions';
 import Loading from '../../Components/Loading/Loading';
-import Waiting from '../../Components/Waiting/Waiting';
 import Survey from '../../Components/Survey/Survey';
 import OnboardingInstructions from '../../Activities/Components/OnboardingInstructions/OnboardingInstructions';
+import { UserContext } from '../../Contexts/UserContext';
 
 class SessionHandler extends Component {
   static propTypes = {
@@ -24,13 +23,13 @@ class SessionHandler extends Component {
     }),
     match: PropTypes.shape({
       params: PropTypes.shape({
-        code: PropTypes.string.isRequired,
-      }).isRequired,
+        code: PropTypes.string.isRequired
+      }).isRequired
     }).isRequired,
-    activity_id: PropTypes.string,
+    activity: PropTypes.object,
     status: PropTypes.number,
-    length: PropTypes.number,
-  }
+    length: PropTypes.number
+  };
 
   static defaultProps = {
     location: {
@@ -38,7 +37,7 @@ class SessionHandler extends Component {
         pid: null
       }
     }
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -46,73 +45,59 @@ class SessionHandler extends Component {
   }
 
   render() {
-
     // check if user logged in
-    let pid = null;
-    try {
-      pid = this.props.location.state.pid;
-    } catch (error) {
-      return "Please login first." // TODO: make component
-    }
-    
+    const { pid } = this.props;
+
+    if (!pid) return 'Please log in first!';
+
     // extract session props
     const { status, length } = this.props;
 
     // extract activity props
-    const { activity_id } = this.props;
+    const { activity } = this.props;
 
     // render based on session status
-    if (status === SessionEnums.status.READY)
-      return <OnboardingInstructions />;
+    if (status === SessionEnums.status.READY) return <OnboardingInstructions />;
     else if (status === SessionEnums.status.ACTIVE)
-      return <ActivityHandler pid={pid} sessionLength={length} activity_id={activity_id} />;
-    else if (status === SessionEnums.status.FINISHED)
-      return <Survey />
+      return <ActivityHandler pid={pid} sessionLength={length} activity_id={activity._id} />;
+    else if (status === SessionEnums.status.FINISHED) return <Survey />;
 
     return <Loading />;
   }
 }
 
-export default withTracker(props => {
+SessionHandler.contextType = UserContext;
 
-  // get session code rom URL
-  // WARNING: first render doesn't have code
+export default withTracker(props => {
+  // get session code from URL
   const { code } = props.match.params;
+  const { pid } = props.location.state;
 
   // get session object from URL
-  const session = Sessions.findOne({code});
+  const session = Sessions.findOne({ code });
+
+  if (!session) return { pid };
 
   // get session status and progress
-  let status = -1;
-  let length = -1;
-  if (session) {
-    status = session.status;
-    length = session.activities.length
-  }
+  const status = session.status;
+  const length = session.activities.length;
 
   // get current activity in session
-  let activity = null;
-  try {
-    activity = Activities.findOne({session_id: session._id, status: {
-      $in: [
-        ActivityEnums.status.INPUT_INDV,
-        ActivityEnums.status.TEAM_FORMATION,
-        ActivityEnums.status.INPUT_TEAM,
-        ActivityEnums.status.SUMMARY,
-      ]
-    }}, { sort: { status: 1 }});
-  } catch (error) {
-    console.log(error);
-  }
 
-  // extract _id and progress here so the Component doesn't update unnecessarily
-  let activity_id = null;
-  try {
-    activity_id = activity._id;
-  } catch (error) {
-    console.log(error);
-  }
+  const activity = Activities.findOne(
+    {
+      session_id: session._id,
+      status: {
+        $in: [
+          ActivityEnums.status.INPUT_INDV,
+          ActivityEnums.status.TEAM_FORMATION,
+          ActivityEnums.status.INPUT_TEAM,
+          ActivityEnums.status.SUMMARY
+        ]
+      }
+    },
+    { sort: { status: 1 } }
+  );
 
-  return { status, length, activity_id };
-
+  return { pid, status, length, activity };
 })(SessionHandler);

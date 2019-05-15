@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { withTracker } from 'meteor/react-meteor-data';
 
 import Mobile from '../../Layouts/Mobile/Mobile';
 import ActivityEnums from '../../../enums/activities';
@@ -8,12 +9,14 @@ import InputButtons from '../Components/InputButtons/InputButtons';
 import Quizzes from '../../../api/quizzes';
 import Responses from '../../../api/responses';
 import Teams from '../../../api/teams';
+import Activities from '../../../api/activities';
 import TeamFormation from '../Components/TeamFormation/TeamFormation';
 import Waiting from '../../Components/Waiting/Waiting';
 import TextBoxes from '../Components/TextBoxes/TextBoxes';
 import ChooseTeammate from '../Components/ChooseTeammate/ChooseTeammate';
+import IndividualQuestions from './Components/IndividualQuestions/IndividualQuestions';
 
-export default class Quiz extends Component {
+class Quiz extends Component {
   static propTypes = {
     pid: PropTypes.string.isRequired,
     activity_id: PropTypes.string.isRequired, // to handle responses
@@ -45,10 +48,7 @@ export default class Quiz extends Component {
         type: 'indv'
       });
 
-      console.log(response);
-
       if (response) {
-        // eslint-disable-next-line prefer-destructuring
         selected = response.selected;
         submitted = true;
       }
@@ -62,7 +62,7 @@ export default class Quiz extends Component {
     }
 
     // team formation or summary phases
-    else if (status === ActivityEnums.status.TEAM_FORMATION || status === ActivityEnums.status.SUMMARY)
+    else if (status === ActivityEnums.status.TEAM_FORMATION || status === ActivityEnums.status.SUMMARY) {
       this.state = {
         buttonAction: null,
         buttonTxt: null,
@@ -70,6 +70,8 @@ export default class Quiz extends Component {
         hasTimer: false,
         selected
       };
+    }
+
     // team input phase
     else if (status === ActivityEnums.status.INPUT_TEAM) {
       // get response, if available
@@ -306,28 +308,19 @@ export default class Quiz extends Component {
   };
 
   // renders based on activity status
-  renderContent({ status, pid, activity_id }) {
+  renderContent = ({ status, pid, activity_id }) => {
     // individual input phase
     if (status === ActivityEnums.status.INPUT_INDV) {
       // get current state
       const { submitted, selected } = this.state;
 
       // find quiz for this activity
-      const quiz = Quizzes.findOne({ activity_id });
+      const { quiz } = this.props;
 
       // no quiz found
       if (!quiz) return 'No quiz found. Please refresh the page.';
 
-      return (
-        <InputButtons
-          prompt={quiz.prompt}
-          selected={selected}
-          options={quiz.options}
-          list
-          handleSelection={this.handleInputSelection}
-          freeze={submitted}
-        />
-      );
+      return <IndividualQuestions {...quiz} />;
     }
 
     // team formation or summary phases
@@ -421,9 +414,13 @@ export default class Quiz extends Component {
     }
 
     return 'TODO: Status no recognized';
-  }
+  };
 
   render() {
+    const { activity } = this.props;
+
+    if (!activity) return 'Waiting... QUIZ';
+
     const { statusStartTime, progress, duration, sessionLength } = this.props;
 
     return (
@@ -440,3 +437,11 @@ export default class Quiz extends Component {
     );
   }
 }
+
+// updates component when activity changes
+export default withTracker(props => {
+  const activity = Activities.findOne(props.activity_id);
+  const quiz = Quizzes.findOne({ activity_id: props.activity_id });
+
+  return { activity, quiz };
+})(Quiz);

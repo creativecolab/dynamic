@@ -86,5 +86,6 @@ class ActivityHandler extends Component {
 // updates component when activity changes
 export default withTracker(props => {
   const activity = Activities.findOne(props.activity_id);
+
   return { activity };
 })(ActivityHandler);
