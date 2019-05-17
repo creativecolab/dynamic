@@ -37,6 +37,7 @@ class Quiz extends Component {
     // TODO: set state selected & message here from db
     let selected = null;
     let submitted = false;
+    let hasFooter = false;
     // const feedbackMsge = "You already submitted a response!";
 
     // individual input phase
@@ -51,9 +52,11 @@ class Quiz extends Component {
       if (response) {
         selected = response.selected;
         submitted = true;
+        hasFooter = true;
       }
 
       this.state = {
+        hasFooter,
         buttonAction: this.submitIndvInput,
         buttonTxt: 'Submit',
         selected,
@@ -111,7 +114,7 @@ class Quiz extends Component {
           feedbackMsge: '',
           buttonAction: this.submitIndvInput,
           buttonTxt: 'Submit',
-          hasFooter: true,
+          hasFooter: false,
           hasTimer: true,
           selected: null,
           submitted: false,
@@ -225,7 +228,7 @@ class Quiz extends Component {
     // TODO: Set proper message/class
     if (submitted) {
       this.setState({
-        feedbackMsge: 'You already voted!',
+        feedbackMsge: 'You already submitted!',
         feedbackClass: ''
       });
     }
@@ -235,7 +238,14 @@ class Quiz extends Component {
       const { pid, activity_id } = this.props;
 
       // find quiz for this activity
-      const quiz = Quizzes.findOne({ activity_id });
+      const { quiz } = this.props;
+
+      // iterate through selected responses
+      for (let i = 0; i < selected.length; i++) {
+        console.log(selected[i]);
+      }
+
+      return;
 
       // get option index
       let index = -1;
@@ -293,16 +303,20 @@ class Quiz extends Component {
     });
   };
 
-  handleInputSelection = id => {
-    if (this.state.submitted) {
+  handleInputSelection = responses => {
+    const { submitted } = this.state;
+
+    if (submitted) {
       this.setState({
         feedbackMsge: 'You already voted!',
-        feedbackClass: ''
+        feedbackClass: '',
+        hasFooter: true
       });
     } else {
       this.setState({
-        selected: id,
-        feedbackMsge: ''
+        selected: responses,
+        feedbackMsge: '',
+        hasFooter: true
       });
     }
   };
@@ -320,7 +334,7 @@ class Quiz extends Component {
       // no quiz found
       if (!quiz) return 'No quiz found. Please refresh the page.';
 
-      return <IndividualQuestions {...quiz} />;
+      return <IndividualQuestions questions={quiz.questions} responses={selected} done={this.handleInputSelection} />;
     }
 
     // team formation or summary phases
@@ -421,7 +435,8 @@ class Quiz extends Component {
 
     if (!activity) return 'Waiting... QUIZ';
 
-    const { statusStartTime, progress, duration, sessionLength } = this.props;
+    const { progress, duration, sessionLength } = this.props;
+    const { statusStartTime } = activity;
 
     return (
       <Mobile

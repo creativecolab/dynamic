@@ -37,13 +37,14 @@ TextInput.propTypes = {
   value: PropTypes.string.isRequired,
   label: PropTypes.string,
   placeholder: PropTypes.string,
-  invalid: PropTypes.bool.isRequired,
+  invalid: PropTypes.bool,
   invalidMsg: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   onSubmit: PropTypes.func
 };
 
 TextInput.defaultProps = {
+  invalid: false,
   invalidMsg: 'Invalid input',
   placeholder: 'Placeholder',
   label: 'Label',

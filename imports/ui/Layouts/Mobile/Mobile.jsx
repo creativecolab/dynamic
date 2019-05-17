@@ -87,10 +87,11 @@ export default class Mobile extends Component {
             <div className="progress-status">
               <div className="activity-name">{activityName.toUpperCase()}</div>
               <div className="session-progress">
-                Question {sessionStatus} out of {sessionLength}
+                Activity {sessionStatus} out of {sessionLength}
               </div>
             </div>
             {hasTimer && <MobileTimer startTime={clockStartTime} duration={clockDuration} />}
+            <hr className="navbar-hr" />
           </nav>
         )}
         <div className="content">

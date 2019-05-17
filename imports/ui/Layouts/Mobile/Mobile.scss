@@ -20,7 +20,7 @@
     min-height: 100px;
     height: 15%;
     width: 100%;
-    background: $dynamic-light-gray;
+    // background: $dynamic-light-gray;
     text-align: center;
     .progress-status {
       margin: auto;
@@ -34,6 +34,13 @@
         font-weight: 200;
       }
 
+    }
+
+    .navbar-hr {
+      position: absolute;
+      bottom: -14%;
+      left: 15%;
+      width: 70%;
     }
 
   }
