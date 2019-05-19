@@ -278,7 +278,7 @@ class InstructorUI extends Component {
                 />
               </div>
             </div>
-            <div id="submit">
+            <div id="submit" className="field-container">
               <input className="bigscreen-button" type="submit" value="Create" />
             </div>
           </form>
