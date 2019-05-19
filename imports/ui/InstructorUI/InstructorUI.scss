@@ -15,12 +15,20 @@
 //     margin: auto;
 //   }
 
-#inner {
-    width: 100%;
-    position: fixed;
-    top: 50%;
-    left: 0px;
-    right: 0px;
-    transform: translateY(-50%);
-    margin: auto;
-  }
+.outer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  margin: 0;
+  position: relative;
+}
+
+.inner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center; 
+}
+
+

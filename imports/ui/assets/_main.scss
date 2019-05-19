@@ -62,7 +62,7 @@ $button-border-radius: 5px;
   border: 0px;
   border-bottom: 2px solid $dynamic-black;
   background: $dynamic-light-gray;
-  width: 20%;
+  width: 100%;
   padding: 5px; 
   margin: auto; 
   margin-top: 12px; 
@@ -232,7 +232,7 @@ $button-border-radius: 5px;
 
 .bigscreen-button {
   padding: 7px 25px 7px 25px;
-  margin-top: 5px; 
+  margin-top: 20px; 
   text-align: center; 
   font-size: 22px; 
   border-radius: 5px;
