@@ -16,6 +16,7 @@ import TextBoxes from '../Components/TextBoxes/TextBoxes';
 import ChooseTeammate from '../Components/ChooseTeammate/ChooseTeammate';
 import IndividualQuestions from './Components/IndividualQuestions/IndividualQuestions';
 import TeamQuestions from './Components/TeamQuestions/TeamQuestions';
+import TeammateSliders from '../Components/TeammateSliders/TeammateSliders';
 
 class Quiz extends Component {
   static propTypes = {
@@ -473,7 +474,7 @@ class Quiz extends Component {
         // joined after team formation
         if (!team) return <Waiting text="You have not been assigned a team. Please wait for the next activity." />;
 
-        return <ChooseTeammate team_id={team._id} pid={pid} handleChosen={this.handleChooseTeammate} />;
+        return <TeammateSliders team_id={team._id} pid={pid} handleChosen={this.handleChooseTeammate} />;
       }
 
       // find quiz for this activity
@@ -483,17 +484,16 @@ class Quiz extends Component {
       // no quiz found
       if (!quiz) return 'No quiz found. Please refresh the page.';
 
-      return 'Summary page';
+      const { questions } = quiz;
 
-      const correctAnswer = quiz.options.filter(opt => opt.correct)[0].text;
-
-      // get response, if available
+      // get responses, if available
       const responseIndv = Responses.findOne({
         pid,
         activity_id,
         type: 'indv'
       });
-      const indvAnswer = responseIndv ? this.getTextFromOpt(responseIndv.selected, quiz.options) : 'No response';
+      const indvAnswer = responseIndv ? responseIndv.selected : questions.map(() => 'No response');
+      // const indvAnswer = responseIndv ? this.getTextFromOpt(responseIndv.selected, quiz.options) : 'No response';
 
       // get response, if available
       const responseTeam = Responses.findOne({
@@ -501,21 +501,38 @@ class Quiz extends Component {
         activity_id,
         type: 'team'
       });
-      const teamAnswer = responseTeam ? this.getTextFromOpt(responseTeam.selected, quiz.options) : 'No response';
+      const teamAnswer = responseTeam ? responseTeam.selected : questions.map(() => 'No response');
 
       // make boxes content
+
       const boxes = [
         {
-          label: 'You selected',
-          text: indvAnswer
+          label: questions[0].prompt,
+          text: this.getTextFromOpt(responseIndv.selected[0], questions[0].options)
         },
         {
-          label: 'Your team selected',
-          text: teamAnswer
+          text: this.getTextFromOpt(responseTeam.selected[0], questions[0].options)
         },
         {
-          label: 'Correct answer',
-          text: correctAnswer
+          label: questions[1].prompt,
+          text: this.getTextFromOpt(responseIndv.selected[1], questions[1].options)
+        },
+        {
+          text: this.getTextFromOpt(responseTeam.selected[1], questions[1].options)
+        },
+        {
+          label: questions[2].prompt,
+          text: responseIndv.selected[2].text
+        },
+        {
+          text: responseTeam.selected[2].text
+        },
+        {
+          label: questions[3].prompt,
+          text: responseIndv.selected[3].text
+        },
+        {
+          text: responseIndv.selected[3].text
         }
       ];
 

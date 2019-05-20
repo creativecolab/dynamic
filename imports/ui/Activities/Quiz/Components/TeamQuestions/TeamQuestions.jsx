@@ -41,8 +41,41 @@ export default class TeamQuestions extends Component {
     else next();
   };
 
+  handleFR = selected => {
+    // this.props.done(selected);
+    const { responses } = this.state;
+    const { index, questions, done, next } = this.props;
+
+    // update response
+    responses[index] = { text: this.getOption(selected), id: selected };
+
+    // next or done
+    if (questions.length === index + 1) done(responses);
+    else next();
+  };
+
   getNameFromPid(pid) {
     return Users.findOne({ pid }).name;
+  }
+
+  getOption(optionId) {
+    const { teammates } = this.state;
+    const { quiz, index } = this.props;
+
+    // get pid
+    const responses = teammates
+      .map(pid => Responses.findOne({ pid, quiz_id: quiz._id }))
+      .filter(res => res != null)
+      .filter(res => res.selected[index].text !== '')
+      .map(res => ({
+        id: res.selected[index].id,
+        badge: this.getNameFromPid(res.pid),
+        text: res.selected[index].text
+      }));
+
+    const option = responses.filter(r => r.id === optionId)[0].text;
+
+    return option;
   }
 
   getOptions() {
@@ -59,8 +92,6 @@ export default class TeamQuestions extends Component {
         badge: this.getNameFromPid(res.pid),
         text: res.selected[index].text
       }));
-
-    console.log(responses);
 
     return responses;
   }
@@ -84,25 +115,22 @@ export default class TeamQuestions extends Component {
 
     if (question.type === ActivityEnums.quiz.MULTI_CHOICE) {
       return (
-        <div>
-          {/* <Tags className="tiny" options={teammates} /> */}
-          <InputButtons
-            prompt={question.prompt}
-            handleSelection={this.handleQ}
-            list
-            selected={selected}
-            options={question.options}
-          />
-        </div>
+        <InputButtons
+          prompt={question.prompt}
+          handleSelection={this.handleQ}
+          list
+          selected={selected}
+          options={question.options}
+        />
       );
     }
 
     return (
       <InputButtons
         prompt={question.prompt}
-        handleSelection={this.handleQ}
+        handleSelection={this.handleFR}
         list
-        selected={selected}
+        selected={selected.id}
         options={this.getOptions()}
       />
     );

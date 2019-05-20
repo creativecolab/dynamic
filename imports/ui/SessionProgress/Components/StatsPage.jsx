@@ -11,6 +11,8 @@ import Quizzes from '../../../api/quizzes';
 import TextBox from '../../Components/TextBox/TextBox';
 import ActivityEnums from '../../../enums/activities';
 
+import './StatsPage.scss';
+
 export default class StatsPage extends Component {
   static propTypes = {
     index: PropTypes.number.isRequired,
@@ -212,7 +214,7 @@ export default class StatsPage extends Component {
     };
 
     return (
-      <div>
+      <div className="stats-main">
         <h1>Round {this.state.round}: Quiz</h1>
         <h2 id="bold-font">{quiz.prompt}</h2>
         <div>
@@ -252,7 +254,7 @@ export default class StatsPage extends Component {
           />
         )}
         <div>
-          <h1>Answer</h1>
+          {/* <h1>Answer</h1> */}
           {this.props.quiz.questions.map(
             (q, index) =>
               index === this.props.index && (
@@ -263,7 +265,7 @@ export default class StatsPage extends Component {
               )
           )}
         </div>
-        <TextBox label="Fastest Team:">{this.getFastestTeams()}</TextBox>
+        {/* <TextBox label="Fastest Team:">{this.getFastestTeams()}</TextBox> */}
       </div>
     );
   }
