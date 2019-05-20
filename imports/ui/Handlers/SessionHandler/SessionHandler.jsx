@@ -56,13 +56,14 @@ class SessionHandler extends Component {
     // extract activity props
     const { activity } = this.props;
 
+    if (status === SessionEnums.status.FINISHED) return <Survey />;
+
     if (!activity) return <Loading />;
 
     // render based on session status
     if (status === SessionEnums.status.READY) return <OnboardingInstructions />;
     else if (status === SessionEnums.status.ACTIVE)
       return <ActivityHandler pid={pid} sessionLength={length} activity_id={activity._id} />;
-    else if (status === SessionEnums.status.FINISHED) return <Survey />;
 
     return <Loading />;
   }
