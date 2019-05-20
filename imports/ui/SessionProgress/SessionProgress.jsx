@@ -153,7 +153,8 @@ class SessionProgress extends Component {
       return (
         <div>
           {this.renderClock()}
-          <h1>Round {this.props.session.round}: Quiz</h1>
+          {/* <h1>Round {this.props.session.round}: Quiz</h1> */}
+          <h1>Quiz</h1>
           {/* <div id="font-size">Round {this.props.session.round}: 2 Truths and 1 Lie</div>
           <br></br>
           <h2>Instructions:</h2>
@@ -189,6 +190,13 @@ class SessionProgress extends Component {
             <h2 id="font-size">Read through the question and select the correct answer or respond accordingly.</h2>
           </div>
           <br />
+          <button
+            className="bigscreen-button"
+            id="here"
+            onClick={() => this.advanceActivity(this.props.currentActivity)}
+          >
+            Team Formation
+          </button>
         </div>
       );
     }
@@ -203,7 +211,8 @@ class SessionProgress extends Component {
       return (
         <div>
           {this.renderClock()}
-          <h1>Round {this.props.session.round}: Quiz</h1>
+          {/* <h1>Round {this.props.session.round}: Quiz</h1> */}
+          <h1>Quiz</h1>
           {/* <div id="font-size">1 Person is in the hotseat</div>
           <br></br>
           <h2>Instructions:</h2>
@@ -242,6 +251,13 @@ class SessionProgress extends Component {
             <h2 id="font-size">Read through the question and select the correct answer or respond accordingly.</h2>
           </div>
           <br />
+          <button
+            className="bigscreen-button"
+            id="here"
+            onClick={() => this.advanceActivity(this.props.currentActivity)}
+          >
+            Summary
+          </button>
         </div>
       );
     }
@@ -278,7 +294,7 @@ class SessionProgress extends Component {
 
     return (
       <button className="bigscreen-button" id="here" onClick={() => this.advanceActivity(this.props.currentActivity)}>
-        Skip to activity
+        Continue
       </button>
     );
   }
@@ -332,7 +348,7 @@ class SessionProgress extends Component {
             {this.getInstructions(this.props.currentActivity.status)}
             {/* <div>Session code: {this.props.match.params.code}</div> */}
             {/* TODO maybe add session code an url */}
-            {this.getButton()}
+            {/* {this.getButton()} */}
           </div>
         </div>
       );

@@ -11,14 +11,13 @@ import Quizzes from '../../../api/quizzes';
 import TextBox from '../../Components/TextBox/TextBox';
 import ActivityEnums from '../../../enums/activities';
 
-import './StatsPage.scss';
-
 export default class StatsPage extends Component {
   static propTypes = {
     index: PropTypes.number.isRequired,
     quiz: PropTypes.object.isRequired,
     session_id: PropTypes.string.isRequired,
-    activity_id: PropTypes.string.isRequired
+    activity_id: PropTypes.string.isRequired,
+    skip: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -214,8 +213,9 @@ export default class StatsPage extends Component {
     };
 
     return (
-      <div className="stats-main">
-        <h1>Round {this.state.round}: Quiz</h1>
+      <div>
+        {/* <h1>Round {this.state.round}: Quiz</h1> */}
+        <h1>Quiz</h1>
         <h2 id="bold-font">{quiz.prompt}</h2>
         <div>
           <h2 id="font-size">{/* <strong>{this.getLetter(correctIndex)}</strong>. {correctText} */}</h2>
@@ -254,7 +254,7 @@ export default class StatsPage extends Component {
           />
         )}
         <div>
-          {/* <h1>Answer</h1> */}
+          <h1>Answer</h1>
           {this.props.quiz.questions.map(
             (q, index) =>
               index === this.props.index && (
@@ -265,7 +265,11 @@ export default class StatsPage extends Component {
               )
           )}
         </div>
-        {/* <TextBox label="Fastest Team:">{this.getFastestTeams()}</TextBox> */}
+        <TextBox label="Fastest Team:">{this.getFastestTeams()}</TextBox>
+        <br />
+        <button className="bigscreen-button" onClick={() => this.props.skip()}>
+          End Activity
+        </button>
       </div>
     );
   }
