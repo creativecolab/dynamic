@@ -158,6 +158,12 @@ class SessionProgress extends Component {
             <h2>
               Q2: <div id="font-size">{quiz.prompt}</div>
             </h2>
+            <h2>
+              Q3: <div id="font-size">{quiz.prompt}</div>
+            </h2>
+            <h2>
+              Q4: <div id="font-size">{quiz.prompt}</div>
+            </h2>
           </div>
           <br />
           <div id="font-size">Instructions</div>
@@ -199,6 +205,12 @@ class SessionProgress extends Component {
             </h2>
             <h2>
               Q2: <div id="font-size">{quiz.prompt}</div>
+            </h2>
+            <h2>
+              Q3: <div id="font-size">{quiz.prompt}</div>
+            </h2>
+            <h2>
+              Q4: <div id="font-size">{quiz.prompt}</div>
             </h2>
           </div>
           <br />

@@ -1,25 +1,25 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
-import { Chart } from "react-google-charts";
+import { Chart } from 'react-google-charts';
 import Loading from '../../Components/Loading/Loading';
 import Teams from '../../../api/teams';
 import Responses from '../../../api/responses';
 import Users from '../../../api/users';
 import Sessions from '../../../api/sessions';
 import Quizzes from '../../../api/quizzes';
-
+import './StatsPage.scss';
 
 export default class StatsPage extends Component {
-
   static propTypes = {
     session_id: PropTypes.string.isRequired,
     activity_id: PropTypes.string.isRequired
-  }
+  };
 
   constructor(props) {
     super(props);
     const session = Sessions.findOne(this.props.session_id);
+
     this.state = {
       round: session.round
     };
@@ -29,13 +29,15 @@ export default class StatsPage extends Component {
   getTopUserPoints() {
     const { activity_id } = this.props;
     // get all teams in this activity
-    const teams = Teams.find({activity_id}).fetch();
-    var topUser = "";
-    var topPoints = 0;
-    // check each teams members 
+    const teams = Teams.find({ activity_id }).fetch();
+    let topUser = '';
+    let topPoints = 0;
+
+    // check each teams members
     teams.map(team => {
       team.members.map(n => {
-        var curr_user = Users.findOne({pid: n.pid});
+        const curr_user = Users.findOne({ pid: n.pid });
+
         // for each memory, find their points for this session, and see if is the greatest
         curr_user.points_history.map(curr_user_point => {
           if (curr_user_point.session === this.props.session_id) {
@@ -47,25 +49,29 @@ export default class StatsPage extends Component {
         });
       });
     });
-    if (topUser === "") return "No top user right now...";
-    else return topUser + ", with " + topPoints + " points";
+
+    if (topUser === '') return 'No top user right now...';
+    else return topUser + ', with ' + topPoints + ' points';
   }
 
   getBestLies() {
     const { activity_id } = this.props;
 
     // get responses, sort by num_voted
-    const responses = Responses.find({activity_id}, {sort: {num_voted: -1}}).fetch();
+    const responses = Responses.find({ activity_id }, { sort: { num_voted: -1 } }).fetch();
+
     if (!responses) return 'No good lies...';
+
     if (!responses[0]) return 'No good lies...';
 
     if (responses[0].quiz_id) return 'TODO: this is a quiz!';
 
-
     const lies = responses.map(re => re.options[2]).filter(opt => opt.count === 0);
 
     if (!lies) return 'No good lies...';
+
     if (!lies[0]) return 'No good lies...';
+
     return lies[0].text;
   }
 
@@ -73,8 +79,10 @@ export default class StatsPage extends Component {
     const { activity_id } = this.props;
 
     // get responses
-    const responses = Responses.find({activity_id}).fetch();
+    const responses = Responses.find({ activity_id }).fetch();
+
     if (!responses) return 'No unique truths...';
+
     if (!responses[0]) return 'No unique truths...';
 
     if (responses[0].quiz_id) return 'TODO: this is a quiz!';
@@ -85,33 +93,42 @@ export default class StatsPage extends Component {
     const truths = truths0.concat(truths1).sort((a, b) => b.count - a.count);
 
     if (!truths) return 'No unique truths...';
+
     if (!truths[0]) return 'No unique truths...';
+
     return truths[0].text;
   }
 
   // give top users points
   addPoints(pid) {
-    Users.findOne({pid});
-  };
+    Users.findOne({ pid });
+  }
 
   getFastestTeams() {
     const { activity_id } = this.props;
 
     // get top 3 fastest teams
-    const teams = Teams.find({activity_id, teamFormationTime: { $gt: 0 }}, {
-      sort: { teamFormationTime: 1 },
-      limit: 1
-    }).fetch();
+    const teams = Teams.find(
+      { activity_id, teamFormationTime: { $gt: 0 } },
+      {
+        sort: { teamFormationTime: 1 },
+        limit: 1
+      }
+    ).fetch();
 
-    if (teams == false) return "No data";
+    if (teams == false) return 'No data';
 
     return teams.map(team => {
-      return <div key={team._id}>{team.members.map(n => Users.findOne({pid: n.pid}).name).join(', ')}:
-      {' ' + parseInt(team.teamFormationTime / 1000)}s</div>
+      return (
+        <div key={team._id}>
+          {team.members.map(n => Users.findOne({ pid: n.pid }).name).join(', ')}:
+          {' ' + parseInt(team.teamFormationTime / 1000)}s
+        </div>
+      );
     });
   }
 
-  // upon exiting this page, update the round we are on 
+  // upon exiting this page, update the round we are on
   componentWillUnmount() {
     Sessions.update(this.props.session_id, {
       $set: {
@@ -122,33 +139,42 @@ export default class StatsPage extends Component {
 
   getLetter(index) {
     switch (index) {
-      case 0: return 'A';
-      case 1: return 'B';  
-      case 2: return 'C';  
-      case 3: return 'D';  
-      default: return '';
+      case 0:
+        return 'A';
+      case 1:
+        return 'B';
+      case 2:
+        return 'C';
+      case 3:
+        return 'D';
+      default:
+        return '';
     }
   }
 
   getData(quiz) {
-    let data = [["Option", "Individual Votes", "Team Votes"]];
+    const data = [['Option', 'Individual Votes', 'Team Votes']];
+
     // const fakeData = [['A', 32, 45], ['B', 23, 12], ['C', 15, 17], ['D', 8, 6]];
     // fakeData.map((opt) => data.push(opt));
     quiz.options.map((opt, i) => data.push([this.getLetter(i), opt.countIndv, opt.countTeam]));
+
     return data;
   }
 
   render() {
-
     const { activity_id } = this.props;
+
     if (!activity_id) return <Loading />;
 
-    const quiz = Quizzes.findOne({activity_id});
+    const quiz = Quizzes.findOne({ activity_id });
+
     if (!quiz) return <Loading />;
 
     const data = this.getData(quiz);
     let correctIndex = -1;
     let correctText = '';
+
     quiz.options.map((opt, index) => {
       if (opt.correct) {
         correctIndex = index;
@@ -158,15 +184,16 @@ export default class StatsPage extends Component {
 
     return (
       <div>
+        <h1>Round {this.state.round}: Quiz</h1>
         <div>
-          <h1>Round {this.state.round}: Quiz</h1>
-          <div>
-            <h2 id="bold-font">{quiz.prompt}</h2>
-          </div>
-          <div>
-          <h2 id="font-size"><strong>{this.getLetter(correctIndex)}</strong>. {correctText}</h2>
-          </div>
-            {/* <br></br>
+          <h2 id="bold-font">{quiz.prompt}</h2>
+        </div>
+        <div>
+          <h2 id="font-size">
+            <strong>{this.getLetter(correctIndex)}</strong>. {correctText}
+          </h2>
+        </div>
+        {/* <br></br>
             <h2>Top Guesser:</h2>
             <div className="text-box-bigscreen-shrink">
               <h2>{this.getTopUserPoints()}</h2>
@@ -179,32 +206,33 @@ export default class StatsPage extends Component {
             <div className="text-box-bigscreen-shrink">
               <h2>{this.getUniqueTruths()}</h2>
             </div> */}
-             {data && <Chart
-              chartType="ColumnChart"
-              data={data}
-              options={{
-                colors: ['#1E91D6', '#F05D5E'],
-                chartArea: { width: '60%' },
-                vAxis: {
-                  title: 'Number of votes',
-                  minValue: 0,
-                },
-                hAxis: {
-                  title: 'Option',
-                },
-              }}
-              width="100%"
-              height="50%"
-              legendToggle
-            />}
-            <br></br>
-            <h2 id="bold-font">Fastest Team:</h2>
-            <div className="text-box-bigscreen-shrink">
-              <h2> {this.getFastestTeams()}</h2>
-            </div>
-            <br></br>
+        {data && (
+          <Chart
+            chartType="ColumnChart"
+            data={data}
+            options={{
+              colors: ['#1E91D6', '#F05D5E'],
+              chartArea: { width: '60%' },
+              vAxis: {
+                title: 'Number of votes',
+                minValue: 0
+              },
+              hAxis: {
+                title: 'Option'
+              }
+            }}
+            width="100%"
+            height="50%"
+            legendToggle
+          />
+        )}
+        <br />
+        <h2 id="bold-font">Fastest Team:</h2>
+        <div className="text-box-bigscreen-shrink">
+          <h2> {this.getFastestTeams()}</h2>
         </div>
+        <br />
       </div>
-    )
+    );
   }
 }
