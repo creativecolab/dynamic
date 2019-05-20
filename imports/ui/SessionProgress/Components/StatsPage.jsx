@@ -10,6 +10,7 @@ import Sessions from '../../../api/sessions';
 import Quizzes from '../../../api/quizzes';
 import './StatsPage.scss';
 import TextBox from '../../Components/TextBox/TextBox';
+import ActivityEnums from '../../../enums/activities';
 
 export default class StatsPage extends Component {
   static propTypes = {
@@ -184,6 +185,14 @@ export default class StatsPage extends Component {
     //   }
     // });
 
+    const getAnswer = q => {
+      if (q.type === ActivityEnums.quiz.MULTI_CHOICE) {
+        return q.options.filter(opt => opt.correct)[0].text;
+      } else {
+        return q.answer;
+      }
+    };
+
     return (
       <div>
         <h1>Round {this.state.round}: Quiz</h1>
@@ -206,7 +215,7 @@ export default class StatsPage extends Component {
             <div className="text-box-bigscreen-shrink">
               <h2>{this.getUniqueTruths()}</h2>
             </div> */}
-        {data && (
+        {/* {data && (
           <Chart
             chartType="ColumnChart"
             data={data}
@@ -225,7 +234,15 @@ export default class StatsPage extends Component {
             height="50%"
             legendToggle
           />
-        )}
+        )} */}
+        <div>
+          <h1>Answers</h1>
+          {this.props.quiz.questions.map((q, index) => (
+            <h2 key={Random.id()}>
+              <div id="font-size">{`Q${index + 1}: ${getAnswer(q)}`}</div>
+            </h2>
+          ))}
+        </div>
         <TextBox label="Fastest Team:">{this.getFastestTeams()}</TextBox>
       </div>
     );

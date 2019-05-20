@@ -236,7 +236,7 @@ class SessionProgress extends Component {
 
     // activity completed
     if (status === 4) {
-      return <StatsPage session_id={this.props.session._id} activity_id={currentActivity._id} />;
+      return <StatsPage quiz={this.props.quiz} session_id={this.props.session._id} activity_id={currentActivity._id} />;
     }
   }
 
