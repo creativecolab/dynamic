@@ -8,7 +8,6 @@ import Responses from '../../../api/responses';
 import Users from '../../../api/users';
 import Sessions from '../../../api/sessions';
 import Quizzes from '../../../api/quizzes';
-import './StatsPage.scss';
 import TextBox from '../../Components/TextBox/TextBox';
 import ActivityEnums from '../../../enums/activities';
 
