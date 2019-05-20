@@ -22,3 +22,4 @@ react-meteor-data       # React higher-order component for reactively tracking M
 fourseven:scss
 random@1.1.0
 nimble:restivus
+meteortesting:mocha
