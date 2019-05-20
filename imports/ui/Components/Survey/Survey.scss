@@ -1,18 +1,4 @@
 @import '../../assets/main';
-
-a{
-    margin: auto;
-    min-width: 4em;
-    max-width: 18em;
-    padding: $button-padding;
-    text-align: center;
-    background: $dynamic-gray;
-    box-shadow: $button-shadow;
-    border-radius: $button-border-radius;
-    user-select: none;
-    color: black; 
-}
-
 #center-container{
     width: 90%;
     position: fixed;
@@ -22,6 +8,26 @@ a{
     transform: translateY(-50%);
     margin: auto;
     padding: 5%;
+    text-align: center;
+
+    .btn-container {
+      margin-top: 1em;
+
+    }
+
+    a {
+      margin: auto;
+      min-width: 4em;
+      max-width: 18em;
+      padding: $button-padding;
+      text-align: center;
+      background: $dynamic-blue;
+      box-shadow: $button-shadow;
+      border-radius: $button-border-radius;
+      user-select: none;
+      color: $dynamic-white; 
+    }
+
   }
 
   #small-logo {

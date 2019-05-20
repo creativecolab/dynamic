@@ -268,12 +268,19 @@ class SessionProgress extends Component {
           Next question
         </button>
       );
-    else
+
+    if (this.props.currentActivity.status === 4 && this.state.index === this.props.quiz.questions.length - 1)
       return (
         <button className="bigscreen-button" id="here" onClick={() => this.advanceActivity(this.props.currentActivity)}>
-          Skip to activity
+          End activity
         </button>
       );
+
+    return (
+      <button className="bigscreen-button" id="here" onClick={() => this.advanceActivity(this.props.currentActivity)}>
+        Skip to activity
+      </button>
+    );
   }
 
   renderInfo() {

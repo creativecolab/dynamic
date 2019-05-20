@@ -176,32 +176,31 @@ class Quiz extends Component {
     else if (selected) {
       const { pid, activity_id, quiz } = this.props;
 
-      // find quiz for this activity
-      // const { quiz } = this.props;
-
-      // get option index
-      // let index = -1;
-
-      // quiz.options.map((opt, i) => {
-      //   if (selected === opt.id) index = i;
-      // });
-
-      // // increment votes for this option
-      // Quizzes.update(
-      //   quiz._id,
-      //   {
-      //     $inc: {
-      //       [`options.${index}.countTeam`]: 1
-      //     }
-      //   },
-      //   error => {
-      //     if (error) console.log(error);
-      //     else console.log('Quiz updated!');
-      //   }
-      // );
-
+      // iterate through selected responses
       for (let i = 0; i < selected.length; i++) {
         console.log(selected[i]);
+
+        if (quiz.questions[i].type === ActivityEnums.quiz.MULTI_CHOICE) {
+          // get option index
+          let index = -1;
+
+          quiz.questions[i].options.map((opt, j) => {
+            if (selected[i] === opt.id) index = j;
+          });
+
+          Quizzes.update(
+            quiz._id,
+            {
+              $inc: {
+                [`questions.${i}.options.${index}.countTeam`]: 1
+              }
+            },
+            error => {
+              if (error) console.log(error);
+              else console.log('Quiz updated!');
+            }
+          );
+        }
       }
 
       // insert response to db
@@ -252,30 +251,29 @@ class Quiz extends Component {
       // iterate through selected responses
       for (let i = 0; i < selected.length; i++) {
         console.log(selected[i]);
+
+        if (quiz.questions[i].type === ActivityEnums.quiz.MULTI_CHOICE) {
+          // get option index
+          let index = -1;
+
+          quiz.questions[i].options.map((opt, j) => {
+            if (selected[i] === opt.id) index = j;
+          });
+
+          Quizzes.update(
+            quiz._id,
+            {
+              $inc: {
+                [`questions.${i}.options.${index}.countIndv`]: 1
+              }
+            },
+            error => {
+              if (error) console.log(error);
+              else console.log('Quiz updated!');
+            }
+          );
+        }
       }
-
-      // TODO: increment counter on each quiz option
-
-      // get option index
-      // let index = -1;
-
-      // quiz.options.map((opt, i) => {
-      //   if (selected === opt.id) index = i;
-      // });
-
-      // // increment votes for this option
-      // Quizzes.update(
-      //   quiz._id,
-      //   {
-      //     $inc: {
-      //       [`options.${index}.countIndv`]: 1
-      //     }
-      //   },
-      //   error => {
-      //     if (error) console.log(error);
-      //     else console.log('Quiz updated!');
-      //   }
-      // );
 
       // insert response to db
       Responses.insert(
