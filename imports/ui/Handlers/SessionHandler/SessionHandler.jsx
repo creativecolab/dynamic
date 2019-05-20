@@ -58,11 +58,11 @@ class SessionHandler extends Component {
 
     if (status === SessionEnums.status.FINISHED) return <Survey />;
 
+    if (status === SessionEnums.status.READY) return <OnboardingInstructions />;
+
     if (!activity) return <Loading />;
 
-    // render based on session status
-    if (status === SessionEnums.status.READY) return <OnboardingInstructions />;
-    else if (status === SessionEnums.status.ACTIVE)
+    if (status === SessionEnums.status.ACTIVE)
       return <ActivityHandler pid={pid} sessionLength={length} activity_id={activity._id} />;
 
     return <Loading />;
