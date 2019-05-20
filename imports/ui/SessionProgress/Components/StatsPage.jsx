@@ -9,6 +9,7 @@ import Users from '../../../api/users';
 import Sessions from '../../../api/sessions';
 import Quizzes from '../../../api/quizzes';
 import './StatsPage.scss';
+import TextBox from '../../Components/TextBox/TextBox';
 
 export default class StatsPage extends Component {
   static propTypes = {
@@ -155,11 +156,12 @@ export default class StatsPage extends Component {
   getData(quiz) {
     const data = [['Option', 'Individual Votes', 'Team Votes']];
 
-    // const fakeData = [['A', 32, 45], ['B', 23, 12], ['C', 15, 17], ['D', 8, 6]];
-    // fakeData.map((opt) => data.push(opt));
-    quiz.options.map((opt, i) => data.push([this.getLetter(i), opt.countIndv, opt.countTeam]));
+    const fakeData = [['A', 32, 45], ['B', 23, 12], ['C', 15, 17], ['D', 8, 6]];
 
-    return data;
+    fakeData.map(opt => data.push(opt));
+    // quiz.options.map((opt, i) => data.push([this.getLetter(i), opt.countIndv, opt.countTeam]));
+
+    return fakeData;
   }
 
   render() {
@@ -172,15 +174,15 @@ export default class StatsPage extends Component {
     if (!quiz) return <Loading />;
 
     const data = this.getData(quiz);
-    let correctIndex = -1;
-    let correctText = '';
+    const correctIndex = -1;
+    const correctText = '';
 
-    quiz.options.map((opt, index) => {
-      if (opt.correct) {
-        correctIndex = index;
-        correctText = opt.text;
-      }
-    });
+    // quiz.options.map((opt, index) => {
+    //   if (opt.correct) {
+    //     correctIndex = index;
+    //     correctText = opt.text;
+    //   }
+    // });
 
     return (
       <div>
@@ -189,9 +191,7 @@ export default class StatsPage extends Component {
           <h2 id="bold-font">{quiz.prompt}</h2>
         </div>
         <div>
-          <h2 id="font-size">
-            <strong>{this.getLetter(correctIndex)}</strong>. {correctText}
-          </h2>
+          <h2 id="font-size">{/* <strong>{this.getLetter(correctIndex)}</strong>. {correctText} */}</h2>
         </div>
         {/* <br></br>
             <h2>Top Guesser:</h2>
@@ -226,12 +226,7 @@ export default class StatsPage extends Component {
             legendToggle
           />
         )}
-        <br />
-        <h2 id="bold-font">Fastest Team:</h2>
-        <div className="text-box-bigscreen-shrink">
-          <h2> {this.getFastestTeams()}</h2>
-        </div>
-        <br />
+        <TextBox label="Fastest Team:">{this.getFastestTeams()}</TextBox>
       </div>
     );
   }

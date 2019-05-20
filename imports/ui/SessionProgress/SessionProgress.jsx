@@ -131,7 +131,7 @@ class SessionProgress extends Component {
 
     if (!currentActivity) return 'No activity';
 
-    const quiz = Quizzes.findOne({ activity_id: currentActivity._id });
+    const { quiz } = this.props; //Quizzes.findOne({ activity_id: currentActivity._id });
 
     if (!quiz) return 'No Quiz';
 
@@ -312,5 +312,9 @@ export default withTracker(props => {
     { sort: { status: 1 } }
   );
 
-  return { session, activities, currentActivity };
+  if (!currentActivity) return { session, activities, currentActivity };
+
+  const quiz = Quizzes.findOne({ activity_id: currentActivity._id });
+
+  return { session, activities, currentActivity, quiz };
 })(SessionProgress);
