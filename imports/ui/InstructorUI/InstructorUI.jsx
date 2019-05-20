@@ -7,6 +7,7 @@ import ActivityEnums from '../../enums/activities';
 import Sessions from '../../api/sessions';
 import SessionListItem from './Components/SessionListItem';
 import Logs from '../../api/logs';
+import Activities from '../../api/activities';
 import '../assets/_main.scss';
 import './InstructorUI.scss';
 import Quizzes from '../../api/quizzes';
@@ -73,8 +74,8 @@ class InstructorUI extends Component {
         session_id,
         timestamp: new Date().getTime(),
         team_size: 3, // TODO: default value?
-        durationIndv: 60,
-        durationTeam: 60,
+        durationIndv: 180,
+        durationTeam: 180,
         durationOffsetIndv: 0,
         durationOffsetTeam: 0,
         status: 0,

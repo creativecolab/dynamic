@@ -56,6 +56,8 @@ class SessionHandler extends Component {
     // extract activity props
     const { activity } = this.props;
 
+    if (!activity) return <Loading />;
+
     // render based on session status
     if (status === SessionEnums.status.READY) return <OnboardingInstructions />;
     else if (status === SessionEnums.status.ACTIVE)
@@ -87,7 +89,6 @@ export default withTracker(props => {
   const length = session.activities.length;
 
   // get current activity in session
-
   const activity = Activities.findOne(
     {
       session_id: session._id,
