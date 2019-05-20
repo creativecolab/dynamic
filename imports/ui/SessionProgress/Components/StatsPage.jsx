@@ -215,9 +215,7 @@ export default class StatsPage extends Component {
     return (
       <div>
         <h1>Round {this.state.round}: Quiz</h1>
-        <div>
-          <h2 id="bold-font">{quiz.prompt}</h2>
-        </div>
+        <h2 id="bold-font">{quiz.prompt}</h2>
         <div>
           <h2 id="font-size">{/* <strong>{this.getLetter(correctIndex)}</strong>. {correctText} */}</h2>
         </div>

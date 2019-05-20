@@ -287,6 +287,7 @@ class SessionProgress extends Component {
     if (session.status === 0)
       return (
         <div className="outer">
+          <img id="small-logo" src="https://i.postimg.cc/t462TbY7/dynamic.png" alt="" />
           <div className="inner">
             <h1 id="header">Dynamic</h1>
             <h2>Enter url:</h2>
@@ -319,6 +320,7 @@ class SessionProgress extends Component {
     if (session.status === 1)
       return (
         <div className="outer">
+          <img id="small-logo" src="https://i.postimg.cc/t462TbY7/dynamic.png" alt="" />
           <div className="inner">
             {/* <div>{this.props.currentActivity.name}</div> */}
             {this.getInstructions(this.props.currentActivity.status)}
