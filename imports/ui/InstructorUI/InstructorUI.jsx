@@ -124,8 +124,48 @@ class InstructorUI extends Component {
               ]
             },
             {
-              type: ActivityEnums.quiz.FREE_RESPONSE,
+              type: ActivityEnums.quiz.MULTI_CHOICE,
               prompt: 'This is question number 2',
+              options: [
+                {
+                  text: 'Option 1',
+                  id: Random.id(),
+                  countIndv: 0,
+                  countIndvTeam: 0,
+                  correct: false
+                },
+                {
+                  text: 'Correct',
+                  id: Random.id(),
+                  countIndv: 0,
+                  countTeam: 0,
+                  correct: true
+                },
+                {
+                  text: 'Option 3',
+                  id: Random.id(),
+                  countIndv: 0,
+                  countTeam: 0,
+                  correct: false
+                },
+                {
+                  text: 'Option 4',
+                  id: Random.id(),
+                  countIndv: 0,
+                  countTeam: 0,
+                  correct: false
+                }
+              ]
+            },
+            {
+              type: ActivityEnums.quiz.FREE_RESPONSE,
+              prompt: 'This is question number 3',
+              answer: 'This is the answer',
+              studentAswers: []
+            },
+            {
+              type: ActivityEnums.quiz.FREE_RESPONSE,
+              prompt: 'This is question number 4',
               answer: 'This is the answer',
               studentAswers: []
             }

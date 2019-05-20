@@ -17,6 +17,7 @@ import TeamShapes from './Components/TeamShapes';
 import StatsPage from './Components/StatsPage';
 import Loading from '../Components/Loading/Loading';
 import Quizzes from '../../api/quizzes';
+import { Random } from 'meteor/random';
 
 class SessionProgress extends Component {
   static propTypes = {
@@ -152,7 +153,12 @@ class SessionProgress extends Component {
           </div><br></br><br></br> */}
           <div id="font-size">Individual Response</div>
           <div className="text-box-bigscreen">
-            <h2>
+            {this.props.quiz.questions.map((q, index) => (
+              <h2 key={Random.id()}>
+                <div id="font-size">{`Q${index + 1}: ${q.prompt}`}</div>
+              </h2>
+            ))}
+            {/* <h2>
               Q1: <div id="font-size">{quiz.prompt}</div>
             </h2>
             <h2>
@@ -163,7 +169,7 @@ class SessionProgress extends Component {
             </h2>
             <h2>
               Q4: <div id="font-size">{quiz.prompt}</div>
-            </h2>
+            </h2> */}
           </div>
           <br />
           <div id="font-size">Instructions</div>
@@ -200,7 +206,12 @@ class SessionProgress extends Component {
           </div><br></br><br></br> */}
           <div id="font-size">Team Response</div>
           <div className="text-box-bigscreen">
-            <h2>
+            {this.props.quiz.questions.map((q, index) => (
+              <h2 key={Random.id()}>
+                <div id="font-size">{`Q${index + 1}: ${q.prompt}`}</div>
+              </h2>
+            ))}
+            {/* <h2>
               Q1: <div id="font-size">{quiz.prompt}</div>
             </h2>
             <h2>
@@ -211,7 +222,7 @@ class SessionProgress extends Component {
             </h2>
             <h2>
               Q4: <div id="font-size">{quiz.prompt}</div>
-            </h2>
+            </h2> */}
           </div>
           <br />
           <div id="font-size">Instructions</div>
