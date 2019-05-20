@@ -24,6 +24,10 @@ class SessionProgress extends Component {
     //code: PropTypes.string.isRequired,
   };
 
+  state = {
+    index: 0
+  };
+
   mapActivities() {
     const { activities } = this.props;
 
@@ -34,6 +38,14 @@ class SessionProgress extends Component {
       .map(act => {
         return <li key={act._id}>{act.name}</li>;
       });
+  }
+
+  next() {
+    if (this.state.index === this.props.quiz.questions.length - 1) return;
+
+    this.setState(prevState => ({
+      index: prevState.index + 1
+    }));
   }
 
   edit() {
@@ -236,8 +248,32 @@ class SessionProgress extends Component {
 
     // activity completed
     if (status === 4) {
-      return <StatsPage quiz={this.props.quiz} session_id={this.props.session._id} activity_id={currentActivity._id} />;
+      return (
+        <StatsPage
+          index={this.state.index}
+          quiz={this.props.quiz}
+          session_id={this.props.session._id}
+          activity_id={currentActivity._id}
+        />
+      );
     }
+  }
+
+  getButton() {
+    if (!this.props.quiz) return '';
+
+    if (this.props.currentActivity.status === 4 && this.state.index < this.props.quiz.questions.length - 1)
+      return (
+        <button className="bigscreen-button" id="here" onClick={() => this.next()}>
+          Next question
+        </button>
+      );
+    else
+      return (
+        <button className="bigscreen-button" id="here" onClick={() => this.advanceActivity(this.props.currentActivity)}>
+          Skip to activity
+        </button>
+      );
   }
 
   renderInfo() {
@@ -288,13 +324,7 @@ class SessionProgress extends Component {
             {this.getInstructions(this.props.currentActivity.status)}
             {/* <div>Session code: {this.props.match.params.code}</div> */}
             {/* TODO maybe add session code an url */}
-            <button
-              className="bigscreen-button"
-              id="here"
-              onClick={() => this.advanceActivity(this.props.currentActivity)}
-            >
-              Skip to activity
-            </button>
+            {this.getButton()}
           </div>
         </div>
       );

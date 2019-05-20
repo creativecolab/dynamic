@@ -239,7 +239,8 @@ export default class StatsPage extends Component {
           <h1>Answers</h1>
           {this.props.quiz.questions.map((q, index) => (
             <h2 key={Random.id()}>
-              <div id="font-size">{`Q${index + 1}: ${getAnswer(q)}`}</div>
+              <div>{q.prompt}</div>
+              <div id="font-size">{getAnswer(q)}</div>
             </h2>
           ))}
         </div>
