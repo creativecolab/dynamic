@@ -138,11 +138,10 @@ class SessionProgress extends Component {
     // input phase
     if (status === 1) {
       return (
-        <div className="outer">
-          <div className="inner">
-            {this.renderClock()}
-            <h1>Round {this.props.session.round}: Quiz</h1>
-            {/* <div id="font-size">Round {this.props.session.round}: 2 Truths and 1 Lie</div>
+        <div>
+          {this.renderClock()}
+          <h1>Round {this.props.session.round}: Quiz</h1>
+          {/* <div id="font-size">Round {this.props.session.round}: 2 Truths and 1 Lie</div>
           <br></br>
           <h2>Instructions:</h2>
           <div className="text-box-bigscreen">
@@ -151,21 +150,21 @@ class SessionProgress extends Component {
           <div className="text-box-bigscreen">
             <h2>The goal is to make it hard for people to guess which is the lie.</h2>
           </div><br></br><br></br> */}
-            <div id="font-size">Individual Response</div>
-            <br />
-            <div className="text-box-bigscreen">
-              <h2>
-                Question 1: <h2 id="font-size">{quiz.prompt}</h2>
-              </h2>
-              <br />
-              <h2>Question 2: {quiz.prompt}</h2>
-            </div>
-            <br />
-            <h2 id="bold-font">Instructions:</h2>
-            <div className="text-box-bigscreen">
-              <h2 id="font-size">Read through the question and select the correct answer or respond accordingly.</h2>
-            </div>
+          <div id="font-size">Individual Response</div>
+          <div className="text-box-bigscreen">
+            <h2>
+              Q1: <div id="font-size">{quiz.prompt}</div>
+            </h2>
+            <h2>
+              Q2: <div id="font-size">{quiz.prompt}</div>
+            </h2>
           </div>
+          <br />
+          <div id="font-size">Instructions</div>
+          <div className="text-box-bigscreen">
+            <h2 id="font-size">Read through the question and select the correct answer or respond accordingly.</h2>
+          </div>
+          <br />
         </div>
       );
     }
@@ -178,11 +177,10 @@ class SessionProgress extends Component {
     // group discussion, 2T1L!
     if (status === 3) {
       return (
-        <div className="outer">
-          <div className="inner">
-            {this.renderClock()}
-            <h1>Round {this.props.session.round}: Quiz</h1>
-            {/* <div id="font-size">1 Person is in the hotseat</div>
+        <div>
+          {this.renderClock()}
+          <h1>Round {this.props.session.round}: Quiz</h1>
+          {/* <div id="font-size">1 Person is in the hotseat</div>
           <br></br>
           <h2>Instructions:</h2>
           <div className="text-box-bigscreen">
@@ -194,19 +192,21 @@ class SessionProgress extends Component {
           <div className="text-box-bigscreen">
             <h2>Then continue to the next person in the hotseat.</h2>
           </div><br></br><br></br> */}
-            <div id="font-size">Team Response</div>
-            <br />
-            <div className="text-box-bigscreen">
-              <h2>Question 1: {quiz.prompt}</h2>
-              <br />
-              <h2>Question 2: {quiz.prompt}</h2>
-            </div>
-            <br />
-            <h2 id="bold-font">Instructions:</h2>
-            <div className="text-box-bigscreen">
-              <h2>Read through the question and select the correct answer or respond accordingly.</h2>
-            </div>
+          <div id="font-size">Team Response</div>
+          <div className="text-box-bigscreen">
+            <h2>
+              Q1: <div id="font-size">{quiz.prompt}</div>
+            </h2>
+            <h2>
+              Q2: <div id="font-size">{quiz.prompt}</div>
+            </h2>
           </div>
+          <br />
+          <div id="font-size">Instructions</div>
+          <div className="text-box-bigscreen">
+            <h2 id="font-size">Read through the question and select the correct answer or respond accordingly.</h2>
+          </div>
+          <br />
         </div>
       );
     }
@@ -265,7 +265,11 @@ class SessionProgress extends Component {
             {this.getInstructions(this.props.currentActivity.status)}
             {/* <div>Session code: {this.props.match.params.code}</div> */}
             {/* TODO maybe add session code an url */}
-            <button className="bigscreen-button" onClick={() => this.advanceActivity(this.props.currentActivity)}>
+            <button
+              className="bigscreen-button"
+              id="here"
+              onClick={() => this.advanceActivity(this.props.currentActivity)}
+            >
               Skip to activity
             </button>
           </div>
