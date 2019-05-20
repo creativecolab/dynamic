@@ -71,6 +71,10 @@ SessionHandler.contextType = UserContext;
 export default withTracker(props => {
   // get session code from URL
   const { code } = props.match.params;
+
+  // user not logged in
+  if (!props.location.state) return {};
+
   const { pid } = props.location.state;
 
   // get session object from URL
