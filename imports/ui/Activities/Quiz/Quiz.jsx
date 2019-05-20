@@ -200,6 +200,10 @@ class Quiz extends Component {
       //   }
       // );
 
+      for (let i = 0; i < selected.length; i++) {
+        console.log(selected[i]);
+      }
+
       // insert response to db
       Responses.insert(
         {
