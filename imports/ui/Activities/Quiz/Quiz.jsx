@@ -240,7 +240,7 @@ class Quiz extends Component {
     // TODO: Set proper message/class
     if (submitted) {
       this.setState({
-        feedbackMsge: 'You already submitted (indv)!',
+        feedbackMsge: 'You already submitted!',
         feedbackClass: ''
       });
     }
