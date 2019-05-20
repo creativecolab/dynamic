@@ -259,17 +259,15 @@ class InstructorUI extends Component {
 
   render() {
     return (
-      <div>
+      <div className="outer">
         {/* <div class="header"><img id="dynamic-logo-big" src="./dynamic_logo.png" alt=""/> */}
-        <div id="inner">
+        <div className="inner">
           <h1>Manage Sessions</h1>
           <br />
           <form id="session-form" onSubmit={evt => this.handleNewSession(evt)}>
-            <div id="session-code" className="field-container">
-              <label className="field-title" htmlFor="session-code">
-                New session code
-              </label>
-              <div className="input-container">
+            <div id="session-code">
+              <label>New session code</label>
+              <div>
                 <input
                   className="bigscreen-input-text"
                   type="text"

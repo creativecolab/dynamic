@@ -2,7 +2,7 @@
 
 .btn {
   margin: auto;
-  min-width: 4em;
+  // min-width: 4em;
   max-width: 18em;
   padding: $button-padding;
   text-align: center;
@@ -57,9 +57,9 @@
   background: $dynamic-blue;
   padding: 0rem 0.2rem;
   line-height: inherit;
-  max-width: -webkit-fill-available;
-  max-height: -webkit-fill-available;
-  overflow: hidden;
+  // max-width: -webkit-fill-available;
+  // max-height: -webkit-fill-available;
+  overflow: auto;
   font-size: 0.8em;
   color: $dynamic-white;
 }
