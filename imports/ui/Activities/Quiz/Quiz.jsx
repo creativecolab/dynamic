@@ -15,6 +15,7 @@ import Waiting from '../../Components/Waiting/Waiting';
 import TextBoxes from '../Components/TextBoxes/TextBoxes';
 import ChooseTeammate from '../Components/ChooseTeammate/ChooseTeammate';
 import IndividualQuestions from './Components/IndividualQuestions/IndividualQuestions';
+import TeamQuestions from './Components/TeamQuestions/TeamQuestions';
 
 class Quiz extends Component {
   static propTypes = {
@@ -52,13 +53,14 @@ class Quiz extends Component {
       if (response) {
         selected = response.selected;
         submitted = true;
-        hasFooter = true;
+        hasFooter = false;
       }
 
       this.state = {
+        index: 0,
         hasFooter,
-        buttonAction: this.submitIndvInput,
-        buttonTxt: 'Submit',
+        buttonAction: this.next,
+        buttonTxt: 'Next',
         selected,
         submitted
       };
@@ -90,9 +92,12 @@ class Quiz extends Component {
         // eslint-disable-next-line prefer-destructuring
         selected = response.selected;
         submitted = true;
+        hasFooter = true;
       }
 
       this.state = {
+        index: 0,
+        hasFooter,
         buttonAction: this.submitTeamInput,
         buttonTxt: 'Submit',
         selected,
@@ -110,6 +115,7 @@ class Quiz extends Component {
       // individual input phase
       if (status === ActivityEnums.status.INPUT_INDV)
         this.setState({
+          index: 0,
           feedbackClass: '',
           feedbackMsge: '',
           buttonAction: this.submitIndvInput,
@@ -123,6 +129,7 @@ class Quiz extends Component {
       // team formation or summary phases
       else if (status === ActivityEnums.status.TEAM_FORMATION || status === ActivityEnums.status.SUMMARY)
         this.setState({
+          index: 0,
           feedbackClass: '',
           feedbackMsge: '',
           buttonAction: null,
@@ -135,11 +142,12 @@ class Quiz extends Component {
       // team input phase
       else if (status === ActivityEnums.status.INPUT_TEAM)
         this.setState({
+          index: 0,
           feedbackClass: '',
           feedbackMsge: '',
           buttonAction: this.submitTeamInput,
           buttonTxt: 'Submit',
-          hasFooter: true,
+          hasFooter: false,
           hasTimer: true,
           selected: null,
           submitted: false
@@ -159,38 +167,38 @@ class Quiz extends Component {
     // TODO: Set proper message/class
     if (submitted) {
       this.setState({
-        feedbackMsge: 'You already voted!',
+        feedbackMsge: 'You already submitted (team)!',
         feedbackClass: ''
       });
     }
 
     // ready to save response
     else if (selected) {
-      const { pid, activity_id } = this.props;
+      const { pid, activity_id, quiz } = this.props;
 
       // find quiz for this activity
-      const quiz = Quizzes.findOne({ activity_id });
+      // const { quiz } = this.props;
 
       // get option index
-      let index = -1;
+      // let index = -1;
 
-      quiz.options.map((opt, i) => {
-        if (selected === opt.id) index = i;
-      });
+      // quiz.options.map((opt, i) => {
+      //   if (selected === opt.id) index = i;
+      // });
 
-      // increment votes for this option
-      Quizzes.update(
-        quiz._id,
-        {
-          $inc: {
-            [`options.${index}.countTeam`]: 1
-          }
-        },
-        error => {
-          if (error) console.log(error);
-          else console.log('Quiz updated!');
-        }
-      );
+      // // increment votes for this option
+      // Quizzes.update(
+      //   quiz._id,
+      //   {
+      //     $inc: {
+      //       [`options.${index}.countTeam`]: 1
+      //     }
+      //   },
+      //   error => {
+      //     if (error) console.log(error);
+      //     else console.log('Quiz updated!');
+      //   }
+      // );
 
       // insert response to db
       Responses.insert(
@@ -228,45 +236,42 @@ class Quiz extends Component {
     // TODO: Set proper message/class
     if (submitted) {
       this.setState({
-        feedbackMsge: 'You already submitted!',
+        feedbackMsge: 'You already submitted (indv)!',
         feedbackClass: ''
       });
     }
 
     // ready to save response
     else if (selected) {
-      const { pid, activity_id } = this.props;
-
-      // find quiz for this activity
-      const { quiz } = this.props;
+      const { pid, activity_id, quiz } = this.props;
 
       // iterate through selected responses
       for (let i = 0; i < selected.length; i++) {
         console.log(selected[i]);
       }
 
-      return;
+      // TODO: increment counter on each quiz option
 
       // get option index
-      let index = -1;
+      // let index = -1;
 
-      quiz.options.map((opt, i) => {
-        if (selected === opt.id) index = i;
-      });
+      // quiz.options.map((opt, i) => {
+      //   if (selected === opt.id) index = i;
+      // });
 
-      // increment votes for this option
-      Quizzes.update(
-        quiz._id,
-        {
-          $inc: {
-            [`options.${index}.countIndv`]: 1
-          }
-        },
-        error => {
-          if (error) console.log(error);
-          else console.log('Quiz updated!');
-        }
-      );
+      // // increment votes for this option
+      // Quizzes.update(
+      //   quiz._id,
+      //   {
+      //     $inc: {
+      //       [`options.${index}.countIndv`]: 1
+      //     }
+      //   },
+      //   error => {
+      //     if (error) console.log(error);
+      //     else console.log('Quiz updated!');
+      //   }
+      // );
 
       // insert response to db
       Responses.insert(
@@ -308,7 +313,7 @@ class Quiz extends Component {
 
     if (submitted) {
       this.setState({
-        feedbackMsge: 'You already voted!',
+        feedbackMsge: 'You already submitted!',
         feedbackClass: '',
         hasFooter: true
       });
@@ -316,6 +321,76 @@ class Quiz extends Component {
       this.setState({
         selected: responses,
         feedbackMsge: '',
+        hasFooter: true
+      });
+    }
+  };
+
+  nextQ = () => {
+    this.setState(prevState => ({
+      index: prevState.index + 1,
+      hasFooter: false,
+      buttonAction: this.submitIndvInput,
+      buttonTxt: 'Submit'
+    }));
+  };
+
+  next = () => {
+    this.setState(prevState => ({
+      index: prevState.index + 1,
+      hasFooter: false
+    }));
+  };
+
+  readyToNext = () => {
+    this.setState(() => ({
+      hasFooter: true,
+      buttonAction: this.next,
+      buttonTxt: 'Next'
+    }));
+  };
+
+  readyToSubmitIndv = responses => {
+    const { submitted } = this.state;
+
+    if (submitted) {
+      this.setState({
+        feedbackMsge: 'You already submitted!',
+        feedbackClass: '',
+        buttonAction: this.submitIndvInput,
+        buttonTxt: 'Submit',
+        hasFooter: true
+      });
+    } else {
+      this.setState({
+        selected: responses,
+        feedbackMsge: '',
+        feedbackClass: '',
+        buttonAction: this.submitIndvInput,
+        buttonTxt: 'Submit',
+        hasFooter: true
+      });
+    }
+  };
+
+  readyToSubmitTeam = responses => {
+    const { submitted } = this.state;
+
+    if (submitted) {
+      this.setState({
+        feedbackMsge: 'You already submitted!',
+        feedbackClass: '',
+        buttonAction: this.submitTeamInput,
+        buttonTxt: 'Submit',
+        hasFooter: true
+      });
+    } else {
+      this.setState({
+        selected: responses,
+        feedbackMsge: '',
+        feedbackClass: '',
+        buttonAction: this.submitTeamInput,
+        buttonTxt: 'Submit',
         hasFooter: true
       });
     }
@@ -334,10 +409,18 @@ class Quiz extends Component {
       // no quiz found
       if (!quiz) return 'No quiz found. Please refresh the page.';
 
-      return <IndividualQuestions questions={quiz.questions} responses={selected} done={this.handleInputSelection} />;
+      return (
+        <IndividualQuestions
+          next={this.readyToNext}
+          index={this.state.index}
+          questions={quiz.questions}
+          responses={selected}
+          done={this.readyToSubmitIndv}
+        />
+      );
     }
 
-    // team formation or summary phases
+    // team formation phase
     if (status === ActivityEnums.status.TEAM_FORMATION) {
       // look for this user's team
       const team = Teams.findOne({ activity_id, 'members.pid': pid });
@@ -354,19 +437,27 @@ class Quiz extends Component {
       const { submitted, selected } = this.state;
 
       // find quiz for this activity
-      const quiz = Quizzes.findOne({ activity_id });
+      const { quiz } = this.props;
 
       // no quiz found
       if (!quiz) return 'No quiz found. Please refresh the page.';
 
+      // look for this user's team
+      const team = Teams.findOne({ activity_id, 'members.pid': pid });
+
+      // joined after team formation
+      if (!team) return 'No team, sorry.';
+
       return (
-        <InputButtons
-          prompt={quiz.prompt}
-          selected={selected}
-          options={quiz.options}
-          list
-          handleSelection={this.handleInputSelection}
-          freeze={submitted}
+        <TeamQuestions
+          team={team}
+          quiz={quiz}
+          pid={pid}
+          next={this.readyToNext}
+          index={this.state.index}
+          questions={quiz.questions}
+          responses={selected}
+          done={this.readyToSubmitTeam}
         />
       );
     }
@@ -385,10 +476,12 @@ class Quiz extends Component {
 
       // find quiz for this activity
       // console.log("The activity_id for this activity is " + activity_id);
-      const quiz = Quizzes.findOne({ activity_id });
+      const { quiz } = this.props;
 
       // no quiz found
       if (!quiz) return 'No quiz found. Please refresh the page.';
+
+      return 'Summary page';
 
       const correctAnswer = quiz.options.filter(opt => opt.correct)[0].text;
 

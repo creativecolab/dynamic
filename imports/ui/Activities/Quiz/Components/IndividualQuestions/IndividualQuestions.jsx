@@ -4,50 +4,57 @@ import InputButtons from '../../../Components/InputButtons/InputButtons';
 import ActivityEnums from '../../../../../enums/activities';
 import TextInput from '../../../../Components/TextInput/TextInput';
 import './IndividualQuestions.scss';
+import { Random } from 'meteor/random';
 
 export default class IndividualQuestions extends Component {
   static propTypes = {
     questions: PropTypes.array,
-    responses: PropTypes.array
+    responses: PropTypes.array,
+    index: PropTypes.number
   };
 
   static defaultProps = {
     questions: [],
-    responses: []
+    responses: [],
+    index: 0
   };
 
   state = {
-    index: 0,
     responses: this.props.responses || this.props.questions.map(() => '')
   };
 
   handleMC = selected => {
     // this.props.done(selected);
-    const { index, responses } = this.state;
+    const { responses } = this.state;
+    const { index, questions, done, next } = this.props;
 
     // update response
     responses[index] = selected;
 
-    this.setState(prevState => ({
-      index: prevState.index + 1
-    }));
+    // this.setState(prevState => ({
+    //   index: prevState.index + 1
+    // }));
+    if (questions.length === index + 1) done(responses);
+    else next();
   };
 
   handleFR = evt => {
-    const { index, responses } = this.state;
+    const { responses } = this.state;
+    const { index, questions, done, next } = this.props;
 
-    responses[index] = evt.target.value;
+    responses[index] = { text: evt.target.value, id: Random.id() };
 
     this.setState({
       responses
     });
 
-    this.props.done(responses);
+    if (questions.length === index + 1) done(responses);
+    else next();
   };
 
   render() {
-    const { questions } = this.props;
-    const { index, responses } = this.state;
+    const { index, questions } = this.props;
+    const { responses } = this.state;
 
     if (!questions) return 'No questions!';
 
@@ -77,7 +84,7 @@ export default class IndividualQuestions extends Component {
       <div className="fr-main">
         <TextInput
           name="fr-q"
-          value={selected}
+          value={selected.text || ''}
           label={question.prompt}
           onChange={this.handleFR}
           placeholder="Your answer"

@@ -6,12 +6,15 @@ import './Tags.scss';
 export default class Tags extends Component {
   static propTypes = {
     label: PropTypes.string,
+    className: PropTypes.string,
     options: PropTypes.array.isRequired,
-    onSelection: PropTypes.func.isRequired
+    onSelection: PropTypes.func
   };
 
   static defaultProps = {
-    label: ''
+    label: '',
+    className: '',
+    onSelection: () => { }
   };
 
   constructor(props) {
@@ -30,12 +33,12 @@ export default class Tags extends Component {
   };
 
   render() {
-    const { label } = this.props;
+    const { label, className } = this.props;
 
     return (
       <>
         {label}
-        <div className="tags-scroll">
+        <div className={`tags-scroll ${className}`}>
           <div className="tags-container">
             {this.props.options.map(opt => {
               return (

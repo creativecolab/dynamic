@@ -57,9 +57,9 @@
   background: $dynamic-blue;
   padding: 0rem 0.2rem;
   line-height: inherit;
-  max-width: -webkit-fill-available;
-  max-height: -webkit-fill-available;
-  overflow: hidden;
+  // max-width: -webkit-fill-available;
+  // max-height: -webkit-fill-available;
+  overflow: auto;
   font-size: 0.8em;
   color: $dynamic-white;
 }
