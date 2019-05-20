@@ -42,7 +42,7 @@ export default class InputButtons extends Component {
 
     handleSelection(id);
 
-    if (freeze) return;
+    //if (freeze) return;
 
     this.setState({
       selected: id
@@ -75,7 +75,7 @@ export default class InputButtons extends Component {
           onClick={() => this.handleSelection(opt.id)}
           active={opt.id === selected}
           badge={opt.badge}
-          disabled={freeze}
+          //disabled={freeze}
           order={this.getLetter(list, index)}
           key={opt.id}
         >

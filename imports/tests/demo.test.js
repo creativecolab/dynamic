@@ -1,0 +1,1 @@
+console.log("This test should only be run with meteor test is called.");
