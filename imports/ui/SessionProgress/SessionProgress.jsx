@@ -63,7 +63,7 @@ class SessionProgress extends Component {
       }
     });
 
-    //track the session that a session had started
+    //track the session bv a session had started
     const new_log = Logs.insert({
       log_type: 'Session Started',
       code: this.props.match.params.code,
@@ -320,7 +320,6 @@ class SessionProgress extends Component {
     if (session.status === 1)
       return (
         <div className="outer">
-          <img id="small-logo" src="https://i.postimg.cc/t462TbY7/dynamic.png" alt="" />
           <div className="inner">
             {/* <div>{this.props.currentActivity.name}</div> */}
             {this.getInstructions(this.props.currentActivity.status)}
@@ -335,11 +334,7 @@ class SessionProgress extends Component {
   render() {
     if (!this.props.session) return <Loading />;
 
-    return (
-      <div>
-        <div id="inner">{this.renderInfo()}</div>
-      </div>
-    );
+    return <div>{this.renderInfo()}</div>;
   }
 }
 

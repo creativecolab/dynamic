@@ -166,10 +166,8 @@ export default class StatsPage extends Component {
       if (index === this.props.index) {
         if (question.type === ActivityEnums.quiz.MULTI_CHOICE) {
           question.options.map((opt, i) => {
-            if (opt.correct)
-              data.push([this.getLetter(i), opt.countIndv, opt.countIndvTeam])
-            else
-              data.push([this.getLetter(i), opt.countIndv, opt.countTeam])
+            if (opt.correct) data.push([this.getLetter(i), opt.countIndv, opt.countIndvTeam]);
+            else data.push([this.getLetter(i), opt.countIndv, opt.countTeam]);
           });
         }
       }
@@ -190,7 +188,8 @@ export default class StatsPage extends Component {
     if (!quiz) return <Loading />;
 
     const data = this.getData(quiz);
-    var currentType = ActivityEnums.quiz.MULTI_CHOICE;
+    let currentType = ActivityEnums.quiz.MULTI_CHOICE;
+
     quiz.questions.map((question, index) => {
       if (index === this.props.index) {
         currentType = question.type;
@@ -232,7 +231,7 @@ export default class StatsPage extends Component {
             <div className="text-box-bigscreen-shrink">
               <h2>{this.getUniqueTruths()}</h2>
             </div> */}
-        {{ data } && (currentType === ActivityEnums.quiz.MULTI_CHOICE) && (
+        {{ data } && currentType === ActivityEnums.quiz.MULTI_CHOICE && (
           <Chart
             chartType="ColumnChart"
             data={data}
@@ -254,14 +253,15 @@ export default class StatsPage extends Component {
         )}
         <div>
           <h1>Answer</h1>
-          {this.props.quiz.questions.map((q, index) => (
-            (index === this.props.index) && (
-              <h2 key={Random.id()}>
-                <div>{q.prompt}</div>
-                <div id="font-size">{getAnswer(q)}</div>
-              </h2>
-            )
-          ))}
+          {this.props.quiz.questions.map(
+            (q, index) =>
+              index === this.props.index && (
+                <h2 key={Random.id()}>
+                  <div>{q.prompt}</div>
+                  <div id="font-size">{getAnswer(q)}</div>
+                </h2>
+              )
+          )}
         </div>
         <TextBox label="Fastest Team:">{this.getFastestTeams()}</TextBox>
       </div>
