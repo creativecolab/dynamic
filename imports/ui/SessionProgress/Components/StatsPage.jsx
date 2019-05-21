@@ -261,9 +261,10 @@ export default class StatsPage extends Component {
             <>
               <div className="needshr" key={Random.id()}>
                 <h2>{`Question ${index + 1}: ${q.prompt}`}</h2>
-                <h3>
-                  <strong>Correct answer:</strong> {getAnswer(q)}
-                </h3>
+                <div id="box-answer">
+                  <strong> Correct answer: </strong>
+                  {getAnswer(q)}
+                </div>
               </div>
               {q.type === ActivityEnums.quiz.MULTI_CHOICE && (
                 <div key={Random.id()} className="stats-graph needshr">
