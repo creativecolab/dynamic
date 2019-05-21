@@ -12,6 +12,8 @@ import Users from '../../../../../api/users';
 
 export default class TeamQuestions extends Component {
   static propTypes = {
+    quiz: PropTypes.object,
+    pid: PropTypes.string,
     questions: PropTypes.array,
     responses: PropTypes.array,
     index: PropTypes.number
@@ -28,7 +30,7 @@ export default class TeamQuestions extends Component {
     teammates: this.props.team.members.map(m => m.pid)
   };
 
-  handleQ = selected => {
+  handleMC = selected => {
     // this.props.done(selected);
     const { responses } = this.state;
     const { index, questions, done, next } = this.props;
@@ -78,13 +80,19 @@ export default class TeamQuestions extends Component {
     return option;
   }
 
-  getOptions() {
+  // get the text from a quiz option
+  getTextFromOpt(id, options) {
+    return options.filter(opt => opt.id === id)[0].text;
+  }
+
+  // get the options for team FR with badges
+  getFROptions() {
     const { teammates } = this.state;
     const { quiz, index } = this.props;
 
-    // get pid
-    const responses = teammates
-      .map(pid => Responses.findOne({ pid, quiz_id: quiz._id }))
+    // get the responses from the indiv round
+    const responses = teammates.map(pid => Responses.findOne(
+      { pid, quiz_id: quiz._id }))
       .filter(res => res != null)
       .filter(res => res.selected[index].text !== '')
       .map(res => ({
@@ -94,6 +102,35 @@ export default class TeamQuestions extends Component {
       }));
 
     return responses;
+  }
+
+  // get the options for team MC with badges
+  getMCOptions() {
+    const { teammates } = this.state;
+    const { quiz, questions, index } = this.props;
+
+    // get the responses from the indiv round
+    const responses = teammates.map(pid => Responses.findOne(
+      { pid, quiz_id: quiz._id }))
+      .filter(res => res != null)
+      .filter(res => res.selected[index].text !== '')
+      .map(res => ({
+        id: res.selected[index],
+        badge: this.getNameFromPid(res.pid),
+        text: this.getTextFromOpt(res.selected[index], questions[index].options),
+      }));
+
+    // build the options with the badges attached
+    const options = questions[index].options.map(opt => ({
+      id: opt.id,
+      badge: responses.filter(response => response.id === opt.id)
+        .map(teammate => teammate.badge).join(),
+      text: opt.text,
+    }));
+
+    console.log(options);
+
+    return options;
   }
 
   render() {
@@ -117,10 +154,10 @@ export default class TeamQuestions extends Component {
       return (
         <InputButtons
           prompt={question.prompt}
-          handleSelection={this.handleQ}
+          handleSelection={this.handleMC}
           list
           selected={selected}
-          options={question.options} //make sure you pass in badge
+          options={this.getMCOptions()}
         />
       );
     }
@@ -131,7 +168,7 @@ export default class TeamQuestions extends Component {
         handleSelection={this.handleFR}
         list
         selected={selected.id}
-        options={this.getOptions()}
+        options={this.getFROptions()}
       />
     );
   }
