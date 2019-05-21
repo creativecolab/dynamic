@@ -551,9 +551,14 @@ class Quiz extends Component {
 
     if (!quiz) return 'Waiting... QUIZ';
 
-    const { progress, duration, sessionLength } = this.props;
+    const { progress, duration, sessionLength, status } = this.props;
     const { statusStartTime } = activity;
     const { index } = this.state;
+
+    let toggle = 1;
+    if (status === ActivityEnums.status.SUMMARY || status === ActivityEnums.status.TEAM_FORMATION) {
+      toggle = 0;
+    }
 
     const totalQuestions = quiz.questions.length;
 
@@ -564,7 +569,8 @@ class Quiz extends Component {
         sessionLength={sessionLength}
         clockDuration={duration}
         clockStartTime={statusStartTime}
-        questionNumber={index}
+        questionToggle={toggle}
+        questionNumber={index + 1}
         questionsLength={totalQuestions}
         {...this.state}
       >

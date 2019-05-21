@@ -128,7 +128,7 @@ export default class TeamQuestions extends Component {
       text: opt.text,
     }));
 
-    console.log(options);
+    // console.log(options);
 
     return options;
   }

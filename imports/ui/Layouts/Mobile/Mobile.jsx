@@ -45,6 +45,7 @@ export default class Mobile extends Component {
     feedbackMsge: PropTypes.string,
     feedbackClass: PropTypes.string,
     children: PropTypes.node,
+    questionToggle: PropTypes.number,
     questionNumber: PropTypes.number,
     questionsLength: PropTypes.number
   };
@@ -80,7 +81,7 @@ export default class Mobile extends Component {
     const { clockStartTime, clockDuration } = this.props;
     const { hasFooter, hasNavbar, hasTimer } = this.props;
     const { children } = this.props;
-    const { questionNumber, questionsLength } = this.props; // keeps track of what question we're on if this is a quiz
+    const { questionToggle, questionNumber, questionsLength } = this.props; // keeps track of what question we're on if this is a quiz
 
     const { loading } = this.state;
 
@@ -93,14 +94,12 @@ export default class Mobile extends Component {
             <div className="progress-status">
               <div className="activity-name">{activityName.toUpperCase()}</div>
               <div className="session-progress">
-                {
-                  (activityName === 'Quiz') &&
+                {(questionToggle === 1) &&
                   <div>
                     Question {questionNumber} out of {questionsLength}
                   </div>
                 }
-                {
-                  (activityName != 'Quiz') &&
+                {(questionToggle === 0) &&
                   <div>
                     Activity {sessionStatus} out of {sessionLength}
                   </div>
