@@ -120,7 +120,7 @@ export default class TeamQuestions extends Component {
           handleSelection={this.handleQ}
           list
           selected={selected}
-          options={question.options}
+          options={question.options} //make sure you pass in badge
         />
       );
     }

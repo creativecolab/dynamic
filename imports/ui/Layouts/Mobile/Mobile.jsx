@@ -7,6 +7,7 @@ import Button from '../../Components/Button/Button';
 
 import './Mobile.scss';
 import MobileTimer from '../../Components/MobileTimer/MobileTimer';
+import { access } from 'fs';
 
 const Footer = posed.div({
   hidden: {
@@ -43,7 +44,9 @@ export default class Mobile extends Component {
     clockStartTime: PropTypes.number,
     feedbackMsge: PropTypes.string,
     feedbackClass: PropTypes.string,
-    children: PropTypes.node
+    children: PropTypes.node,
+    questionNumber: PropTypes.number,
+    questionsLength: PropTypes.number
   };
 
   static defaultProps = {
@@ -77,8 +80,11 @@ export default class Mobile extends Component {
     const { clockStartTime, clockDuration } = this.props;
     const { hasFooter, hasNavbar, hasTimer } = this.props;
     const { children } = this.props;
+    const { questionNumber, questionsLength } = this.props; // keeps track of what question we're on if this is a quiz
 
     const { loading } = this.state;
+
+
 
     return (
       <div className="main">
@@ -87,7 +93,18 @@ export default class Mobile extends Component {
             <div className="progress-status">
               <div className="activity-name">{activityName.toUpperCase()}</div>
               <div className="session-progress">
-                Activity {sessionStatus} out of {sessionLength}
+                {
+                  (activityName === 'Quiz') &&
+                  <div>
+                    Question {questionNumber} out of {questionsLength}
+                  </div>
+                }
+                {
+                  (activityName != 'Quiz') &&
+                  <div>
+                    Activity {sessionStatus} out of {sessionLength}
+                  </div>
+                }
               </div>
             </div>
             {hasTimer && <MobileTimer startTime={clockStartTime} duration={clockDuration} />}

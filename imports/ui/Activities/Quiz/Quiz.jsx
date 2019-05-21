@@ -546,9 +546,16 @@ class Quiz extends Component {
     const { activity } = this.props;
 
     if (!activity) return 'Waiting... QUIZ';
+    const { quiz } = this.props;
+
+
+    if (!quiz) return 'Waiting... QUIZ';
 
     const { progress, duration, sessionLength } = this.props;
     const { statusStartTime } = activity;
+    const { index } = this.state;
+
+    const totalQuestions = quiz.questions.length;
 
     return (
       <Mobile
@@ -557,6 +564,8 @@ class Quiz extends Component {
         sessionLength={sessionLength}
         clockDuration={duration}
         clockStartTime={statusStartTime}
+        questionNumber={index}
+        questionsLength={totalQuestions}
         {...this.state}
       >
         {this.renderContent(this.props)}
