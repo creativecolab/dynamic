@@ -158,6 +158,8 @@ class Quiz extends Component {
 
   // (id, options) -> text
   getTextFromOpt(id, options) {
+    if (id === 'No response') return id;
+
     return options.filter(opt => opt.id === id)[0].text;
   }
 
@@ -508,39 +510,39 @@ class Quiz extends Component {
       const boxes = [
         {
           label: questions[0].prompt,
-          badge: 'your response',
-          text: this.getTextFromOpt(responseIndv.selected[0], questions[0].options)
+          badge: 'Your response',
+          text: this.getTextFromOpt(indvAnswer[0], questions[0].options)
         },
         {
-          badge: 'team response',
-          text: this.getTextFromOpt(responseTeam.selected[0], questions[0].options)
+          badge: 'Team response',
+          text: this.getTextFromOpt(teamAnswer[0], questions[0].options)
         },
         {
           label: questions[1].prompt,
-          badge: 'your response',
-          text: this.getTextFromOpt(responseIndv.selected[1], questions[1].options)
+          badge: 'Your response',
+          text: this.getTextFromOpt(indvAnswer[1], questions[1].options)
         },
         {
-          badge: 'team response',
-          text: this.getTextFromOpt(responseTeam.selected[1], questions[1].options)
+          badge: 'Team response',
+          text: this.getTextFromOpt(teamAnswer[1], questions[1].options)
         },
         {
-          badge: 'your response',
+          badge: 'Your response',
           label: questions[2].prompt,
-          text: responseIndv.selected[2].text
+          text: indvAnswer[2].text || 'No response'
         },
         {
-          badge: 'team response',
-          text: responseTeam.selected[2].text
+          badge: 'Team response',
+          text: teamAnswer[2].text || 'No response'
         },
         {
           label: questions[3].prompt,
-          badge: 'your response',
-          text: responseIndv.selected[3].text
+          badge: 'Your response',
+          text: indvAnswer[3].text || 'No response'
         },
         {
-          badge: 'team response',
-          text: responseIndv.selected[3].text
+          badge: 'Team response',
+          text: indvAnswer[3].text || 'No response'
         }
       ];
 
@@ -564,6 +566,7 @@ class Quiz extends Component {
     const { index } = this.state;
 
     let toggle = 1;
+
     if (status === ActivityEnums.status.SUMMARY || status === ActivityEnums.status.TEAM_FORMATION) {
       toggle = 0;
     }

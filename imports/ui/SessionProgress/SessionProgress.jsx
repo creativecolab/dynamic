@@ -270,6 +270,7 @@ class SessionProgress extends Component {
           quiz={this.props.quiz}
           session_id={this.props.session._id}
           activity_id={currentActivity._id}
+          end={() => this.advanceActivity(this.props.currentActivity)}
         />
       );
     }

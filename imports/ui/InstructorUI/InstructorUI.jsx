@@ -92,37 +92,51 @@ class InstructorUI extends Component {
           questions: [
             {
               type: ActivityEnums.quiz.MULTI_CHOICE,
-              prompt: 'A visual language is ______',
+              prompt: 'A visual language is __________.',
               options: [
                 {
-                  text: 'A one-off design solution',
+                  text: 'a one-off design solution',
                   id: Random.id(),
                   countIndv: 0,
                   countIndvTeam: 0,
                   correct: false
                 },
                 {
-                  text: 'A unified design system',
+                  text: 'a unified design system',
                   id: Random.id(),
                   countIndv: 0,
                   countTeam: 0,
                   correct: true
                 },
                 {
-                  text: 'A digital product',
+                  text: 'a digital product',
                   id: Random.id(),
                   countIndv: 0,
                   countTeam: 0,
                   correct: false
                 },
                 {
-                  text: 'A set of individual atoms and static rules',
+                  text: 'a set of individual atoms and static rules',
                   id: Random.id(),
                   countIndv: 0,
                   countTeam: 0,
                   correct: false
                 }
               ]
+            },
+            {
+              type: ActivityEnums.quiz.FREE_RESPONSE,
+              prompt: 'According to Saarinen, why did Airbnb create their design language system?',
+              answer: 'too few constraints; multiple stakeholders; many platforms; product exists as a continuum',
+              studentAswers: []
+            },
+            {
+              type: ActivityEnums.quiz.FREE_RESPONSE,
+              prompt:
+                'What does Saarinen mean when he says the unified design language should be an evolving ecosystem?',
+              answer:
+                'The components are defined by properties, can co-exist with others, and can evolve independently',
+              studentAswers: []
             },
             {
               type: ActivityEnums.quiz.MULTI_CHOICE,
@@ -157,20 +171,6 @@ class InstructorUI extends Component {
                   correct: false
                 }
               ]
-            },
-            {
-              type: ActivityEnums.quiz.FREE_RESPONSE,
-              prompt: 'According to Saarinen, why did Airbnb create their design language system?',
-              answer: 'too few constraints; multiple stakeholders; many platforms; product exists as a continuum',
-              studentAswers: []
-            },
-            {
-              type: ActivityEnums.quiz.FREE_RESPONSE,
-              prompt:
-                'What does Saarinen mean when he says the unified design language should be an evolving ecosystem?',
-              answer:
-                'The components are defined by properties, can co-exist with others, and can evolve independently',
-              studentAswers: []
             }
           ]
         });

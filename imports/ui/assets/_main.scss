@@ -22,6 +22,11 @@ $button-height: 2em;
 $button-padding: 0.4em;
 $button-border-radius: 5px;
 
+*, *::before, *::after {
+  -webkit-box-sizing: border-box;
+  box-sizing: content-box;
+}
+
 // .title-dynamic {
 //   text-align: center;
 // }

@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 // import Slider from '@material-ui/lab/Slider';
-import { Slider, Icon } from 'antd';
-import 'antd/dist/antd.css';
+import { Slider, Icon } from 'antd/lib';
+import 'antd/lib/slider/style/css';
+import 'antd/lib/icon/style/css';
+// import 'antd/dist/antd.css';
 
 // import Typography from '@material-ui/core/Typography';
 

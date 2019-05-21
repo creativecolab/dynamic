@@ -322,7 +322,7 @@ export default class StatsPage extends Component {
         </div>
         {/* <TextBox label="Fastest Team:">{this.getFastestTeams()}</TextBox> */}
         <br />
-        <button className="bigscreen-button" onClick={() => this.props.skip()}>
+        <button className="bigscreen-button" onClick={() => this.props.end()}>
           End Activity
         </button>
       </div>
