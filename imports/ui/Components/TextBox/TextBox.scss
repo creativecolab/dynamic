@@ -4,6 +4,7 @@
   min-width: 4em;
   max-width: 18em;
   margin: 0 auto 1em;
+  position: relative;
 
   .textbox-label {
     text-align: left;
@@ -34,8 +35,8 @@
 
 .textbox-badge {
   position: absolute;
-  top: 3.4rem;
-  right: 0rem;
+  bottom: -0.6rem;
+  right: -0.4rem;
   border-radius: $button-border-radius;
   background: $dynamic-blue;
   padding: 0rem 0.2rem;
