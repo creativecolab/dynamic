@@ -91,8 +91,8 @@ export default class TeamQuestions extends Component {
     const { quiz, index } = this.props;
 
     // get the responses from the indiv round
-    const responses = teammates.map(pid => Responses.findOne(
-      { pid, quiz_id: quiz._id }))
+    const responses = teammates
+      .map(pid => Responses.findOne({ pid, quiz_id: quiz._id }))
       .filter(res => res != null)
       .filter(res => res.selected[index].text !== '')
       .map(res => ({
@@ -110,22 +110,24 @@ export default class TeamQuestions extends Component {
     const { quiz, questions, index } = this.props;
 
     // get the responses from the indiv round
-    const responses = teammates.map(pid => Responses.findOne(
-      { pid, quiz_id: quiz._id }))
+    const responses = teammates
+      .map(pid => Responses.findOne({ pid, quiz_id: quiz._id }))
       .filter(res => res != null)
       .filter(res => res.selected[index].text !== '')
       .map(res => ({
         id: res.selected[index],
         badge: this.getNameFromPid(res.pid),
-        text: this.getTextFromOpt(res.selected[index], questions[index].options),
+        text: this.getTextFromOpt(res.selected[index], questions[index].options)
       }));
 
     // build the options with the badges attached
     const options = questions[index].options.map(opt => ({
       id: opt.id,
-      badge: responses.filter(response => response.id === opt.id)
-        .map(teammate => teammate.badge).join(),
-      text: opt.text,
+      badge: responses
+        .filter(response => response.id === opt.id)
+        .map(teammate => teammate.badge)
+        .join(', '),
+      text: opt.text
     }));
 
     // console.log(options);

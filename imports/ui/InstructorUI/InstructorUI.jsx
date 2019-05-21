@@ -92,7 +92,7 @@ class InstructorUI extends Component {
           questions: [
             {
               type: ActivityEnums.quiz.MULTI_CHOICE,
-              prompt: 'A visual language is:',
+              prompt: 'A visual language is ______',
               options: [
                 {
                   text: 'A one-off design solution',

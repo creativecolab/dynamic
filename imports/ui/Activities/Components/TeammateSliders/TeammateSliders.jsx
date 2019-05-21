@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Slider from '@material-ui/lab/Slider';
-import Typography from '@material-ui/core/Typography';
+// import Slider from '@material-ui/lab/Slider';
+import { Slider, Icon } from 'antd';
+import 'antd/dist/antd.css';
+
+// import Typography from '@material-ui/core/Typography';
 
 import Teams from '../../../../api/teams';
 import Users from '../../../../api/users';
@@ -73,7 +76,7 @@ export default class TeammateSliders extends Component {
     return Users.findOne({ pid }).name;
   }
 
-  handleChange = (event, value, index) => {
+  handleChange = (value, index) => {
     const { teammates } = this.state;
 
     teammates[index].value = value;
@@ -86,7 +89,7 @@ export default class TeammateSliders extends Component {
   getLabel(value) {
     switch (value) {
       case 0:
-        return 'Extremely unlikely';
+        return 'Nope';
       case 1:
         return 'Unlikely';
       case 2:
@@ -98,25 +101,57 @@ export default class TeammateSliders extends Component {
       case 5:
         return 'Likely';
       case 6:
-        return 'Extremely likely';
+        return 'Yeah!';
     }
   }
 
   renderOptions() {
     const { teammates } = this.state; //team.members.filter(member => member.pid !== pid);
 
+    const marks = {
+      //0: this.getLabel(0),
+      // 6: this.getLabel(6)
+      0: {
+        style: {
+          color: '#F05D5E'
+          // 'font-size': '18px'
+        },
+        label: <strong>{this.getLabel(0)}</strong>
+      },
+      1: {},
+      2: {},
+      3: this.getLabel(3),
+      4: {},
+      5: {},
+      6: {
+        style: {
+          color: '#00DD90'
+          // 'font-size': '18px'
+        },
+        label: <strong>{this.getLabel(6)}</strong>
+      }
+    };
+
     return teammates.map((mate, index) => (
       <div key={mate.pid}>
         <div className="slider-label">
-          <strong>{this.getName(mate.pid)}</strong>: {this.getLabel(teammates[index].value)}
+          <strong>{this.getName(mate.pid)}</strong>
         </div>
-        <Slider
-          value={teammates[index].value}
-          min={0}
-          max={6}
-          step={1}
-          onChange={(event, value) => this.handleChange(event, value, index)}
-        />
+        <div className="icon-wrapper">
+          <Icon type="frown-o" />
+          <Slider
+            value={teammates[index].value}
+            marks={marks}
+            // tooltipVisible
+            tipFormatter={this.getLabel}
+            defaultValue={30}
+            min={0}
+            max={6}
+            step={1}
+            onChange={value => this.handleChange(value, index)}
+          />
+          <Icon type="smile-o" />
+        </div>
       </div>
     ));
   }
