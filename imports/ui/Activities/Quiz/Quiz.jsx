@@ -508,30 +508,38 @@ class Quiz extends Component {
       const boxes = [
         {
           label: questions[0].prompt,
+          badge: 'your response',
           text: this.getTextFromOpt(responseIndv.selected[0], questions[0].options)
         },
         {
+          badge: 'team response',
           text: this.getTextFromOpt(responseTeam.selected[0], questions[0].options)
         },
         {
           label: questions[1].prompt,
+          badge: 'your response',
           text: this.getTextFromOpt(responseIndv.selected[1], questions[1].options)
         },
         {
+          badge: 'team response',
           text: this.getTextFromOpt(responseTeam.selected[1], questions[1].options)
         },
         {
+          badge: 'your response',
           label: questions[2].prompt,
           text: responseIndv.selected[2].text
         },
         {
+          badge: 'team response',
           text: responseTeam.selected[2].text
         },
         {
           label: questions[3].prompt,
+          badge: 'your response',
           text: responseIndv.selected[3].text
         },
         {
+          badge: 'team response',
           text: responseIndv.selected[3].text
         }
       ];
