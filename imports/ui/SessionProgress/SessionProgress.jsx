@@ -340,6 +340,17 @@ class SessionProgress extends Component {
     // no activities
     if (!this.props.currentActivity) return 'You should add activities';
 
+    if (session.status === 1 && this.props.currentActivity.status === 4)
+      return (
+        <StatsPage
+          index={this.state.index}
+          quiz={this.props.quiz}
+          session_id={this.props.session._id}
+          activity_id={this.props.currentActivity._id}
+          end={() => this.advanceActivity(this.props.currentActivity)}
+        />
+      );
+
     // session started, render instructions for activities
     if (session.status === 1)
       return (

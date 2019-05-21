@@ -18,3 +18,38 @@
 .stats-main {
   width: 1200px;
 }
+
+.stats-page {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+
+  .stats-title {
+    margin: auto;
+  }
+
+  .smaller {
+    margin: auto;
+    width: 10%;
+    margin-top: 1rem;
+  }
+
+  .responses-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .stats-graph {
+    height: 10rem;
+  }
+
+  .st-answers {
+    // vertical-align: center;
+  }
+
+  .needshr {
+    padding: 1rem 0;
+    border-bottom: 2px solid black;
+  }
+
+}

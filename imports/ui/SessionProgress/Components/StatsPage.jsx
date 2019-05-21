@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Chart } from 'react-google-charts';
+import { Random } from 'meteor/random';
 import Loading from '../../Components/Loading/Loading';
 import Teams from '../../../api/teams';
 import Responses from '../../../api/responses';
@@ -10,6 +11,9 @@ import Sessions from '../../../api/sessions';
 import Quizzes from '../../../api/quizzes';
 import TextBox from '../../Components/TextBox/TextBox';
 import ActivityEnums from '../../../enums/activities';
+
+import './StatsPage.scss';
+import responses from '../../../api/responses';
 
 export default class StatsPage extends Component {
   static propTypes = {
@@ -164,17 +168,32 @@ export default class StatsPage extends Component {
     // fakeData.map(opt => data.push(opt));
 
     quiz.questions.map((question, index) => {
-      if (index === this.props.index) {
-        if (question.type === ActivityEnums.quiz.MULTI_CHOICE) {
-          question.options.map((opt, i) => {
-            if (opt.correct) data.push([this.getLetter(i), opt.countIndv, opt.countIndvTeam]);
-            else data.push([this.getLetter(i), opt.countIndv, opt.countTeam]);
-          });
-        }
+      //if (index === this.props.index) {
+      if (question.type === ActivityEnums.quiz.MULTI_CHOICE) {
+        question.options.map((opt, i) => {
+          if (opt.correct) data.push([this.getLetter(i), opt.countIndv, opt.countIndvTeam]);
+          else data.push([this.getLetter(i), opt.countIndv, opt.countTeam]);
+        });
       }
+      //}
     });
 
     // console.log(data);
+
+    return data;
+  }
+
+  getDataIndex(index) {
+    const data = [['Option', 'Individual Votes', 'Team Votes']];
+
+    const question = this.props.quiz.questions[index];
+
+    if (question.type === ActivityEnums.quiz.MULTI_CHOICE) {
+      question.options.map((opt, i) => {
+        if (opt.correct) data.push([this.getLetter(i), opt.countIndv, opt.countIndvTeam]);
+        else data.push([this.getLetter(i), opt.countIndv, opt.countTeam]);
+      });
+    }
 
     return data;
   }
@@ -184,18 +203,18 @@ export default class StatsPage extends Component {
 
     if (!activity_id) return <Loading />;
 
-    const quiz = Quizzes.findOne({ activity_id });
+    const { quiz } = this.props;
 
     if (!quiz) return <Loading />;
 
     const data = this.getData(quiz);
-    let currentType = ActivityEnums.quiz.MULTI_CHOICE;
+    const currentType = ActivityEnums.quiz.MULTI_CHOICE;
 
-    quiz.questions.map((question, index) => {
-      if (index === this.props.index) {
-        currentType = question.type;
-      }
-    });
+    // quiz.questions.map((question, index) => {
+    //   if (index === this.props.index) {
+    //     currentType = question.type;
+    //   }
+    // });
 
     // quiz.options.map((opt, index) => {
     //   if (opt.correct) {
@@ -213,23 +232,79 @@ export default class StatsPage extends Component {
     };
 
     return (
-      <div>
+      <div className="stats-page">
         {/* <h1>Round {this.state.round}: Quiz</h1> */}
-        <h1>Quiz</h1>
-        <h2 id="bold-font">Question 1</h2>
-        {/* <br></br>
-            <h2>Top Guesser:</h2>
-            <div className="text-box-bigscreen-shrink">
-              <h2>{this.getTopUserPoints()}</h2>
-            </div>
-            <h2>Best Lies:</h2>
-            <div className="text-box-bigscreen-shrink">
-              <h2>{this.getBestLies()}</h2>
-            </div>
-            <h2>Most Unique Truths:</h2>
-            <div className="text-box-bigscreen-shrink">
-              <h2>{this.getUniqueTruths()}</h2>
-            </div> */}
+        <h1 className="stats-title">Quiz Answers</h1>
+        {/* <h2 id="bold-font">Question 1</h2> */}
+        {/* {{ data } && currentType === ActivityEnums.quiz.MULTI_CHOICE && (
+          <Chart
+            chartType="ColumnChart"
+            data={data}
+            options={{
+              colors: ['#1E91D6', '#F05D5E'],
+              chartArea: { width: '60%' },
+              vAxis: {
+                title: 'Number of votes',
+                minValue: 0
+              },
+              hAxis: {
+                title: 'Option'
+              }
+            }}
+            width="100%"
+            height="50%"
+            legendToggle
+          />
+        )} */}
+        <div className="responses-grid">
+          {quiz.questions.map((q, index) => (
+            <>
+              <div className="needshr" key={Random.id()}>
+                <h2>{`Question ${index + 1}: ${q.prompt}`}</h2>
+                <h3>
+                  <strong>Correct answer:</strong> {getAnswer(q)}
+                </h3>
+              </div>
+              {q.type === ActivityEnums.quiz.MULTI_CHOICE && (
+                <div key={Random.id()} className="stats-graph needshr">
+                  <Chart
+                    chartType="ColumnChart"
+                    data={this.getDataIndex(index)}
+                    options={{
+                      colors: ['#1E91D6', '#F05D5E'],
+                      chartArea: { width: '60%' },
+                      vAxis: {
+                        // title: 'Number of votes',
+                        minValue: 0
+                      },
+                      hAxis: {
+                        title: 'Option'
+                      }
+                    }}
+                    width="100%"
+                    height="100%"
+                    legendToggle
+                  />
+                </div>
+              )}
+              {q.type !== ActivityEnums.quiz.MULTI_CHOICE && (
+                <div className="st-answers needshr">
+                  {Responses.find({ activity_id: this.props.activity_id, type: 'indv' }, { limit: 3 })
+                    .fetch()
+                    .map((res, j) => {
+                      return (
+                        <div>
+                          {j === 0 && <TextBox label="Student responses">{res.selected[index].text}</TextBox>}
+                          {j > 0 && <TextBox>{res.selected[index].text}</TextBox>}
+                        </div>
+                      );
+                    })}
+                </div>
+              )}
+            </>
+          ))}
+        </div>
+        {/* <h2>Question 2</h2>
         {{ data } && currentType === ActivityEnums.quiz.MULTI_CHOICE && (
           <Chart
             chartType="ColumnChart"
@@ -249,7 +324,19 @@ export default class StatsPage extends Component {
             height="50%"
             legendToggle
           />
-        )}
+        )} */}
+        {/* <div>
+          {this.props.quiz.questions.map(
+            (q, index) =>
+              index === this.props.index && (
+                <h2 key={Random.id()}>
+                  <div>{q.prompt}</div>
+                  <div id="font-size">{getAnswer(q)}</div>
+                </h2>
+              )
+          )}
+        </div> */}
+        {/* <h2>Question 3</h2>
         <div>
           {this.props.quiz.questions.map(
             (q, index) =>
@@ -260,31 +347,8 @@ export default class StatsPage extends Component {
                 </h2>
               )
           )}
-        </div>
-        <h2>Question 2</h2>
-        <div>
-          <h2 id="font-size">{/* <strong>{this.getLetter(correctIndex)}</strong>. {correctText} */}</h2>
-        </div>
-        {{ data } && currentType === ActivityEnums.quiz.MULTI_CHOICE && (
-          <Chart
-            chartType="ColumnChart"
-            data={data}
-            options={{
-              colors: ['#1E91D6', '#F05D5E'],
-              chartArea: { width: '60%' },
-              vAxis: {
-                title: 'Number of votes',
-                minValue: 0
-              },
-              hAxis: {
-                title: 'Option'
-              }
-            }}
-            width="100%"
-            height="50%"
-            legendToggle
-          />
-        )}
+        </div> */}
+        {/* <h2>Question 4</h2>
         <div>
           {this.props.quiz.questions.map(
             (q, index) =>
@@ -295,34 +359,9 @@ export default class StatsPage extends Component {
                 </h2>
               )
           )}
-        </div>
-        <h2>Question 3</h2>
-        <div>
-          {this.props.quiz.questions.map(
-            (q, index) =>
-              index === this.props.index && (
-                <h2 key={Random.id()}>
-                  <div>{q.prompt}</div>
-                  <div id="font-size">{getAnswer(q)}</div>
-                </h2>
-              )
-          )}
-        </div>
-        <h2>Question 4</h2>
-        <div>
-          {this.props.quiz.questions.map(
-            (q, index) =>
-              index === this.props.index && (
-                <h2 key={Random.id()}>
-                  <div>{q.prompt}</div>
-                  <div id="font-size">{getAnswer(q)}</div>
-                </h2>
-              )
-          )}
-        </div>
+        </div> */}
         {/* <TextBox label="Fastest Team:">{this.getFastestTeams()}</TextBox> */}
-        <br />
-        <button className="bigscreen-button" onClick={() => this.props.end()}>
+        <button className="bigscreen-button smaller" onClick={() => this.props.end()}>
           End Activity
         </button>
       </div>
