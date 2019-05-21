@@ -125,20 +125,6 @@ class InstructorUI extends Component {
               ]
             },
             {
-              type: ActivityEnums.quiz.FREE_RESPONSE,
-              prompt: 'According to Saarinen, why did Airbnb create their design language system?',
-              answer: 'too few constraints; multiple stakeholders; many platforms; product exists as a continuum',
-              studentAswers: []
-            },
-            {
-              type: ActivityEnums.quiz.FREE_RESPONSE,
-              prompt:
-                'What does Saarinen mean when he says the unified design language should be an evolving ecosystem?',
-              answer:
-                'The components are defined by properties, can co-exist with others, and can evolve independently',
-              studentAswers: []
-            },
-            {
               type: ActivityEnums.quiz.MULTI_CHOICE,
               prompt: 'According to Saarinen, what is the problem with re-usable atoms?',
               options: [
@@ -171,6 +157,20 @@ class InstructorUI extends Component {
                   correct: false
                 }
               ]
+            },
+            {
+              type: ActivityEnums.quiz.FREE_RESPONSE,
+              prompt: 'According to Saarinen, why did Airbnb create their design language system?',
+              answer: 'too few constraints; multiple stakeholders; many platforms; product exists as a continuum',
+              studentAswers: []
+            },
+            {
+              type: ActivityEnums.quiz.FREE_RESPONSE,
+              prompt:
+                'What does Saarinen mean when he says the unified design language should be an evolving ecosystem?',
+              answer:
+                'The components are defined by properties, can co-exist with others, and can evolve independently',
+              studentAswers: []
             }
           ]
         });
