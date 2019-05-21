@@ -216,10 +216,7 @@ export default class StatsPage extends Component {
       <div>
         {/* <h1>Round {this.state.round}: Quiz</h1> */}
         <h1>Quiz</h1>
-        <h2 id="bold-font">{quiz.prompt}</h2>
-        <div>
-          <h2 id="font-size">{/* <strong>{this.getLetter(correctIndex)}</strong>. {correctText} */}</h2>
-        </div>
+        <h2 id="bold-font">Question 1</h2>
         {/* <br></br>
             <h2>Top Guesser:</h2>
             <div className="text-box-bigscreen-shrink">
@@ -254,7 +251,6 @@ export default class StatsPage extends Component {
           />
         )}
         <div>
-          <h1>Answer</h1>
           {this.props.quiz.questions.map(
             (q, index) =>
               index === this.props.index && (
@@ -265,7 +261,66 @@ export default class StatsPage extends Component {
               )
           )}
         </div>
-        <TextBox label="Fastest Team:">{this.getFastestTeams()}</TextBox>
+        <h2>Question 2</h2>
+        <div>
+          <h2 id="font-size">{/* <strong>{this.getLetter(correctIndex)}</strong>. {correctText} */}</h2>
+        </div>
+        {{ data } && currentType === ActivityEnums.quiz.MULTI_CHOICE && (
+          <Chart
+            chartType="ColumnChart"
+            data={data}
+            options={{
+              colors: ['#1E91D6', '#F05D5E'],
+              chartArea: { width: '60%' },
+              vAxis: {
+                title: 'Number of votes',
+                minValue: 0
+              },
+              hAxis: {
+                title: 'Option'
+              }
+            }}
+            width="100%"
+            height="50%"
+            legendToggle
+          />
+        )}
+        <div>
+          {this.props.quiz.questions.map(
+            (q, index) =>
+              index === this.props.index && (
+                <h2 key={Random.id()}>
+                  <div>{q.prompt}</div>
+                  <div id="font-size">{getAnswer(q)}</div>
+                </h2>
+              )
+          )}
+        </div>
+        <h2>Question 3</h2>
+        <div>
+          {this.props.quiz.questions.map(
+            (q, index) =>
+              index === this.props.index && (
+                <h2 key={Random.id()}>
+                  <div>{q.prompt}</div>
+                  <div id="font-size">{getAnswer(q)}</div>
+                </h2>
+              )
+          )}
+        </div>
+        <h2>Question 4</h2>
+        <div>
+          {this.props.quiz.questions.map(
+            (q, index) =>
+              index === this.props.index && (
+                <h2 key={Random.id()}>
+                  <div>{q.prompt}</div>
+                  <div id="font-size">{getAnswer(q)}</div>
+                </h2>
+              )
+          )}
+        </div>
+        {/* <TextBox label="Fastest Team:">{this.getFastestTeams()}</TextBox> */}
         <br />
         <button className="bigscreen-button" onClick={() => this.props.skip()}>
           End Activity
