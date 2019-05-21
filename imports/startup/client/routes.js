@@ -22,7 +22,7 @@ export const renderRoutes = () => (
           exact
           path="/vivian"
           render={props => (
-            <TextBox {...props} color="black" label="TWO TRUTHS">
+            <TextBox {...props} color="black" label="TWO TRUTHS" badge="woah">
               hello
             </TextBox>
           )}

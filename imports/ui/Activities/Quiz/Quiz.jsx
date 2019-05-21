@@ -17,7 +17,6 @@ import ChooseTeammate from '../Components/ChooseTeammate/ChooseTeammate';
 import IndividualQuestions from './Components/IndividualQuestions/IndividualQuestions';
 import TeamQuestions from './Components/TeamQuestions/TeamQuestions';
 import TeammateSliders from '../Components/TeammateSliders/TeammateSliders';
-import Loading from '../../Components/Loading/Loading';
 
 class Quiz extends Component {
   static propTypes = {
@@ -550,7 +549,7 @@ class Quiz extends Component {
 
     const { quiz } = this.props;
 
-    if (!quiz) return <Loading></Loading>;
+    if (!quiz) return 'Waiting... QUIZ';
 
     const { progress, duration, sessionLength } = this.props;
     const { statusStartTime } = activity;
@@ -565,7 +564,7 @@ class Quiz extends Component {
         sessionLength={sessionLength}
         clockDuration={duration}
         clockStartTime={statusStartTime}
-        questionNumber={index + 1}
+        questionNumber={index}
         questionsLength={totalQuestions}
         {...this.state}
       >

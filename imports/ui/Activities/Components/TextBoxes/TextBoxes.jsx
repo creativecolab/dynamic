@@ -11,14 +11,14 @@ export default class TextBoxes extends Component {
     boxes: PropTypes.arrayOf(PropTypes.shape({
       label: PropTypes.string,
       text: PropTypes.string.isRequired,
-    }).isRequired,).isRequired,
+    }).isRequired).isRequired,
   }
 
   renderTextBoxes({ boxes }) {
     return boxes.map(box => {
       return (
         <TextBox label={box.label} key={Random.id()}>
-            {box.text}
+          {box.text}
         </TextBox>
       );
     });

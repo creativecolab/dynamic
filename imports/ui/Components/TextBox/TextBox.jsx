@@ -6,11 +6,13 @@ export default class TextBox extends Component {
   static propTypes = {
     // size: PropTypes.string.isRequired,
     color: PropTypes.string,
+    badge: PropTypes.string,
     label: PropTypes.string
   };
 
   static defaultProps = {
-    color: 'black'
+    color: 'black',
+    badge: ''
   };
 
   getClassNames(color) {
@@ -19,13 +21,15 @@ export default class TextBox extends Component {
   }
 
   render() {
-    const { label } = this.props;
-    const { children } = this.props;
+    const { badge, children, label } = this.props;
 
     return (
       <div className="textbox-main">
         <div className="textbox-label">{label}</div>
-        <div className="textbox-text">{children}</div>
+        <div className="textbox-text">
+          {children}
+          <span className="textbox-badge">{badge}</span>
+        </div>
       </div>
     );
   }
