@@ -92,31 +92,31 @@ class InstructorUI extends Component {
           questions: [
             {
               type: ActivityEnums.quiz.MULTI_CHOICE,
-              prompt: 'This is question number 1',
+              prompt: 'A visual language is:',
               options: [
                 {
-                  text: 'Correct answer',
+                  text: 'A one-off design solution',
                   id: Random.id(),
                   countIndv: 0,
                   countIndvTeam: 0,
+                  correct: false
+                },
+                {
+                  text: 'A unified design system',
+                  id: Random.id(),
+                  countIndv: 0,
+                  countTeam: 0,
                   correct: true
                 },
                 {
-                  text: 'Option 2',
+                  text: 'A digital product',
                   id: Random.id(),
                   countIndv: 0,
                   countTeam: 0,
                   correct: false
                 },
                 {
-                  text: 'Option 3',
-                  id: Random.id(),
-                  countIndv: 0,
-                  countTeam: 0,
-                  correct: false
-                },
-                {
-                  text: 'Option 4',
+                  text: 'A set of individual atoms and static rules',
                   id: Random.id(),
                   countIndv: 0,
                   countTeam: 0,
@@ -126,31 +126,31 @@ class InstructorUI extends Component {
             },
             {
               type: ActivityEnums.quiz.MULTI_CHOICE,
-              prompt: 'This is question number 2',
+              prompt: 'According to Saarinen, what is the problem with re-usable atoms?',
               options: [
                 {
-                  text: 'Option 1',
+                  text: 'They require significant documentation to use properly',
                   id: Random.id(),
                   countIndv: 0,
                   countIndvTeam: 0,
                   correct: false
                 },
                 {
-                  text: 'Correct',
-                  id: Random.id(),
-                  countIndv: 0,
-                  countTeam: 0,
-                  correct: true
-                },
-                {
-                  text: 'Option 3',
+                  text: 'They cannot be used across both iOS and Android',
                   id: Random.id(),
                   countIndv: 0,
                   countTeam: 0,
                   correct: false
                 },
                 {
-                  text: 'Option 4',
+                  text: 'They can be used in too many ways, causing confusion',
+                  id: Random.id(),
+                  countIndv: 0,
+                  countTeam: 0,
+                  correct: true
+                },
+                {
+                  text: 'They can be difficult to understand for other employees',
                   id: Random.id(),
                   countIndv: 0,
                   countTeam: 0,
@@ -160,14 +160,16 @@ class InstructorUI extends Component {
             },
             {
               type: ActivityEnums.quiz.FREE_RESPONSE,
-              prompt: 'This is question number 3',
-              answer: 'This is the answer',
+              prompt: 'According to Saarinen, why did Airbnb create their design language system?',
+              answer: 'too few constraints; multiple stakeholders; many platforms; product exists as a continuum',
               studentAswers: []
             },
             {
               type: ActivityEnums.quiz.FREE_RESPONSE,
-              prompt: 'This is question number 4',
-              answer: 'This is the answer',
+              prompt:
+                'What does Saarinen mean when he says the unified design language should be an evolving ecosystem?',
+              answer:
+                'The components are defined by properties, can co-exist with others, and can evolve independently',
               studentAswers: []
             }
           ]
