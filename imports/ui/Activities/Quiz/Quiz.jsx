@@ -17,6 +17,7 @@ import ChooseTeammate from '../Components/ChooseTeammate/ChooseTeammate';
 import IndividualQuestions from './Components/IndividualQuestions/IndividualQuestions';
 import TeamQuestions from './Components/TeamQuestions/TeamQuestions';
 import TeammateSliders from '../Components/TeammateSliders/TeammateSliders';
+import Loading from '../../Components/Loading/Loading';
 
 class Quiz extends Component {
   static propTypes = {
@@ -156,11 +157,29 @@ class Quiz extends Component {
     }
   }
 
+  // get letter based on an index
+  getLetter(index) {
+    switch (index) {
+      case 0:
+        return 'A. ';
+      case 1:
+        return 'B. ';
+      case 2:
+        return 'C. ';
+      case 3:
+        return 'D. ';
+      default:
+        return '';
+    }
+  }
+
   // (id, options) -> text
   getTextFromOpt(id, options) {
     if (id === 'No response') return id;
 
-    return options.filter(opt => opt.id === id)[0].text;
+    const optNum = options.indexOf(options.filter(opt => opt.id === id)[0]);
+
+    return this.getLetter(optNum) + options.filter(opt => opt.id === id)[0].text;
   }
 
   submitTeamInput = () => {
@@ -555,11 +574,11 @@ class Quiz extends Component {
   render() {
     const { activity } = this.props;
 
-    if (!activity) return 'Waiting... QUIZ';
+    if (!activity) return <Loading></Loading>;
 
     const { quiz } = this.props;
 
-    if (!quiz) return 'Waiting... QUIZ';
+    if (!quiz) return <Loading></Loading>;
 
     const { progress, duration, sessionLength, status } = this.props;
     const { statusStartTime } = activity;

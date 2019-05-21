@@ -21,7 +21,7 @@ export default class StatsPage extends Component {
     quiz: PropTypes.object.isRequired,
     session_id: PropTypes.string.isRequired,
     activity_id: PropTypes.string.isRequired,
-    skip: PropTypes.func.isRequired
+    end: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -198,6 +198,21 @@ export default class StatsPage extends Component {
     return data;
   }
 
+  getLetter(index) {
+    switch (index) {
+      case 0:
+        return 'A. ';
+      case 1:
+        return 'B. ';
+      case 2:
+        return 'C. ';
+      case 3:
+        return 'D. ';
+      default:
+        return '';
+    }
+  }
+
   render() {
     const { activity_id } = this.props;
 
@@ -225,7 +240,8 @@ export default class StatsPage extends Component {
 
     const getAnswer = q => {
       if (q.type === ActivityEnums.quiz.MULTI_CHOICE) {
-        return q.options.filter(opt => opt.correct)[0].text;
+        const optNum = q.options.indexOf(q.options.filter(opt => opt.correct)[0]);
+        return this.getLetter(optNum) + q.options.filter(opt => opt.correct)[0].text;
       } else {
         return q.answer;
       }
@@ -275,7 +291,7 @@ export default class StatsPage extends Component {
                       colors: ['#1E91D6', '#F05D5E'],
                       chartArea: { width: '60%' },
                       vAxis: {
-                        // title: 'Number of votes',
+                        title: 'Number of votes',
                         minValue: 0
                       },
                       hAxis: {
