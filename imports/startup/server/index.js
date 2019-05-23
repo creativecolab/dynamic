@@ -10,6 +10,7 @@ import Teams from '../../api/teams';
 import Logs from '../../api/logs';
 
 import './register-api';
+import Responses from '../../api/responses';
 
 function getPreference() {
   let ret = 'name,pid,pref_0,name_0,not_pref_0,pref_1,name_1,not_pref_1,pref_2,name_2,not_pref_2\n';
@@ -89,6 +90,10 @@ if (Meteor.isServer) {
         body: getPreference()
       };
     }
+  });
+
+  Meteor.publish('responses.private', function() {
+    return Responses.find();
   });
 }
 

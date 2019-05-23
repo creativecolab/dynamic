@@ -11,6 +11,7 @@ import ActivityHandler from '../../ui/Handlers/ActivityHandler/ActivityHandler';
 import SessionHandler from '../../ui/Handlers/SessionHandler/SessionHandler';
 import TextBox from '../../ui/Components/TextBox/TextBox';
 import { UserContext } from '../../ui/Contexts/UserContext';
+import DataOverview from '../../ui/DataOverview/DataOverview';
 
 // eslint-disable-next-line import/prefer-default-export
 export const renderRoutes = () => (
@@ -18,6 +19,7 @@ export const renderRoutes = () => (
     <div>
       <Switch>
         <Route exact path="/" component={Landing} />
+        <Route exact path="/data" component={DataOverview} />
         <Route
           exact
           path="/vivian"
