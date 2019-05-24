@@ -210,18 +210,41 @@ class Quiz extends Component {
             if (selected[i] === opt.id) index = j;
           });
 
-          Quizzes.update(
-            quiz._id,
-            {
-              $inc: {
-                [`questions.${i}.options.${index}.countTeam`]: 1
+          let correct = false;
+
+          quiz.questions[i].options.map((opt, j) => {
+            if (selected[i] === opt.id) correct = opt.correct;
+          });
+
+          if (correct) {
+            console.log("Choose the correct answer!");
+            Quizzes.update(
+              quiz._id,
+              {
+                $inc: {
+                  [`questions.${i}.options.${index}.countIndvTeam`]: 1
+                }
+              },
+              error => {
+                if (error) console.log(error);
+                else console.log('Quiz updated!');
               }
-            },
-            error => {
-              if (error) console.log(error);
-              else console.log('Quiz updated!');
-            }
-          );
+            );
+
+          } else {
+            Quizzes.update(
+              quiz._id,
+              {
+                $inc: {
+                  [`questions.${i}.options.${index}.countTeam`]: 1
+                }
+              },
+              error => {
+                if (error) console.log(error);
+                else console.log('Quiz updated!');
+              }
+            );
+          }
         }
       }
 

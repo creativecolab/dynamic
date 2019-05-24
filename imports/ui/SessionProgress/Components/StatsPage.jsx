@@ -198,21 +198,6 @@ export default class StatsPage extends Component {
     return data;
   }
 
-  getLetter(index) {
-    switch (index) {
-      case 0:
-        return 'A. ';
-      case 1:
-        return 'B. ';
-      case 2:
-        return 'C. ';
-      case 3:
-        return 'D. ';
-      default:
-        return '';
-    }
-  }
-
   render() {
     const { activity_id } = this.props;
 
@@ -222,8 +207,8 @@ export default class StatsPage extends Component {
 
     if (!quiz) return <Loading />;
 
-    const data = this.getData(quiz);
-    const currentType = ActivityEnums.quiz.MULTI_CHOICE;
+    //const data = this.getData(quiz);
+    //const currentType = ActivityEnums.quiz.MULTI_CHOICE;
 
     // quiz.questions.map((question, index) => {
     //   if (index === this.props.index) {
@@ -241,7 +226,7 @@ export default class StatsPage extends Component {
     const getAnswer = q => {
       if (q.type === ActivityEnums.quiz.MULTI_CHOICE) {
         const optNum = q.options.indexOf(q.options.filter(opt => opt.correct)[0]);
-        return this.getLetter(optNum) + q.options.filter(opt => opt.correct)[0].text;
+        return this.getLetter(optNum) + ". " + q.options.filter(opt => opt.correct)[0].text;
       } else {
         return q.answer;
       }
