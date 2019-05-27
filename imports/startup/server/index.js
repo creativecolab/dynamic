@@ -92,9 +92,9 @@ if (Meteor.isServer) {
     }
   });
 
-  Meteor.publish('responses.private', function() {
-    return Responses.find();
-  });
+  // Meteor.publish('responses.private', function() {
+  //   return Responses.find();
+  // });
 }
 
 // hard-coded roster for testing
