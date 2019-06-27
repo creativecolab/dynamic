@@ -13,63 +13,98 @@ import './register-api';
 import Responses from '../../api/responses';
 
 function getPreference() {
-  let ret = 'name,pid,pref_0,name_0,not_pref_0,pref_1,name_1,not_pref_1,pref_2,name_2,not_pref_2\n';
 
-  const session = Sessions.findOne({ code: 'dsgn100' });
+  const session = Sessions.findOne({ code: 'quiz2' });
 
-  if (!session) return 'oops!';
+  // TODO: currently assumes there is only one session, need to make more general in the future
 
-  const { participants, activities } = session;
-
-  for (let i = 0; i < participants.length; i++) {
-    // find current user
-    const user = Users.findOne({ pid: participants[i] });
-
-    ret += `"${user.name}","${user.pid.toUpperCase()}",`;
-
-    // iterate through activities
-    for (let a = 0; a < activities.length; a++) {
-      // append activity_id
-      // ret += activities[a] + ",";
-
-      // find team
-      const team = Teams.findOne({ activity_id: activities[a], 'members.pid': user.pid });
-
-      if (!team) {
-        // ret += "no_team\n";
-        continue;
-      }
-
-      // append team pids
-      // ret += `"${team.members.map(m => m.pid.toUpperCase())}",`;
-
-      let pref = '';
-
-      for (let j = 0; j < user.preference.length; j++) {
-        if (user.preference[j].activity_id === activities[a]) {
-          pref = user.preference[j].pid;
-          break;
-        }
-      }
-
-      ret += pref.toUpperCase() + ',';
-
-      if (pref !== '' && pref !== 'all') ret += `"${Users.findOne({ pid: pref }).name}",`;
-      else ret += ',';
-
-      // not_pref
-      if (team) {
-        if (pref === 'all') ret += ',';
-        else
-          ret += `"${team.members.filter(m => m.pid !== pref && m.pid !== user.pid).map(m => m.pid.toUpperCase())}",`;
-        // ret += `"${team.members.filter(m => m.pid !== pref && m.pid !== user.pid).map(m => Users.findOne({pid: m.pid}).name).toString()}"`;
-      }
-    }
-
-    ret += '\n';
+  if (!session) {
+    return "No session named quiz2 yet!";
   }
 
+  const { participants } = session;
+
+  if (!participants) {
+    return "No particpants for this session yet";
+  }
+  
+  // csv format
+  let ret = 'pid,pref_0,rating_0,pref_1,rating_1,pref_2,rating_2\n';
+
+  // get the data on the preferences of each participant
+  participants.map(user_pid => {
+    ret += `"${user_pid.toUpperCase()}",`;
+    var user = Users.findOne({pid: user_pid});
+    if (user) {
+      user.preference.map(activity_pref => {
+        activity_pref.values.map((pref,index) => {
+          ret += pref.pid + ',' + pref.value;
+          // add a comma when not on preference 3
+          if (index != 2) ret += ',';
+        });
+        // handles ratings from only 2 people
+        if (activity_pref.values.length < 3) ret += ',\n';
+        else ret += '\n';
+      });
+      // when user exists but has no preference data (happens sometimes)
+      if (user.preference.length == 0) ret += ',,,,,\n'
+    } else {
+      // no preference info on this user for some reason
+      ret += ',,,,,\n'
+    }
+    // ret += '\n';
+
+  });
+
   return ret;
+
+  // for (let i = 0; i < participants.length; i++) {
+  //   // find current user
+  //   const user = Users.findOne({ pid: participants[i] });
+
+  //   ret += `"${user.name}","${user.pid.toUpperCase()}",`;
+
+  //   // iterate through activities
+  //   for (let a = 0; a < activities.length; a++) {
+  //     // append activity_id
+  //     // ret += activities[a] + ",";
+
+  //     // find team
+  //     const team = Teams.findOne({ activity_id: activities[a], 'members.pid': user.pid });
+
+  //     if (!team) {
+  //       // ret += "no_team\n";
+  //       continue;
+  //     }
+
+  //     // append team pids
+  //     // ret += `"${team.members.map(m => m.pid.toUpperCase())}",`;
+
+  //     let pref = '';
+
+  //     for (let j = 0; j < user.preference.length; j++) {
+  //       if (user.preference[j].activity_id === activities[a]) {
+  //         pref = user.preference[j].pid;
+  //         break;
+  //       }
+  //     }
+
+  //     ret += pref.toUpperCase() + ',';
+
+  //     if (pref !== '' && pref !== 'all') ret += `"${Users.findOne({ pid: pref }).name}",`;
+  //     else ret += ',';
+
+  //     // not_pref
+  //     if (team) {
+  //       if (pref === 'all') ret += ',';
+  //       else
+  //         ret += `"${team.members.filter(m => m.pid !== pref && m.pid !== user.pid).map(m => m.pid.toUpperCase())}",`;
+  //       // ret += `"${team.members.filter(m => m.pid !== pref && m.pid !== user.pid).map(m => Users.findOne({pid: m.pid}).name).toString()}"`;
+  //     }
+  //   }
+
+  //   ret += '\n';
+  // }
 }
 
 if (Meteor.isServer) {
@@ -85,7 +120,7 @@ if (Meteor.isServer) {
         statusCode: 200,
         headers: {
           'Content-Type': 'text/csv',
-          'Content-Disposition': 'attachment; filename=preferences.csv'
+          'Content-Disposition': 'attachment; filename=preferences_quiz2.csv'
         },
         body: getPreference()
       };

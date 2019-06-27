@@ -8,6 +8,7 @@ import Activities from "../../api/activities";
 import Sessions from "../../api/sessions";
 import Logs from "../../api/logs";
 import Teams from "../../api/teams";
+import Loading from "../Components/Loading/Loading";
 
 class Session extends Component {
   static propTypes = {
@@ -94,7 +95,7 @@ class Session extends Component {
   }
 
   render() {
-    if (!this.props.session) return "TODO: Loading component";
+    if (!this.props.session) return <Loading />;
     const { status, timestamp, participants } = this.props.session;
     return (
       <Wrapper>
