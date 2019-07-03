@@ -17,8 +17,9 @@ export default class Landing extends Component {
       code: '',
       name: '',
       pid: '',
-      section: '',
-      invalid: false,
+      invalidCode: false,
+      invalidName: false,
+      invalidPID: false,
       ready: false,
       codeSubmitted: false
     };
@@ -26,14 +27,9 @@ export default class Landing extends Component {
 
   // update the code state so we know where to go
   handleCode = evt => {
-    // if (evt.target.value.length === 0) {
-    //   this.setState({
-    //     code: evt.target.value.toUpperCase()
-    //   });
-    // }
     this.setState({
       code: evt.target.value.toUpperCase(),
-      invalid: false
+      invalidCode: false
     });
   };
 
@@ -46,31 +42,34 @@ export default class Landing extends Component {
     });
   };
 
-  // update the section as the user types
-  handleSection(section) {
-    this.setState({
-      section
-    });
-  }
+  // update the section as the user types -- deprecated currently
+  // handleSection(section) {
+  //   this.setState({
+  //     section
+  //   });
+  // }
 
   // update the pid as the user types
   handlePid = evt => {
-    if (evt.target.value.length > 9) return;
+    if (evt.target.value.length > 20) return;
 
     this.setState({
-      pid: evt.target.value.toUpperCase()
+      pid: evt.target.value
     });
   };
 
-  // once the user enters the session code, go to that session's page
-  handleCodeEntry = evt => {
+  // once the user enters the session code, try go to that session's page
+  handleCodeSubmission = evt => {
     evt.preventDefault();
 
     // eslint-disable-next-line react/destructuring-assignment
     const code = this.state.code.toLowerCase();
 
     // handle invalid codes
-    if (code === 'instructor' || code === 'sandbox' || code === '') {
+    if (code === 'instructor' || code === 'sandbox' || code === 'data' || code === '') {
+      this.setState({
+        invalidCode: true
+      });
       return;
     }
 
@@ -87,7 +86,7 @@ export default class Landing extends Component {
     // invalid session code
     else {
       this.setState({
-        invalid: true
+        invalidCode: true
       });
     }
   };
@@ -119,11 +118,31 @@ export default class Landing extends Component {
     /* eslint-disable react/destructuring-assignment */
     const pid = this.state.pid.toLowerCase();
     const code = this.state.code.toLowerCase();
-    const section = this.state.section.toLowerCase();
     /* eslint-enable react/destructuring-assignment */
 
-    // TODO: invalid input, render error
-    if (pid.length === 0 || name.length === 0 || section.length === 0) return;
+    if (name.length === 0) {
+      this.setState({
+        invalidName: true
+      });
+      return;
+    } else {
+      this.setState({
+        invalidName: false
+      });
+    }
+
+    if (pid.length === 0) {
+      this.setState(
+        {
+          invalidPID: true
+        }
+      );
+      return;
+    } else {
+      this.setState({
+        invalidPID: false
+      });
+    }
 
     // find user by pid on database
     const user = Users.findOne({ pid });
@@ -133,26 +152,24 @@ export default class Landing extends Component {
 
     // user exists!
     if (user) {
-      // user is already a participant in this session!
+      // user is already a participant in this session! TODO: handle case where two diff people enter the same username >:O
       if (session.participants.includes(pid)) {
         this.setState({
           ready: true
         });
       }
 
-      // user haven't joined this session yet
+      // user hasn't joined this session yet
       else {
-        // prepare points for this session
+        // prepare points for this session, note the session join time
         Users.update(user._id, {
           $push: {
             points_history: {
               session_id: session._id,
+              sessionJoinTime: new Date().getTime(),
               points: 0
             }
           },
-          $set: {
-            section
-          }
         });
 
         // add user to session
@@ -178,16 +195,16 @@ export default class Landing extends Component {
       Users.insert({
         name,
         pid,
-        section,
-        timestamp: new Date().getTime(),
-        teammates: [],
-        points_history: [
+        joinTime: new Date().getTime(),
+        teamHistory: [],
+        pointsHistory: [
           {
             session_id: session._id,
+            sessionJoinTime: new Date().getTime(),
             points: 0
           }
         ],
-        preference: []
+        preferences: []
       });
 
       // add user to session
@@ -208,7 +225,7 @@ export default class Landing extends Component {
   };
 
   renderLogin() {
-    const { name, pid } = this.state;
+    const { name, pid, invalidName, invalidPID } = this.state;
 
     return (
       <Mobile buttonAction={this.handleLogin} hasNavbar={false}>
@@ -221,7 +238,8 @@ export default class Landing extends Component {
             onSubmit={this.handleLogin}
             onChange={this.handleName}
             value={name}
-            invalid={false}
+            invalid={invalidName}
+            invalidMsg="Not a valid name!"
             label="What is your name?"
             placeholder="King Triton"
           />
@@ -230,96 +248,63 @@ export default class Landing extends Component {
             onSubmit={this.handleLogin}
             onChange={this.handlePid}
             value={pid}
-            invalid={false}
-            label="What is your PID?"
-            placeholder="A12345678"
+            invalid={invalidPID}
+            invalidMsg="Not a valid username!"
+            label="What do you want your username to be?"
+            placeholder="XxKingTxX"
           />
-          <Tags
+          {/* <Tags
             label="What time is your section?"
             onSelection={evt => this.handleSection(evt)}
             options={['2PM', '3PM', '4PM']}
-          />
-
-          {/* <div id="pid-container" className="field-container ugh"> */}
-          {/* <label className="field-title" htmlFor="name">
-            What is your name?{' '}
-          </label>
-          <div className="input-container">
-            <input
-              className="input-text"
-              type="text"
-              name="name"
-              placeholder="King Triton"
-              value={name}
-              onChange={evt => this.handleName(evt)}
-            />
-          </div> */}
-          {/* <label className="field-title" htmlFor="pid">
-            What is your PID?
-          </label>
-          <div className="input-container">
-            <input
-              className="input-text"
-              type="text"
-              name="pid"
-              placeholder="A12345678"
-              value={pid}
-              onChange={evt => this.handlePid(evt)}
-            />
-          </div>
-          <label className="field-title" htmlFor="section">
-            What time is your section?{' '}
-          </label> */}
-
-          {/* <input className="small-button" type="submit" value="Continue" /> */}
-          {/* </div> */}
+          /> */}
         </div>
       </Mobile>
     );
   }
 
-  renderSessionCode() {
-    const { code, invalid } = this.state;
+  // renderSessionCode() {
+  //   const { code, invalidCode } = this.state;
 
-    return (
-      <Wrapper>
-        <h1 id="title-dynamic">Dynamic!</h1>
-        <img id="landing-logo" src="./small_dynamic.png" alt="" />
+  //   return (
+  //     <Wrapper>
+  //       <h1 id="title-dynamic">Dynamic!</h1>
+  //       <img id="landing-logo" src="./small_dynamic.png" alt="" />
 
-        <form id="session-form" onSubmit={evt => this.handleCodeEntry(evt)}>
-          <div id="session-code" className="field-container">
-            <label className="field-title" htmlFor="session-code">
-              Session code:
-              <div className="input-container">
-                <input
-                  className={invalid ? 'input-text-invalid' : 'input-text'}
-                  type="text"
-                  name="session-code"
-                  id="session-code"
-                  placeholder="Enter your session code"
-                  value={code}
-                  onChange={evt => this.handleCode(evt)}
-                />
-                {invalid && <span className="invalid-input-message">A session with that code does not exist!</span>}
-              </div>
-            </label>
-          </div>
-          <input className="small-button" type="submit" value="Continue" />
-        </form>
-      </Wrapper>
-    );
-  }
+  //       <form id="session-form" onSubmit={evt => this.handleCodeSubmission(evt)}>
+  //         <div id="session-code" className="field-container">
+  //           <label className="field-title" htmlFor="session-code">
+  //             Session code:
+  //             <div className="input-container">
+  //               <input
+  //                 className={invalidCode ? 'input-text-invalid' : 'input-text'}
+  //                 type="text"
+  //                 name="session-code"
+  //                 id="session-code"
+  //                 placeholder="Enter your session code"
+  //                 value={code}
+  //                 onChange={evt => this.handleCode(evt)}
+  //               />
+  //               {invalidCode && <span className="invalid-input-message">A session with that code does not exist!</span>}
+  //             </div>
+  //           </label>
+  //         </div>
+  //         <input className="small-button" type="submit" value="Continue" />
+  //       </form>
+  //     </Wrapper>
+  //   );
+  // }
 
   render() {
-    const { codeSubmitted, code, invalid } = this.state;
+    const { codeSubmitted, code, invalidCode } = this.state;
 
     if (codeSubmitted) return this.renderLogin();
     else
       return (
-        <Mobile buttonAction={this.handleCodeEntry} hasNavbar={false}>
-          <JoinSection handleSubmit={this.handleCodeEntry} handleCode={this.handleCode} code={code} invalid={invalid} />
+        <Mobile buttonAction={this.handleCodeSubmission} hasNavbar={false}>
+          <JoinSection handleSubmit={this.handleCodeSubmission} handleCode={this.handleCode} code={code}
+            invalid={invalidCode} invalidMsg='A session with that code does not exist!' />
         </Mobile>
       );
-    // else return this.renderSessionCode();
   }
 }

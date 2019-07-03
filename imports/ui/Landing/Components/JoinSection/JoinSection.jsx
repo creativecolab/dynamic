@@ -30,7 +30,8 @@ export default class JoinSection extends Component {
     handleCode: PropTypes.func.isRequired,
     handleSubmit: PropTypes.func.isRequired,
     code: PropTypes.string,
-    invalid: PropTypes.bool.isRequired
+    invalid: PropTypes.bool.isRequired,
+    invalidMsg: PropTypes.string
   };
 
   static defaultProps = {
@@ -49,7 +50,7 @@ export default class JoinSection extends Component {
 
   render() {
     const { visible } = this.state;
-    const { handleCode, handleSubmit, code, invalid } = this.props;
+    const { handleCode, handleSubmit, code, invalid, invalidMsg } = this.props;
 
     return (
       <div className="join-section-main">
@@ -62,6 +63,7 @@ export default class JoinSection extends Component {
           onChange={handleCode}
           value={code}
           invalid={invalid}
+          invalidMsg={invalidMsg}
           label="Session code"
           placeholder="CODE"
         />
