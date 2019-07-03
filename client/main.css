@@ -9,3 +9,7 @@ html, body, #react-target, #react-target>div {
 a {
   text-decoration: none;
 }
+
+button, span, div {
+  outline: none;
+}

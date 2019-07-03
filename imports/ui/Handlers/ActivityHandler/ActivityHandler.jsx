@@ -6,6 +6,7 @@ import Activities from '../../../api/activities';
 import Quiz from '../../Activities/Quiz/Quiz';
 import ActivityEnums from '../../../enums/activities';
 import Loading from '../../Components/Loading/Loading';
+import TeamDiscussion from '../../Activities/TeamDiscussion/TeamDiscussion';
 
 class ActivityHandler extends Component {
   static propTypes = {
@@ -68,6 +69,18 @@ class ActivityHandler extends Component {
     if (name === ActivityEnums.name.QUIZ) {
       return (
         <Quiz
+          pid={pid}
+          activity_id={activity_id}
+          status={status}
+          statusStartTime={statusStartTime}
+          sessionLength={sessionLength}
+          progress={progress}
+          duration={duration}
+        />
+      );
+    } else if (name === ActivityEnums.name.TEAM_DISCUSSION) {
+      return (
+        <TeamDiscussion
           pid={pid}
           activity_id={activity_id}
           status={status}

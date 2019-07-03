@@ -2,6 +2,7 @@
 const ActivityEnums = {
   name: {
     ICEBREAKER: 'icebreaker',
+    TEAM_DISCUSSION: 'team_discussion',
     QUIZ: 'quiz',
     CREATIVE: 'creative'
   },
@@ -11,7 +12,7 @@ const ActivityEnums = {
     INPUT_INDV: 1,
     TEAM_FORMATION: 2,
     INPUT_TEAM: 3,
-    SUMMARY: 4,
+    ASSESSMENT: 4,
     FINISHED: 5
   },
 

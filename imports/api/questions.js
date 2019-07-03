@@ -1,4 +1,4 @@
 import { Mongo } from 'meteor/mongo';
 
 // eslint-disable-next-line prettier/prettier
-export default Logs = new Mongo.Collection('logs');
+export default Questions = new Mongo.Collection('questions');
