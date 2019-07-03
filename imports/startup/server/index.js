@@ -291,7 +291,7 @@ Meteor.startup(() => {
 
           Teams.update(team._id, {
             $set: {
-              teamFormationTime: new Date().getTime() - activity.statusStartTime
+              teamFormationTime: new Date().getTime() - activity.statusStartTime // TODO change where we get status start time
             }
           });
         }
