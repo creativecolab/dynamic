@@ -31,6 +31,8 @@ export default class TeamDiscussion extends Component {
     return a;
   }
 
+  renderContent() {}
+
   render() {
     const params = {
       pagination: {
