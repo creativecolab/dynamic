@@ -8,52 +8,56 @@ import Sessions from '../../api/sessions';
 import Users from '../../api/users';
 import Teams from '../../api/teams';
 import Logs from '../../api/logs';
+import Questions from '../../api/questions';
+import questions from './questions';
 
 import './register-api';
 import Responses from '../../api/responses';
 
 function getPreference() {
-
   const session = Sessions.findOne({ code: 'quiz2' });
 
   // TODO: currently assumes there is only one session, need to make more general in the future
 
   if (!session) {
-    return "No session named quiz2 yet!";
+    return 'No session named quiz2 yet!';
   }
 
   const { participants } = session;
 
   if (!participants) {
-    return "No particpants for this session yet";
+    return 'No particpants for this session yet';
   }
-  
+
   // csv format
   let ret = 'pid,pref_0,rating_0,pref_1,rating_1,pref_2,rating_2\n';
 
   // get the data on the preferences of each participant
   participants.map(user_pid => {
     ret += `"${user_pid.toUpperCase()}",`;
-    var user = Users.findOne({pid: user_pid});
+    const user = Users.findOne({ pid: user_pid });
+
     if (user) {
       user.preference.map(activity_pref => {
-        activity_pref.values.map((pref,index) => {
+        activity_pref.values.map((pref, index) => {
           ret += pref.pid + ',' + pref.value;
+
           // add a comma when not on preference 3
           if (index != 2) ret += ',';
         });
+
         // handles ratings from only 2 people
         if (activity_pref.values.length < 3) ret += ',\n';
         else ret += '\n';
       });
+
       // when user exists but has no preference data (happens sometimes)
-      if (user.preference.length == 0) ret += ',,,,,\n'
+      if (user.preference.length == 0) ret += ',,,,,\n';
     } else {
       // no preference info on this user for some reason
-      ret += ',,,,,\n'
+      ret += ',,,,,\n';
     }
     // ret += '\n';
-
   });
 
   return ret;
@@ -301,11 +305,26 @@ Meteor.methods({
   }
 });
 
+function createQuestions() {
+  Questions.remove({});
+  questions.map(q => {
+    Questions.insert({
+      prompt: q,
+      default: true,
+      createdTime: new Date().getTime(),
+      viewedTimer: 0,
+      selectedCount: 0
+    });
+  });
+}
+
 /* Meteor start-up function, called once server starts */
 Meteor.startup(() => {
   // updateRoster();
 
   getPreference();
+
+  createQuestions();
 
   // handles session start/end
   const sessionCursor = Sessions.find({});

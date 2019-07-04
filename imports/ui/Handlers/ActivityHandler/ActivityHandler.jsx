@@ -6,6 +6,7 @@ import Activities from '../../../api/activities';
 import Quiz from '../../Activities/Quiz/Quiz';
 import ActivityEnums from '../../../enums/activities';
 import Loading from '../../Components/Loading/Loading';
+import TeamDiscussion from '../../Activities/TeamDiscussion/TeamDiscussion';
 
 class ActivityHandler extends Component {
   static propTypes = {
@@ -42,6 +43,18 @@ class ActivityHandler extends Component {
     return -1;
   }
 
+  getStatusStartTime(status, times) {
+    if (status === 1) return times.indvPhase;
+
+    if (status === 2) return times.teamForm;
+
+    if (status === 3) return times.teamPhase;
+
+    if (status === 4) return times.peerAssessment;
+
+    return 0;
+  }
+
   render() {
     // get props from parent
     const { activity_id, pid, sessionLength } = this.props;
@@ -56,7 +69,9 @@ class ActivityHandler extends Component {
     if (!activity) return <Loading />;
 
     // get activity props
-    const { name, status, statusStartTime } = activity;
+    const { name, status, statusStartTimes } = activity;
+
+    const statusStartTime = this.getStatusStartTime(status, statusStartTimes);
 
     // calculate progress
     const progress = activity.index + 1;
@@ -68,6 +83,18 @@ class ActivityHandler extends Component {
     if (name === ActivityEnums.name.QUIZ) {
       return (
         <Quiz
+          pid={pid}
+          activity_id={activity_id}
+          status={status}
+          statusStartTime={statusStartTime}
+          sessionLength={sessionLength}
+          progress={progress}
+          duration={duration}
+        />
+      );
+    } else if (name === ActivityEnums.name.TEAM_DISCUSSION) {
+      return (
+        <TeamDiscussion
           pid={pid}
           activity_id={activity_id}
           status={status}

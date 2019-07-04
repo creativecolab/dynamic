@@ -11,6 +11,7 @@ import Activities from '../../api/activities';
 import '../assets/_main.scss';
 import './InstructorUI.scss';
 import Quizzes from '../../api/quizzes';
+import SessionEnums from '../../enums/sessions';
 
 class InstructorUI extends Component {
   static propTypes = {
@@ -49,218 +50,223 @@ class InstructorUI extends Component {
     const session_id = Sessions.insert(
       {
         code: code.toLowerCase(),
-        timestamp: new Date().getTime(),
         participants: [],
         activities: [],
-        round: 0,
-        status: 0 // TODO: ENUM with status PENDING, DONE, IN_PROGRESS
+        status: SessionEnums.status.READY,
+        creationTime: new Date().getTime(),
+        startTime: 0,
+        endTime: 0
       },
-      data => {
-        console.log(data);
-        this.setState({
-          code: '',
-          size: 3
-        });
+      error => {
+        if (error) console.log('Something went wrong!');
+        else console.log('Session created!');
       }
     );
 
     // create 3 default activities
     const activities = [];
 
-    for (let i = 0; i < 1; i++) {
-      const activity = Activities.insert({
-        name: 'quiz',
-        index: i,
+    for (let i = 0; i < 3; i++) {
+      const activity_id = Activities.insert({
+        name: ActivityEnums.name.TEAM_DISCUSSION,
         session_id,
-        timestamp: new Date().getTime(),
-        team_size: 3, // TODO: default value?
+        teamSize: 3, // TODO: default value?
+        hasIndvPhase: false,
         durationIndv: 180,
         durationTeam: 180,
         durationOffsetIndv: 0,
         durationOffsetTeam: 0,
-        status: 0,
-        statusStartTime: 0,
-        teams: []
+        status: ActivityEnums.status.READY,
+        creationTime: new Date().getTime(),
+        statusStartTimes: {
+          indvPhase: 0,
+          teamForm: 0,
+          teamPhase: 0,
+          peerAssessment: 0
+        },
+        teams: [],
+        allTeamsFound: false,
+        endTime: 0
       });
 
-      activities.push(activity);
-
-      // Question 1
-      if (i === 0) {
-        Quizzes.insert({
-          activity_id: activity,
-          questions: [
-            {
-              type: ActivityEnums.quiz.MULTI_CHOICE,
-              prompt: 'A visual language is __________.',
-              options: [
-                {
-                  text: 'a one-off design solution',
-                  id: Random.id(),
-                  countIndv: 0,
-                  countIndvTeam: 0,
-                  correct: false
-                },
-                {
-                  text: 'a unified design system',
-                  id: Random.id(),
-                  countIndv: 0,
-                  countTeam: 0,
-                  correct: true
-                },
-                {
-                  text: 'a digital product',
-                  id: Random.id(),
-                  countIndv: 0,
-                  countTeam: 0,
-                  correct: false
-                },
-                {
-                  text: 'a set of individual atoms and static rules',
-                  id: Random.id(),
-                  countIndv: 0,
-                  countTeam: 0,
-                  correct: false
-                }
-              ]
-            },
-            {
-              type: ActivityEnums.quiz.MULTI_CHOICE,
-              prompt: 'According to Saarinen, what is the problem with re-usable atoms?',
-              options: [
-                {
-                  text: 'They require significant documentation to use properly',
-                  id: Random.id(),
-                  countIndv: 0,
-                  countIndvTeam: 0,
-                  correct: false
-                },
-                {
-                  text: 'They cannot be used across both iOS and Android',
-                  id: Random.id(),
-                  countIndv: 0,
-                  countTeam: 0,
-                  correct: false
-                },
-                {
-                  text: 'They can be used in too many ways, causing confusion',
-                  id: Random.id(),
-                  countIndv: 0,
-                  countTeam: 0,
-                  correct: true
-                },
-                {
-                  text: 'They can be difficult to understand for other employees',
-                  id: Random.id(),
-                  countIndv: 0,
-                  countTeam: 0,
-                  correct: false
-                }
-              ]
-            },
-            {
-              type: ActivityEnums.quiz.FREE_RESPONSE,
-              prompt: 'According to Saarinen, why did Airbnb create their design language system?',
-              answer: 'too few constraints; multiple stakeholders; many platforms; product exists as a continuum',
-              studentAswers: []
-            },
-            {
-              type: ActivityEnums.quiz.FREE_RESPONSE,
-              prompt:
-                'What does Saarinen mean when he says the unified design language should be an evolving ecosystem?',
-              answer:
-                'The components are defined by properties, can co-exist with others, and can evolve independently',
-              studentAswers: []
-            }
-          ]
-        });
-      } else if (i === 1) {
-        Quizzes.insert({
-          activity_id: activity,
-          prompt: 'According to Belle Beth Cooper, you can harness the power of constraints by',
-          options: [
-            {
-              text: 'Expanding your team',
-              id: Random.id(),
-              countIndv: 0,
-              countIndvTeam: 0,
-              correct: true
-            },
-            {
-              text: 'Pushing back your deadlines',
-              id: Random.id(),
-              countIndv: 0,
-              countTeam: 0,
-              correct: false
-            },
-            {
-              text: 'Focusing on one small task at a time',
-              id: Random.id(),
-              countIndv: 0,
-              countTeam: 0,
-              correct: false
-            }
-          ]
-        });
-      } else if (i === 2) {
-        Quizzes.insert({
-          activity_id: activity,
-          prompt:
-            'Sutton describes an experimental event hosted by the San Francisco Opera House entitled, "Barely Opera" that was a big success. This is because',
-          options: [
-            {
-              text: 'it upheld the traditional aesthetics of Opera culture',
-              id: Random.id(),
-              countIndv: 0,
-              countIndvTeam: 0,
-              correct: false
-            },
-            {
-              text: 'it was done cheap, quick, and in a logistically challenging location',
-              id: Random.id(),
-              countIndv: 0,
-              countTeam: 0,
-              correct: true
-            },
-            {
-              text: 'it took place in a big, formal setting',
-              id: Random.id(),
-              countIndv: 0,
-              countTeam: 0,
-              correct: false
-            }
-          ]
-        });
-      } // else {
-      //   Quizzes.insert({
-      //     activity_id: activity,
-      //     prompt: 'According to Belle Beth Cooper, you can harness the power of constraints by',
-      //     options: [
-      //       {
-      //         text: "Expanding your team",
-      //         id: Random.id(),
-      //         countIndv: 0,
-      //         countIndvTeam: 0,
-      //         correct: true
-      //       },
-      //       {
-      //         text: "Pushing back your deadlines",
-      //         id: Random.id(),
-      //         countIndv: 0,
-      //         countTeam: 0,
-      //         correct: false
-      //       },
-      //       {
-      //         text: "Focusing on one small task at a time",
-      //         id: Random.id(),
-      //         countIndv: 0,
-      //         countTeam: 0,
-      //         correct: false
-      //       }
-      //     ]
-      //   });
-      // }
+      activities.push(activity_id);
     }
+    // Question 1
+    // if (i === 0) {
+    //   Quizzes.insert({
+    //     activity_id,
+    //     questions: [
+    //       {
+    //         type: ActivityEnums.quiz.MULTI_CHOICE,
+    //         prompt: 'A visual language is __________.',
+    //         options: [
+    //           {
+    //             text: 'a one-off design solution',
+    //             id: Random.id(),
+    //             countIndv: 0,
+    //             countIndvTeam: 0,
+    //             correct: false
+    //           },
+    //           {
+    //             text: 'a unified design system',
+    //             id: Random.id(),
+    //             countIndv: 0,
+    //             countTeam: 0,
+    //             correct: true
+    //           },
+    //           {
+    //             text: 'a digital product',
+    //             id: Random.id(),
+    //             countIndv: 0,
+    //             countTeam: 0,
+    //             correct: false
+    //           },
+    //           {
+    //             text: 'a set of individual atoms and static rules',
+    //             id: Random.id(),
+    //             countIndv: 0,
+    //             countTeam: 0,
+    //             correct: false
+    //           }
+    //         ]
+    //       },
+    //       {
+    //         type: ActivityEnums.quiz.MULTI_CHOICE,
+    //         prompt: 'According to Saarinen, what is the problem with re-usable atoms?',
+    //         options: [
+    //           {
+    //             text: 'They require significant documentation to use properly',
+    //             id: Random.id(),
+    //             countIndv: 0,
+    //             countIndvTeam: 0,
+    //             correct: false
+    //           },
+    //           {
+    //             text: 'They cannot be used across both iOS and Android',
+    //             id: Random.id(),
+    //             countIndv: 0,
+    //             countTeam: 0,
+    //             correct: false
+    //           },
+    //           {
+    //             text: 'They can be used in too many ways, causing confusion',
+    //             id: Random.id(),
+    //             countIndv: 0,
+    //             countTeam: 0,
+    //             correct: true
+    //           },
+    //           {
+    //             text: 'They can be difficult to understand for other employees',
+    //             id: Random.id(),
+    //             countIndv: 0,
+    //             countTeam: 0,
+    //             correct: false
+    //           }
+    //         ]
+    //       },
+    //       {
+    //         type: ActivityEnums.quiz.FREE_RESPONSE,
+    //         prompt: 'According to Saarinen, why did Airbnb create their design language system?',
+    //         answer: 'too few constraints; multiple stakeholders; many platforms; product exists as a continuum',
+    //         studentAswers: []
+    //       },
+    //       {
+    //         type: ActivityEnums.quiz.FREE_RESPONSE,
+    //         prompt:
+    //           'What does Saarinen mean when he says the unified design language should be an evolving ecosystem?',
+    //         answer:
+    //           'The components are defined by properties, can co-exist with others, and can evolve independently',
+    //         studentAswers: []
+    //       }
+    //     ]
+    //   });
+    // } else if (i === 1) {
+    //   Quizzes.insert({
+    //     activity_id: activity,
+    //     prompt: 'According to Belle Beth Cooper, you can harness the power of constraints by',
+    //     options: [
+    //       {
+    //         text: 'Expanding your team',
+    //         id: Random.id(),
+    //         countIndv: 0,
+    //         countIndvTeam: 0,
+    //         correct: true
+    //       },
+    //       {
+    //         text: 'Pushing back your deadlines',
+    //         id: Random.id(),
+    //         countIndv: 0,
+    //         countTeam: 0,
+    //         correct: false
+    //       },
+    //       {
+    //         text: 'Focusing on one small task at a time',
+    //         id: Random.id(),
+    //         countIndv: 0,
+    //         countTeam: 0,
+    //         correct: false
+    //       }
+    //     ]
+    //   });
+    // } else if (i === 2) {
+    //   Quizzes.insert({
+    //     activity_id: activity,
+    //     prompt:
+    //       'Sutton describes an experimental event hosted by the San Francisco Opera House entitled, "Barely Opera" that was a big success. This is because',
+    //     options: [
+    //       {
+    //         text: 'it upheld the traditional aesthetics of Opera culture',
+    //         id: Random.id(),
+    //         countIndv: 0,
+    //         countIndvTeam: 0,
+    //         correct: false
+    //       },
+    //       {
+    //         text: 'it was done cheap, quick, and in a logistically challenging location',
+    //         id: Random.id(),
+    //         countIndv: 0,
+    //         countTeam: 0,
+    //         correct: true
+    //       },
+    //       {
+    //         text: 'it took place in a big, formal setting',
+    //         id: Random.id(),
+    //         countIndv: 0,
+    //         countTeam: 0,
+    //         correct: false
+    //       }
+    //     ]
+    //   });
+    // } // else {
+    //   Quizzes.insert({
+    //     activity_id: activity,
+    //     prompt: 'According to Belle Beth Cooper, you can harness the power of constraints by',
+    //     options: [
+    //       {
+    //         text: "Expanding your team",
+    //         id: Random.id(),
+    //         countIndv: 0,
+    //         countIndvTeam: 0,
+    //         correct: true
+    //       },
+    //       {
+    //         text: "Pushing back your deadlines",
+    //         id: Random.id(),
+    //         countIndv: 0,
+    //         countTeam: 0,
+    //         correct: false
+    //       },
+    //       {
+    //         text: "Focusing on one small task at a time",
+    //         id: Random.id(),
+    //         countIndv: 0,
+    //         countTeam: 0,
+    //         correct: false
+    //       }
+    //     ]
+    //   });
+    // }
+    //}
 
     // add new activity to this session, necessary? good?
     Sessions.update(session_id, {
@@ -270,13 +276,13 @@ class InstructorUI extends Component {
     });
 
     //track the session that was created
-    const new_log = Logs.insert({
-      log_type: 'Session Created',
-      code,
-      timestamp: new Date().getTime()
-    });
+    // const new_log = Logs.insert({
+    //   log_type: 'Session Created',
+    //   code,
+    //   timestamp: new Date().getTime()
+    // });
 
-    console.log(new_log);
+    // console.log(new_log);
   }
 
   //update the code state so we know where to go

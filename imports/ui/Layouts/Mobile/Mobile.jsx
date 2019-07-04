@@ -81,11 +81,7 @@ export default class Mobile extends Component {
     const { clockStartTime, clockDuration } = this.props;
     const { hasFooter, hasNavbar, hasTimer } = this.props;
     const { children } = this.props;
-    const { questionToggle, questionNumber, questionsLength } = this.props; // keeps track of what question we're on if this is a quiz
-
     const { loading } = this.state;
-
-
 
     return (
       <div className="main">
@@ -94,16 +90,7 @@ export default class Mobile extends Component {
             <div className="progress-status">
               <div className="activity-name">{activityName.toUpperCase()}</div>
               <div className="session-progress">
-                {(questionToggle === 1) &&
-                  <div>
-                    Question {questionNumber} out of {questionsLength}
-                  </div>
-                }
-                {(questionToggle === 0) &&
-                  <div>
-                    Activity {sessionStatus} out of {sessionLength}
-                  </div>
-                }
+                Round {sessionStatus} out of {sessionLength}
               </div>
             </div>
             {hasTimer && <MobileTimer startTime={clockStartTime} duration={clockDuration} />}
