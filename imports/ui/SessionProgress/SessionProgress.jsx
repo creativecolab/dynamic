@@ -58,7 +58,6 @@ class SessionProgress extends Component {
     Sessions.update(this.props.session._id, {
       $set: {
         status: 1,
-        round: 1,
         startTime: new Date().getTime()
       }
     });
@@ -83,17 +82,16 @@ class SessionProgress extends Component {
     if (currStatus + 1 != 6) {
       console.log('Activity status of ' + this.props.currentActivity.name + ' advanced to ' + (currStatus + 1));
 
-      // to fix clock, first set statusStartTime, then status!
-      Activities.update(
-        this.props.currentActivity._id,
-        {
-          $set: { statusStartTime: new Date().getTime() }
-        },
-        () => {
-          Activities.update(this.props.currentActivity._id, {
-            $set: { status: currStatus + 1 }
-          });
+      Meteor.call('activities.updateStatus', [{
+        activity_id: session.activities[0]
+      }], (err, res) => {
+        if (err) {
+          alert(err);
+        } else {
+          // success!
+          console.log('Starting Activity Status ' + (currStatus + 1));
         }
+      }
       );
     } else {
       console.log('Can no longer advance the status of ' + this.props.currentActivity.name);

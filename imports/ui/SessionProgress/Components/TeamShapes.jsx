@@ -20,8 +20,8 @@ class TeamShapes extends Component {
             return (
               <div key={team._id} className="shape-box">
                 <img
-                  src={'/shapes/' + team.shape + '-solid-' + team.shapeColor + '.png'}
-                  alt={team.shapeColor + ' ' + team.shape}
+                  src={'/shapes/' + team.shape + '-solid-' + team.color + '.png'}
+                  alt={team.color + ' ' + team.shape}
                 />
               </div>
             );
@@ -29,8 +29,8 @@ class TeamShapes extends Component {
             return (
               <div key={team._id} className="shape-box">
                 <img
-                  src={'/shapes/' + team.shape + '-outline-' + team.shapeColor + '.png'}
-                  alt={team.shapeColor + ' ' + team.shape}
+                  src={'/shapes/' + team.shape + '-outline-' + team.color + '.png'}
+                  alt={team.color + ' ' + team.shape}
                 />
               </div>
             );
