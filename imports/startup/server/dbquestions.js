@@ -1,4 +1,4 @@
-const questions = [
+const dbquestions = [
   'Share what you did this summer.',
   'Where do you see yourself five years in the future?',
   'If you could travel anywhere in the world, where would you travel?',
@@ -50,4 +50,4 @@ const questions = [
   'If you were any kitchen utensil, which would you be and why?'
 ];
 
-export default questions;
+// export default dbquestions;
