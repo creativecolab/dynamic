@@ -33,7 +33,7 @@ export default class TeamDiscussion extends Component {
     return a;
   }
 
-  renderContent() { }
+  renderContent() {}
 
   render() {
     const { questions } = this.state;
@@ -50,17 +50,8 @@ export default class TeamDiscussion extends Component {
         hasFooter={false}
       >
         <div className="slider-main">
-          <ReactSwipe className="carousel" swipeOptions={{ continuous: false }} ref={el => (reactSwipeEl = el)}>
-            {questions.map(q => {
-              return (
-                <div className="question-card-wrapper" key={q._id}>
-                  <div className="question-card">{q.prompt}</div>
-                </div>
-              );
-            })}
-          </ReactSwipe>
-          <button onClick={() => reactSwipeEl.next()}>Next</button>
-          <button onClick={() => reactSwipeEl.prev()}>Previous</button>{' '}
+           <button onClick={() => reactSwipeEl.next()}>Next</button>
+          <button onClick={() => reactSwipeEl.prev()}>Previous</button>
         </div>
       </Mobile>
     );

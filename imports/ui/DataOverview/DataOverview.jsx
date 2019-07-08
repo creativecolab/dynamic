@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 import { Chart } from 'react-google-charts';
-import Loading from '../Components/Loading/Loading';
+
 import Responses from '../../api/responses';
 import Users from '../../api/users';
 import Teams from '../../api/teams';
 import Sessions from '../../api/sessions';
-import Tags from '../Components/Tags/Tags';
 import Quizzes from '../../api/quizzes';
+
+import Loading from '../Components/Loading/Loading';
 
 import './DataOverview.scss';
 

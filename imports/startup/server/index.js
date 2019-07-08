@@ -209,25 +209,19 @@ function updateRoster() {
 
 /* Meteor methods (server-side function, mostly database work) */
 Meteor.methods({
-  'activities.updateStatus': function({ activity_id }) {
+  'activities.updateStatus': function(activity_id) {
     try {
-      const activity = Activities.findOne({ activity_id });
-
-      console.log(activity);
+      const activity = Activities.findOne(activity_id);
 
       const currentStatus = activity.status;
-
-      console.log(currentStatus);
 
       // increment the status, get the appropriate timestamp, and prepare for next status
       switch (currentStatus) {
         case 0:
           Activities.update(activity_id, {
             $set: {
-              status: 1,
-              statusStartTimes: {
-                indvPhase: new Date().getTime()
-              }
+              status: currentStatus + 1,
+              'statusStartTimes.indvPhase': new Date().getTime()
             }
           });
 
@@ -236,9 +230,7 @@ Meteor.methods({
           Activities.update(activity_id, {
             $set: {
               status: currentStatus + 1,
-              statusStartTimes: {
-                teamForm: new Date().getTime()
-              },
+              'statusStartTimes.teamForm': new Date().getTime(),
               allTeamsFound: false
             }
           });
@@ -248,9 +240,7 @@ Meteor.methods({
           Activities.update(activity_id, {
             $set: {
               status: currentStatus + 1,
-              statusStartTimes: {
-                teamPhase: new Date().getTime()
-              }
+              'statusStartTimes.teamPhase': new Date().getTime()
             }
           });
 
@@ -259,9 +249,7 @@ Meteor.methods({
           Activities.update(activity_id, {
             $set: {
               status: currentStatus + 1,
-              statusStartTimes: {
-                peerAssessment: new Date().getTime()
-              }
+              'statusStartTimes.peerAssessment': new Date().getTime()
             }
           });
 
@@ -341,25 +329,14 @@ Meteor.startup(() => {
         // start first activity
         const session = Sessions.findOne(_id);
 
-        console.log(session);
-        console.log(session.activities);
-
-        Meteor.call(
-          'activities.updateStatus',
-          [
-            {
-              activity_id: session.activities[0]
-            }
-          ],
-          (err, res) => {
-            if (err) {
-              alert(err);
-            } else {
-              // success!
-              console.log('Starting Activity Status ' + res);
-            }
+        Meteor.call('activities.updateStatus', session.activities[0], (err, res) => {
+          if (err) {
+            alert(err);
+          } else {
+            // success!
+            console.log('\nStarting Activity Status ' + res);
           }
-        );
+        });
 
         // TODO: Update logs
         Logs.insert({
@@ -405,22 +382,14 @@ Meteor.startup(() => {
             allTeamsFound: true
           }
         });
-        Meteor.call(
-          'activities.updateStatus',
-          [
-            {
-              activity_id
-            }
-          ],
-          (err, res) => {
-            if (err) {
-              alert(err);
-            } else {
-              // success!
-              console.log('Starting Activity Status ' + res);
-            }
+        Meteor.call('activities.updateStatus', activity_id, (err, res) => {
+          if (err) {
+            alert(err);
+          } else {
+            // success!
+            console.log('Starting Activity Status ' + res);
           }
-        );
+        });
       }
     }
   });
@@ -807,21 +776,13 @@ Meteor.startup(() => {
   const endPhase = Meteor.bindEnvironment((activity_id, status) => {
     if (debug) return;
 
-    Meteor.call(
-      'activities.updateStatus',
-      [
-        {
-          activity_id
-        }
-      ],
-      (err, res) => {
-        if (err) {
-          alert(err);
-        } else {
-          // success!
-          console.log('Starting Activity Status ' + res);
-        }
+    Meteor.call('activities.updateStatus', activity_id, (err, res) => {
+      if (err) {
+        alert(err);
+      } else {
+        // success!
+        console.log('Starting Activity Status ' + res);
       }
-    );
+    });
   });
 });

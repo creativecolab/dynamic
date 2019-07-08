@@ -11,7 +11,7 @@ import { Redirect } from 'react-router-dom'
 class SessionListItem extends Component {
   static propTypes = {
     code: PropTypes.string.isRequired,
-    timestamp: PropTypes.number.isRequired,
+    creationTime: PropTypes.number.isRequired,
     status: PropTypes.number.isRequired
   }
 

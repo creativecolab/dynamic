@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import Wrapper from '../Wrapper/Wrapper';
+
 import Sessions from '../../api/sessions';
 import Users from '../../api/users';
-import '../assets/_main.scss';
-import './Landing.scss';
+
 import Tags from '../Components/Tags/Tags';
+import Wrapper from '../Wrapper/Wrapper';
 import JoinSection from './Components/JoinSection/JoinSection';
 import Mobile from '../Layouts/Mobile/Mobile';
 import TextInput from '../Components/TextInput/TextInput';
+
+import '../assets/_main.scss';
+import './Landing.scss';
 
 export default class Landing extends Component {
   constructor(props) {
