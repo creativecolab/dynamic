@@ -31,18 +31,24 @@ class Session extends Component {
     // add new activity to db
     const activity = Activities.insert({
       name,
-      index: this.props.activities.length,
       session_id,
-      timestamp: new Date().getTime(),
-      team_size: 3, // TODO: default value?
-      status: 0,
+      teamSize: 3, // TODO: default value?
+      hasIndvPhase: true, // TODO: Make customizable and utilize this
       durationIndv: 20,
       durationTeam: 30,
       durationOffsetIndv: 5,
       durationOffsetTeam: 10,
-      startTime: 0,
-      statusStartTime: 0,
-      teams: []
+      status: 0,
+      creationTime: new Date().getTime(),
+      statusStartTimes: {
+        indvPhase: 0,
+        teamForm: 0,
+        teamPhase: 0,
+        peerAssessment: 0
+      },
+      teams: [],
+      allTeamsFound: false,
+      endTime: 0
     });
 
     // add new activity to this session

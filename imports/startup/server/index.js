@@ -209,23 +209,82 @@ function updateRoster() {
 
 /* Meteor methods (server-side function, mostly database work) */
 Meteor.methods({
-  'activity.start': function({ activity_id }) {
-    // new SimpleSchema({
-    //   team_id: { type: String },
-    //   username: { type: String }
-    // }).validate({ team_id, username });
+  'activities.updateStatus': function({ activity_id }) {
 
-    console.log(Activities.findOne(activity_id));
-    // Teams.rawCollection().update(team_id,
-    //   { $set: { "members.$[elem].confirmed": true } },
-    //   {
-    //     arrayFilters: [ { "elem.username": username } ]
-    //   }
-    // );
-    // console.log(Teams.findOne(team_id));
+    try {
+      const activity = Activities.findOne({activity_id});
+
+      console.log(activity);
+
+      const currentStatus = activity.status;
+
+      console.log(currentStatus);
+
+      // increment the status, get the appropriate timestamp, and prepare for next status
+      switch(currentStatus) {
+        case 0:
+          Activities.update(activity_id, {
+            $set: {
+              status: 1,
+              statusStartTimes: {
+                indvPhase: new Date().getTime()
+              }
+            }
+          }, (err) => {
+            console.log(err);
+          });
+          return;
+        case 1:
+          Activities.update(activity_id, {
+            $set: {
+              status: currentStatus+1,
+              statusStartTimes: {
+                teamForm: new Date().getTime()
+              },
+              allTeamsFound: false
+            }
+          });
+          return;
+        case 2:
+          Activities.update(activity_id, {
+            $set: {
+              status: currentStatus+1,
+              statusStartTimes: {
+                teamPhase: new Date().getTime()
+              }
+            }
+          });
+          return;
+        case 3:
+          Activities.update(activity_id, {
+            $set: {
+              status: currentStatus+1,
+              statusStartTimes: {
+                peerAssessment: new Date().getTime()
+              }
+            }
+          });
+          return;
+        case 4:
+          Activities.update(activity_id, {
+            $set: {
+              status: currentStatus+1,
+              endTime: new Date().getTime()
+            }
+          });
+          return;
+        default:
+          console.log("No longer incrementing");
+          return;
+      } 
+    }
+    catch (error) {
+      console.log(error);
+    }
+
   },
 
-  'users.addPoints': function({ user_id, session_id, points }) {
+  'users.addPoints': function({ user_id, session_id, points }) { //TODO: points_history changed to sessionHistory
     Users.update(
       { _id: user_id, 'points_history.session': session_id },
       {
@@ -261,8 +320,8 @@ Meteor.methods({
 
 /* Meteor start-up function, called once server starts */
 Meteor.startup(() => {
-  // update roster on startup
   // updateRoster();
+
   getPreference();
 
   // createQuestions();
@@ -279,15 +338,23 @@ Meteor.startup(() => {
       if (update.status === 1) {
         // start first activity
         const session = Sessions.findOne(_id);
+        console.log(session);
+        console.log(session.activities);
 
-        Activities.update(session.activities[0], {
-          $set: {
-            status: 1,
-            startTime: new Date().getTime(),
-            statusStartTime: new Date().getTime()
+        Meteor.call('activities.updateStatus', [{
+          activity_id: session.activities[0]
+        }]
+          , (err, res) => {
+            if (err) {
+              alert(err);
+            } else {
+              // success!
+              console.log('Starting Activity Status 1');
+            }
           }
-        });
+        );
 
+        // TODO: Update logs
         Logs.insert({
           status: 1,
           message: 'Session started',
@@ -301,6 +368,7 @@ Meteor.startup(() => {
   // speeds up activity based on teams ready
   Teams.find({}).observeChanges({
     changed(_id, update) {
+
       // set team formation time
       if (update.members) {
         // if all confirmed, set team formation time
@@ -310,7 +378,7 @@ Meteor.startup(() => {
 
           Teams.update(team._id, {
             $set: {
-              teamFormationTime: new Date().getTime() - activity.statusStartTime // TODO change where we get status start time
+              teamFormationTime: new Date().getTime() - activity.statusStartTimes.indvPhase 
             }
           });
         }
@@ -328,10 +396,20 @@ Meteor.startup(() => {
       if (num_not_confirmed === 0 && Activities.findOne(activity_id).status === 2) {
         Activities.update(activity_id, {
           $set: {
-            status: 3,
-            statusStartTime: new Date().getTime()
+            allTeamsFound: true
           }
         });
+        Meteor.call('activities.updateStatus', [{
+          activity_id: activity_id
+        }], (err, res) => {
+            if (err) {
+              alert(err);
+            } else {
+              // success!
+              console.log('Starting Activity Status 3');
+            }
+          }
+        );
       }
     }
   });
@@ -361,7 +439,7 @@ Meteor.startup(() => {
 
   activitiesCursor.observeChanges({
     changed(_id, update) {
-      console.log(_id + ' updated. [Activity]');
+      console.log('[Activity] '+ _id + ' updated.');
       console.log(update);
 
       // get duration
@@ -375,12 +453,13 @@ Meteor.startup(() => {
 
       // let input phase last for 120 seconds the first round, 60 seconds other rounds
       if (update.status === 1) {
-        console.log('[ACTIVITY STARTED]');
-        this.timer1 = setTimeout(() => endPhase(_id, 2), duration * 1000);
+        console.log('[INDIVIDUAL PHASE]');
+        this.timer1 = setTimeout(() => endPhase(_id, 2), duration * 1000); //TODO: MAKE THIS DURATION NOT HARDCODED
       }
 
-      // start activity! aka form teams
+      // team formation
       if (update.status === 2) {
+        console.log('[TEAM FORMATION PHASE]');
         // helper function to shuffle array
         // reference: https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array
         const shuffle = a => {
@@ -396,7 +475,6 @@ Meteor.startup(() => {
         // get snapshot of participants in session
         const session_id = Activities.findOne(_id).session_id;
         const participants = Sessions.findOne(session_id).participants;
-        // console.log("Participants: " + participants);
 
         // TODO: get these from instructor
         const MAX_TEAM_SIZE = 3;
@@ -404,29 +482,28 @@ Meteor.startup(() => {
 
         //--- SET COLORS ---//
 
-        // set of team colors
-        const colors = [];
+        // // set of team colors
+        // const colors = [];
 
-        // helper method to generate a new color
-        const getRandomColor = () => {
-          const letters = '123456789A';
-          let color = '#';
+        // // helper method to generate a new color
+        // const getRandomColor = () => {
+        //   const letters = '123456789A';
+        //   let color = '#';
 
-          for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 10)];
-          }
+        //   for (let i = 0; i < 6; i++) {
+        //     color += letters[Math.floor(Math.random() * 10)];
+        //   }
 
-          return color;
-        };
+        //   return color;
+        // };
 
-        // make array of random colors
-        // TODO: get MAX_NUM_TEAMS from instructor!
-        for (let i = 0; i < MAX_NUM_TEAMS; i++) {
-          const newColor = getRandomColor();
+        // // make array of random colors
+        // for (let i = 0; i < MAX_NUM_TEAMS; i++) {
+        //   const newColor = getRandomColor();
 
-          if (!colors.includes(newColor)) colors.push(newColor);
-          else i--;
-        }
+        //   if (!colors.includes(newColor)) colors.push(newColor);
+        //   else i--;
+        // }
 
         const shapes = shuffle(['circle', 'cross', 'moon', 'square', 'star', 'sun', 'heart', 'car', 'triangle']);
         const shapeColors = shuffle(['blue', 'green', 'orange', 'red']);
@@ -437,201 +514,226 @@ Meteor.startup(() => {
             colored_shapes.push({ shape: shapes[i], color: shapeColors[j] });
           }
         }
-        // shuffle(colored_shapes);
+        shuffle(colored_shapes);
 
-        //--- SEPARATE EVERYONE BY SECTION ---//
-        const session_sections = {};
+        //--- SEPARATE EVERYONE BY SECTION ---// //TODO: Currently deprecated (not using sections)
+        // const session_sections = {};
 
-        for (let j = 0; j < participants.length; j++) {
-          const participant_section = Users.findOne({ pid: participants[j] }).section;
+        // for (let j = 0; j < participants.length; j++) {
+        //   const participant_section = Users.findOne({ pid: participants[j] }).section;
 
-          if (!session_sections.hasOwnProperty(participant_section.toLowerCase())) {
-            //first time seeing this section
-            session_sections[participant_section.toLowerCase()] = [];
-          }
+        //   if (!session_sections.hasOwnProperty(participant_section.toLowerCase())) {
+        //     //first time seeing this section
+        //     session_sections[participant_section.toLowerCase()] = [];
+        //   }
 
-          session_sections[participant_section.toLowerCase()].push(participants[j]);
-        }
-        // console.log(session_sections);
+        //   session_sections[participant_section.toLowerCase()].push(participants[j]);
+        // }
 
         // --- Order Object based on the size of sections (smaller sections last) --- //
-        const sortable = [];
+        // const sortable = [];
 
-        for (const section in session_sections) {
-          sortable.push([section, session_sections[section]]);
-        }
-        // console.log("Unsorted: " + sortable);
+        // for (const section in session_sections) {
+        //   sortable.push([section, session_sections[section]]);
+        // }
+        // // console.log("Unsorted: " + sortable);
 
-        sortable.sort(function(section1, section2) {
-          return section1[1].length < section2[1].length;
-        });
-        // console.log("Sorted: " + sortable);
+        // sortable.sort(function(section1, section2) {
+        //   return section1[1].length < section2[1].length;
+        // });
+        // // console.log("Sorted: " + sortable);
 
-        //--- FORM TEAMS ---//
+        // //--- FORM TEAMS ---//
+        // const teams = [];
+        // let oldTeam = [];
+        // let olderTeam = [];
+        // let team_id = '';
+        // let older_team_id = '';
+
+        // for (const section in session_sections) {  <-- deprecated code
+        //   // make teams based on sections
+        //   if (session_sections.hasOwnProperty(section)) {
+        //     // console.log(section + " -> " + session_sections[section]);
+        //     // used to keep track of current and older teams for database
+        //     const section_members = session_sections[section];
+
+        //     shuffle(section_members); 
+        //     //console.log("Participants: " + section_members);
+
+        //     // form teams, teams of 3
+        //     let newTeam = [section_members[0]];
+
+        //array to hold the team_ids of all the created teams
         const teams = [];
+
+        //array to hold the current team being built
+        let newTeam = [participants[0]];
+
+        //arrays and saved team_ids to saved previously built teams in the case of uneven sizings
         let oldTeam = [];
         let olderTeam = [];
         let team_id = '';
         let older_team_id = '';
 
-        for (const section in session_sections) {
-          // make teams based on sections
-          if (session_sections.hasOwnProperty(section)) {
-            // console.log(section + " -> " + session_sections[section]);
-            // used to keep track of current and older teams for database
-            const section_members = session_sections[section];
+        // team formation process
+        for (let i = 1; i < participants.length; i++) {
+          // completed a new team
+          if (i % MAX_TEAM_SIZE == 0) {
+            // second most-recent team created
+            older_team_id = team_id;
+            // most recent team created
+            team_id = Teams.insert({
+              activity_id: _id,
+              teamCreated: new Date().getTime(),
+              members: newTeam.map(pid => ({ pid, confirmed: false })),
+              color: colored_shapes[teams.length].color,
+              shape: colored_shapes[teams.length].shape,
+              responses: []
+            });
 
-            shuffle(section_members); // TODO -- maybe shuffle after grouping into sections
-
-            //shuffle(section_members); // TODO -- maybe shuffle after grouping into sections
-            //console.log("Participants: " + section_members);
-
-            // form teams, teams of 3
-            let newTeam = [section_members[0]];
-
-            for (let i = 1; i < section_members.length; i++) {
-              // completed a new team
-              // TODO: get MAX_TEAM_SIZE from instructor!
-              if (i % MAX_TEAM_SIZE == 0) {
-                // second most-recent team created
-                older_team_id = team_id;
-                // most recent team created
-                team_id = Teams.insert({
-                  activity_id: _id,
-                  timestamp: new Date().getTime(),
-                  members: newTeam.map(pid => ({ pid, confirmed: false })),
-                  color: colors[teams.length],
-                  shape: colored_shapes[teams.length].shape,
-                  shapeColor: colored_shapes[teams.length].color,
-                  responses: []
-                });
-
-                //update the users teammates
-                for (let k = 1; k < newTeam.length; k++) {
-                  Users.update(
-                    { pid: newTeam[k] },
-                    {
-                      $set: {
-                        teammates: newTeam.filter(teammate => teammate != newTeam[k])
-                      }
-                    }
-                  );
-                }
-
-                // keep track of older teams just in case
-                olderTeam = oldTeam;
-                oldTeam = newTeam;
-
-                // save this added team
-                teams.push(team_id);
-
-                //onto next member
-                newTeam = [section_members[i]];
-              }
-
-              // add new member to team
-              else {
-                newTeam.push(section_members[i]);
-              }
-            }
-
-            // only 1 participant left, create team of MAX_TEAM_SIZE + 1
-            if (newTeam.length === 1 && teams.length > 0 && oldTeam.length < 4) {
-              Teams.update(team_id, {
-                $push: {
-                  members: { pid: newTeam[0], confirmed: false }
-                }
-              });
-
-              //update the users teammates
-              oldTeam.push(newTeam[0]);
+            //update the users teammates
+            for (let k = 0; k < newTeam.length; k++) {
               Users.update(
-                { pid: newTeam[0] },
+                { pid: newTeam[k] },
                 {
                   $push: {
-                    teammates: oldTeam.filter(teammate => teammate != newTeam[0])
-                  }
-                }
-              );
-            }
-
-            // only 2 participants left, create 2 teams of MAX_TEAM_SIZE + 1
-            else if (newTeam.length === 2 && teams.length > 1 && oldTeam.length < 4 && olderTeam.length < 4) {
-              // add the first user
-              Teams.update(team_id, {
-                $push: {
-                  members: { pid: newTeam[0], confirmed: false }
-                }
-              });
-              //update the users teammates
-              oldTeam.push(newTeam[0]);
-              Users.update(
-                { pid: newTeam[0] },
-                {
-                  $push: {
-                    teammates: oldTeam.filter(teammate => teammate != newTeam[0])
-                  }
-                }
-              );
-
-              // add the second user
-              Teams.update(older_team_id, {
-                $push: {
-                  members: { pid: newTeam[1], confirmed: false }
-                }
-              });
-              //update the users teammates
-              olderTeam.push(newTeam[1]);
-              Users.update(
-                { pid: newTeam[1] },
-                {
-                  $push: {
-                    teammates: olderTeam.filter(teammate => teammate != newTeam[1])
-                  }
-                }
-              );
-            }
-
-            // last team is of MAX_TEAM_SIZE or less
-            else if (newTeam.length <= MAX_TEAM_SIZE) {
-              team_id = Teams.insert({
-                activity_id: _id,
-                timestamp: new Date().getTime(),
-                members: newTeam.map(pid => ({ pid, confirmed: false })),
-                color: colors[teams.length],
-                shape: colored_shapes[teams.length].shape,
-                shapeColor: colored_shapes[teams.length].color,
-                responses: []
-              });
-
-              // TODO make sure old team is tracked
-              // keep track of older teams just in case
-              olderTeam = oldTeam;
-              oldTeam = newTeam;
-
-              //update the users teammates
-              for (let k = 1; k < newTeam.length; k++) {
-                Users.update(
-                  { pid: newTeam[k] },
-                  {
-                    $push: {
-                      teammates: newTeam.filter(teammate => teammate != newTeam[k])
+                    teamHistory: {
+                      team: team_id,
+                      activity: _id
                     }
                   }
-                );
-              }
-
-              teams.push(team_id);
+                }
+              );
             }
+
+            // keep track of older teams just in case
+            olderTeam = oldTeam;
+            oldTeam = newTeam;
+
+            // save this added team
+            teams.push(team_id);
+
+            //onto next member
+            newTeam = [participants[i]];
+          }
+
+          // add new member to team
+          else {
+            newTeam.push(participants[i]);
           }
         }
+
+        // only 1 participant left, create team of MAX_TEAM_SIZE + 1 because there is already a team of 3
+        if (newTeam.length === 1 && teams.length > 0 && oldTeam.length < 4) {
+          // update the team in database
+          Teams.update(team_id, {
+            $push: {
+              members: { pid: newTeam[0], confirmed: false }
+            }
+          });
+          // update this odd-one out user's team history
+          Users.update(
+            { pid: newTeam[0] },
+            {
+              $push: {
+                teamHistory: { team: team_id, activity: _id }
+              }
+            }
+          );
+         
+          oldTeam.push(newTeam[0]);
+
+          // //update the users teammates (don't need this anymore)
+          // Users.update(
+          //   { pid: newTeam[0] },
+          //   {
+          //     $push: {
+          //       teammates: oldTeam.filter(teammate => teammate != newTeam[0])
+          //     }
+          //   }
+          // );
+        }
+
+        // only 2 participants left, create 2 teams of MAX_TEAM_SIZE + 1
+        else if (newTeam.length === MAX_TEAM_SIZE-1 && teams.length > 1 
+                && oldTeam.length < MAX_TEAM_SIZE+1 && olderTeam.length < MAX_TEAM_SIZE+1) {
+          // add the first user to an older team
+          Teams.update(team_id, {
+            $push: {
+              members: { pid: newTeam[0], confirmed: false }
+            }
+          });
+          // update the first odd-one-out user's team history
+          Users.update(
+            { pid: newTeam[0] },
+            {
+              $push: {
+                teamHistory: { team: team_id, activity: _id }
+
+              }
+            }
+          );
+          // keep track of this now team of 4
+          oldTeam.push(newTeam[0]);
+
+          // add the second user
+          Teams.update(older_team_id, {
+            $push: {
+              members: { pid: newTeam[1], confirmed: false }
+            }
+          });
+          // update the second odd-one-out user's team history
+          Users.update(
+            { pid: newTeam[1] },
+            {
+              $push: {
+                teamHistory: { team: older_team_id, activity: _id }
+              }
+            }
+          );
+          //also keep track of this now team of 4
+          olderTeam.push(newTeam[1]);
+        }
+
+        // last team is of MAX_TEAM_SIZE or less and there aren't enough other teams to build proper teams of MAX_SIZE+1
+        else if (newTeam.length <= MAX_TEAM_SIZE) {
+          team_id = Teams.insert({
+            activity_id: _id,
+            teamCreated: new Date().getTime(),
+            members: newTeam.map(pid => ({ pid, confirmed: false })),
+            color: colored_shapes[teams.length].color,
+            shape: colored_shapes[teams.length].shape,
+            responses: []
+          });
+
+          // keep track of older teams just in case
+          olderTeam = oldTeam;
+          oldTeam = newTeam;
+
+          //update each of these left-out users' team histories
+          for (let k = 0; k < newTeam.length; k++) {
+            Users.update(
+              { pid: newTeam[k] },
+              {
+                $push: {
+                  teamHistory: { team: team_id, activity: _id }
+                }
+              }
+            );
+          }
+
+          teams.push(team_id);
+        }
+        //   }
+        // }
 
         // start and update activity on database
         Activities.update(
           _id,
           {
             $set: {
-              teams
+              teams,
+              allTeamsFound: false
             }
           },
           error => {
@@ -646,9 +748,9 @@ Meteor.startup(() => {
 
       // discussion time!
       if (update.status === 3) {
-        console.log('[DISCUSSION TIME]');
+        console.log('[TEAM PHASE]');
         clearTimeout(this.timer1);
-        this.timer2 = setTimeout(() => endPhase(_id, 4), duration * 1000);
+        this.timer2 = setTimeout(() => endPhase(_id, 4), duration * 1000); // move on to next phase
       }
 
       // activity just ended
@@ -688,49 +790,19 @@ Meteor.startup(() => {
 
   // called to end an activity phase
   const endPhase = Meteor.bindEnvironment((activity_id, status) => {
-    console.log('Starting status ' + status);
 
     if (debug) return;
 
-    Activities.update(
-      activity_id,
-      {
-        $set: {
-          statusStartTime: new Date().getTime()
+    Meteor.call('activities.updateStatus', [{
+      activity_id: activity_id
+    }], (err, res) => {
+        if (err) {
+          alert(err);
+        } else {
+          // success!
+          console.log('Starting Activity Status ' + status);
         }
-      },
-      () => {
-        Activities.update(activity_id, {
-          $set: {
-            status
-          }
-        });
       }
-    );
-  });
+    );  });
 });
 
-// function insertLink(title, url) {
-//   Links.insert({ title, url, createdAt: new Date() });
-// }
-// if (Links.find().count() === 0) {
-//   insertLink(
-//     'Do the Tutorial',
-//     'https://www.meteor.com/tutorials/react/creating-an-app'
-//   );
-
-//   insertLink(
-//     'Follow the Guide',
-//     'http://guide.meteor.com'
-//   );
-
-//   insertLink(
-//     'Read the Docs',
-//     'https://docs.meteor.com'
-//   );
-
-//   insertLink(
-//     'Discussions',
-//     'https://forums.meteor.com'
-//   );
-// }

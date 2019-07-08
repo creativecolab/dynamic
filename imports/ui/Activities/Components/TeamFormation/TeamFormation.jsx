@@ -105,13 +105,13 @@ class TeamFormation extends Component {
 
     if (!team) return <Loading />;
 
-    const { shape, shapeColor } = team;
+    const { shape, color } = team;
 
     return (
       <div className="team-formation-main">
         <div className="shape-main">
           <div>Find others with this shape and color</div>
-          <img className="shape-img" src={`/shapes/${shape}-solid-${shapeColor}.png`} alt={`${shapeColor} ${shape}`} />
+          <img className="shape-img" src={`/shapes/${shape}-solid-${color}.png`} alt={`${color} ${shape}`} />
         </div>
         {this.renderTeammates()}
       </div>
