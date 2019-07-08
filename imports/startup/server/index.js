@@ -210,9 +210,8 @@ function updateRoster() {
 /* Meteor methods (server-side function, mostly database work) */
 Meteor.methods({
   'activities.updateStatus': function({ activity_id }) {
-
     try {
-      const activity = Activities.findOne({activity_id});
+      const activity = Activities.findOne({ activity_id });
 
       console.log(activity);
 
@@ -221,7 +220,7 @@ Meteor.methods({
       console.log(currentStatus);
 
       // increment the status, get the appropriate timestamp, and prepare for next status
-      switch(currentStatus) {
+      switch (currentStatus) {
         case 0:
           Activities.update(activity_id, {
             $set: {
@@ -231,58 +230,63 @@ Meteor.methods({
               }
             }
           });
-          return currentStatus+1;
+
+          return currentStatus + 1;
         case 1:
           Activities.update(activity_id, {
             $set: {
-              status: currentStatus+1,
+              status: currentStatus + 1,
               statusStartTimes: {
                 teamForm: new Date().getTime()
               },
               allTeamsFound: false
             }
           });
-          return currentStatus+1;
+
+          return currentStatus + 1;
         case 2:
           Activities.update(activity_id, {
             $set: {
-              status: currentStatus+1,
+              status: currentStatus + 1,
               statusStartTimes: {
                 teamPhase: new Date().getTime()
               }
             }
           });
-          return currentStatus+1;
+
+          return currentStatus + 1;
         case 3:
           Activities.update(activity_id, {
             $set: {
-              status: currentStatus+1,
+              status: currentStatus + 1,
               statusStartTimes: {
                 peerAssessment: new Date().getTime()
               }
             }
           });
-          return currentStatus+1;
+
+          return currentStatus + 1;
         case 4:
           Activities.update(activity_id, {
             $set: {
-              status: currentStatus+1,
+              status: currentStatus + 1,
               endTime: new Date().getTime()
             }
           });
-          return currentStatus+1;
+
+          return currentStatus + 1;
         default:
-          console.log("No longer incrementing");
+          console.log('No longer incrementing');
+
           return -1;
-      } 
-    }
-    catch (error) {
+      }
+    } catch (error) {
       console.log(error);
     }
-
   },
 
-  'users.addPoints': function({ user_id, session_id, points }) { //TODO: points_history changed to sessionHistory
+  'users.addPoints': function({ user_id, session_id, points }) {
+    //TODO: points_history changed to sessionHistory
     Users.update(
       { _id: user_id, 'points_history.session': session_id },
       {
@@ -336,12 +340,18 @@ Meteor.startup(() => {
       if (update.status === 1) {
         // start first activity
         const session = Sessions.findOne(_id);
+
         console.log(session);
         console.log(session.activities);
 
-        Meteor.call('activities.updateStatus', [{
-          activity_id: session.activities[0]
-        }], (err, res) => {
+        Meteor.call(
+          'activities.updateStatus',
+          [
+            {
+              activity_id: session.activities[0]
+            }
+          ],
+          (err, res) => {
             if (err) {
               alert(err);
             } else {
@@ -365,7 +375,6 @@ Meteor.startup(() => {
   // speeds up activity based on teams ready
   Teams.find({}).observeChanges({
     changed(_id, update) {
-
       // set team formation time
       if (update.members) {
         // if all confirmed, set team formation time
@@ -375,7 +384,7 @@ Meteor.startup(() => {
 
           Teams.update(team._id, {
             $set: {
-              teamFormationTime: new Date().getTime() - activity.statusStartTimes.indvPhase 
+              teamFormationTime: new Date().getTime() - activity.statusStartTimes.indvPhase
             }
           });
         }
@@ -396,9 +405,14 @@ Meteor.startup(() => {
             allTeamsFound: true
           }
         });
-        Meteor.call('activities.updateStatus', [{
-          activity_id: activity_id
-        }], (err, res) => {
+        Meteor.call(
+          'activities.updateStatus',
+          [
+            {
+              activity_id
+            }
+          ],
+          (err, res) => {
             if (err) {
               alert(err);
             } else {
@@ -436,7 +450,7 @@ Meteor.startup(() => {
 
   activitiesCursor.observeChanges({
     changed(_id, update) {
-      console.log('[Activity] '+ _id + ' updated.');
+      console.log('[Activity] ' + _id + ' updated.');
       console.log(update);
 
       // get duration
@@ -511,6 +525,7 @@ Meteor.startup(() => {
             colored_shapes.push({ shape: shapes[i], color: shapeColors[j] });
           }
         }
+
         shuffle(colored_shapes);
 
         //--- SEPARATE EVERYONE BY SECTION ---// //TODO: Currently deprecated (not using sections)
@@ -554,7 +569,7 @@ Meteor.startup(() => {
         //     // used to keep track of current and older teams for database
         //     const section_members = session_sections[section];
 
-        //     shuffle(section_members); 
+        //     shuffle(section_members);
         //     //console.log("Participants: " + section_members);
 
         //     // form teams, teams of 3
@@ -637,7 +652,7 @@ Meteor.startup(() => {
               }
             }
           );
-         
+
           oldTeam.push(newTeam[0]);
 
           // //update the users teammates (don't need this anymore)
@@ -652,8 +667,12 @@ Meteor.startup(() => {
         }
 
         // only 2 participants left, create 2 teams of MAX_TEAM_SIZE + 1
-        else if (newTeam.length === MAX_TEAM_SIZE-1 && teams.length > 1 
-                && oldTeam.length < MAX_TEAM_SIZE+1 && olderTeam.length < MAX_TEAM_SIZE+1) {
+        else if (
+          newTeam.length === MAX_TEAM_SIZE - 1 &&
+          teams.length > 1 &&
+          oldTeam.length < MAX_TEAM_SIZE + 1 &&
+          olderTeam.length < MAX_TEAM_SIZE + 1
+        ) {
           // add the first user to an older team
           Teams.update(team_id, {
             $push: {
@@ -666,7 +685,6 @@ Meteor.startup(() => {
             {
               $push: {
                 teamHistory: { team: team_id, activity: _id }
-
               }
             }
           );
@@ -787,12 +805,16 @@ Meteor.startup(() => {
 
   // called to end an activity phase
   const endPhase = Meteor.bindEnvironment((activity_id, status) => {
-
     if (debug) return;
 
-    Meteor.call('activities.updateStatus', [{
-      activity_id: activity_id
-    }], (err, res) => {
+    Meteor.call(
+      'activities.updateStatus',
+      [
+        {
+          activity_id
+        }
+      ],
+      (err, res) => {
         if (err) {
           alert(err);
         } else {
@@ -800,6 +822,6 @@ Meteor.startup(() => {
           console.log('Starting Activity Status ' + res);
         }
       }
-    );  });
+    );
+  });
 });
-

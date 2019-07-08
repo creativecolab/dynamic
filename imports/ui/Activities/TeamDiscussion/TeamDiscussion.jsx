@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Swiper from 'react-id-swiper';
+// import Swiper from 'react-id-swiper';
+import ReactSwipe from 'react-swipe';
+
 import Mobile from '../../Layouts/Mobile/Mobile';
 
 import './TeamDiscussion.scss';
@@ -31,21 +33,9 @@ export default class TeamDiscussion extends Component {
     return a;
   }
 
-  renderContent() {}
+  renderContent() { }
 
   render() {
-    const params = {
-      pagination: {
-        el: '.swiper-pagination',
-        clickable: true,
-        dynamicBullets: true
-      },
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev'
-      }
-    };
-
     const { questions } = this.state;
 
     const { progress, sessionLength, statusStartTime, duration } = this.props;
@@ -60,7 +50,7 @@ export default class TeamDiscussion extends Component {
         hasFooter={false}
       >
         <div className="slider-main">
-          <Swiper {...params}>
+          <ReactSwipe className="carousel" swipeOptions={{ continuous: false }} ref={el => (reactSwipeEl = el)}>
             {questions.map(q => {
               return (
                 <div className="question-card-wrapper" key={q._id}>
@@ -68,7 +58,9 @@ export default class TeamDiscussion extends Component {
                 </div>
               );
             })}
-          </Swiper>
+          </ReactSwipe>
+          <button onClick={() => reactSwipeEl.next()}>Next</button>
+          <button onClick={() => reactSwipeEl.prev()}>Previous</button>{' '}
         </div>
       </Mobile>
     );

@@ -9,6 +9,7 @@ import Session from '../../ui/Session/Session';
 import SessionProgress from '../../ui/SessionProgress/SessionProgress';
 import SessionHandler from '../../ui/Handlers/SessionHandler/SessionHandler';
 import DataOverview from '../../ui/DataOverview/DataOverview';
+import SharedDisplay from '../../ui/SharedDisplay/SharedDisplay';
 
 // eslint-disable-next-line import/prefer-default-export
 function renderRoutes() {
@@ -17,11 +18,12 @@ function renderRoutes() {
       <div>
         <Switch>
           <Route exact path="/" component={() => <Landing />} />
-          {/* <Route exact path="/data" component={DataOverview} />
+          <Route exact path="/data" component={DataOverview} />
           <Route exact path="/instructor" component={InstructorUI} />
+          <Route exact path="/host" component={SharedDisplay} />
           <Route exact path="/:code" component={SessionHandler} />
           <Route exact path="/:code/edit" component={Session} />
-          <Route exact path="/:code/view" component={SessionProgress} /> */}
+          <Route exact path="/:code/view" component={SessionProgress} />
         </Switch>
       </div>
     </Router>
