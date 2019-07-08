@@ -294,13 +294,13 @@ class InstructorUI extends Component {
 
   // list sessions
   mapSessions() {
-    return this.props.sessions.map(({ _id, code, participants, timestamp, status }) => (
+    return this.props.sessions.map(({ _id, code, participants, creationTime, status }) => (
       <SessionListItem
         key={_id}
         _id={_id}
         participants={participants}
         code={code}
-        timestamp={timestamp}
+        creationTime={creationTime}
         status={status}
       />
     ));

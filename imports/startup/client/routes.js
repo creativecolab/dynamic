@@ -10,23 +10,18 @@ import SessionProgress from '../../ui/SessionProgress/SessionProgress';
 import SessionHandler from '../../ui/Handlers/SessionHandler/SessionHandler';
 import DataOverview from '../../ui/DataOverview/DataOverview';
 
-// eslint-disable-next-line import/prefer-default-export
-function renderRoutes() {
-  return (
+export const renderRoutes = () => (
     <Router>
       <div>
         <Switch>
-          <Route exact path="/" component={() => <Landing />} />
-          {/* <Route exact path="/data" component={DataOverview} />
+          <Route exact path="/" component={Landing} />
+          {/* <Route exact path="/" render={() => <Landing />} /> */}
+          <Route exact path="/data" component={DataOverview} />
           <Route exact path="/instructor" component={InstructorUI} />
           <Route exact path="/:code" component={SessionHandler} />
           <Route exact path="/:code/edit" component={Session} />
-          <Route exact path="/:code/view" component={SessionProgress} /> */}
+          <Route exact path="/:code/view" component={SessionProgress} />
         </Switch>
       </div>
     </Router>
-  );
-}
-
-export default renderRoutes;
-/* eslint-enable react/jsx-filename-extension */
+)

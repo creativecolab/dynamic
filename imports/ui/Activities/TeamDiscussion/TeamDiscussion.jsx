@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Swiper from 'react-id-swiper';
 import Mobile from '../../Layouts/Mobile/Mobile';
 
 import './TeamDiscussion.scss';
@@ -31,7 +30,7 @@ export default class TeamDiscussion extends Component {
     return a;
   }
 
-  renderContent() {}
+  renderContent() { }
 
   render() {
     const params = {
@@ -60,7 +59,7 @@ export default class TeamDiscussion extends Component {
         hasFooter={false}
       >
         <div className="slider-main">
-          <Swiper {...params}>
+          {/* <Swiper {...params}>
             {questions.map(q => {
               return (
                 <div className="question-card-wrapper" key={q._id}>
@@ -68,7 +67,7 @@ export default class TeamDiscussion extends Component {
                 </div>
               );
             })}
-          </Swiper>
+          </Swiper> */}
         </div>
       </Mobile>
     );

@@ -82,9 +82,7 @@ class SessionProgress extends Component {
     if (currStatus + 1 != 6) {
       console.log('Activity status of ' + this.props.currentActivity.name + ' advanced to ' + (currStatus + 1));
 
-      Meteor.call('activities.updateStatus', [{
-        activity_id: session.activities[0]
-      }], (err, res) => {
+      Meteor.call('activities.updateStatus', this.props.currentActivity._id, (err, res) => {
         if (err) {
           alert(err);
         } else {
@@ -357,8 +355,6 @@ class SessionProgress extends Component {
             {/* <div>{this.props.currentActivity.name}</div> */}
             {this.getInstructions(this.props.currentActivity.status)}
             {/* <div>Session code: {this.props.match.params.code}</div> */}
-            {/* TODO maybe add session code an url */}
-            {/* {this.getButton()} */}
           </div>
         </div>
       );

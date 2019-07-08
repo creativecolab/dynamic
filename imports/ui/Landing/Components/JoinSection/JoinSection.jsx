@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import posed from 'react-pose';
+
 import TextInput from '../../../Components/TextInput/TextInput';
 
 import './JoinSection.scss';

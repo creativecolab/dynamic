@@ -3,11 +3,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import posed from 'react-pose';
+import { access } from 'fs';
+
 import Button from '../../Components/Button/Button';
+import MobileTimer from '../../Components/MobileTimer/MobileTimer';
 
 import './Mobile.scss';
-import MobileTimer from '../../Components/MobileTimer/MobileTimer';
-import { access } from 'fs';
+
 
 const Footer = posed.div({
   hidden: {
