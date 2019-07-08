@@ -21,7 +21,7 @@ class SessionListItem extends Component {
       edit: false,
       view: false,
     };
-  } 
+  }
 
   editSession() {
     this.setState({
@@ -39,13 +39,13 @@ class SessionListItem extends Component {
     if (this.state.edit) {
       return <Redirect to={{
         pathname: '/' + this.props.code + '/edit'
-      }}/>
+      }} />
     }
 
     if (this.state.view) {
       return <Redirect to={{
         pathname: '/' + this.props.code + '/view'
-      }}/>
+      }} />
     }
 
   }
@@ -63,11 +63,10 @@ class SessionListItem extends Component {
     Sessions.update(this.props._id, {
       $set: {
         status: 1,
-        round: 1,
         startTime: new Date().getTime()
       }
     });
-    
+
   }
 
   render() {

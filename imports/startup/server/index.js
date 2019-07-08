@@ -230,10 +230,8 @@ Meteor.methods({
                 indvPhase: new Date().getTime()
               }
             }
-          }, (err) => {
-            console.log(err);
           });
-          return;
+          return currentStatus+1;
         case 1:
           Activities.update(activity_id, {
             $set: {
@@ -244,7 +242,7 @@ Meteor.methods({
               allTeamsFound: false
             }
           });
-          return;
+          return currentStatus+1;
         case 2:
           Activities.update(activity_id, {
             $set: {
@@ -254,7 +252,7 @@ Meteor.methods({
               }
             }
           });
-          return;
+          return currentStatus+1;
         case 3:
           Activities.update(activity_id, {
             $set: {
@@ -264,7 +262,7 @@ Meteor.methods({
               }
             }
           });
-          return;
+          return currentStatus+1;
         case 4:
           Activities.update(activity_id, {
             $set: {
@@ -272,10 +270,10 @@ Meteor.methods({
               endTime: new Date().getTime()
             }
           });
-          return;
+          return currentStatus+1;
         default:
           console.log("No longer incrementing");
-          return;
+          return -1;
       } 
     }
     catch (error) {
@@ -343,13 +341,12 @@ Meteor.startup(() => {
 
         Meteor.call('activities.updateStatus', [{
           activity_id: session.activities[0]
-        }]
-          , (err, res) => {
+        }], (err, res) => {
             if (err) {
               alert(err);
             } else {
               // success!
-              console.log('Starting Activity Status 1');
+              console.log('Starting Activity Status ' + res);
             }
           }
         );
@@ -406,7 +403,7 @@ Meteor.startup(() => {
               alert(err);
             } else {
               // success!
-              console.log('Starting Activity Status 3');
+              console.log('Starting Activity Status ' + res);
             }
           }
         );
@@ -800,7 +797,7 @@ Meteor.startup(() => {
           alert(err);
         } else {
           // success!
-          console.log('Starting Activity Status ' + status);
+          console.log('Starting Activity Status ' + res);
         }
       }
     );  });

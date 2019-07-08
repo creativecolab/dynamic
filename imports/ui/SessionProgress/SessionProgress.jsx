@@ -89,7 +89,7 @@ class SessionProgress extends Component {
           alert(err);
         } else {
           // success!
-          console.log('Starting Activity Status ' + (currStatus + 1));
+          console.log('Starting Activity Status ' + res);
         }
       }
       );
