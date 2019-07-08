@@ -8,8 +8,8 @@ import Sessions from '../../api/sessions';
 import Users from '../../api/users';
 import Teams from '../../api/teams';
 import Logs from '../../api/logs';
-import Questions from '../../api/questions';
-import questions from './questions';
+// import Questions from '../../api/questions';
+// import dbquestions from './dbquestions';
 
 import './register-api';
 import Responses from '../../api/responses';
@@ -246,18 +246,18 @@ Meteor.methods({
   }
 });
 
-function createQuestions() {
-  Questions.remove({});
-  questions.map(q => {
-    Questions.insert({
-      prompt: q,
-      default: true,
-      createdTime: new Date().getTime(),
-      viewedTimer: 0,
-      selectedCount: 0
-    });
-  });
-}
+// function createQuestions() {
+//   Questions.remove({});
+//   dbquestions.map(q => {
+//     Questions.insert({
+//       prompt: q,
+//       default: true,
+//       createdTime: new Date().getTime(),
+//       viewedTimer: 0,
+//       selectedCount: 0
+//     });
+//   });
+// }
 
 /* Meteor start-up function, called once server starts */
 Meteor.startup(() => {
@@ -265,7 +265,7 @@ Meteor.startup(() => {
   // updateRoster();
   getPreference();
 
-  createQuestions();
+  // createQuestions();
 
   // handles session start/end
   const sessionCursor = Sessions.find({});

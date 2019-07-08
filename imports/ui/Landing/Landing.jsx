@@ -70,6 +70,7 @@ export default class Landing extends Component {
       this.setState({
         invalidCode: true
       });
+
       return;
     }
 
@@ -124,6 +125,7 @@ export default class Landing extends Component {
       this.setState({
         invalidName: true
       });
+
       return;
     } else {
       this.setState({
@@ -132,11 +134,10 @@ export default class Landing extends Component {
     }
 
     if (pid.length === 0) {
-      this.setState(
-        {
-          invalidPID: true
-        }
-      );
+      this.setState({
+        invalidPID: true
+      });
+
       return;
     } else {
       this.setState({
@@ -169,7 +170,7 @@ export default class Landing extends Component {
               sessionJoinTime: new Date().getTime(),
               points: 0
             }
-          },
+          }
         });
 
         // add user to session
@@ -302,8 +303,13 @@ export default class Landing extends Component {
     else
       return (
         <Mobile buttonAction={this.handleCodeSubmission} hasNavbar={false}>
-          <JoinSection handleSubmit={this.handleCodeSubmission} handleCode={this.handleCode} code={code}
-            invalid={invalidCode} invalidMsg='A session with that code does not exist!' />
+          <JoinSection
+            handleSubmit={this.handleCodeSubmission}
+            handleCode={this.handleCode}
+            code={code}
+            invalid={invalidCode}
+            invalidMsg="A session with that code does not exist!"
+          />
         </Mobile>
       );
   }
