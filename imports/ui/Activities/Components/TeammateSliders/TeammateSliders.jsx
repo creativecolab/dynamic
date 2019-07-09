@@ -162,7 +162,7 @@ export default class TeammateSliders extends Component {
     return (
       <>
         <div className="end-main">
-          <div className="slider-instructions">How likely would you work with these teammates again?</div>
+          <div className="slider-instructions">Rate how likely you are to work with these members again:</div>
           <div>{this.renderOptions()}</div>
         </div>
         <Button onClick={this.handleVote}>Submit</Button>

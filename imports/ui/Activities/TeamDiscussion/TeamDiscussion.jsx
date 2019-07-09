@@ -68,7 +68,7 @@ class TeamDiscussion extends Component {
     if (status === ActivityEnums.status.INPUT_TEAM) {
       return (
         <>
-          <div className="swipe-instr">Swipe to see more questions</div>
+          <div className="swipe-instr-top">Have group members answer:</div>
           <div className="slider-main">
             <ReactSwipe
               className="carousel"
@@ -82,6 +82,7 @@ class TeamDiscussion extends Component {
                   </div>
                 );
               })}
+
             </ReactSwipe>
             <button className="prev" type="button" onClick={() => this.reactSwipeEl.prev()}>
               &larr;
@@ -90,6 +91,9 @@ class TeamDiscussion extends Component {
               &rarr;
             </button>
           </div>
+          <div className="swipe-instr-bottom">Swipe for next question</div>
+
+
         </>
       );
     }

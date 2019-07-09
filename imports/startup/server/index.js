@@ -315,7 +315,7 @@ Meteor.startup(() => {
 
   getPreference();
 
-  // createQuestions();
+  createQuestions();
 
   // handles session start/end
   const sessionCursor = Sessions.find({});
@@ -458,7 +458,7 @@ Meteor.startup(() => {
         const participants = Sessions.findOne(session_id).participants;
         const questions = Questions.find({}).fetch();
 
-        const teams = buildInitialTeams(_id, partipants.slice(0))
+        const teams = buildInitialTeams(_id, participants.slice(0))
 
         // // TODO: get these from instructor
         // const MAX_TEAM_SIZE = 3;
@@ -698,7 +698,7 @@ Meteor.startup(() => {
   });
 
   // debug flag, useful for styling
-  const debug = false;
+  const debug = true;
 
   // called to end an activity phase
   const endPhase = Meteor.bindEnvironment((activity_id, status) => {

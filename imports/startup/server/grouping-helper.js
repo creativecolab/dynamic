@@ -145,7 +145,7 @@ export function buildInitialTeams(act_id, participants) {
       { pid: newTeam[0] },
       {
         $push: {
-          teamHistory: { team: team_id, activity: _id }
+          teamHistory: { team: team_id, activity: act_id }
         }
       }
     );
@@ -166,7 +166,7 @@ export function buildInitialTeams(act_id, participants) {
       { pid: newTeam[1] },
       {
         $push: {
-          teamHistory: { team: older_team_id, activity: _id }
+          teamHistory: { team: older_team_id, activity: act_id }
         }
       }
     );
@@ -195,7 +195,7 @@ export function buildInitialTeams(act_id, participants) {
         { pid: newTeam[k] },
         {
           $push: {
-            teamHistory: { team: team_id, activity: _id }
+            teamHistory: { team: team_id, activity: act_id }
           }
         }
       );
