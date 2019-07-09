@@ -11,7 +11,7 @@ export default function OnboardingInstructions() {
 
   return (
     <div className="instr-main">
-      <h2>Welcome to Dynamic!</h2>
+      <h2>Welcome to ProtoTeams!</h2>
       <h3>
         <strong>Instructions</strong>
       </h3>
