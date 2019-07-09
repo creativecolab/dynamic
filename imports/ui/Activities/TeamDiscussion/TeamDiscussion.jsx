@@ -15,6 +15,7 @@ import Teams from '../../../api/teams';
 import Loading from '../../Components/Loading/Loading';
 import Waiting from '../../Components/Waiting/Waiting';
 import TeamFormation from '../Components/TeamFormation/TeamFormation';
+import TeammateSliders from '../Components/TeammateSliders/TeammateSliders';
 
 class TeamDiscussion extends Component {
   static propTypes = {
@@ -30,6 +31,10 @@ class TeamDiscussion extends Component {
   constructor(props) {
     super(props);
     this.reactSwipeEl = null;
+
+    this.state = {
+      choseTeammate: false
+    };
   }
 
   shuffle(a) {
@@ -43,7 +48,7 @@ class TeamDiscussion extends Component {
   }
 
   // renders based on activity status
-  renderContent = ({ status, pid, activity_id, questions }) => {
+  renderContent = ({ status, pid, activity_id, questions, team, index }) => {
     // individual input phase
     if (status === ActivityEnums.status.INPUT_INDV) {
       return 'Indvidual input';
@@ -68,7 +73,7 @@ class TeamDiscussion extends Component {
           <div className="slider-main">
             <ReactSwipe
               className="carousel"
-              swipeOptions={{ continuous: true, callback: this.onSlideChange }}
+              swipeOptions={{ continuous: true, callback: this.onSlideChange, startSlide: index }}
               ref={el => (this.reactSwipeEl = el)}
             >
               {questions.map(q => {
@@ -91,21 +96,52 @@ class TeamDiscussion extends Component {
     }
 
     // summary phase
-    if (status === ActivityEnums.status.SUMMARY) {
-      return 'Summary';
+    if (status === ActivityEnums.status.ASSESSMENT) {
+      if (!this.state.choseTeammate) {
+        // joined after team formation
+        if (!team) return <Waiting text="You have not been assigned a team. Please wait for the next activity." />;
+
+        return <TeammateSliders team_id={team._id} pid={pid} handleChosen={this.handleChooseTeammate} />;
+      }
     }
 
-    return 'TODO: Status no recognized';
+    return <Waiting text="Waiting for next round..." />;
+  };
+
+  handleChooseTeammate = () => {
+    this.setState({
+      choseTeammate: true
+    });
   };
 
   onSlideChange = () => {
+    const { team } = this.props;
+
+    if (team) {
+      Teams.update(
+        team._id,
+        {
+          $set: {
+            index: this.reactSwipeEl.getPos()
+          }
+        },
+        error => {
+          if (!error) {
+            console.log(this.reactSwipeEl.getPos());
+          } else {
+            console.log(error);
+          }
+        }
+      );
+    }
+
     const { questions } = this.props;
 
     console.log('changed: ' + questions[this.reactSwipeEl.getPos()].prompt);
   };
 
   render() {
-    const { questions } = this.props;
+    const { questions, index } = this.props;
 
     if (!questions) return <Loading />;
 
@@ -126,8 +162,15 @@ class TeamDiscussion extends Component {
   }
 }
 
-export default withTracker(() => {
-  const questions = Questions.find().fetch();
+export default withTracker(({ pid }) => {
+  const team = Teams.findOne({ 'members.pid': pid }, { sort: { teamCreated: -1 } });
+  let questions = Questions.find().fetch();
+  let index = 0;
 
-  return { questions };
+  if (team) {
+    questions = team.questions;
+    index = team.index;
+  }
+
+  return { questions, index, team };
 })(TeamDiscussion);

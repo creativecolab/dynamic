@@ -17,8 +17,12 @@
 }
 
 .instr-card {
-  margin: 1em 0.9em;
-  padding: 1em;
-  border: 2px solid $dynamic-black;
-  border-radius: 5px;
+  margin: 1rem 0rem;
+  // padding: 1em;
+  img {
+    max-width: 300px;
+    max-height: 300px;
+  }
+  // border: 2px solid $dynamic-black;
+  // border-radius: 5px;
 }

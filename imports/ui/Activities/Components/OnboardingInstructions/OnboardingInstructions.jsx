@@ -23,20 +23,32 @@ export default function OnboardingInstructions() {
         ref={el => (this.reactSwipeEl = el)}
       >
         <div className="instr-card-wrapper">
-          <div className="instr-card">First</div>
+          <div className="instr-card">
+            <strong>1. Stand up</strong>
+            <img src="./crowd.jpg" alt="" />
+          </div>
         </div>
         <div className="instr-card-wrapper">
-          <div className="instr-card">Second</div>
+          <div className="instr-card">
+            <strong>2. Find your teammate</strong>
+            <img src="./hold_phones.png" alt="" />
+          </div>
         </div>
         <div className="instr-card-wrapper">
-          <div className="instr-card">Third</div>
+          <div className="instr-card">
+            <strong>3. Participate in group activity</strong>
+            <img src="./discussion.png" alt="" />
+          </div>
         </div>
         <div className="instr-card-wrapper">
-          <div className="instr-card">Fourth</div>
+          <div className="instr-card">
+            <strong>4. Assess your experience</strong>
+            <img src="./rating.png" alt="" />
+          </div>
         </div>
       </ReactSwipe>
       <div className="pinned-instr">
-        <strong>Wait for the instructor to begin.</strong>
+        <strong>Waiting for the instructor to begin...</strong>
       </div>
     </div>
   );

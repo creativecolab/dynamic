@@ -138,19 +138,19 @@ export default class SharedDisplay extends Component {
         </nav>
         <section className="how-to-main">
           <div className="how-to-title">
-            <div>How it works</div>
+            <div>HOW IT WORKS</div>
           </div>
           <div className="how-to-card-container">
             <Card tag="1" title="Gather a group of people">
-              <img src="./crowd.jpg" alt="" />
+              <img src="./crowd.png" alt="" />
             </Card>
-            <Card tag="2" title="Pull up your phone">
+            <Card tag="2" title="Use mobile devices">
               <img src="./homescreen.png" alt="" />
             </Card>
             <Card tag="3" title="Make small groups">
-              <img src="./hold_phones.png" alt="" />
+              <img src="./teamformation.png" alt="" />
             </Card>
-            <Card tag="4" title="Collect preference data">
+            <Card tag="4" title="Assess teammate preference">
               <img src="./rating.png" alt="" />
             </Card>
           </div>
@@ -160,7 +160,7 @@ export default class SharedDisplay extends Component {
           size="small"
           onClick={this.createSession}
         >
-          Begin
+          BEGIN
         </Button>
       </div>
     );

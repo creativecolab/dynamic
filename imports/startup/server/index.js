@@ -455,6 +455,7 @@ Meteor.startup(() => {
         // get snapshot of participants in session
         const session_id = Activities.findOne(_id).session_id;
         const participants = Sessions.findOne(session_id).participants;
+        const questions = Questions.find({}).fetch();
 
         // TODO: get these from instructor
         const MAX_TEAM_SIZE = 3;
@@ -569,7 +570,9 @@ Meteor.startup(() => {
               members: newTeam.map(pid => ({ pid, confirmed: false })),
               color: colored_shapes[teams.length].color,
               shape: colored_shapes[teams.length].shape,
-              responses: []
+              responses: [],
+              questions: shuffle(questions),
+              index: 0
             });
 
             //update the users teammates
@@ -687,7 +690,9 @@ Meteor.startup(() => {
             members: newTeam.map(pid => ({ pid, confirmed: false })),
             color: colored_shapes[teams.length].color,
             shape: colored_shapes[teams.length].shape,
-            responses: []
+            responses: [],
+            questions: shuffle(questions),
+            index: 0
           });
 
           // keep track of older teams just in case
