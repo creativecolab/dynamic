@@ -137,77 +137,6 @@ if (Meteor.isServer) {
   // });
 }
 
-// hard-coded roster for testing
-function updateRoster() {
-  const roster = [
-    {
-      name: 'Gustavo Umbelino',
-      firstname: 'Gustavo',
-      lastname: 'Umbelino',
-      pid: 'gus',
-      section: '2pm',
-      points_history: [],
-      preference: []
-    },
-    {
-      name: 'Vivian Ta',
-      firstname: 'Vivian',
-      lastname: 'Ta',
-      pid: 'viv',
-      section: '3pm',
-      points_history: [],
-      preference: []
-    },
-    {
-      name: 'Eric Truong',
-      firstname: 'Eric',
-      lastname: 'Truong',
-      pid: 'eric',
-      section: '3pm',
-      points_history: [],
-      preference: []
-    },
-    {
-      name: 'Steven Dow',
-      firstname: 'Steven',
-      lastname: 'Dow',
-      pid: 'steven',
-      section: '3pm',
-      points_history: [],
-      preference: []
-    },
-    {
-      name: 'Samuel Blake',
-      firstname: 'Samuel',
-      lastname: 'Blake',
-      pid: 'sam',
-      section: '2pm',
-      points_history: [],
-      preference: []
-    }
-  ];
-
-  // iterate through users in roster
-  roster.map(user => {
-    // find user in database
-    const dbuser = Users.findOne({ pid: user.pid });
-
-    // user already exists
-    if (dbuser) return;
-
-    // insert to database
-    Users.insert(
-      {
-        ...user,
-        teammates: []
-      },
-      () => {
-        console.log(user.name + ' inserted to mongo!');
-      }
-    );
-  });
-}
-
 /* Meteor methods (server-side function, mostly database work) */
 Meteor.methods({
   'activities.updateStatus': function(activity_id) {
@@ -297,6 +226,9 @@ Meteor.methods({
 });
 
 function createQuestions() {
+  if (Questions.find({}).count() != 0) {
+    return;
+  }
   Questions.remove({});
   dbquestions.map(q => {
     Questions.insert({
@@ -456,9 +388,9 @@ Meteor.startup(() => {
         // get snapshot of participants in session
         const session_id = Activities.findOne(_id).session_id;
         const participants = Sessions.findOne(session_id).participants;
-        const questions = Questions.find({}).fetch();
+        const questions = Questions.find({}).fetch(); // TODO: move this somewhere else
 
-        const teams = buildInitialTeams(_id, participants.slice(0))
+        const teams = buildInitialTeams(_id, participants.slice(0), questions);
 
         // // TODO: get these from instructor
         // const MAX_TEAM_SIZE = 3;
@@ -683,7 +615,7 @@ Meteor.startup(() => {
           });
         }
 
-        // start next activity! // FIXME: nono
+        // start next activity! // FIXME: nono // TODO: METEOR METHOD
         else {
           Activities.update(nextActivity._id, {
             $set: {

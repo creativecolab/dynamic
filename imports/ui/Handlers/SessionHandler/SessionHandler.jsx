@@ -42,7 +42,6 @@ class SessionHandler extends Component {
 
   constructor(props) {
     super(props);
-    console.log(props);
   }
 
   render() {
@@ -61,7 +60,9 @@ class SessionHandler extends Component {
 
     if (status === SessionEnums.status.READY) return <OnboardingInstructions />;
 
-    if (!activity) return <Loading />;
+    if (!activity) {
+      return <Loading />;
+    }
 
     const progress = activities.indexOf(activity._id) + 1;
 
