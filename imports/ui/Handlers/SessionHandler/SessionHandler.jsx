@@ -61,7 +61,7 @@ class SessionHandler extends Component {
 
     if (status === SessionEnums.status.READY) return <OnboardingInstructions />;
 
-    if (!activity) return '<Loading />';
+    if (!activity) return <Loading />;
 
     const progress = activities.indexOf(activity._id) + 1;
 

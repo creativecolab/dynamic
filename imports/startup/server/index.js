@@ -760,11 +760,11 @@ Meteor.startup(() => {
           });
         }
 
-        // start next activity!
+        // start next activity! // FIXME: nono
         else {
           Activities.update(nextActivity._id, {
             $set: {
-              status: 1,
+              status: 2,
               startTime: new Date().getTime(),
               statusStartTime: new Date().getTime()
             }
