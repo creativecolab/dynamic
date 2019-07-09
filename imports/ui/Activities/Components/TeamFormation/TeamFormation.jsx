@@ -112,6 +112,7 @@ class TeamFormation extends Component {
         <div className="shape-main">
           <div>Find others with this shape and color</div>
           <img className="shape-img" src={`/shapes/${shape}-solid-${color}.png`} alt={`${color} ${shape}`} />
+          <div>Select members found</div>
         </div>
         {this.renderTeammates()}
       </div>

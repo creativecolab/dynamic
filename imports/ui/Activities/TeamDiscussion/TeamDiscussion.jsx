@@ -157,7 +157,7 @@ class TeamDiscussion extends Component {
 
     return (
       <Mobile
-        activityName="Icebreaker"
+        activityName="Form Teams" //TODO: turn this string into state
         sessionStatus={progress}
         sessionLength={sessionLength}
         clockDuration={duration}
