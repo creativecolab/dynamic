@@ -220,12 +220,12 @@ Meteor.methods({
         case 0:
           Activities.update(activity_id, {
             $set: {
-              status: currentStatus + 1,
+              status: currentStatus + 2, // FIXME: skipping first status
               'statusStartTimes.indvPhase': new Date().getTime()
             }
           });
 
-          return currentStatus + 1;
+          return currentStatus + 2;
         case 1:
           Activities.update(activity_id, {
             $set: {

@@ -108,6 +108,14 @@ class TeamDiscussion extends Component {
     return <Waiting text="Waiting for next round..." />;
   };
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.status !== this.props.status) {
+      this.setState({
+        choseTeammate: false
+      });
+    }
+  }
+
   handleChooseTeammate = () => {
     this.setState({
       choseTeammate: true

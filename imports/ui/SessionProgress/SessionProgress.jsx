@@ -299,7 +299,7 @@ class SessionProgress extends Component {
           <img id="small-logo" src="https://i.postimg.cc/t462TbY7/dynamic.png" alt="" />
           <div className="inner">
             <h1 id="header">ProtoTeams</h1>
-            <h2>Enter url:</h2>
+            <h2>In your browser, type the URL:</h2>
             <div className="text-box-bigscreen">
               <c>prototeams.com</c>
             </div>
