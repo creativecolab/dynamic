@@ -1,11 +1,13 @@
 .shared-display-main {
-  // width: 100%;
-  // height: 100%;
+  // width: 100vw;
+  // height: 100vh;
   // overflow: hidden;
 }
 
 .shared-nav {
   background: #844EAE;
+  text-shadow: 3px 3px 0px hotpink;
+
   color: white;
   font-size: 10vh;
   text-align: center;
@@ -29,7 +31,7 @@
 
 .how-to-main {
   background: #E6C7F9;
-  margin: 5vw;
+  margin: 5vh;
   padding: 2vw;
   border-radius: 5px;
   position: relative;
@@ -38,7 +40,10 @@
 }
 
 .how-to-card-container {
-  margin: 1em 0;
+  margin: 2em 0 0 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 2vw;
   img {
     max-width: 15vw;
     max-height: 15vw;
@@ -55,6 +60,7 @@
     margin: auto;
     padding: 0 0.2em;
     background: #9E65CB;
+    box-shadow: 4px 4px 0px hotpink;
     color: white;
     text-align: center;
     line-height: 5vh;

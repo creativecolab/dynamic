@@ -4,6 +4,7 @@ html, body, #react-target, #react-target>div {
   font-size: 24px;
   color: black; 
   margin: 0;
+  overflow: hidden;
 }
 
 a {

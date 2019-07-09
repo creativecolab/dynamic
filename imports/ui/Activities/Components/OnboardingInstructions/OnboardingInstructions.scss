@@ -1,3 +1,5 @@
+@import '../../../../ui/assets/main';
+
 .instr-main {
   padding: 1rem;
   text-align: center;
@@ -7,4 +9,16 @@
   width: 10em;
   text-align: center;
   margin: 1em auto;
+}
+
+.instr-card-wrapper {
+  height: 60vh;
+  // display: flex;
+}
+
+.instr-card {
+  margin: 1em 0.9em;
+  padding: 1em;
+  border: 2px solid $dynamic-black;
+  border-radius: 5px;
 }

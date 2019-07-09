@@ -20,7 +20,7 @@ export default class Button extends Component {
     disabled: false
   };
 
-  getClassNames({ size, active, disabled }) {
+  getClassNames({ size, active, disabled, color }) {
     let className = 'btn';
 
     if (size === 'small') className += ' btn-small';
@@ -34,11 +34,11 @@ export default class Button extends Component {
   }
 
   render() {
-    const { onClick, badge, children, order } = this.props;
+    const { onClick, badge, children, order, style } = this.props;
     const classNames = this.getClassNames(this.props);
 
     return (
-      <div className={classNames} onClick={onClick}>
+      <div className={classNames} style={style} onClick={onClick}>
         <strong>{order}</strong>
         {children}
         <span className="btn-badge">{badge}</span>
