@@ -9,6 +9,7 @@ import Activities from '../../../api/activities';
 
 import ActivityEnums from '../../../enums/activities';
 import SessionEnums from '../../../enums/sessions';
+
 import Loading from '../../Components/Loading/Loading';
 import Survey from '../../Components/Survey/Survey';
 import OnboardingInstructions from '../../Activities/Components/OnboardingInstructions/OnboardingInstructions';
