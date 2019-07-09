@@ -137,77 +137,6 @@ if (Meteor.isServer) {
   // });
 }
 
-// hard-coded roster for testing
-function updateRoster() {
-  const roster = [
-    {
-      name: 'Gustavo Umbelino',
-      firstname: 'Gustavo',
-      lastname: 'Umbelino',
-      pid: 'gus',
-      section: '2pm',
-      points_history: [],
-      preference: []
-    },
-    {
-      name: 'Vivian Ta',
-      firstname: 'Vivian',
-      lastname: 'Ta',
-      pid: 'viv',
-      section: '3pm',
-      points_history: [],
-      preference: []
-    },
-    {
-      name: 'Eric Truong',
-      firstname: 'Eric',
-      lastname: 'Truong',
-      pid: 'eric',
-      section: '3pm',
-      points_history: [],
-      preference: []
-    },
-    {
-      name: 'Steven Dow',
-      firstname: 'Steven',
-      lastname: 'Dow',
-      pid: 'steven',
-      section: '3pm',
-      points_history: [],
-      preference: []
-    },
-    {
-      name: 'Samuel Blake',
-      firstname: 'Samuel',
-      lastname: 'Blake',
-      pid: 'sam',
-      section: '2pm',
-      points_history: [],
-      preference: []
-    }
-  ];
-
-  // iterate through users in roster
-  roster.map(user => {
-    // find user in database
-    const dbuser = Users.findOne({ pid: user.pid });
-
-    // user already exists
-    if (dbuser) return;
-
-    // insert to database
-    Users.insert(
-      {
-        ...user,
-        teammates: []
-      },
-      () => {
-        console.log(user.name + ' inserted to mongo!');
-      }
-    );
-  });
-}
-
 /* Meteor methods (server-side function, mostly database work) */
 Meteor.methods({
   'activities.updateStatus': function(activity_id) {
@@ -297,6 +226,9 @@ Meteor.methods({
 });
 
 function createQuestions() {
+  if (Questions.find({}).count() != 0) {
+    return;
+  }
   Questions.remove({});
   dbquestions.map(q => {
     Questions.insert({
@@ -315,7 +247,7 @@ Meteor.startup(() => {
 
   getPreference();
 
-  // createQuestions();
+  createQuestions();
 
   // handles session start/end
   const sessionCursor = Sessions.find({});
@@ -458,7 +390,7 @@ Meteor.startup(() => {
         const participants = Sessions.findOne(session_id).participants;
         const questions = Questions.find({}).fetch();
 
-        const teams = buildInitialTeams(_id, partipants.slice(0))
+        const teams = buildInitialTeams(_id, participants.slice(0))
 
         // // TODO: get these from instructor
         // const MAX_TEAM_SIZE = 3;

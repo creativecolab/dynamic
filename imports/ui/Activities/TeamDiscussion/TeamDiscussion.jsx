@@ -56,7 +56,15 @@ class TeamDiscussion extends Component {
     // team formation phase
     if (status === ActivityEnums.status.TEAM_FORMATION) {
       // look for this user's team
-      const team = Teams.findOne({ activity_id, 'members.pid': pid });
+      // const team = Teams.findOne({
+      //   'activity_id': activity_id,
+      //   'members': {
+      //     $elemMatch: {
+      //       'pid': pid
+      //     }
+      //   }
+      // });
+      console.log(team);
 
       // joined after team formation
       if (!team) return <Waiting text="You have not been assigned a team. Please wait for the next activity." />;
@@ -170,7 +178,13 @@ class TeamDiscussion extends Component {
 }
 
 export default withTracker(({ pid }) => {
-  const team = Teams.findOne({ 'members.pid': pid }, { sort: { teamCreated: -1 } });
+  const team = Teams.findOne({
+    'members': {
+      $elemMatch: {
+        'pid': pid
+      }
+    }
+  }, { sort: { teamCreated: -1 } });
   let questions = Questions.find().fetch();
   let index = 0;
 
