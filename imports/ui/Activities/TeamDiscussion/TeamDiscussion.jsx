@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
 
-// import Swiper from 'react-id-swiper';
 import ReactSwipe from 'react-swipe';
 
 import Mobile from '../../Layouts/Mobile/Mobile';
@@ -37,7 +36,7 @@ class TeamDiscussion extends Component {
     return a;
   }
 
-  renderContent() {}
+  renderContent() { }
 
   render() {
     const { questions } = this.props;
