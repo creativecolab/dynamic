@@ -42,7 +42,6 @@ class SessionHandler extends Component {
 
   constructor(props) {
     super(props);
-    console.log(props);
   }
 
   render() {

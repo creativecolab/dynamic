@@ -36,7 +36,7 @@ function buildColoredShapes(colored_shapes) {
 }
 
 // builds teams for the first round of team formation
-export function buildInitialTeams(act_id, participants) {
+export function buildInitialTeams(act_id, participants, questions) {
 
   // get the random colored shapes
   colored_shapes = [];
@@ -70,7 +70,9 @@ export function buildInitialTeams(act_id, participants) {
         members: newTeam.map(pid => ({ pid, confirmed: false })),
         color: colored_shapes[teams.length].color,
         shape: colored_shapes[teams.length].shape,
-        responses: []
+        responses: [],
+        questions: shuffle(questions),
+        index: 0
       });
 
       //update the users teammates
@@ -182,7 +184,9 @@ export function buildInitialTeams(act_id, participants) {
       members: newTeam.map(pid => ({ pid, confirmed: false })),
       color: colored_shapes[teams.length].color,
       shape: colored_shapes[teams.length].shape,
-      responses: []
+      responses: [],
+      questions: shuffle(questions),
+      index: 0
     });
 
     // keep track of older teams just in case

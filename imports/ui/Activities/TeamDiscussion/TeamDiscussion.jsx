@@ -55,16 +55,6 @@ class TeamDiscussion extends Component {
 
     // team formation phase
     if (status === ActivityEnums.status.TEAM_FORMATION) {
-      // look for this user's team
-      // const team = Teams.findOne({
-      //   'activity_id': activity_id,
-      //   'members': {
-      //     $elemMatch: {
-      //       'pid': pid
-      //     }
-      //   }
-      // });
-      console.log(team);
 
       // joined after team formation
       if (!team) return <Waiting text="You have not been assigned a team. Please wait for the next activity." />;

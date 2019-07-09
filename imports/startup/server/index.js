@@ -388,9 +388,9 @@ Meteor.startup(() => {
         // get snapshot of participants in session
         const session_id = Activities.findOne(_id).session_id;
         const participants = Sessions.findOne(session_id).participants;
-        const questions = Questions.find({}).fetch();
+        const questions = Questions.find({}).fetch(); // TODO: move this somewhere else
 
-        const teams = buildInitialTeams(_id, participants.slice(0))
+        const teams = buildInitialTeams(_id, participants.slice(0), questions);
 
         // // TODO: get these from instructor
         // const MAX_TEAM_SIZE = 3;
@@ -615,7 +615,7 @@ Meteor.startup(() => {
           });
         }
 
-        // start next activity! // FIXME: nono
+        // start next activity! // FIXME: nono // TODO: METEOR METHOD
         else {
           Activities.update(nextActivity._id, {
             $set: {
