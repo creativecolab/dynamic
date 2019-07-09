@@ -205,23 +205,15 @@ export default class StatsPage extends Component {
 
     const { quiz } = this.props;
 
-    if (!quiz) return <Loading />;
+    if (!quiz) {
+      return (
+        <div>
+          No Quiz for this activity. Make some stats for the next one!
+          <Loading />
+        </div>
+      );
+    }
 
-    //const data = this.getData(quiz);
-    //const currentType = ActivityEnums.quiz.MULTI_CHOICE;
-
-    // quiz.questions.map((question, index) => {
-    //   if (index === this.props.index) {
-    //     currentType = question.type;
-    //   }
-    // });
-
-    // quiz.options.map((opt, index) => {
-    //   if (opt.correct) {
-    //     correctIndex = index;
-    //     correctText = opt.text;
-    //   }
-    // });
 
     const getAnswer = q => {
       if (q.type === ActivityEnums.quiz.MULTI_CHOICE) {

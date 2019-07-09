@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+
 import Sessions from '../../../api/sessions';
 import Users from '../../../api/users';
 import Activities from '../../../api/activities'
+
+import SessionEnums from '../../../enums/sessions';
 import { Redirect } from 'react-router-dom'
 
 
