@@ -50,4 +50,4 @@ const dbquestions = [
   'If you were any kitchen utensil, which would you be and why?'
 ];
 
-// export default dbquestions;
+export default dbquestions;

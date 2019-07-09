@@ -57,7 +57,7 @@ class ActivityHandler extends Component {
 
   render() {
     // get props from parent
-    const { activity_id, pid, sessionLength } = this.props;
+    const { activity_id, pid, sessionLength, progress } = this.props;
 
     // get activity object from withTracker
     const { activity } = this.props;
@@ -73,8 +73,8 @@ class ActivityHandler extends Component {
 
     const statusStartTime = this.getStatusStartTime(status, statusStartTimes);
 
-    // calculate progress
-    const progress = activity.index + 1;
+    // // calculate progress
+    // const progress = 1;
 
     // calculate duration
     const duration = this.calculateDuration(activity, progress);
