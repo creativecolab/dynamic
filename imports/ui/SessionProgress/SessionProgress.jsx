@@ -18,7 +18,6 @@ import Loading from '../Components/Loading/Loading';
 import Wrapper from '../Wrapper/Wrapper';
 import Clock from '../Clock/Clock';
 
-
 import './SessionProgress.scss';
 
 class SessionProgress extends Component {
@@ -65,8 +64,7 @@ class SessionProgress extends Component {
           // success!
           console.log('Starting Activity Status ' + res);
         }
-      }
-      );
+      });
     } else {
       console.log('Can no longer advance the status of ' + this.props.currentActivity.name);
     }
@@ -141,8 +139,7 @@ class SessionProgress extends Component {
             </button>
           </div>
         );
-      }
-      else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
+      } else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
         return (
           <div>
             {this.renderClock()}
@@ -175,7 +172,6 @@ class SessionProgress extends Component {
     // team phase for the activity
     if (status === ActivityEnums.status.INPUT_TEAM) {
       if (currentActivity.name === ActivityEnums.name.quiz) {
-
         const quiz = Quizzes.findOne({ activity_id: currentActivity._id });
 
         if (!quiz) return 'No Quiz';
@@ -229,11 +225,10 @@ class SessionProgress extends Component {
               onClick={() => this.advanceActivity(this.props.currentActivity)}
             >
               Summary
-              </button>
+            </button>
           </div>
         );
-      }
-      else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
+      } else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
         return (
           <div>
             {this.renderClock()}
@@ -252,7 +247,7 @@ class SessionProgress extends Component {
               onClick={() => this.advanceActivity(this.props.currentActivity)}
             >
               Summary
-              </button>
+            </button>
           </div>
         );
       }
@@ -270,8 +265,7 @@ class SessionProgress extends Component {
             end={() => this.advanceActivity(this.props.currentActivity)}
           />
         );
-      }
-      else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
+      } else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
         return (
           <div>
             <div>Come up with something for a summary</div>
@@ -282,10 +276,9 @@ class SessionProgress extends Component {
                 onClick={() => this.advanceActivity(this.props.currentActivity)}
               >
                 Move on
-            </button>
+              </button>
             </div>
           </div>
-
         );
       }
     }
@@ -305,10 +298,10 @@ class SessionProgress extends Component {
         <div className="outer">
           <img id="small-logo" src="https://i.postimg.cc/t462TbY7/dynamic.png" alt="" />
           <div className="inner">
-            <h1 id="header">Dynamic</h1>
-            <h2>Enter url:</h2>
+            <h1 id="header">ProtoTeams</h1>
+            <h2>In your browser, type the URL:</h2>
             <div className="text-box-bigscreen">
-              <c>http://sodynamic.herokuapp.com</c>
+              <c>prototeams.com</c>
             </div>
             <h2>Session code:</h2>
             <div className="text-box-bigscreen">
@@ -348,9 +341,7 @@ class SessionProgress extends Component {
     if (session.status === 1)
       return (
         <div className="outer">
-          <div className="inner">
-            {this.getInstructions(this.props.currentActivity.status)}
-          </div>
+          <div className="inner">{this.getInstructions(this.props.currentActivity.status)}</div>
         </div>
       );
   }

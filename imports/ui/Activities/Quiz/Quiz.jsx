@@ -69,7 +69,7 @@ class Quiz extends Component {
     }
 
     // team formation or summary phases
-    else if (status === ActivityEnums.status.TEAM_FORMATION || status === ActivityEnums.status.SUMMARY) {
+    else if (status === ActivityEnums.status.TEAM_FORMATION || status === ActivityEnums.status.ASSESSMENT) {
       this.state = {
         buttonAction: null,
         buttonTxt: null,
@@ -129,7 +129,7 @@ class Quiz extends Component {
           choseTeammate: false
         });
       // team formation or summary phases
-      else if (status === ActivityEnums.status.TEAM_FORMATION || status === ActivityEnums.status.SUMMARY)
+      else if (status === ActivityEnums.status.TEAM_FORMATION || status === ActivityEnums.status.ASSESSMENT)
         this.setState({
           index: 0,
           feedbackClass: '',
@@ -217,7 +217,7 @@ class Quiz extends Component {
           });
 
           if (correct) {
-            console.log("Choose the correct answer!");
+            console.log('Choose the correct answer!');
             Quizzes.update(
               quiz._id,
               {
@@ -230,7 +230,6 @@ class Quiz extends Component {
                 else console.log('Quiz updated!');
               }
             );
-
           } else {
             Quizzes.update(
               quiz._id,
@@ -510,7 +509,7 @@ class Quiz extends Component {
     }
 
     // summary phase
-    if (status === ActivityEnums.status.SUMMARY) {
+    if (status === ActivityEnums.status.ASSESSMENT) {
       if (!this.state.choseTeammate) {
         // look for this user's team
         const team = Teams.findOne({ activity_id, 'members.pid': pid });
@@ -597,11 +596,11 @@ class Quiz extends Component {
   render() {
     const { activity } = this.props;
 
-    if (!activity) return <Loading></Loading>;
+    if (!activity) return <Loading />;
 
     const { quiz } = this.props;
 
-    if (!quiz) return <Loading></Loading>;
+    if (!quiz) return <Loading />;
 
     const { progress, duration, sessionLength, status } = this.props;
     const { statusStartTime } = activity;
@@ -609,7 +608,7 @@ class Quiz extends Component {
 
     let toggle = 1;
 
-    if (status === ActivityEnums.status.SUMMARY || status === ActivityEnums.status.TEAM_FORMATION) {
+    if (status === ActivityEnums.status.ASSESSMENT || status === ActivityEnums.status.TEAM_FORMATION) {
       toggle = 0;
     }
 

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 
-import { Card, Col, Row } from 'antd';
 import Button from '../Components/Button/Button';
 import 'antd/lib/card/style/css';
+
+import Card from '../Components/Card/Card';
 
 import Sessions from '../../api/sessions';
 import SessionEnums from '../../enums/sessions';
@@ -21,7 +22,7 @@ export default class SharedDisplay extends Component {
 
   makeSessionCode() {
     let result = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     const charactersLength = characters.length;
 
     for (let i = 0; i < 5; i++) {
@@ -137,36 +138,30 @@ export default class SharedDisplay extends Component {
         </nav>
         <section className="how-to-main">
           <div className="how-to-title">
-            <div>How it works</div>
+            <div>HOW IT WORKS</div>
           </div>
           <div className="how-to-card-container">
-            <Row gutter={16}>
-              <Col span={6}>
-                <Card title="1. Gather group of people with mobile phones" bordered={false}>
-                  {/* <img src="./crowd.jpg" alt="" /> */}
-                </Card>
-              </Col>
-              <Col span={6}>
-                <Card title="2. Participants enter session code" bordered={false}>
-                  {/* <img src="./homescreen.png" alt="" /> */}
-                </Card>
-              </Col>
-              <Col span={6}>
-                <Card title="3. Form teams" bordered={false}>
-                  {/* <img src="./hold_phones.png" alt="" /> */}
-                </Card>
-              </Col>
-              <Col span={6}>
-                <Card title="4. Rate member preferences for future teams" bordered={false}>
-                  {/* <img src="./rating.png" alt="" /> */}
-                </Card>
-              </Col>
-            </Row>
+            <Card tag="1" title="Gather a group of people">
+              <img src="./crowd.png" alt="" />
+            </Card>
+            <Card tag="2" title="Use mobile devices">
+              <img src="./homescreen.png" alt="" />
+            </Card>
+            <Card tag="3" title="Make small groups">
+              <img src="./teamformation.png" alt="" />
+            </Card>
+            <Card tag="4" title="Assess teammate preference">
+              <img src="./rating.png" alt="" />
+            </Card>
           </div>
-          <Button size="small" onClick={this.createSession}>
-            Begin
-          </Button>
         </section>
+        <Button
+          style={{ color: 'white', background: '#844EAE', fontWeight: 600 }}
+          size="small"
+          onClick={this.createSession}
+        >
+          BEGIN
+        </Button>
       </div>
     );
   }

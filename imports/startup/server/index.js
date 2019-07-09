@@ -221,12 +221,12 @@ Meteor.methods({
         case 0:
           Activities.update(activity_id, {
             $set: {
-              status: currentStatus + 1,
+              status: currentStatus + 2, // FIXME: skipping first status
               'statusStartTimes.indvPhase': new Date().getTime()
             }
           });
 
-          return currentStatus + 1;
+          return currentStatus + 2;
         case 1:
           Activities.update(activity_id, {
             $set: {
@@ -456,6 +456,7 @@ Meteor.startup(() => {
         // get snapshot of participants in session
         const session_id = Activities.findOne(_id).session_id;
         const participants = Sessions.findOne(session_id).participants;
+        const questions = Questions.find({}).fetch();
 
         const teams = buildInitialTeams(_id, partipants.slice(0))
 
@@ -682,11 +683,11 @@ Meteor.startup(() => {
           });
         }
 
-        // start next activity!
+        // start next activity! // FIXME: nono
         else {
           Activities.update(nextActivity._id, {
             $set: {
-              status: 1,
+              status: 2,
               startTime: new Date().getTime(),
               statusStartTime: new Date().getTime()
             }
