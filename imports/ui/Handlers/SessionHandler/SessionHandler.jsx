@@ -105,6 +105,8 @@ export default withTracker(props => {
     { sort: { status: 1 } }
   );
 
+  if (!activity) return;
+
   const progress = session.activities.indexOf(activity._id) + 1;
 
   return { pid, status, length, activity, progress };
