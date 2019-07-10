@@ -48,11 +48,6 @@ class TeamDiscussion extends Component {
     return a;
   }
 
-  renderClock() {
-
-    return <Clock startTime={this.props.statusStartTime} big={false} totalTime={this.props.duration} />;
-  }
-
   // renders based on activity status
   renderContent = ({ status, pid, activity_id, questions, team, index }) => {
     // individual input phase (none for this activity)
@@ -73,7 +68,6 @@ class TeamDiscussion extends Component {
     if (status === ActivityEnums.status.INPUT_TEAM) {
       return (
         <>
-          {this.renderClock()}
           <div className="swipe-instr-top">Have group members answer:</div>
           <div className="swipe-instr-top" style={{ padding: "0 1.5em", fontSize: "0.8em" }}>Swipe to see more questions. This will change your teammates' screens too!</div>
           <div className="slider-main">
@@ -174,6 +168,7 @@ class TeamDiscussion extends Component {
         sessionLength={sessionLength}
         clockDuration={duration}
         clockStartTime={statusStartTime}
+        hasTimer={true}
         hasFooter={false}
       >
         {this.renderContent(this.props)}
@@ -182,14 +177,18 @@ class TeamDiscussion extends Component {
   }
 }
 
-export default withTracker(({ pid }) => {
+export default withTracker(({ pid, activity_id }) => {
+  // get the team that this user is in for this activity
   const team = Teams.findOne({
     'members': {
       $elemMatch: {
         'pid': pid
       }
-    }
+    },
+    'activity_id': activity_id
   }, { sort: { teamCreated: -1 } });
+
+  // get all the quesitons
   let questions = Questions.find().fetch();
   let index = 0;
 

@@ -37,11 +37,15 @@ export default class MobileTimer extends Component {
       timeLeft: this.props.duration - parseInt(Math.abs(this.props.startTime - new Date().getTime()) / 1000)
     });
   }
-  
+
   render() {
-    if (this.state.timeLeft < 0) return "";
+    if (this.state.timeLeft < 0) {
+      console.log("no time left");
+      console.log(this.state.timeLeft);
+      return "";
+    }
     let percentage = parseInt(100 - (this.state.timeLeft / this.props.duration) * 100);
-    percentage = percentage < 0? 0 : percentage; 
+    percentage = percentage < 0 ? 0 : percentage;
     return (
       <div id="mobile-timer" >
         <CircularProgressbar
@@ -52,13 +56,13 @@ export default class MobileTimer extends Component {
             path: {
               strokeLinecap: 'butt',
               transition: 'stroke-dashoffset 0.5s ease 0s',
-              stroke: this.state.timeLeft < 10? '#F05D5E' : '#1E91D6'
+              stroke: this.state.timeLeft < 10 ? '#F05D5E' : '#1E91D6'
             },
             text: {
               fill: '#000',
               fontSize: '60px'
             }
-          }}/>
+          }} />
       </div>
     )
   }

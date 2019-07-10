@@ -255,7 +255,7 @@ export default class Landing extends Component {
             invalid={invalidPID}
             invalidMsg="Not a valid username!"
             label="What do you want your username to be?"
-            placeholder="XxKingTxX"
+            placeholder="theking"
           />
           {/* <Tags
             label="What time is your section?"
