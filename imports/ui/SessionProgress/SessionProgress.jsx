@@ -333,7 +333,7 @@ class SessionProgress extends Component {
     if (session.status === 2) return <SessionEnd />;
 
     // no activities
-    if (!this.props.currentActivity) return 'You should add activities chief';
+    if (!this.props.currentActivity) return 'You should add activities';
 
     // // TODO: handle case where there is no quiz
     // if (session.status === 1 && this.props.currentActivity.status === 4)
@@ -356,7 +356,7 @@ class SessionProgress extends Component {
               <b>URL</b>: prototeams.com
             </div>
             <div>
-              <b>CODE</b>: FHY78
+              <b>CODE</b>: {session.code.toUpperCase()}
             </div>
           </div>
           <div className="outer">
@@ -369,10 +369,7 @@ class SessionProgress extends Component {
   render() {
     if (!this.props.session) return <Loading />;
 
-    return <div className="session-progress-wrapper">
-
-      {this.renderInfo()}
-    </div>;
+    return <div className="session-progress-wrapper">{this.renderInfo()}</div>;
   }
 }
 
