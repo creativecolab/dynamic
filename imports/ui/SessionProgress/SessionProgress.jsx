@@ -333,7 +333,7 @@ class SessionProgress extends Component {
     if (session.status === 2) return <SessionEnd />;
 
     // no activities
-    if (!this.props.currentActivity) return 'You should add activities chief';
+    if (!this.props.currentActivity) return <Loading>Setting up an activity!</Loading>;
 
     // // TODO: handle case where there is no quiz
     // if (session.status === 1 && this.props.currentActivity.status === 4)
