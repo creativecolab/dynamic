@@ -233,11 +233,12 @@ class SessionProgress extends Component {
           <div>
             {this.renderClock()}
             <h1>Team Discussion</h1>
-            <div id="font-size">Team Response</div>
+
+            <img className="ratingPic" src="/discussion.png" alt="" />
             <br />
-            <div id="font-size">Instructions</div>
-            <div className="text-box-bigscreen">
-              <h2 id="font-size">iterate on some instructions</h2>
+            <div id="font-size">Instructions:</div>
+            <div className="text-box-bigscreen2">
+              <h2 id="font-size">Answer ice breaker questions within your group.</h2>
             </div>
             <br />
             {/* TODO: change this to button component */}
@@ -246,7 +247,7 @@ class SessionProgress extends Component {
               id="here"
               onClick={() => this.advanceActivity(this.props.currentActivity)}
             >
-              Summary
+              Finish Activity
             </button>
           </div>
         );
@@ -268,14 +269,18 @@ class SessionProgress extends Component {
       } else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
         return (
           <div>
-            <div>Come up with something for a summary</div>
+            <h1>Member Preferences</h1>
+            <img className="ratingPic" src="/rating.png" alt="" />
+            <br />
+            <h2 id="font-size"> Reflect on the activity and rate your group member preferences.</h2>
+
             <div>
               <button
                 className="bigscreen-button"
                 id="here"
                 onClick={() => this.advanceActivity(this.props.currentActivity)}
               >
-                Move on
+                Next Round
               </button>
             </div>
           </div>
@@ -299,6 +304,7 @@ class SessionProgress extends Component {
           <img id="small-logo" src="https://i.postimg.cc/t462TbY7/dynamic.png" alt="" />
           <div className="inner">
             <h1 id="header">ProtoTeams</h1>
+
             <h2>In your browser, type the URL:</h2>
             <div className="text-box-bigscreen">
               <c>prototeams.com</c>
@@ -340,16 +346,29 @@ class SessionProgress extends Component {
     // session started, render instructions for activities
     if (session.status === 1)
       return (
-        <div className="outer">
-          <div className="inner">{this.getInstructions(this.props.currentActivity.status)}</div>
-        </div>
+        <>
+          <div className="session-code-container">
+            <div>
+              <b>URL</b>: prototeams.com
+            </div>
+            <div>
+              <b>CODE</b>: FHY78
+            </div>
+          </div>
+          <div className="outer">
+            <div className="inner">{this.getInstructions(this.props.currentActivity.status)}</div>
+          </div>
+        </>
       );
   }
 
   render() {
     if (!this.props.session) return <Loading />;
 
-    return <div>{this.renderInfo()}</div>;
+    return <div className="session-progress-wrapper">
+
+      {this.renderInfo()}
+    </div>;
   }
 }
 

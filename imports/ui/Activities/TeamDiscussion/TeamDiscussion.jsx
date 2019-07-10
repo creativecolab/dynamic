@@ -55,8 +55,6 @@ class TeamDiscussion extends Component {
 
     // team formation phase
     if (status === ActivityEnums.status.TEAM_FORMATION) {
-      // look for this user's team
-      const team = Teams.findOne({ activity_id, 'members.pid': pid });
 
       // joined after team formation
       if (!team) return <Waiting text="You have not been assigned a team. Please wait for the next activity." />;
@@ -91,8 +89,6 @@ class TeamDiscussion extends Component {
               &rarr;
             </button>
           </div>
-          <div className="swipe-instr-bottom">Swipe for next question</div>
-
 
         </>
       );
@@ -160,7 +156,7 @@ class TeamDiscussion extends Component {
 
     return (
       <Mobile
-        activityName="Form Teams" //TODO: turn this string into state
+        activityName="Ice Breakers" //TODO: turn this string into state
         sessionStatus={progress}
         sessionLength={sessionLength}
         clockDuration={duration}
@@ -174,7 +170,13 @@ class TeamDiscussion extends Component {
 }
 
 export default withTracker(({ pid }) => {
-  const team = Teams.findOne({ 'members.pid': pid }, { sort: { teamCreated: -1 } });
+  const team = Teams.findOne({
+    'members': {
+      $elemMatch: {
+        'pid': pid
+      }
+    }
+  }, { sort: { teamCreated: -1 } });
   let questions = Questions.find().fetch();
   let index = 0;
 

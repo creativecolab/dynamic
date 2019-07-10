@@ -1,9 +1,26 @@
+@import '../assets/main';
 
 #back-button {
   position: absolute;
   top: 10px;
   left: 10px;
 }
+
+.session-progress-wrapper{
+  position: relative;
+  .session-code-container{
+    position: absolute;
+    top: 3vh;
+    left: 2vw;
+    //background-color: yellow;
+    border-style: solid;
+    border-color: rgb(158, 158, 158);
+    border-radius: 5px;
+    padding: 1rem;
+  }
+}
+
+
 
 .dynamic-logo {
   min-width: 50px;
@@ -13,6 +30,24 @@
   position: absolute;
   top: 30px;
   left: 30px;
+}
+
+.text-box-bigscreen2 {
+  border: 2px solid $dynamic-white ;
+  border-radius: 5px 5px 5px 5px;
+  width: 1200px;
+  height: auto; 
+  margin: auto; 
+  padding-top: 10px; 
+  padding-bottom: 10px; 
+  text-align: center; 
+  position: relative;
+}
+
+
+.ratingPic {
+  max-height: 20vh;
+  padding-bottom: 30px;
 }
 
 #session-info {
