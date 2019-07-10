@@ -90,13 +90,17 @@ class SessionProgress extends Component {
     return -1;
   }
 
-  renderClock() {
+  renderClock(status) {
     const { currentActivity } = this.props;
 
     const duration = this.calculateDuration(currentActivity);
 
     // console.log("Start time: " + currentActivity.startTime);
-    return <Clock startTime={this.props.currentActivity.statusStartTime} big totalTime={duration} />;
+    if (status === ActivityEnums.status.INPUT_INDV) {
+      return <Clock startTime={this.props.currentActivity.statusStartTimes.indvPhase} big totalTime={duration} />;
+    } else if (status === ActivityEnums.status.INPUT_TEAM) {
+      return <Clock startTime={this.props.currentActivity.statusStartTimes.teamPhase} big totalTime={duration} />;
+    }
   }
 
   // instructions/content for activities
@@ -114,7 +118,7 @@ class SessionProgress extends Component {
 
         return (
           <div>
-            {this.renderClock()}
+            {this.renderClock(status)}
             <h1>Quiz</h1>
             <div id="font-size">Individual Response</div>
             <div className="text-box-bigscreen">
@@ -142,7 +146,7 @@ class SessionProgress extends Component {
       } else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
         return (
           <div>
-            {this.renderClock()}
+            {this.renderClock(status)}
             <h1>Team Discussion</h1>
             <div id="font-size">Individual Input</div>
             <br />
@@ -178,7 +182,7 @@ class SessionProgress extends Component {
 
         return (
           <div>
-            {this.renderClock()}
+            {this.renderClock(status)}
             {/* <h1>Round {this.props.session.round}: Quiz</h1> */}
             <h1>Quiz</h1>
             {/* <div id="font-size">1 Person is in the hotseat</div>
@@ -231,7 +235,7 @@ class SessionProgress extends Component {
       } else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
         return (
           <div>
-            {this.renderClock()}
+            {this.renderClock(status)}
             <h1>Team Discussion</h1>
 
             <img className="ratingPic" src="/discussion.png" alt="" />

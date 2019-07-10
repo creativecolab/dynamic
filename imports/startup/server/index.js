@@ -317,6 +317,23 @@ Meteor.startup(() => {
         duration = calculateDuration(activity);
       }
 
+      // debug flag, useful for styling
+      const debug = false;
+
+      // called to end an activity phase
+      const endPhase = Meteor.bindEnvironment((activity_id, status) => {
+        if (debug) return;
+
+        Meteor.call('activities.updateStatus', activity_id, (err, res) => {
+          if (err) {
+            alert(err);
+          } else {
+            // success!
+            console.log('Starting Activity Status ' + res);
+          }
+        });
+      });
+
       // let input phase last for 120 seconds the first round, 60 seconds other rounds
       if (update.status === 1) {
         console.log('[INDIVIDUAL PHASE]');
@@ -347,6 +364,7 @@ Meteor.startup(() => {
           _id,
           {
             $set: {
+              'statusStartTimes.teamForm': new Date().getTime(),
               teams,
               allTeamsFound: false
             }
@@ -398,22 +416,5 @@ Meteor.startup(() => {
         }
       }
     }
-  });
-
-  // debug flag, useful for styling
-  const debug = true;
-
-  // called to end an activity phase
-  const endPhase = Meteor.bindEnvironment((activity_id, status) => {
-    if (debug) return;
-
-    Meteor.call('activities.updateStatus', activity_id, (err, res) => {
-      if (err) {
-        alert(err);
-      } else {
-        // success!
-        console.log('Starting Activity Status ' + res);
-      }
-    });
   });
 });

@@ -1,20 +1,22 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
-
 import ReactSwipe from 'react-swipe';
-import ActivityEnums from '../../../enums/activities';
 
-import Mobile from '../../Layouts/Mobile/Mobile';
-
-import './TeamDiscussion.scss';
 import Questions from '../../../api/questions';
 import Teams from '../../../api/teams';
+import ActivityEnums from '../../../enums/activities';
+import Mobile from '../../Layouts/Mobile/Mobile';
+
 // import Button from '../../Components/Button/Button';
 import Loading from '../../Components/Loading/Loading';
 import Waiting from '../../Components/Waiting/Waiting';
 import TeamFormation from '../Components/TeamFormation/TeamFormation';
 import TeammateSliders from '../Components/TeammateSliders/TeammateSliders';
+import Clock from '../../Clock/Clock';
+
+import './TeamDiscussion.scss';
+
 
 class TeamDiscussion extends Component {
   static propTypes = {
@@ -46,9 +48,14 @@ class TeamDiscussion extends Component {
     return a;
   }
 
+  renderClock() {
+
+    return <Clock startTime={this.props.statusStartTime} big={false} totalTime={this.props.duration} />;
+  }
+
   // renders based on activity status
   renderContent = ({ status, pid, activity_id, questions, team, index }) => {
-    // individual input phase
+    // individual input phase (none for this activity)
     if (status === ActivityEnums.status.INPUT_INDV) {
       return 'Indvidual input';
     }
@@ -66,6 +73,7 @@ class TeamDiscussion extends Component {
     if (status === ActivityEnums.status.INPUT_TEAM) {
       return (
         <>
+          {this.renderClock()}
           <div className="swipe-instr-top">Have group members answer:</div>
           <div className="slider-main">
             <ReactSwipe
@@ -104,7 +112,7 @@ class TeamDiscussion extends Component {
       }
     }
 
-    return <Waiting text="Waiting for next round..." />;
+    return <Waiting text="Waiting for next activity of this session to begin..." />;
   };
 
   componentDidUpdate(prevProps) {

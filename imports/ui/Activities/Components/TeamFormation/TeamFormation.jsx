@@ -89,9 +89,11 @@ class TeamFormation extends Component {
   }
 
   renderTeammates() {
-    if (this.props.allConfirmed) return 'Everyone in your team confirmed. Waiting for other teams.';
+    if (this.props.allConfirmed) {
+      return 'Everyone in your group has confirmed! While you wait for other groups to get together, go ahead and introduce yourself to your teammates.';
+    }
 
-    if (this.props.confirmed) return 'Confirmed. Waiting for other teammates.';
+    if (this.props.confirmed) return 'Confirmed. Waiting for other groupmates.';
 
     return this.state.teammates.map(m => (
       <Button key={m.pid} active={m.confirmed} onClick={() => this.handleConfirmed(m.pid)}>
@@ -112,9 +114,9 @@ class TeamFormation extends Component {
         <div className="shape-main">
           <div>Find others with this shape and color</div>
           <img className="shape-img" src={`/shapes/${shape}-solid-${color}.png`} alt={`${color} ${shape}`} />
-          <div>Select members found:</div>
+          {!this.props.confirmed && <div>Select members found:</div>}
+          {this.renderTeammates()}
         </div>
-        {this.renderTeammates()}
       </div>
     );
   }
