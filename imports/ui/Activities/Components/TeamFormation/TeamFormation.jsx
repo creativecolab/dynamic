@@ -90,7 +90,7 @@ class TeamFormation extends Component {
 
   renderTeammates() {
     if (this.props.allConfirmed) {
-      return 'Everyone in your group has confirmed! While you wait for other groups to get together, go ahead and introduce yourself to your teammates.';
+      return 'Everyone in your group has confirmed! While waiting for other groups, introduce yourself to your teammates.';
     }
 
     if (this.props.confirmed) return 'Confirmed. Waiting for other groupmates.';
@@ -115,8 +115,8 @@ class TeamFormation extends Component {
           <div>Find others with this shape and color</div>
           <img className="shape-img" src={`/shapes/${shape}-solid-${color}.png`} alt={`${color} ${shape}`} />
           {!this.props.confirmed && <div>Select members found:</div>}
-          {this.renderTeammates()}
         </div>
+        {this.renderTeammates()}
       </div>
     );
   }

@@ -5,7 +5,11 @@
 }
 
 .swipe-instr-bottom {
-  margin: 0em auto 0;
+  align-self: center;
+  position: absolute;
+  bottom: 2vh;
+  //margin: 1em auto 0;
+
 }
 
 .slider-main {

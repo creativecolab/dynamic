@@ -242,7 +242,7 @@ class SessionProgress extends Component {
             <br />
             <div id="font-size">Instructions:</div>
             <div className="text-box-bigscreen2">
-              <h2 id="font-size">Answer ice breaker questions within your group.</h2>
+              <h2 id="font-size">Answer icebreaker questions within your group.</h2>
             </div>
             <br />
             {/* TODO: change this to button component */}

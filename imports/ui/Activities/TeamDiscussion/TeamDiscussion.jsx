@@ -75,28 +75,33 @@ class TeamDiscussion extends Component {
         <>
           {this.renderClock()}
           <div className="swipe-instr-top">Have group members answer:</div>
+          <div className="swipe-instr-top" style={{ padding: "0 1.5em", fontSize: "0.8em" }}>Swipe to see more questions. This will change your teammates' screens too!</div>
           <div className="slider-main">
             <ReactSwipe
               className="carousel"
               swipeOptions={{ continuous: true, callback: this.onSlideChange, startSlide: index }}
               ref={el => (this.reactSwipeEl = el)}
             >
-              {questions.map(q => {
+              {questions.map((q, index) => {
                 return (
                   <div className="question-card-wrapper" key={q._id}>
-                    <div className="question-card">{q.prompt}</div>
+                    <div className="question-card">{index + 1}. {q.prompt}</div>
                   </div>
                 );
               })}
 
             </ReactSwipe>
+
             <button className="prev" type="button" onClick={() => this.reactSwipeEl.prev()}>
               &larr;
             </button>
             <button className="next" type="button" onClick={() => this.reactSwipeEl.next()}>
               &rarr;
             </button>
+
+            {/* <div className="swipe-instr-bottom">Swipe for next question</div> */}
           </div>
+
 
         </>
       );
@@ -164,7 +169,7 @@ class TeamDiscussion extends Component {
 
     return (
       <Mobile
-        activityName="Ice Breakers" //TODO: turn this string into state
+        activityName="IceBreakers" //TODO: turn this string into state
         sessionStatus={progress}
         sessionLength={sessionLength}
         clockDuration={duration}
