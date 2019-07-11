@@ -120,8 +120,8 @@ export default class Landing extends Component {
     const { name } = this.state;
 
     /* eslint-disable react/destructuring-assignment */
-    const pid = this.state.pid.toLowerCase();
-    const code = this.state.code.toLowerCase();
+    const pid = this.state.pid.toLowerCase().trim();
+    const code = this.state.code.toLowerCase().trim();
     /* eslint-enable react/destructuring-assignment */
 
     if (name.length === 0) {
@@ -168,7 +168,7 @@ export default class Landing extends Component {
         // prepare points for this session, note the session join time
         Users.update(user._id, {
           $push: {
-            points_history: {
+            sessionHistory: {
               session_id: session._id,
               sessionJoinTime: new Date().getTime(),
               points: 0
@@ -201,7 +201,7 @@ export default class Landing extends Component {
         pid,
         joinTime: new Date().getTime(),
         teamHistory: [],
-        pointsHistory: [
+        sessionHistory: [
           {
             session_id: session._id,
             sessionJoinTime: new Date().getTime(),

@@ -157,12 +157,17 @@ Meteor.methods({
   },
 
   'users.addPoints': function({ user_id, session_id, points }) {
-    //TODO: points_history changed to sessionHistory
     Users.update(
-      { _id: user_id, 'points_history.session': session_id },
+      { _id: user_id, 
+        'sessionHistory' : { 
+          $elemMatch: {
+            'session': session_id
+          }
+        }
+      },
       {
         $set: {
-          'points_history.$.points': points
+          'sessionHistory.$.points': points
         }
       },
       () => {
