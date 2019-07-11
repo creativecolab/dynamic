@@ -11,7 +11,6 @@ import TeamDiscussion from '../../Activities/TeamDiscussion/TeamDiscussion';
 class ActivityHandler extends Component {
   static propTypes = {
     activity_id: PropTypes.string,
-    // eslint-disable-next-line react/forbid-prop-types
     activity: PropTypes.object,
     pid: PropTypes.string.isRequired,
     sessionLength: PropTypes.number
@@ -33,12 +32,14 @@ class ActivityHandler extends Component {
     const { durationTeam, durationOffsetTeam } = activity;
 
     // individual input phase
-    if (status === ActivityEnums.status.INPUT_INDV)
+    if (status === ActivityEnums.status.INPUT_INDV) {
       return progress === 1 ? durationIndv : durationIndv - durationOffsetIndv;
+    }
 
     // team input phase
-    if (status === ActivityEnums.status.INPUT_TEAM)
+    if (status === ActivityEnums.status.INPUT_TEAM) {
       return progress === 1 ? durationTeam : durationTeam - durationOffsetTeam;
+    }
 
     return -1;
   }
@@ -72,9 +73,6 @@ class ActivityHandler extends Component {
     const { name, status, statusStartTimes } = activity;
 
     const statusStartTime = this.getStatusStartTime(status, statusStartTimes);
-
-    // // calculate progress
-    // const progress = 1;
 
     // calculate duration
     const duration = this.calculateDuration(activity, progress);

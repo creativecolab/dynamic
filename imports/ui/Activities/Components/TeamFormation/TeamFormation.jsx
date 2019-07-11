@@ -75,7 +75,7 @@ class TeamFormation extends Component {
 
   // sets team member's state confirmed to true
   handleConfirmed(pid) {
-    console.log(`Found ${pid}`);
+    //console.log(`Found ${pid}`);
     this.setState(state => {
       // look for teammate and update state
       state.teammates.forEach(member => {

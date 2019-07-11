@@ -39,58 +39,58 @@ export default class Clock extends Component {
 
   // decrease every second
   tick() {
-    if (this.state.timeLeft <= 0) return;
+    if (this.state.timeLeft <= 0) return; // TODO: might not want this...
     this.setState({
       timeLeft: this.props.totalTime - parseInt(Math.abs(this.props.startTime - new Date().getTime()) / 1000)
     });
   }
-  
+
   render() {
     let percentage = parseInt(100 - (this.state.timeLeft / this.props.totalTime) * 100);
-    percentage = percentage < 0? 0 : percentage; 
+    percentage = percentage < 0 ? 0 : percentage;
     if (!this.props.big) {
       return (
         <div id="clock">
           <CircularProgressbar
-          percentage={percentage}
-          strokeWidth={50}
-          text={this.state.timeLeft}
-          styles={{
-            path: { strokeLinecap: 'butt', transition: 'stroke-dashoffset 0.5s ease 0s', stroke: '#1E91D6' },
-            text: { fill: '#000', fontSize: '60px'}
-          }}/>
-        </div> 
+            percentage={percentage}
+            strokeWidth={50}
+            text={this.state.timeLeft}
+            styles={{
+              path: { strokeLinecap: 'butt', transition: 'stroke-dashoffset 0.5s ease 0s', stroke: '#1E91D6' },
+              text: { fill: '#000', fontSize: '60px' }
+            }} />
+        </div>
       )
     } else {
       return (<div id="big-clock">
-          <CircularProgressbar
-            percentage={percentage}
-            text={this.state.timeLeft}
-            strokeWidth={5}
-            styles={{
-              path: {
-                // Tweak path color:
-                stroke: '#1E91D6',
-                // Tweak path to use flat or rounded ends:
-                strokeLinecap: 'butt',
-                // Tweak transition animation:
-                transition: 'stroke-dashoffset 0.5s ease 0s',
-              },
-              // Customize the circle behind the path
-              trail: {
-                // Tweak the trail color:
-                stroke: '#d6d6d6',
-              },
-              // Customize the text
-              text: {
-                // Tweak text color:
-                fill: '#1E91D6',
-                // Tweak text size:
-                fontSize: '60px',
-              },
-            }}
-          />
-        </div>)
+        <CircularProgressbar
+          percentage={percentage}
+          text={this.state.timeLeft}
+          strokeWidth={5}
+          styles={{
+            path: {
+              // Tweak path color:
+              stroke: '#1E91D6',
+              // Tweak path to use flat or rounded ends:
+              strokeLinecap: 'butt',
+              // Tweak transition animation:
+              transition: 'stroke-dashoffset 0.5s ease 0s',
+            },
+            // Customize the circle behind the path
+            trail: {
+              // Tweak the trail color:
+              stroke: '#d6d6d6',
+            },
+            // Customize the text
+            text: {
+              // Tweak text color:
+              fill: '#1E91D6',
+              // Tweak text size:
+              fontSize: '60px',
+            },
+          }}
+        />
+      </div>)
     }
   }
 }
