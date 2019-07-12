@@ -110,8 +110,13 @@ class TeamFormation extends Component {
     if (allConfirmed) {
       return (
         <div className="team-formation-main">
-          <img src="/intro.jpg" alt="..." />
-          <div>You found everyone! While waiting for other groups, introduce yourself to your teammates.</div>
+          <img className="intro-img" src="/intro.jpg" alt="..." />
+          <p>
+            <strong>Introduce yourself!</strong>
+          </p>
+          <div>
+            Looks like you found everyone. While waiting for other groups to form, introduce yourself to your teammates.
+          </div>
         </div>
       );
     }
