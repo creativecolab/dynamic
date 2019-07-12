@@ -13,7 +13,9 @@ class TeamFormation extends Component {
     pid: PropTypes.string.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
     team: PropTypes.object,
-    team_id: PropTypes.string.isRequired
+    team_id: PropTypes.string.isRequired,
+    confirmed: PropTypes.bool.isRequired,
+    allConfirmed: PropTypes.bool.isRequired
   };
 
   static defaultProps = {
@@ -89,10 +91,6 @@ class TeamFormation extends Component {
   }
 
   renderTeammates() {
-    if (this.props.allConfirmed) {
-      return 'Everyone in your group has confirmed! While waiting for other groups, introduce yourself to your teammates.';
-    }
-
     if (this.props.confirmed) return 'Confirmed. Waiting for other groupmates.';
 
     return this.state.teammates.map(m => (
@@ -103,18 +101,27 @@ class TeamFormation extends Component {
   }
 
   render() {
-    const { team } = this.props;
+    const { team, confirmed, allConfirmed } = this.props;
 
     if (!team) return <Loading />;
 
     const { shape, color } = team;
+
+    if (allConfirmed) {
+      return (
+        <div className="team-formation-main">
+          <img src="/intro.jpg" alt="..." />
+          <div>You found everyone! While waiting for other groups, introduce yourself to your teammates.</div>
+        </div>
+      );
+    }
 
     return (
       <div className="team-formation-main">
         <div className="shape-main">
           <div>Find others with this shape and color</div>
           <img className="shape-img" src={`/shapes/${shape}-solid-${color}.png`} alt={`${color} ${shape}`} />
-          {!this.props.confirmed && <div>Select members found:</div>}
+          {!confirmed && <div>Select members found:</div>}
         </div>
         {this.renderTeammates()}
       </div>
