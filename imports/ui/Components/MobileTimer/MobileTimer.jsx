@@ -32,7 +32,7 @@ export default class MobileTimer extends Component {
 
   // decrease every second
   tick() {
-    if (this.state.timeLeft <= 0) return;
+    //if (this.state.timeLeft <= 0) return; NONO, doesn't account for props taking a while to update
     this.setState({
       timeLeft: this.props.duration - parseInt(Math.abs(this.props.startTime - new Date().getTime()) / 1000)
     });
@@ -40,8 +40,6 @@ export default class MobileTimer extends Component {
 
   render() {
     if (this.state.timeLeft < 0) {
-      console.log("no time left");
-      console.log(this.state.timeLeft);
       return "";
     }
     let percentage = parseInt(100 - (this.state.timeLeft / this.props.duration) * 100);

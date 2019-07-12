@@ -90,6 +90,8 @@ if (Meteor.isServer) {
   // });
 }
 
+var timeout_timer;
+
 /* Meteor methods (server-side function, mostly database work) */
 Meteor.methods({
   'activities.updateStatus': function(activity_id) {
@@ -97,6 +99,9 @@ Meteor.methods({
       const activity = Activities.findOne(activity_id);
 
       const currentStatus = activity.status;
+
+      //in case this was called due to an instructor skipping ahead, reset the timer
+      clearTimeout(timeout_timer);
 
       // increment the status, get the appropriate timestamp, and prepare for next status
       switch (currentStatus) {
@@ -148,7 +153,6 @@ Meteor.methods({
           return currentStatus + 1;
         default:
           console.log('No longer incrementing');
-
           return -1;
       }
     } catch (error) {
@@ -157,12 +161,17 @@ Meteor.methods({
   },
 
   'users.addPoints': function({ user_id, session_id, points }) {
-    //TODO: points_history changed to sessionHistory
     Users.update(
-      { _id: user_id, 'points_history.session': session_id },
+      { _id: user_id, 
+        'sessionHistory' : { 
+          $elemMatch: {
+            'session': session_id
+          }
+        }
+      },
       {
         $set: {
-          'points_history.$.points': points
+          'sessionHistory.$.points': points
         }
       },
       () => {
@@ -337,7 +346,8 @@ Meteor.startup(() => {
       // let input phase last for 120 seconds the first round, 60 seconds other rounds
       if (update.status === 1) {
         console.log('[INDIVIDUAL PHASE]');
-        this.timer1 = setTimeout(() => endPhase(_id, 2), duration * 1000); //TODO: MAKE THIS DURATION NOT HARDCODED
+        clearTimeout(timeout_timer);
+        timeout_timer = setTimeout(() => endPhase(_id, 2), duration * 1000); 
       }
 
       // team formation
@@ -382,8 +392,8 @@ Meteor.startup(() => {
       // discussion time!
       if (update.status === 3) {
         console.log('[TEAM PHASE]');
-        clearTimeout(this.timer1);
-        this.timer2 = setTimeout(() => endPhase(_id, 4), duration * 1000); // move on to next phase
+        clearTimeout(timeout_timer);
+        timeout_timer = setTimeout(() => endPhase(_id, 4), duration * 1000); // move on to next phase
       }
 
       // activity just ended
