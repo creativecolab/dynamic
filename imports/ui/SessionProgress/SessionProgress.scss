@@ -44,10 +44,13 @@
   position: relative;
 }
 
+.teamShapes {
+  text-align: center; 
+}
 
 .ratingPic {
-  max-height: 20vh;
-  padding-bottom: 30px;
+  max-height: 40vh;
+  margin: auto;
 }
 
 #session-info {

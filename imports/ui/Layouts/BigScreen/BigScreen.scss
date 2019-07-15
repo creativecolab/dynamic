@@ -1,0 +1,87 @@
+@import '../../assets/main';
+
+.main {
+  height: 100vh;
+  width: 100vw;
+  color: $dynamic-black;
+  display: grid;
+  grid-template-areas: 'navbar'
+                       'content'
+                       'footer';
+  grid-template-rows: 1fr 10fr 1fr;
+  user-select: none;
+  
+  .navbar {
+    grid-area: navbar;
+    position: relative;
+    display: flex;
+    min-height: 75px;
+    padding-top: 2px;
+    height: 10vh;
+    width: 70vw;
+    font-size: 5vh;
+    text-align: left;
+
+    .url {
+      font-weight: 200;
+      margin: auto;
+      display: flex;
+    }
+  
+    .session-code {
+      font-weight: 200;
+      margin: auto;
+      display: flex;
+    }
+  
+  
+    .navbar-hr {
+      position: absolute;
+      bottom: -14%;
+      left: 15%;
+      width: 70%;
+    }
+  
+  }
+  
+  .content {
+    grid-area: content;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .activityPhase {
+      font-size: 8vh;
+      text-align: center; 
+    }
+  
+    .feedback-msge {
+      text-align: center;
+    }
+  
+    .good {
+      color: $dynamic-green;
+    }
+  
+    .error {
+      color: $dynamic-red;
+    }
+  
+  }
+  
+  #font-size{
+    font-size: 36px; 
+  }
+
+  .text-box-bigscreen2 {
+    border: 2px solid $dynamic-white ;
+    border-radius: 5px 5px 5px 5px;
+    width: 1200px;
+    height: auto; 
+    margin: auto; 
+    padding-top: 10px; 
+    padding-bottom: 10px; 
+    text-align: center; 
+    position: relative;
+  }
+}

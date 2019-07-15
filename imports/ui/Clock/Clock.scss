@@ -19,14 +19,13 @@
 }
 
 #big-clock {
-  position: absolute;
+  position: fixed;
   z-index: 1;
   display: flex;
   min-width: 50px;
   min-height: 50px;
-  max-width: 10%;
+  max-width: 15%;
   max-height: 10%;
-  position: absolute;
   top: 30px;
   right: 30px;
 

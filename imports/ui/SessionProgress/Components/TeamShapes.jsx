@@ -49,14 +49,9 @@ class TeamShapes extends Component {
     }
 
     return (
-      <div>
-        <h1>Form Teams</h1>
-        <div>Find others with the same colored shape</div>
+      <div className="teams">
         {teams && <div className="shape-grid">{this.mapShapes(teams)}</div>}
         {teams && <h2>{numTeams + '/' + teams.length} teams are ready!</h2>}
-        <button className="bigscreen-button" onClick={() => this.props.skip()}>
-          Begin Activity
-        </button>
       </div>
     );
   }

@@ -39,13 +39,16 @@ export default class Clock extends Component {
 
   // decrease every second
   tick() {
-    if (this.state.timeLeft <= 0) return; // TODO: might not want this...
+    // if (this.state.timeLeft <= 0) return; // TODO: might not want this...
     this.setState({
       timeLeft: this.props.totalTime - parseInt(Math.abs(this.props.startTime - new Date().getTime()) / 1000)
     });
   }
 
   render() {
+    if (this.state.timeLeft < 0) {
+      return "";
+    }
     let percentage = parseInt(100 - (this.state.timeLeft / this.props.totalTime) * 100);
     percentage = percentage < 0 ? 0 : percentage;
     if (!this.props.big) {

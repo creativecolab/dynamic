@@ -114,4 +114,3 @@ export default class Mobile extends Component {
     );
   }
 }
-/* eslint-enable react/prefer-stateless-function */

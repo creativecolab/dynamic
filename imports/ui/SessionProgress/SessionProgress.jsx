@@ -11,12 +11,12 @@ import Quizzes from '../../api/quizzes';
 
 import ActivityEnums from '/imports/enums/activities';
 
+import BigScreen from '../Layouts/BigScreen/BigScreen';
+
+import Loading from '../Components/Loading/Loading';
 import SessionEnd from './Components/SessionEnd';
 import TeamShapes from './Components/TeamShapes';
 import StatsPage from './Components/StatsPage';
-import Loading from '../Components/Loading/Loading';
-import Wrapper from '../Wrapper/Wrapper';
-import Clock from '../Clock/Clock';
 
 import './SessionProgress.scss';
 
@@ -40,7 +40,7 @@ class SessionProgress extends Component {
     });
 
     //track the session bv a session had started
-    const new_log = Logs.insert({
+    Logs.insert({
       log_type: 'Session Started',
       code: this.props.match.params.code,
       timestamp: new Date().getTime()
@@ -90,176 +90,114 @@ class SessionProgress extends Component {
     return -1;
   }
 
-  renderClock(status) {
-    const { currentActivity } = this.props;
-
-    const duration = this.calculateDuration(currentActivity);
-
-    // console.log("Start time: " + currentActivity.startTime);
-    if (status === ActivityEnums.status.INPUT_INDV) {
-      return <Clock startTime={this.props.currentActivity.statusStartTimes.indvPhase} big totalTime={duration} />;
-    } else if (status === ActivityEnums.status.INPUT_TEAM) {
-      return <Clock startTime={this.props.currentActivity.statusStartTimes.teamPhase} big totalTime={duration} />;
-    }
-  }
-
-  // instructions/content for activities
-  getInstructions(status) {
-    const { currentActivity } = this.props;
-
-    if (!currentActivity) return 'No activity';
-
-    // individual phase
-    if (status === ActivityEnums.status.INPUT_INDV) {
-      if (currentActivity.name === ActivityEnums.name.quiz) {
-        const quiz = Quizzes.findOne({ activity_id: currentActivity._id });
-
-        if (!quiz) return 'No Quiz';
-
-        return (
-          <div>
-            {this.renderClock(status)}
-            <h1>Quiz</h1>
-            <div id="font-size">Individual Response</div>
-            <div className="text-box-bigscreen">
-              {this.props.quiz.questions.map((q, index) => (
-                <h2 key={Random.id()}>
-                  <div id="font-size">{`Q${index + 1}: ${q.prompt}`}</div>
-                </h2>
-              ))}
-            </div>
-            <br />
-            <div id="font-size">Instructions</div>
-            <div className="text-box-bigscreen">
-              <h2 id="font-size">Read through the question and select the correct answer or respond accordingly.</h2>
-            </div>
-            <br />
-            <button
-              className="bigscreen-button"
-              id="here"
-              onClick={() => this.advanceActivity(this.props.currentActivity)}
-            >
-              Team Formation
-            </button>
-          </div>
-        );
-      } else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
-        return (
-          <div>
-            {this.renderClock(status)}
-            <h1>Team Discussion</h1>
-            <div id="font-size">Individual Input</div>
-            <br />
-            <div id="font-size">Instructions</div>
-            <div className="text-box-bigscreen">
-              <h2 id="font-size">There is no individual round here.</h2>
-            </div>
-            <br />
-            {/* TODO: change this to button component */}
-            <button
-              className="bigscreen-button"
-              id="here"
-              onClick={() => this.advanceActivity(this.props.currentActivity)}
-            >
-              Move on to Team Formation
-            </button>
-          </div>
-        );
+  // supplies the text that the BigScreen layout will use
+  getContentText(currentActivity) {
+    // indv phase
+    if (currentActivity.status === ActivityEnums.status.INPUT_INDV) {
+      if (currentActivity.name === ActivityEnums.name.QUIZ) {
+        return ["Team Formation", "Quiz", "Read through the question and select the correct answer or respond accordingly."];
+      }
+      else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
+        return ["Team Formation", "Team Discussion", "No individual phase!"];
       }
     }
 
     // team-finding phase. Same across all Activities
-    if (status === ActivityEnums.status.TEAM_FORMATION) {
-      return <TeamShapes skip={this.advanceActivity} activity_id={this.props.currentActivity._id} />;
-    }
-
-    // team phase for the activity
-    if (status === ActivityEnums.status.INPUT_TEAM) {
-      if (currentActivity.name === ActivityEnums.name.quiz) {
-        const quiz = Quizzes.findOne({ activity_id: currentActivity._id });
-
-        if (!quiz) return 'No Quiz';
-
-        return (
-          <div>
-            {this.renderClock(status)}
-            {/* <h1>Round {this.props.session.round}: Quiz</h1> */}
-            <h1>Quiz</h1>
-            {/* <div id="font-size">1 Person is in the hotseat</div>
-              <br></br>
-              <h2>Instructions:</h2>
-              <div className="text-box-bigscreen">
-                <h2>Select which of the 3 statements is the lie.</h2>
-              </div><br></br>
-              <div className="text-box-bigscreen">
-                <h2>When everyone has guessed, you'll be able to see who was right.</h2>
-              </div><br></br>
-              <div className="text-box-bigscreen">
-                <h2>Then continue to the next person in the hotseat.</h2>
-              </div><br></br><br></br> */}
-            <div id="font-size">Team Response</div>
-            <div className="text-box-bigscreen">
-              {this.props.quiz.questions.map((q, index) => (
-                <h2 key={Random.id()}>
-                  <div id="font-size">{`Q${index + 1}: ${q.prompt}`}</div>
-                </h2>
-              ))}
-              {/* <h2>
-                  Q1: <div id="font-size">{quiz.prompt}</div>
-                </h2>
-                <h2>
-                  Q2: <div id="font-size">{quiz.prompt}</div>
-                </h2>
-                <h2>
-                  Q3: <div id="font-size">{quiz.prompt}</div>
-                </h2>
-                <h2>
-                  Q4: <div id="font-size">{quiz.prompt}</div>
-                </h2> */}
-            </div>
-            <br />
-            <div id="font-size">Instructions</div>
-            <div className="text-box-bigscreen">
-              <h2 id="font-size">Read through the question and select the correct answer or respond accordingly.</h2>
-            </div>
-            <br />
-            <button
-              className="bigscreen-button"
-              id="here"
-              onClick={() => this.advanceActivity(this.props.currentActivity)}
-            >
-              Summary
-            </button>
-          </div>
-        );
-      } else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
-        return (
-          <div>
-            {this.renderClock(status)}
-            <h1>Team Discussion</h1>
-
-            <img className="ratingPic" src="/discussion.png" alt="" />
-            <br />
-            <div id="font-size">Instructions:</div>
-            <div className="text-box-bigscreen2">
-              <h2 id="font-size">Answer icebreaker questions within your group.</h2>
-            </div>
-            <br />
-            {/* TODO: change this to button component */}
-            <button
-              className="bigscreen-button"
-              id="here"
-              onClick={() => this.advanceActivity(this.props.currentActivity)}
-            >
-              Finish Activity
-            </button>
-          </div>
-        );
+    if (currentActivity.status === ActivityEnums.status.TEAM_FORMATION) {
+      if (currentActivity.name === ActivityEnums.name.QUIZ) {
+        return ["Begin Activity", "Form Groups", "Find others with the same colored shape and introduce yourself."];
+      }
+      else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
+        return ["Begin Activity", "Form Groups", "Find others with the same colored shape and introduce yourself."];
       }
     }
 
-    // activity completed
-    if (status === ActivityEnums.status.ASSESSMENT) {
+    // team phase 
+    if (currentActivity.status === ActivityEnums.status.INPUT_TEAM) {
+      if (currentActivity.name === ActivityEnums.name.QUIZ) {
+        return ["Finish Activity", "Quiz", "Read through the question and select the correct answer or respond accordingly."];
+      }
+      else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
+        console.log(currentActivity);
+        return ["Finish Activity", "Team Discussion", "Answer icebreaker questions within your group."];
+      }
+    }
+
+    // individual input phase 
+    if (currentActivity.status === ActivityEnums.status.ASSESSMENT) {
+      if (currentActivity.name === ActivityEnums.name.QUIZ) {
+        return ["Next Activity", "Quiz", "Statistics"];
+      }
+      else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
+        return ["Next Activity", "Member Preferences", "Reflect on the activity and rate your group member preferences."];
+      }
+    }
+  }
+
+  // finds the current status that we are on and returns it's start time
+  getCurrentStatusStart(currentActivity) {
+
+    const { status } = currentActivity
+
+    switch (status) {
+      case ActivityEnums.status.INPUT_INDV:
+        return currentActivity.statusStartTimes.indvPhase;
+      case ActivityEnums.status.TEAM_FORMATION:
+        return currentActivity.statusStartTimes.teamForm;
+      case ActivityEnums.status.INPUT_TEAM:
+        return currentActivity.statusStartTimes.teamPhase;
+      case ActivityEnums.status.ASSESSMENT:
+        return currentActivity.statusStartTimes.peerAssessment;
+      default:
+        return -1
+    }
+  }
+
+  // builds the HTML component that will go inside the BigScreen layout
+  renderContentHTML(currentActivity) {
+    if (currentActivity.status === ActivityEnums.status.INPUT_INDV) {
+      if (currentActivity.name === ActivityEnums.name.QUIZ) {
+        return (
+          <div className="text-box-bigscreen">
+            {this.props.quiz.questions.map((q, index) => (
+              <h2 key={Random.id()}>
+                <div id="font-size">{`Q${index + 1}: ${q.prompt}`}</div>
+              </h2>
+            ))}
+          </div>
+        );
+      }
+      else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
+        return '';
+      }
+
+    }
+    // team-finding phase. Same across all Activities
+    if (currentActivity.status === ActivityEnums.status.TEAM_FORMATION) {
+      //big screen layout with TeamShapes as child prop
+      return <div className="teamShapes"><TeamShapes skip={this.advanceActivity} activity_id={this.props.currentActivity._id} /></div>;
+    }
+
+    // team phase 
+    if (currentActivity.status === ActivityEnums.status.INPUT_TEAM) {
+      if (currentActivity.name === ActivityEnums.name.QUIZ) {
+        return (
+          <div className="text-box-bigscreen">
+            {this.props.quiz.questions.map((q, index) => (
+              <h2 key={Random.id()}>
+                <div id="font-size">{`Q${index + 1}: ${q.prompt}`}</div>
+              </h2>
+            ))}
+          </div>
+        );
+      }
+      else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
+        return <img className="ratingPic" src="/discussion.png" alt="" />
+      }
+    }
+
+    // individual input phase 
+    if (currentActivity.status === ActivityEnums.status.ASSESSMENT) {
       if (currentActivity.name === ActivityEnums.name.QUIZ) {
         return (
           <StatsPage
@@ -270,27 +208,37 @@ class SessionProgress extends Component {
             end={() => this.advanceActivity(this.props.currentActivity)}
           />
         );
-      } else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
-        return (
-          <div>
-            <h1>Member Preferences</h1>
-            <img className="ratingPic" src="/rating.png" alt="" />
-            <br />
-            <h2 id="font-size"> Reflect on the activity and rate your group member preferences.</h2>
-
-            <div>
-              <button
-                className="bigscreen-button"
-                id="here"
-                onClick={() => this.advanceActivity(this.props.currentActivity)}
-              >
-                Next Round
-              </button>
-            </div>
-          </div>
-        );
+      }
+      else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
+        return <img className="ratingPic" src="/rating.png" alt="" />
       }
     }
+  }
+
+  // sets up the layout for the BigScreen
+  renderLayout(currentActivity) {
+
+    const duration = this.calculateDuration(currentActivity);
+
+    const contentText = this.getContentText(currentActivity);
+
+    const statusStartTime = this.getCurrentStatusStart(currentActivity);
+
+    return (
+      <BigScreen
+        sessionCode={this.props.session.code}
+        hasTimer={duration === -1 ? false : true}
+        clockDuration={duration}
+        clockStartTime={statusStartTime}
+        buttonAction={this.advanceActivity}
+        buttonText={contentText[0]}
+        activityPhase={contentText[1]}
+        instructions={contentText[2]}
+      >
+        {this.renderContentHTML(currentActivity)}
+      </BigScreen>
+    );
+
   }
 
   // render content based on the session progress
@@ -301,7 +249,8 @@ class SessionProgress extends Component {
 
     const numJoined = session.participants.length;
 
-    // session not yet begun, provide details about what will happen
+
+    // session not yet begun, provide details about what will happen. TODO: Make this fit in BigScreen layout
     if (session.status === 0)
       return (
         <div className="outer">
@@ -329,48 +278,23 @@ class SessionProgress extends Component {
         </div>
       );
 
-    // session ended
+    // session ended. TODO: Make this fit in BigScreen layout!
     if (session.status === 2) return <SessionEnd />;
 
     // no activities
-    if (!this.props.currentActivity) return <Loading>Setting up an activity!</Loading>;
-
-    // // TODO: handle case where there is no quiz
-    // if (session.status === 1 && this.props.currentActivity.status === 4)
-    //   return (
-    //     <StatsPage
-    //       index={this.state.index}
-    //       quiz={this.props.quiz}
-    //       session_id={this.props.session._id}
-    //       activity_id={this.props.currentActivity._id}
-    //       end={() => this.advanceActivity(this.props.currentActivity)}
-    //     />
-    //   );
+    if (!this.props.currentActivity) return <Loading />;
 
     // session started, render instructions for activities
-    if (session.status === 1)
-      return (
-        <>
-          <div className="session-code-container">
-            <div>
-              <b>URL</b>: prototeams.com
-            </div>
-            <div>
-              <b>CODE</b>: {session.code.toUpperCase()}
-            </div>
-          </div>
-          <div className="outer">
-            <div className="inner">{this.getInstructions(this.props.currentActivity.status)}</div>
-          </div>
-        </>
-      );
+    if (session.status === 1) return this.renderLayout(this.props.currentActivity);
   }
+
 
   render() {
     if (!this.props.session) return <Loading />;
 
     return <div className="session-progress-wrapper">{this.renderInfo()}</div>;
   }
+
 }
 
 export default withTracker(props => {
