@@ -26,13 +26,13 @@
   
     .session-code {
       font-weight: 200;
-      margin-left: 10px;
-      display: flex;
       text-align: left;
+      margin-left: 10px;
       margin-right: auto;
+      display: flex;
 
       p {
-        color: $dynamic-white
+        color: $dynamic-white;
       }
 
       b {
@@ -43,7 +43,11 @@
     }
 
     .clock {
+      font-weight: 200;
       text-align: right;
+      margin-left: auto;
+      margin-right: 10px;
+      display: flex;
     }
   
   

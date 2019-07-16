@@ -39,7 +39,6 @@ export default class Clock extends Component {
 
   // decrease every second
   tick() {
-    // if (this.state.timeLeft <= 0) return; // TODO: might not want this...
     this.setState({
       timeLeft: this.props.totalTime - parseInt(Math.abs(this.props.startTime - new Date().getTime()) / 1000)
     });
@@ -49,24 +48,32 @@ export default class Clock extends Component {
     if (this.state.timeLeft < 0) {
       return "";
     }
-    let percentage = parseInt(100 - (this.state.timeLeft / this.props.totalTime) * 100);
-    percentage = percentage < 0 ? 0 : percentage;
-    if (!this.props.big) {
-      return (
-        <div id="clock">
-          <CircularProgressbar
-            percentage={percentage}
-            strokeWidth={50}
-            text={this.state.timeLeft}
-            styles={{
-              path: { strokeLinecap: 'butt', transition: 'stroke-dashoffset 0.5s ease 0s', stroke: '#1E91D6' },
-              text: { fill: '#000', fontSize: '60px' }
-            }} />
-        </div>
-      )
-    } else {
-      return (<div id="big-clock">
-        <CircularProgressbar
+    const clock = new Date(2019, 0, 0, 0, this.state.timeLeft / 60, this.state.timeLeft % 60);
+    const clockString = clock.getMinutes() + ':' + (clock.getSeconds() === 0 ? '00' : clock.getSeconds());
+    return <p id="timer">{clockString}</p>;
+
+    /* Progress Bar code, no longer in use */
+    // let percentage = parseInt(100 - (this.state.timeLeft / this.props.totalTime) * 100);
+    // percentage = percentage < 0 ? 0 : percentage;
+
+    // if (!this.props.big) {
+    //   return (
+    //     <div id="clock">
+    //       <CircularProgressbar
+    //         percentage={percentage}
+    //         strokeWidth={50}
+    //         text={this.state.timeLeft}
+    //         styles={{
+    //           path: { strokeLinecap: 'butt', transition: 'stroke-dashoffset 0.5s ease 0s', stroke: '#1E91D6' },
+    //           text: { fill: '#000', fontSize: '60px' }
+    //         }} />
+    //     </div>
+    //   )
+    // } else {
+    // return (
+    //   <div className="big-clock">
+    //     <p>{clockString}</p>
+    {/* <CircularProgressbar
           percentage={percentage}
           text={this.state.timeLeft}
           strokeWidth={5}
@@ -92,8 +99,8 @@ export default class Clock extends Component {
               fontSize: '60px',
             },
           }}
-        />
-      </div>)
-    }
+        /> */}
+    // </div>)
+    // }
   }
 }

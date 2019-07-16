@@ -1,3 +1,10 @@
+@import '../assets/main';
+
+#timer {
+  color: $dynamic-white;
+  font-size: 8vh;
+}
+
 #clock {
   position: absolute;
   // color: rgb(17, 17, 17);
@@ -18,8 +25,8 @@
 
 }
 
-#big-clock {
-  position: fixed;
+.big-clock {
+  //position: fixed;
   z-index: 1;
   display: flex;
   min-width: 50px;
@@ -28,6 +35,11 @@
   max-height: 10%;
   top: 30px;
   right: 30px;
+
+  p {
+    color: $dynamic-white;
+    font-size: 8vh;
+  }
 
   div {
     margin: auto;
