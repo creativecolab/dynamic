@@ -7,6 +7,7 @@ import { access } from 'fs';
 
 import Button from '../../Components/Button/Button';
 import MobileTimer from '../../Components/MobileTimer/MobileTimer';
+import Clock from '../../Clock/Clock';
 
 import './Mobile.scss';
 
@@ -88,14 +89,19 @@ export default class Mobile extends Component {
       <div className="mobile-main">
         {hasNavbar && (
           <nav className="navbar">
+            <div className="nav-team-shape">
+              <img src="/shapes/plus-color-yellow-small.png" alt="" />
+              <span>&#9660;</span>
+            </div>
             <div className="progress-status">
-              <div className="activity-name">{activityName.toUpperCase()}</div>
               <div className="session-progress">
-                Round {sessionStatus} out of {sessionLength}
+                Round {sessionStatus} of {sessionLength}
               </div>
             </div>
-            {hasTimer && <MobileTimer startTime={clockStartTime} duration={clockDuration} />}
-            <hr className="navbar-hr" />
+            <div className="clock">
+              {hasTimer && <Clock big startTime={clockStartTime} totalTime={clockDuration} />}
+            </div>
+            {/* {hasTimer && <MobileTimer startTime={clockStartTime} duration={clockDuration} />} */}
           </nav>
         )}
         <div className="content">

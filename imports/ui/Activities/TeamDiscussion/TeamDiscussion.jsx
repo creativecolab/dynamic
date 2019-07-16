@@ -17,7 +17,6 @@ import Clock from '../../Clock/Clock';
 
 import './TeamDiscussion.scss';
 
-
 class TeamDiscussion extends Component {
   static propTypes = {
     pid: PropTypes.string.isRequired,
@@ -57,7 +56,6 @@ class TeamDiscussion extends Component {
 
     // team formation phase
     if (status === ActivityEnums.status.TEAM_FORMATION) {
-
       // joined after team formation
       if (!team) return <Waiting text="You have not been assigned a team. Please wait for the next activity." />;
 
@@ -69,7 +67,12 @@ class TeamDiscussion extends Component {
       return (
         <>
           <div className="swipe-instr-top">Have group members answer:</div>
-          <div className="swipe-instr-top" style={{ padding: "0 1.5em", fontSize: "0.8em", color: "#808080cc", margin: 0 }}>Swipe to see more questions. This will change your teammates' screens too!</div>
+          <div
+            className="swipe-instr-top"
+            style={{ padding: '0 1.5em', fontSize: '0.8em', color: '#808080cc', margin: 0 }}
+          >
+            Swipe to see more questions. This will change your teammates' screens too!
+          </div>
           <div className="slider-main">
             <ReactSwipe
               className="carousel"
@@ -79,11 +82,12 @@ class TeamDiscussion extends Component {
               {questions.map((q, index) => {
                 return (
                   <div className="question-card-wrapper" key={q._id}>
-                    <div className="question-card">{index + 1}. {q.prompt}</div>
+                    <div className="question-card">
+                      {index + 1}. {q.prompt}
+                    </div>
                   </div>
                 );
               })}
-
             </ReactSwipe>
 
             <button className="prev" type="button" onClick={() => this.reactSwipeEl.prev()}>
@@ -95,8 +99,6 @@ class TeamDiscussion extends Component {
 
             {/* <div className="swipe-instr-bottom">Swipe for next question</div> */}
           </div>
-
-
         </>
       );
     }
@@ -168,7 +170,7 @@ class TeamDiscussion extends Component {
         sessionLength={sessionLength}
         clockDuration={duration}
         clockStartTime={statusStartTime}
-        hasTimer={true}
+        hasTimer
         hasFooter={false}
       >
         {this.renderContent(this.props)}
@@ -179,14 +181,17 @@ class TeamDiscussion extends Component {
 
 export default withTracker(({ pid, activity_id }) => {
   // get the team that this user is in for this activity
-  const team = Teams.findOne({
-    'members': {
-      $elemMatch: {
-        'pid': pid
-      }
+  const team = Teams.findOne(
+    {
+      members: {
+        $elemMatch: {
+          pid
+        }
+      },
+      activity_id
     },
-    'activity_id': activity_id
-  }, { sort: { teamCreated: -1 } });
+    { sort: { teamCreated: -1 } }
+  );
 
   // get all the quesitons
   let questions = Questions.find().fetch();
