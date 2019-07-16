@@ -49,7 +49,7 @@ export default class Clock extends Component {
       return "";
     }
     const clock = new Date(2019, 0, 0, 0, this.state.timeLeft / 60, this.state.timeLeft % 60);
-    const clockString = clock.getMinutes() + ':' + (clock.getSeconds() === 0 ? '00' : clock.getSeconds());
+    const clockString = clock.getMinutes() + ':' + (clock.getSeconds() < 10 ? ('0' + clock.getSeconds()) : clock.getSeconds());
     return <p id="timer">{clockString}</p>;
 
     /* Progress Bar code, no longer in use */
