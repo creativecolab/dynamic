@@ -245,7 +245,7 @@ class SessionProgress extends Component {
           {/* <SessionBegin session_id={this.props.session._id}></SessionBegin> */}
           <img className="contentPic" src="/dynamic.gif" alt="" />
           <div className="joinees">
-            {numJoined && <h2>{Users.findOne({ pid: session.participants[numJoined - 1] }).name + ' just joined!'}</h2>}
+            {numJoined != 0 && <h2>{Users.findOne({ pid: session.participants[numJoined - 1] }).name + ' just joined!'}</h2>}
           </div>
         </BigScreen>
       );
