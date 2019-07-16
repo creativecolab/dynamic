@@ -1,43 +1,30 @@
 @import '../../assets/main';
 
-.main {
-  height: 100vh;
-  width: 100vw;
+.shared-main {
+  height: 100%;
+  width: 100%;
   color: $dynamic-black;
-  display: grid;
-  grid-template-areas: 'navbar'
-                       'content'
-                       'footer';
-  grid-template-rows: 1fr 10fr 1fr;
   user-select: none;
+  position: relative;
   
   .navbar {
-    grid-area: navbar;
-    position: relative;
     display: flex;
-    min-height: 75px;
-    padding-top: 2px;
-    height: 8vh;
-    width: 100vw;
+    min-height: 7vh;
+    height: auto;
     font-size: 5vh;
     text-align: left;
-    text-decoration-color: $dynamic-white;
+    color: $dynamic-white;
     background: $dynamic-black;
+    padding: 0 0.5rem;
+    user-select: text;
   
     .session-code {
       font-weight: 200;
-      margin-left: 10px;
-      display: flex;
-      text-align: left;
-      margin-right: auto;
+      line-height: 7vh;
 
-      p {
-        color: $dynamic-white
-      }
-
-      b {
-        text-decoration: bold; 
-        font-size: 7vh;
+      span {
+        font-weight: 600;
+        font-size: 6vh;
       }
 
     }
@@ -46,54 +33,31 @@
       text-align: right;
     }
   
-  
-    .navbar-hr {
-      position: absolute;
-      bottom: -14%;
-      left: 15%;
-      width: 70%;
-    }
-  
   }
   
   .content {
-    grid-area: content;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 
-    .activityPhase {
+    .activity-phase {
+      margin: 0.5rem;
       font-size: 8vh;
       text-align: center; 
     }
   
-    .feedback-msge {
-      text-align: center;
-    }
-  
-    .good {
-      color: $dynamic-green;
-    }
-  
-    .error {
-      color: $dynamic-red;
-    }
-  
-  }
-  
-  #instructions{
-    font-size: 36px; 
   }
 
-  .text-box-bigscreen2 {
-    border: 2px solid $dynamic-white ;
-    border-radius: 5px 5px 5px 5px;
-    width: 100vw;
-    height: auto; 
-    margin: auto; 
-    padding-top: 8px; 
-    padding-bottom: 5px; 
-    text-align: center; 
-    position: relative;
+  .instructions{
+    font-size: 6vh;
+    text-align: center;
+    margin: 0.5rem;
   }
+
+  .footer {
+    width: 100%;
+    position: absolute;
+    bottom: 5vh;
+  }
+
 }

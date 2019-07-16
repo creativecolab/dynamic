@@ -10,7 +10,6 @@ import MobileTimer from '../../Components/MobileTimer/MobileTimer';
 
 import './Mobile.scss';
 
-
 const Footer = posed.div({
   hidden: {
     x: -100,
@@ -86,7 +85,7 @@ export default class Mobile extends Component {
     const { loading } = this.state;
 
     return (
-      <div className="main">
+      <div className="mobile-main">
         {hasNavbar && (
           <nav className="navbar">
             <div className="progress-status">
