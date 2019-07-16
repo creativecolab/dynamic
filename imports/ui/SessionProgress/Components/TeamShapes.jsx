@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
 import { withTracker } from 'meteor/react-meteor-data';
+
 import Teams from '../../../api/teams';
 
 import './TeamShapes.scss';
@@ -9,7 +9,6 @@ import './TeamShapes.scss';
 class TeamShapes extends Component {
   static propTypes = {
     activity_id: PropTypes.string.isRequired,
-    skip: PropTypes.func.isRequired
   };
 
   mapShapes(teams) {

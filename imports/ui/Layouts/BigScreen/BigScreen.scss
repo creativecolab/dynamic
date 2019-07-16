@@ -17,21 +17,33 @@
     display: flex;
     min-height: 75px;
     padding-top: 2px;
-    height: 10vh;
-    width: 70vw;
+    height: 8vh;
+    width: 100vw;
     font-size: 5vh;
     text-align: left;
-
-    .url {
-      font-weight: 200;
-      margin: auto;
-      display: flex;
-    }
+    text-decoration-color: $dynamic-white;
+    background: $dynamic-black;
   
     .session-code {
       font-weight: 200;
-      margin: auto;
+      margin-left: 10px;
       display: flex;
+      text-align: left;
+      margin-right: auto;
+
+      p {
+        color: $dynamic-white
+      }
+
+      b {
+        text-decoration: bold; 
+        font-size: 7vh;
+      }
+
+    }
+
+    .clock {
+      text-align: right;
     }
   
   
@@ -69,18 +81,18 @@
   
   }
   
-  #font-size{
+  #instructions{
     font-size: 36px; 
   }
 
   .text-box-bigscreen2 {
     border: 2px solid $dynamic-white ;
     border-radius: 5px 5px 5px 5px;
-    width: 1200px;
+    width: 100vw;
     height: auto; 
     margin: auto; 
-    padding-top: 10px; 
-    padding-bottom: 10px; 
+    padding-top: 8px; 
+    padding-bottom: 5px; 
     text-align: center; 
     position: relative;
   }

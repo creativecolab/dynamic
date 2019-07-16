@@ -38,7 +38,7 @@ export default class BigScreen extends Component {
     hasButton: true,
     hasNavbar: true,
     hasTimer: true,
-    clockDuration: 0,
+    clockDuration: -1,
     clockStartTime: 0,
     buttonAction: () => {
       console.log('Button action not set');
@@ -78,13 +78,12 @@ export default class BigScreen extends Component {
         <div className="main">
           {hasNavbar && (
             <nav className="navbar">
-              <div className="url">
-                <p> Join at: <b>{url}</b> </p>
-              </div>
               <div className="session-code">
-                <p> with session code: <u>{sessionCode.toUpperCase()}</u> </p>
+                <p> Join at <b>{url}</b> with session code <b>{sessionCode.toUpperCase()}</b> </p>
               </div>
-              {hasTimer && <Clock big={true} startTime={clockStartTime} totalTime={clockDuration} />}
+              <div className="clock">
+                {hasTimer && <Clock big={true} startTime={clockStartTime} totalTime={clockDuration} />}
+              </div>
             </nav>
           )}
           <div className="content">
@@ -92,9 +91,8 @@ export default class BigScreen extends Component {
             {children}
             <div className={classNames('feedback-msge', feedbackClass)}>{feedbackMsge}</div>
           </div>
-          <br />
           <div className="text-box-bigscreen2">
-            <h2 id="font-size">{instructions}</h2>
+            <h2 id="instructions">{instructions}</h2>
           </div>
           {/* <br /> */}
           {hasButton && <Button onClick={buttonAction}>{buttonText}</Button>}

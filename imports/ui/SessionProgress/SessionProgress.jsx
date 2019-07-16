@@ -19,6 +19,7 @@ import TeamShapes from './Components/TeamShapes';
 import StatsPage from './Components/StatsPage';
 
 import './SessionProgress.scss';
+import SessionBegin from './Components/SessionBegin';
 
 class SessionProgress extends Component {
   static propTypes = {
@@ -118,7 +119,6 @@ class SessionProgress extends Component {
         return ["Finish Activity", "Quiz", "Read through the question and select the correct answer or respond accordingly."];
       }
       else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
-        console.log(currentActivity);
         return ["Finish Activity", "Team Discussion", "Answer icebreaker questions within your group."];
       }
     }
@@ -175,7 +175,7 @@ class SessionProgress extends Component {
     // team-finding phase. Same across all Activities
     if (currentActivity.status === ActivityEnums.status.TEAM_FORMATION) {
       //big screen layout with TeamShapes as child prop
-      return <div className="teamShapes"><TeamShapes skip={this.advanceActivity} activity_id={this.props.currentActivity._id} /></div>;
+      return <div className="teamShapes"><TeamShapes activity_id={this.props.currentActivity._id} /></div>;
     }
 
     // team phase 
@@ -192,7 +192,7 @@ class SessionProgress extends Component {
         );
       }
       else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
-        return <img className="ratingPic" src="/discussion.png" alt="" />
+        return <img className="contentPic" src="/discussion.png" alt="" />
       }
     }
 
@@ -210,89 +210,85 @@ class SessionProgress extends Component {
         );
       }
       else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
-        return <img className="ratingPic" src="/rating.png" alt="" />
+        return <img className="contentPic" src="/rating.png" alt="" />
       }
     }
   }
 
-  // sets up the layout for the BigScreen
-  renderLayout(currentActivity) {
-
-    const duration = this.calculateDuration(currentActivity);
-
-    const contentText = this.getContentText(currentActivity);
-
-    const statusStartTime = this.getCurrentStatusStart(currentActivity);
-
-    return (
-      <BigScreen
-        sessionCode={this.props.session.code}
-        hasTimer={duration === -1 ? false : true}
-        clockDuration={duration}
-        clockStartTime={statusStartTime}
-        buttonAction={this.advanceActivity}
-        buttonText={contentText[0]}
-        activityPhase={contentText[1]}
-        instructions={contentText[2]}
-      >
-        {this.renderContentHTML(currentActivity)}
-      </BigScreen>
-    );
-
-  }
-
   // render content based on the session progress
-  renderInfo() {
-    const { session } = this.props;
+  renderLayout() {
+    const { session, currentActivity } = this.props;
 
     if (!session) return 'Oh.';
 
     const numJoined = session.participants.length;
 
-
     // session not yet begun, provide details about what will happen. TODO: Make this fit in BigScreen layout
     if (session.status === 0)
       return (
-        <div className="outer">
-          <img id="small-logo" src="https://i.postimg.cc/t462TbY7/dynamic.png" alt="" />
-          <div className="inner">
-            <h1 id="header">ProtoTeams</h1>
-
-            <h2>In your browser, type the URL:</h2>
-            <div className="text-box-bigscreen">
-              <c>prototeams.com</c>
-            </div>
-            <h2>Session code:</h2>
-            <div className="text-box-bigscreen">
-              <c>{this.props.match.params.code.toUpperCase()}</c>
-            </div>
-            <div id="spacing">
-              <c>{numJoined}</c>
-              <br />
-              {numJoined === 1 ? ' person has ' : ' people have '} joined
-            </div>
-            <button className="bigscreen-button" onClick={() => this.startSession()}>
-              Begin
-            </button>
+        <BigScreen
+          sessionCode={this.props.session.code}
+          hasTimer={false}
+          buttonAction={() => this.startSession()}
+          buttonText={"Begin"}
+          activityPhase={"Prototeams"}
+          instructions={numJoined + (numJoined === 1 ? ' person has ' : ' people have ') + 'joined'}
+        >
+          {/* <SessionBegin session_id={this.props.session._id}></SessionBegin> */}
+          <img className="contentPic" src="/dynamic.gif" alt="" />
+          <div className="joinees">
+            {numJoined && <h2>{Users.findOne({ pid: session.participants[numJoined - 1] }).name + ' just joined!'}</h2>}
           </div>
-        </div>
+        </BigScreen>
       );
 
-    // session ended. TODO: Make this fit in BigScreen layout!
-    if (session.status === 2) return <SessionEnd />;
-
-    // no activities
-    if (!this.props.currentActivity) return <Loading />;
-
     // session started, render instructions for activities
-    if (session.status === 1) return this.renderLayout(this.props.currentActivity);
+    if (session.status === 1) {
+
+      // no activities
+      if (!currentActivity) return <Loading />;
+
+      // get some values to pass as props to the layout
+      const duration = this.calculateDuration(currentActivity);
+      const contentText = this.getContentText(currentActivity);
+      const statusStartTime = this.getCurrentStatusStart(currentActivity);
+
+      return (
+        <BigScreen
+          sessionCode={this.props.session.code}
+          hasTimer={duration === -1 ? false : true}
+          clockDuration={duration}
+          clockStartTime={statusStartTime}
+          buttonAction={() => this.advanceActivity()}
+          buttonText={contentText[0]}
+          activityPhase={contentText[1]}
+          instructions={contentText[2]}
+        >
+          {this.renderContentHTML(currentActivity)}
+        </BigScreen>
+      );
+
+    }
+
+    // session ended.
+    if (session.status === 2) {
+      return (
+        <BigScreen
+          sessionCode={this.props.session.code}
+          hasTimer={false}
+          hasButton={false}
+        >
+          <SessionEnd />
+        </BigScreen>
+      );
+    }
   }
 
 
   render() {
     if (!this.props.session) return <Loading />;
 
-    return <div className="session-progress-wrapper">{this.renderInfo()}</div>;
+    return <div className="session-progress-wrapper">{this.renderLayout()}</div>;
   }
 
 }
