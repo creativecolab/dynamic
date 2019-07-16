@@ -96,48 +96,55 @@ class SessionProgress extends Component {
     // indv phase
     if (currentActivity.status === ActivityEnums.status.INPUT_INDV) {
       if (currentActivity.name === ActivityEnums.name.QUIZ) {
-        return ["Team Formation", "Quiz", "Read through the question and select the correct answer or respond accordingly."];
-      }
-      else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
-        return ["Team Formation", "Team Discussion", "No individual phase!"];
+        return [
+          'Team Formation',
+          'Quiz',
+          'Read through the question and select the correct answer or respond accordingly.'
+        ];
+      } else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
+        return ['Team Formation', 'Team Discussion', 'No individual phase!'];
       }
     }
 
     // team-finding phase. Same across all Activities
     if (currentActivity.status === ActivityEnums.status.TEAM_FORMATION) {
       if (currentActivity.name === ActivityEnums.name.QUIZ) {
-        return ["Begin Activity", "Form Groups", "Find others with the same colored shape and introduce yourself."];
-      }
-      else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
-        return ["Begin Activity", "Form Groups", "Find others with the same colored shape and introduce yourself."];
+        return ['Begin Activity', 'Form Groups', 'Find others with the same colored shape and introduce yourself.'];
+      } else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
+        return ['Begin Activity', 'Form Groups', 'Find others with the same colored shape and introduce yourself.'];
       }
     }
 
-    // team phase 
+    // team phase
     if (currentActivity.status === ActivityEnums.status.INPUT_TEAM) {
       if (currentActivity.name === ActivityEnums.name.QUIZ) {
-        return ["Finish Activity", "Quiz", "Read through the question and select the correct answer or respond accordingly."];
-      }
-      else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
-        return ["Finish Activity", "Team Discussion", "Answer icebreaker questions within your group."];
+        return [
+          'Finish Activity',
+          'Quiz',
+          'Read through the question and select the correct answer or respond accordingly.'
+        ];
+      } else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
+        return ['Finish Activity', 'Team Discussion', 'Answer icebreaker questions within your group.'];
       }
     }
 
-    // individual input phase 
+    // individual input phase
     if (currentActivity.status === ActivityEnums.status.ASSESSMENT) {
       if (currentActivity.name === ActivityEnums.name.QUIZ) {
-        return ["Next Activity", "Quiz", "Statistics"];
-      }
-      else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
-        return ["Next Activity", "Member Preferences", "Reflect on the activity and rate your group member preferences."];
+        return ['Next Activity', 'Quiz', 'Statistics'];
+      } else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
+        return [
+          'Next Activity',
+          'Member Preferences',
+          'Reflect on the activity and rate your group member preferences.'
+        ];
       }
     }
   }
 
   // finds the current status that we are on and returns it's start time
   getCurrentStatusStart(currentActivity) {
-
-    const { status } = currentActivity
+    const { status } = currentActivity;
 
     switch (status) {
       case ActivityEnums.status.INPUT_INDV:
@@ -149,7 +156,7 @@ class SessionProgress extends Component {
       case ActivityEnums.status.ASSESSMENT:
         return currentActivity.statusStartTimes.peerAssessment;
       default:
-        return -1
+        return -1;
     }
   }
 
@@ -166,19 +173,22 @@ class SessionProgress extends Component {
             ))}
           </div>
         );
-      }
-      else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
+      } else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
         return '';
       }
-
     }
+
     // team-finding phase. Same across all Activities
     if (currentActivity.status === ActivityEnums.status.TEAM_FORMATION) {
       //big screen layout with TeamShapes as child prop
-      return <div className="teamShapes"><TeamShapes activity_id={this.props.currentActivity._id} /></div>;
+      return (
+        <div className="teamShapes">
+          <TeamShapes activity_id={this.props.currentActivity._id} />
+        </div>
+      );
     }
 
-    // team phase 
+    // team phase
     if (currentActivity.status === ActivityEnums.status.INPUT_TEAM) {
       if (currentActivity.name === ActivityEnums.name.QUIZ) {
         return (
@@ -190,13 +200,12 @@ class SessionProgress extends Component {
             ))}
           </div>
         );
-      }
-      else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
-        return <img className="contentPic" src="/discussion.png" alt="" />
+      } else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
+        return <img className="contentPic" src="/discussion.png" alt="" />;
       }
     }
 
-    // individual input phase 
+    // individual input phase
     if (currentActivity.status === ActivityEnums.status.ASSESSMENT) {
       if (currentActivity.name === ActivityEnums.name.QUIZ) {
         return (
@@ -208,9 +217,8 @@ class SessionProgress extends Component {
             end={() => this.advanceActivity(this.props.currentActivity)}
           />
         );
-      }
-      else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
-        return <img className="contentPic" src="/rating.png" alt="" />
+      } else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
+        return <img className="contentPic" src="/rating.png" alt="" />;
       }
     }
   }
@@ -230,8 +238,8 @@ class SessionProgress extends Component {
           sessionCode={this.props.session.code}
           hasTimer={false}
           buttonAction={() => this.startSession()}
-          buttonText={"Begin"}
-          activityPhase={"Prototeams"}
+          buttonText="Begin"
+          activityPhase="Prototeams"
           instructions={numJoined + (numJoined === 1 ? ' person has ' : ' people have ') + 'joined'}
         >
           {/* <SessionBegin session_id={this.props.session._id}></SessionBegin> */}
@@ -244,7 +252,6 @@ class SessionProgress extends Component {
 
     // session started, render instructions for activities
     if (session.status === 1) {
-
       // no activities
       if (!currentActivity) return <Loading />;
 
@@ -267,30 +274,23 @@ class SessionProgress extends Component {
           {this.renderContentHTML(currentActivity)}
         </BigScreen>
       );
-
     }
 
     // session ended.
     if (session.status === 2) {
       return (
-        <BigScreen
-          sessionCode={this.props.session.code}
-          hasTimer={false}
-          hasButton={false}
-        >
+        <BigScreen sessionCode={this.props.session.code} hasTimer={false} hasButton={false}>
           <SessionEnd />
         </BigScreen>
       );
     }
   }
 
-
   render() {
     if (!this.props.session) return <Loading />;
 
     return <div className="session-progress-wrapper">{this.renderLayout()}</div>;
   }
-
 }
 
 export default withTracker(props => {

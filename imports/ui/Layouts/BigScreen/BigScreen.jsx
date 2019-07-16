@@ -12,10 +12,9 @@ import Loading from '../../Components/Loading/Loading';
 import './BigScreen.scss';
 
 export default class BigScreen extends Component {
-
   state = {
     loading: true
-  }
+  };
 
   static propTypes = {
     hasButton: PropTypes.bool,
@@ -31,7 +30,7 @@ export default class BigScreen extends Component {
     url: PropTypes.string,
     feedbackMsge: PropTypes.string,
     feedbackClass: PropTypes.string,
-    children: PropTypes.node,
+    children: PropTypes.node
   };
 
   static defaultProps = {
@@ -51,7 +50,7 @@ export default class BigScreen extends Component {
     url: 'prototeams.com',
     feedbackMsge: '',
     feedbackClass: '',
-    children: {},
+    children: {}
   };
 
   componentDidMount() {
@@ -72,35 +71,33 @@ export default class BigScreen extends Component {
 
     if (loading) return <Loading>Setting up an activity!</Loading>;
 
-
     return (
       <>
-        <div className="main">
+        <div className="shared-main">
           {hasNavbar && (
             <nav className="navbar">
               <div className="session-code">
-                <p> Join at <b>{url}</b> with session code <b>{sessionCode.toUpperCase()}</b> </p>
+                Join at <span>{url}</span> with session code <span>{sessionCode.toUpperCase()}</span>
               </div>
               <div className="clock">
-                {hasTimer && <Clock big={true} startTime={clockStartTime} totalTime={clockDuration} />}
+                {hasTimer && <Clock big startTime={clockStartTime} totalTime={clockDuration} />}
               </div>
             </nav>
           )}
           <div className="content">
-            <h1 className="activityPhase">{activityPhase}</h1>
+            <div className="activity-phase">{activityPhase.toUpperCase()}</div>
             {children}
-            <div className={classNames('feedback-msge', feedbackClass)}>{feedbackMsge}</div>
+            <div className="instructions">{instructions}</div>
           </div>
-          <div className="text-box-bigscreen2">
-            <h2 id="instructions">{instructions}</h2>
+          <div className="footer">
+            {hasButton && (
+              <Button size="small" onClick={buttonAction}>
+                {buttonText}
+              </Button>
+            )}
           </div>
-          {/* <br /> */}
-          {hasButton && <Button onClick={buttonAction}>{buttonText}</Button>}
         </div>
       </>
     );
   }
-
-
-
 }
