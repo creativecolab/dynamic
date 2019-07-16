@@ -9,6 +9,7 @@
   
   .navbar {
     display: flex;
+    justify-content: space-between;
     min-height: 7vh;
     height: auto;
     font-size: 5vh;
@@ -25,18 +26,17 @@
       span {
         font-weight: 600;
         font-size: 6vh;
+        line-height: 6vh;
       }
 
     }
 
     .clock {
-      font-weight: 200;
-      text-align: right;
-      margin-left: auto;
-      margin-right: 10px;
-      display: flex;
+      font-size: 7vh;
+      line-height: 7vh;
+      font-weight: 600;
     }
-  
+
   }
   
   .content {

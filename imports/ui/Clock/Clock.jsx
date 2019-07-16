@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import CircularProgressbar from 'react-circular-progressbar';
 
-
 import './Clock.scss';
 
 export default class Clock extends Component {
@@ -10,11 +9,11 @@ export default class Clock extends Component {
     startTime: PropTypes.number.isRequired,
     totalTime: PropTypes.number.isRequired,
     big: PropTypes.bool
-  }
+  };
 
   static defaultProps = {
     big: false
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -27,10 +26,7 @@ export default class Clock extends Component {
 
   // set up timer to tick every second
   componentDidMount() {
-    this.timerID = setInterval(
-      () => this.tick(),
-      1000
-    );
+    this.timerID = setInterval(() => this.tick(), 1000);
   }
 
   componentWillUnmount() {
@@ -46,11 +42,13 @@ export default class Clock extends Component {
 
   render() {
     if (this.state.timeLeft < 0) {
-      return "";
+      return '';
     }
+
     const clock = new Date(2019, 0, 0, 0, this.state.timeLeft / 60, this.state.timeLeft % 60);
     const clockString = clock.getMinutes() + ':' + (clock.getSeconds() === 0 ? '00' : clock.getSeconds());
-    return <p id="timer">{clockString}</p>;
+
+    return <>{clockString}</>;
 
     /* Progress Bar code, no longer in use */
     // let percentage = parseInt(100 - (this.state.timeLeft / this.props.totalTime) * 100);
@@ -73,7 +71,8 @@ export default class Clock extends Component {
     // return (
     //   <div className="big-clock">
     //     <p>{clockString}</p>
-    {/* <CircularProgressbar
+    {
+      /* <CircularProgressbar
           percentage={percentage}
           text={this.state.timeLeft}
           strokeWidth={5}
@@ -99,7 +98,8 @@ export default class Clock extends Component {
               fontSize: '60px',
             },
           }}
-        /> */}
+        /> */
+    }
     // </div>)
     // }
   }

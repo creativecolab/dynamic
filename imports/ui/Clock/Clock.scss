@@ -1,29 +1,28 @@
 @import '../assets/main';
 
-#timer {
-  color: $dynamic-white;
-  font-size: 8vh;
-}
+// #timer {
+//   color: $dynamic-white;
+//   font-size: 8vh;
+// }
 
-#clock {
-  position: absolute;
-  // color: rgb(17, 17, 17);
-  top: 12px;
-  right: 12px;
-  // font-size: 24px;
-  z-index: 1;
-  height: 40px;
-  width: 40px;
-  display: flex;
-  // text-align: center;
-  // border: solid 2px;
-  // border-radius: 40px;
+// #clock {
+//   position: absolute;
+//   top: 12px;
+//   right: 12px;
+//   // font-size: 24px;
+//   z-index: 1;
+//   height: 40px;
+//   width: 40px;
+//   display: flex;
+//   // text-align: center;
+//   // border: solid 2px;
+//   // border-radius: 40px;
 
-  div {
-    margin: auto;
-  }
+//   div {
+//     margin: auto;
+//   }
 
-}
+// }
 
 .big-clock {
   //position: fixed;
