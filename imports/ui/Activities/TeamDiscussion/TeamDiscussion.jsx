@@ -31,9 +31,17 @@ class TeamDiscussion extends Component {
   constructor(props) {
     super(props);
     this.reactSwipeEl = null;
+    let displayTeam = false;
+
+    const { status } = this.props;
+
+    if (status === ActivityEnums.status.INPUT_TEAM || status === ActivityEnums.status.ASSESSMENT) {
+      displayTeam = true;
+    }
 
     this.state = {
-      choseTeammate: false
+      choseTeammate: false,
+      displayTeam
     };
   }
 
@@ -96,8 +104,6 @@ class TeamDiscussion extends Component {
             <button className="next" type="button" onClick={() => this.reactSwipeEl.next()}>
               &rarr;
             </button>
-
-            {/* <div className="swipe-instr-bottom">Swipe for next question</div> */}
           </div>
         </>
       );
@@ -117,10 +123,22 @@ class TeamDiscussion extends Component {
   };
 
   componentDidUpdate(prevProps) {
-    if (prevProps.status !== this.props.status) {
+    const { status } = this.props;
+
+    if (prevProps.status !== status) {
       this.setState({
         choseTeammate: false
       });
+
+      if (status === ActivityEnums.status.INPUT_TEAM || status === ActivityEnums.status.ASSESSMENT) {
+        this.setState({
+          displayTeam: true
+        });
+      } else {
+        this.setState({
+          displayTeam: false
+        });
+      }
     }
   }
 
@@ -157,7 +175,8 @@ class TeamDiscussion extends Component {
   };
 
   render() {
-    const { questions, index } = this.props;
+    const { questions, team } = this.props;
+    const { displayTeam } = this.state;
 
     if (!questions) return <Loading />;
 
@@ -170,6 +189,8 @@ class TeamDiscussion extends Component {
         sessionLength={sessionLength}
         clockDuration={duration}
         clockStartTime={statusStartTime}
+        team={team}
+        displayTeam={displayTeam}
         hasTimer
         hasFooter={false}
       >
