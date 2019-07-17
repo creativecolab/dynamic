@@ -130,7 +130,7 @@ export default class Mobile extends Component {
           <>
             <nav className="navbar">
               <div onClick={() => this.openTeam()} className="nav-team-shape">
-                <img src="/shapes/plus-color-yellow-small.png" alt="" />
+                <img src="/shapes/moon-solid-purple-small.png" alt="" />
                 {teamOpen ? <span>&#9650;</span> : <span>&#9660;</span>}
               </div>
               <div className="progress-status">

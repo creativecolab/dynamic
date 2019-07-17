@@ -8,7 +8,7 @@ import './TeamShapes.scss';
 
 class TeamShapes extends Component {
   static propTypes = {
-    activity_id: PropTypes.string.isRequired,
+    activity_id: PropTypes.string.isRequired
   };
 
   mapShapes(teams) {
@@ -19,7 +19,7 @@ class TeamShapes extends Component {
             return (
               <div key={team._id} className="shape-box">
                 <img
-                  src={'/shapes/' + team.shape + '-solid-' + team.color + '.png'}
+                  src={'/shapes/' + team.shape + '-solid-' + team.color + '.jpg'}
                   alt={team.color + ' ' + team.shape}
                 />
               </div>
@@ -28,7 +28,7 @@ class TeamShapes extends Component {
             return (
               <div key={team._id} className="shape-box">
                 <img
-                  src={'/shapes/' + team.shape + '-outline-' + team.color + '.png'}
+                  src={'/shapes/' + team.shape + '-outline-' + team.color + '.jpg'}
                   alt={team.color + ' ' + team.shape}
                 />
               </div>

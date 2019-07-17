@@ -13,7 +13,7 @@ function shuffle(a) {
   }
 
   return a;
-};
+}
 
 // TODO: get these from instructor
 const MAX_TEAM_SIZE = 3;
@@ -21,9 +21,8 @@ const MAX_NUM_TEAMS = 50;
 
 // set up the colors that the teams will use
 function buildColoredShapes(colored_shapes) {
-
-  const shapes = shuffle(['circle', 'cross', 'moon', 'square', 'star', 'sun', 'heart', 'car', 'triangle']);
-  const shapeColors = shuffle(['blue', 'green', 'orange', 'red']);
+  const shapes = shuffle(['circle', 'plus', 'moon', 'square', 'star', 'heart', 'triangle']);
+  const shapeColors = shuffle(['blue', 'purple', 'green', 'yellow', 'red']);
 
   for (let i = 0; i < shapes.length; i++) {
     for (let j = 0; j < shapeColors.length; j++) {
@@ -32,12 +31,10 @@ function buildColoredShapes(colored_shapes) {
   }
 
   shuffle(colored_shapes);
-
 }
 
 // builds teams for the first round of team formation
 export function buildInitialTeams(act_id, participants, questions) {
-
   // get the random colored shapes
   colored_shapes = [];
   buildColoredShapes(colored_shapes);
@@ -82,11 +79,11 @@ export function buildInitialTeams(act_id, participants, questions) {
           { pid: newTeam[k] },
           {
             $push: {
-              teamHistory: { 
-                team: team_id, 
-                teamNumber: teams.length, 
+              teamHistory: {
+                team: team_id,
+                teamNumber: teams.length,
                 teamPosition: k,
-                activity_id: act_id 
+                activity_id: act_id
               }
             }
           }
@@ -115,8 +112,8 @@ export function buildInitialTeams(act_id, participants, questions) {
     // update the team in database
     Teams.update(team_id, {
       $set: {
-        teamCreated: new Date().getTime(),
-      }, 
+        teamCreated: new Date().getTime()
+      },
       $push: {
         members: { pid: newTeam[0], confirmed: false }
       }
@@ -126,11 +123,11 @@ export function buildInitialTeams(act_id, participants, questions) {
       { pid: newTeam[0] },
       {
         $push: {
-          teamHistory: { 
-            team: team_id, 
-            teamNumber: teams.length-1, // previous team made had this number
+          teamHistory: {
+            team: team_id,
+            teamNumber: teams.length - 1, // previous team made had this number
             teamPosition: MAX_TEAM_SIZE,
-            activity_id: act_id 
+            activity_id: act_id
           }
         }
       }
@@ -141,14 +138,16 @@ export function buildInitialTeams(act_id, participants, questions) {
 
   // only 2 participants left, create 2 teams of MAX_TEAM_SIZE + 1
   else if (
-    newTeam.length === MAX_TEAM_SIZE - 1 && teams.length > 1 &&
-    oldTeam.length < MAX_TEAM_SIZE + 1 && olderTeam.length < MAX_TEAM_SIZE + 1
+    newTeam.length === MAX_TEAM_SIZE - 1 &&
+    teams.length > 1 &&
+    oldTeam.length < MAX_TEAM_SIZE + 1 &&
+    olderTeam.length < MAX_TEAM_SIZE + 1
   ) {
     // add the first user to an older team
     Teams.update(team_id, {
       $set: {
-        teamCreated: new Date().getTime(),
-      }, 
+        teamCreated: new Date().getTime()
+      },
       $push: {
         members: { pid: newTeam[0], confirmed: false }
       }
@@ -158,12 +157,13 @@ export function buildInitialTeams(act_id, participants, questions) {
       { pid: newTeam[0] },
       {
         $push: {
-          teamHistory: { 
-            team: team_id, 
-            teamNumber: teams.length-1, 
+          teamHistory: {
+            team: team_id,
+            teamNumber: teams.length - 1,
             teamPosition: MAX_TEAM_SIZE,
-            activity_id: act_id 
-          }        }
+            activity_id: act_id
+          }
+        }
       }
     );
     // keep track of this now team of 4
@@ -172,8 +172,8 @@ export function buildInitialTeams(act_id, participants, questions) {
     // add the second user
     Teams.update(older_team_id, {
       $set: {
-        teamCreated: new Date().getTime(),
-      }, 
+        teamCreated: new Date().getTime()
+      },
       $push: {
         members: { pid: newTeam[1], confirmed: false }
       }
@@ -183,12 +183,12 @@ export function buildInitialTeams(act_id, participants, questions) {
       { pid: newTeam[1] },
       {
         $push: {
-          teamHistory: { 
-            team: team_id, 
-            teamNumber: teams.length-2, // the oldest team saved is 2 teams ago
+          teamHistory: {
+            team: team_id,
+            teamNumber: teams.length - 2, // the oldest team saved is 2 teams ago
             teamPosition: MAX_TEAM_SIZE,
-            activity_id: act_id 
-          }        
+            activity_id: act_id
+          }
         }
       }
     );
@@ -220,12 +220,12 @@ export function buildInitialTeams(act_id, participants, questions) {
         { pid: newTeam[k] },
         {
           $push: {
-            teamHistory: { 
-              team: team_id, 
+            teamHistory: {
+              team: team_id,
               teamNumber: teams.length, // the oldest team saved is 2 teams ago
               teamPosition: k,
-              activity_id: act_id 
-            }           
+              activity_id: act_id
+            }
           }
         }
       );
@@ -240,7 +240,6 @@ export function buildInitialTeams(act_id, participants, questions) {
 
 // builds teams for subsequent rounds of team formation (where duplicates are avoided)
 export function buildNewTeams(act_id, participants, questions) {
-
   if (participants.length < 6) return buildInitialTeams(act_id, participants, questions);
 
   // get the random colored shapes
@@ -252,22 +251,22 @@ export function buildNewTeams(act_id, participants, questions) {
   const maxNumTeams = Math.floor(participants.length / 3.0);
 
   // arrays to hold the new teams and those users who are new additions
-  let ungrouped = [];
-  let newTeams = [];
-  let user_groups = [];
+  const ungrouped = [];
+  const newTeams = [];
+  const user_groups = [];
 
   for (let i = 0; i < participants.length; i++) {
-    let user_example = Users.findOne({pid: participants[i]});
-    let user_history = user_example.teamHistory;
+    const user_example = Users.findOne({ pid: participants[i] });
+    const user_history = user_example.teamHistory;
 
     if (!user_history.length) {
       // user has no teamHistory, they are a new user for this round
       ungrouped.push(participants[i]);
-    }
-    else {
-      let last_act_info = user_history.pop();
+    } else {
+      const last_act_info = user_history.pop();
+
       // user 'shifts' teams based on their position on their last team
-      switch(last_act_info.teamPosition) {
+      switch (last_act_info.teamPosition) {
         case 0:
           user_groups.push({
             pid: participants[i],
@@ -306,15 +305,18 @@ export function buildNewTeams(act_id, participants, questions) {
   });
 
   // build teams with the non-new people
-  var num_teams = Math.floor((participants.length - ungrouped.length) / 3.0);
+  const num_teams = Math.floor((participants.length - ungrouped.length) / 3.0);
+
   for (let currTeamNum = 0; currTeamNum < num_teams; currTeamNum++) {
-    let currTeam = user_groups.filter((user) => (user.teamNumber === currTeamNum));
+    const currTeam = user_groups.filter(user => user.teamNumber === currTeamNum);
+
     newTeams.push(currTeam);
   }
 
   // make some teams with the ungrouped users
   while (ungrouped.length >= MAX_TEAM_SIZE) {
-    let currTeam = [];
+    const currTeam = [];
+
     // build teams of MAX_TEAM_SIZE with a teamNumber that is the largest so far
     for (let j = 0; j < MAX_TEAM_SIZE; j++) {
       currTeam.push({
@@ -323,6 +325,7 @@ export function buildNewTeams(act_id, participants, questions) {
         teamPosition: j
       });
     }
+
     newTeams.push(currTeam);
   }
 
@@ -330,8 +333,9 @@ export function buildNewTeams(act_id, participants, questions) {
   if (ungrouped.length === MAX_TEAM_SIZE - 1) {
     // find out how many teams there are of size < MAX_TEAM_SIZE + 1
     let count = 0;
-    let less_indices = [];
-    let more_indices = [];
+    const less_indices = [];
+    const more_indices = [];
+
     for (let i = 0; i < newTeams.length; i++) {
       if (newTeams[i].length < MAX_TEAM_SIZE + 1) {
         count = count + 1;
@@ -339,6 +343,7 @@ export function buildNewTeams(act_id, participants, questions) {
       } else {
         more_indices.push(i);
       }
+
       if (count === 2) break;
     }
 
@@ -348,14 +353,14 @@ export function buildNewTeams(act_id, participants, questions) {
         pid: ungrouped.pop(),
         teamNumber: newTeams.length,
         teamPosition: MAX_TEAM_SIZE + 1
-      }); 
+      });
       newTeams[less_indices[1]].push({
         pid: ungrouped.pop(),
         teamNumber: newTeams.length,
         teamPosition: MAX_TEAM_SIZE
-      }); 
+      });
     }
-    //2 left: Only one team of size < MAX_TEAM_SIZE + 1 -> adjust a team of 4 to a NEW team of 3 
+    //2 left: Only one team of size < MAX_TEAM_SIZE + 1 -> adjust a team of 4 to a NEW team of 3
     else if (count === 1) {
       oneUser = newTeams[more_indices[0]].pop(); // adjust a team of 4
       currTeam.push({
@@ -402,14 +407,13 @@ export function buildNewTeams(act_id, participants, questions) {
       });
       //add this new team to all of our teams
       newTeams.push(currTeam);
-
     }
-  }
-  else if (ungrouped.length === 1) {
+  } else if (ungrouped.length === 1) {
     // find out how many teams there are of size < MAX_TEAM_SIZE + 1
     let count = 0;
-    let less_indices = [];
-    let more_indices = [];
+    const less_indices = [];
+    const more_indices = [];
+
     for (let i = 0; i < newTeams.length; i++) {
       if (newTeams[i].length < MAX_TEAM_SIZE + 1) {
         count = count + 1;
@@ -419,21 +423,22 @@ export function buildNewTeams(act_id, participants, questions) {
         more_indices.push(i);
       }
     }
+
     //1 left: If at least one team of size < MAX_TEAM_SIZE + 1 -> make a team of 4
     if (count === 1) {
       newTeams[less_indices[0]].push({
         pid: ungrouped.pop(),
         teamNumber: newTeams.length,
         teamPosition: MAX_TEAM_SIZE + 1
-      }); 
-    } 
+      });
+    }
     //1 left: No teams of size < MAX_TEAM_SIZE + 1 -> adjust a team of 4 to make a team of 3 and a team of 2. TODO: ??
   }
 
-  newTeams.map((currTeam) => {
+  newTeams.map(currTeam => {
     //add to Teams
     //update Users
-    let team_id = Teams.insert({
+    const team_id = Teams.insert({
       activity_id: act_id,
       teamCreated: new Date().getTime(),
       members: currTeam.map(user => ({ pid: user.pid, confirmed: false })),
@@ -451,21 +456,23 @@ export function buildNewTeams(act_id, participants, questions) {
         { pid: currTeam[k].pid },
         {
           $push: {
-            teamHistory: { 
-              team: team_id, 
-              teamNumber: currTeam[k].teamNumber, 
+            teamHistory: {
+              team: team_id,
+              teamNumber: currTeam[k].teamNumber,
               teamPosition: currTeam[k].teamPosition,
-              activity_id: act_id 
-            }           
+              activity_id: act_id
+            }
           }
         }
       );
     }
+
     // add the team to the list of teams
     teams.push(team_id);
   });
 
   // return properly produced teams
   console.log(teams);
+
   return teams;
 }
