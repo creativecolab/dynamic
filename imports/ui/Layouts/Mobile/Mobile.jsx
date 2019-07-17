@@ -109,12 +109,10 @@ export default class Mobile extends Component {
     if (!team) return;
 
     if (teamOpen) {
-      console.log('close!');
       this.setState({
         teamOpen: false
       });
     } else {
-      console.log('open!');
       this.setState({
         teamOpen: true
       });
