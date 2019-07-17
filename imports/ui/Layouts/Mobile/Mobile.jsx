@@ -3,10 +3,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import posed from 'react-pose';
-import { access } from 'fs';
 
 import Button from '../../Components/Button/Button';
-import MobileTimer from '../../Components/MobileTimer/MobileTimer';
 import Clock from '../../Clock/Clock';
 
 import './Mobile.scss';
@@ -28,9 +26,32 @@ const Footer = posed.div({
   }
 });
 
+const Container = posed.div({
+  closed: {
+    height: 0,
+    delay: 50
+  },
+  open: { height: 'auto', transition: { duration: 100 } }
+});
+
+const Slot = posed.div({
+  hidden: {
+    // y: -10,
+    opacity: 0,
+    transition: { duration: 150 }
+  },
+  visible: {
+    // y: 0,
+    opacity: 1,
+    delay: 100
+  }
+});
+
 export default class Mobile extends Component {
   state = {
-    loading: true
+    loading: true,
+    teamOpen: false,
+    names: ['Amy KIH dhIgd SUHUasuhsu hhsa Bdudas G', 'Gusdhag dha', 'Sam J']
   };
 
   static propTypes = {
@@ -76,6 +97,22 @@ export default class Mobile extends Component {
     });
   }
 
+  openTeam() {
+    const { teamOpen } = this.state;
+
+    if (teamOpen) {
+      console.log('close!');
+      this.setState({
+        teamOpen: false
+      });
+    } else {
+      console.log('open!');
+      this.setState({
+        teamOpen: true
+      });
+    }
+  }
+
   render() {
     const { activityName, sessionStatus, sessionLength } = this.props;
     const { buttonTxt, buttonAction } = this.props;
@@ -83,26 +120,34 @@ export default class Mobile extends Component {
     const { clockStartTime, clockDuration } = this.props;
     const { hasFooter, hasNavbar, hasTimer } = this.props;
     const { children } = this.props;
-    const { loading } = this.state;
+    const { loading, teamOpen, names } = this.state;
 
     return (
       <div className="mobile-main">
         {hasNavbar && (
-          <nav className="navbar">
-            <div className="nav-team-shape">
-              <img src="/shapes/plus-color-yellow-small.png" alt="" />
-              <span>&#9660;</span>
-            </div>
-            <div className="progress-status">
-              <div className="session-progress">
-                Round {sessionStatus} of {sessionLength}
+          <>
+            <nav className="navbar">
+              <div onClick={() => this.openTeam()} className="nav-team-shape">
+                <img src="/shapes/plus-color-yellow-small.png" alt="" />
+                {teamOpen ? <span>&#9650;</span> : <span>&#9660;</span>}
               </div>
-            </div>
-            <div className="clock">
-              {hasTimer && <Clock big startTime={clockStartTime} totalTime={clockDuration} />}
-            </div>
-            {/* {hasTimer && <MobileTimer startTime={clockStartTime} duration={clockDuration} />} */}
-          </nav>
+              <div className="progress-status">
+                <div className="session-progress">
+                  Round {sessionStatus} of {sessionLength}
+                </div>
+              </div>
+              <div className="clock">
+                {hasTimer && <Clock big startTime={clockStartTime} totalTime={clockDuration} />}
+              </div>
+            </nav>
+            <Container className="teammate-container" pose={teamOpen ? 'open' : 'closed'}>
+              {names.map(name => (
+                <Slot className="teammate-slot" pose={teamOpen ? 'visible' : 'hidden'} key={name}>
+                  {name}
+                </Slot>
+              ))}
+            </Container>
+          </>
         )}
         <div className="content">
           {children}

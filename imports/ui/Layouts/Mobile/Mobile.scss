@@ -12,12 +12,10 @@
   user-select: none;
   // background: linear-gradient(204.79deg, #B993D6 0%, #8CA6DB 100%);
 
-
   .navbar {
     // grid-area: navbar;
     background: $dynamic-black;
     color: $dynamic-white;
-    position: relative;
     display: flex;
     justify-content: space-between;
     // min-height: 1em;
@@ -35,7 +33,7 @@
       font-size: 4vw;
       display: flex;
       justify-content: space-between;
-
+      z-index: 2;
       img {
         height: 7vw;
       }
@@ -52,7 +50,7 @@
 
       .session-progress {
         font-weight: 600;
-        font-size: 7vw;
+        font-size: 9vw;
         line-height: 7vw;
       }
 
@@ -69,6 +67,23 @@
       bottom: -14%;
       left: 15%;
       width: 70%;
+    }
+
+  }
+
+  .teammate-container {
+    background: $dynamic-gray;
+    // padding-top: 0.5em;
+    position: fixed;
+    width: 100%;
+    z-index: 1;
+
+    .teammate-slot {
+      background: $dynamic-light-gray;
+      color: $dynamic-black;
+      text-align: left;
+      margin: 0 0 0.5em 0;
+      padding: 0.5em;
     }
 
   }
