@@ -9,6 +9,7 @@ import Button from '../../Components/Button/Button';
 import Clock from '../../Clock/Clock';
 
 import './Mobile.scss';
+import Users from '../../../api/users';
 
 const Footer = posed.div({
   hidden: {
@@ -52,14 +53,15 @@ const Slot = posed.div({
 export default class Mobile extends Component {
   state = {
     loading: true,
-    teamOpen: false,
-    names: ['Amy KIH dhIgd SUHUasuhsu hhsa Bdudas G', 'Gusdhag dha', 'Sam J']
+    teamOpen: false
   };
 
   static propTypes = {
     hasFooter: PropTypes.bool,
     hasNavbar: PropTypes.bool,
     hasTimer: PropTypes.bool,
+    displayTeam: PropTypes.bool,
+    team: PropTypes.object,
     buttonAction: PropTypes.func,
     buttonTxt: PropTypes.string,
     activityName: PropTypes.string,
@@ -80,6 +82,7 @@ export default class Mobile extends Component {
     hasFooter: true,
     hasNavbar: true,
     hasTimer: true,
+    displayTeam: false,
     buttonAction: () => {
       console.log('Button action not set');
     },
@@ -101,6 +104,9 @@ export default class Mobile extends Component {
 
   openTeam() {
     const { teamOpen } = this.state;
+    const { team } = this.props;
+
+    if (!team) return;
 
     if (teamOpen) {
       console.log('close!');
@@ -115,14 +121,22 @@ export default class Mobile extends Component {
     }
   }
 
+  getTeammateNames(members) {
+    return members.map(m => Users.findOne({ pid: m.pid }).name);
+  }
+
   render() {
     const { activityName, sessionStatus, sessionLength } = this.props;
     const { buttonTxt, buttonAction } = this.props;
     const { feedbackMsge, feedbackClass } = this.props;
-    const { clockStartTime, clockDuration } = this.props;
+    const { clockStartTime, clockDuration, displayTeam, team } = this.props;
     const { hasFooter, hasNavbar, hasTimer } = this.props;
     const { children } = this.props;
-    const { loading, teamOpen, names } = this.state;
+    const { loading, teamOpen } = this.state;
+
+    let names = [];
+
+    if (displayTeam && team) names = this.getTeammateNames(team.members);
 
     return (
       <div className="mobile-main">
@@ -130,8 +144,12 @@ export default class Mobile extends Component {
           <>
             <nav className="navbar">
               <div onClick={() => this.openTeam()} className="nav-team-shape">
-                <img src="/shapes/moon-solid-purple-small.png" alt="" />
-                {teamOpen ? <span>&#9650;</span> : <span>&#9660;</span>}
+                {displayTeam && team && (
+                  <>
+                    <img src={`/shapes/${team.shape}-solid-${team.color}-small.png`} alt="" />
+                    {teamOpen ? <span>&#9650;</span> : <span>&#9660;</span>}
+                  </>
+                )}
               </div>
               <div className="progress-status">
                 <div className="session-progress">
@@ -145,7 +163,7 @@ export default class Mobile extends Component {
             <Container className="teammate-container" pose={teamOpen ? 'open' : 'closed'}>
               {names.map(name => (
                 <Slot className="teammate-slot" pose={teamOpen ? 'visible' : 'hidden'} key={name}>
-                  <Textfit mode="single" forceSingleModeWidth={false}>
+                  <Textfit max={24} mode="single" forceSingleModeWidth={false}>
                     {name}
                   </Textfit>
                 </Slot>
