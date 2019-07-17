@@ -45,6 +45,7 @@
     "react-router-dom": "^5.0.1",
     "react-spinners": "^0.5.4",
     "react-swipe": "^6.0.4",
+    "react-textfit": "^1.1.0",
     "simpl-schema": "^1.5.5",
     "stylelint": "^10.0.1",
     "stylelint-config-prettier": "^5.1.0",

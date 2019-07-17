@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import posed from 'react-pose';
+import { Textfit } from 'react-textfit';
 
 import Button from '../../Components/Button/Button';
 import Clock from '../../Clock/Clock';
@@ -29,7 +30,8 @@ const Footer = posed.div({
 const Container = posed.div({
   closed: {
     height: 0,
-    delay: 50
+    delay: 50,
+    transition: { duration: 100 }
   },
   open: { height: 'auto', transition: { duration: 100 } }
 });
@@ -143,7 +145,9 @@ export default class Mobile extends Component {
             <Container className="teammate-container" pose={teamOpen ? 'open' : 'closed'}>
               {names.map(name => (
                 <Slot className="teammate-slot" pose={teamOpen ? 'visible' : 'hidden'} key={name}>
-                  {name}
+                  <Textfit mode="single" forceSingleModeWidth={false}>
+                    {name}
+                  </Textfit>
                 </Slot>
               ))}
             </Container>
