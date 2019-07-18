@@ -7,6 +7,7 @@ import Users from '../../../../api/users';
 import Button from '../../../Components/Button/Button';
 import Loading from '../../../Components/Loading/Loading';
 import './TeamFormation.scss';
+import PictureContent from '../../../Components/PictureContent/PictureContent';
 
 class TeamFormation extends Component {
   static propTypes = {

@@ -16,6 +16,7 @@ import TeammateSliders from '../Components/TeammateSliders/TeammateSliders';
 import Clock from '../../Clock/Clock';
 
 import './TeamDiscussion.scss';
+import PictureContent from '../../Components/PictureContent/PictureContent';
 
 class TeamDiscussion extends Component {
   static propTypes = {
@@ -72,41 +73,74 @@ class TeamDiscussion extends Component {
 
     // team input phase
     if (status === ActivityEnums.status.INPUT_TEAM) {
-      return (
-        <>
-          <div className="swipe-instr-top">Have group members answer:</div>
-          <div
-            className="swipe-instr-top"
-            style={{ padding: '0 1.5em', fontSize: '0.8em', color: '#808080cc', margin: 0 }}
+      return <PictureContent
+        title={"Have group members answer:"}
+        hasDescrip={true}
+        descrip={"Swipe to see more questions. This will change your teammates' screens too!"}
+        hasimage={false}
+      >
+        <div className="slider-main">
+          <ReactSwipe
+            className="carousel"
+            swipeOptions={{ continuous: true, callback: this.onSlideChange, startSlide: index }}
+            ref={el => (this.reactSwipeEl = el)}
           >
-            Swipe to see more questions. This will change your teammates' screens too!
-          </div>
-          <div className="slider-main">
-            <ReactSwipe
-              className="carousel"
-              swipeOptions={{ continuous: true, callback: this.onSlideChange, startSlide: index }}
-              ref={el => (this.reactSwipeEl = el)}
-            >
-              {questions.map((q, index) => {
-                return (
-                  <div className="question-card-wrapper" key={q._id}>
-                    <div className="question-card">
-                      {index + 1}. {q.prompt}
-                    </div>
+            {questions.map((q, index) => {
+              return (
+                <div className="question-card-wrapper" key={q._id}>
+                  <div className="question-card">
+                    {index + 1}. {q.prompt}
                   </div>
-                );
-              })}
-            </ReactSwipe>
+                </div>
+              );
+            })}
+          </ReactSwipe>
 
-            <button className="prev" type="button" onClick={() => this.reactSwipeEl.prev()}>
-              &larr;
+          <button className="prev" type="button" onClick={() => this.reactSwipeEl.prev()}>
+            &larr;
             </button>
-            <button className="next" type="button" onClick={() => this.reactSwipeEl.next()}>
-              &rarr;
+          <button className="next" type="button" onClick={() => this.reactSwipeEl.next()}>
+            &rarr;
             </button>
-          </div>
-        </>
-      );
+        </div>
+
+
+      </PictureContent>
+      // return ( //<PictureContent hasInstructions={false} ><ReactSwipe></ReactSwipe></PictureContent>
+      //   <>
+      //     <div className="swipe-instr-top">Have group members answer:</div>
+      //     <div
+      //       className="swipe-instr-top"
+      //       style={{ padding: '0 1.5em', fontSize: '0.8em', color: '#808080cc', margin: 0 }}
+      //     >
+      //       Swipe to see more questions. This will change your teammates' screens too!
+      //     </div>
+      //     <div className="slider-main">
+      //       <ReactSwipe
+      //         className="carousel"
+      //         swipeOptions={{ continuous: true, callback: this.onSlideChange, startSlide: index }}
+      //         ref={el => (this.reactSwipeEl = el)}
+      //       >
+      //         {questions.map((q, index) => {
+      //           return (
+      //             <div className="question-card-wrapper" key={q._id}>
+      //               <div className="question-card">
+      //                 {index + 1}. {q.prompt}
+      //               </div>
+      //             </div>
+      //           );
+      //         })}
+      //       </ReactSwipe>
+
+      //       <button className="prev" type="button" onClick={() => this.reactSwipeEl.prev()}>
+      //         &larr;
+      //       </button>
+      //       <button className="next" type="button" onClick={() => this.reactSwipeEl.next()}>
+      //         &rarr;
+      //       </button>
+      //     </div>
+      //   </>
+      // );
     }
 
     // summary phase
@@ -194,7 +228,7 @@ class TeamDiscussion extends Component {
         hasTimer
         hasFooter={false}
       >
-        {this.renderContent(this.props)}
+        {this.renderContent(this.props)} {/*component*/}
       </Mobile>
     );
   }

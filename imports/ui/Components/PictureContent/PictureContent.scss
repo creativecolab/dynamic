@@ -1,0 +1,40 @@
+@import '../../../ui/assets/main';
+
+  .title {
+    margin: 1em auto 0;
+    text-align: center
+  }
+  
+  .descrip {
+    padding: 0 1.5em;
+    font-size: 0.8em;
+    color: #808080cc;
+    margin: 0;
+    text-align: left;
+  }
+    
+  .subtitle {
+    align-self: center;
+    //position: absolute;
+    //bottom: 2vh;
+    //margin: 1em auto 0;
+  }
+  
+  .children {
+    width: 100vw;
+    height: 100%;
+  }
+  
+  .image {
+    margin: 1em 0;
+    min-width: 100px;
+  }
+  
+  .question {
+    margin: 1em 0.9em;
+    padding: 1em;
+    border: 2px solid $dynamic-black;
+    border-radius: 5px;
+  }
+
+
