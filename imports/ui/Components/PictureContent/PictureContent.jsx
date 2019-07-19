@@ -12,14 +12,10 @@ export default class PictureContent extends Component {
     hasSubtitle: PropTypes.bool,
     subtitle: PropTypes.string,
     children: PropTypes.node
-    //   hasImage
-    //   title
-    //   subtitle (optional)
-    //   children (optional)
-    // 
   }
 
   static defaultProps = {
+    hasDescrip: false,
     subtitle: ''
   };
 
@@ -57,7 +53,3 @@ export default class PictureContent extends Component {
   }
 }
 
-// size set w: 30vw
-// height h: jw
-// content height
-// elements: parent 
