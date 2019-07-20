@@ -13,6 +13,7 @@ import Users from '../../../../api/users';
 import '../../../assets/_main.scss';
 import './TeammateSliders.scss';
 import Button from '../../../Components/Button/Button';
+import PictureContent from '../../../Components/PictureContent/PictureContent';
 
 export default class TeammateSliders extends Component {
   static propTypes = {

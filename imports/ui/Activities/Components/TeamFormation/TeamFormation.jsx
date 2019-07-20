@@ -7,6 +7,7 @@ import Users from '../../../../api/users';
 import Button from '../../../Components/Button/Button';
 import Loading from '../../../Components/Loading/Loading';
 import './TeamFormation.scss';
+import PictureContent from '../../../Components/PictureContent/PictureContent';
 
 class TeamFormation extends Component {
   static propTypes = {
@@ -93,6 +94,12 @@ class TeamFormation extends Component {
   renderTeammates() {
     if (this.props.confirmed) return 'Confirmed. Waiting for other groupmates.';
 
+    // return <div className="team-formation-main">this.state.teammates.map(m => (
+    //   <Button key={m.pid} active={m.confirmed} onClick={() => this.handleConfirmed(m.pid)}>
+    //     {this.getNameFromPid(m.pid)}
+    //   </Button>
+    //   ));</div>
+
     return this.state.teammates.map(m => (
       <Button key={m.pid} active={m.confirmed} onClick={() => this.handleConfirmed(m.pid)}>
         {this.getNameFromPid(m.pid)}
@@ -108,29 +115,50 @@ class TeamFormation extends Component {
     const { shape, color } = team;
 
     if (allConfirmed) {
-      return (
-        <div className="team-formation-main">
-          <img className="intro-img" src="/intro.jpg" alt="..." />
-          <p>
-            <strong>Introduce yourself!</strong>
-          </p>
-          <div>
-            Looks like you found everyone. While waiting for other groups to form, introduce yourself to your teammates.
-          </div>
-        </div>
-      );
+      return <PictureContent
+        title={"Introduce yourself!"}
+        hasImage={true}
+        imageSrc={"/intro.jpg"}
+        hasSubtitle={true}
+        subtitle={"Looks like you found everyone. While waiting for other groups to form, introduce yourself to your teammates."}
+      >
+      </PictureContent>
     }
 
-    return (
-      <div className="team-formation-main">
-        <div className="shape-main">
-          <div>Find others with this shape and color</div>
-          <img className="shape-img" src={`/shapes/${shape}-solid-${color}.jpg`} alt={`${color} ${shape}`} />
-          {!confirmed && <div>Select members found:</div>}
-        </div>
-        {this.renderTeammates()}
-      </div>
-    );
+    return <PictureContent
+      title={"Find others with this shape and color"}
+      hasImage={true}
+      imageSrc={`/shapes/${shape}-solid-${color}.jpg`}
+      hasSubtitle={true}
+      subtitle={"Select members found:"}
+    >
+      {this.renderTeammates()}
+    </PictureContent>
+
+    // if (allConfirmed) {
+    //   return (
+    //     <div className="team-formation-main">
+    //       <img className="intro-img" src="/intro.jpg" alt="..." />
+    //       <p>
+    //         <strong>Introduce yourself!</strong>
+    //       </p>
+    //       <div>
+    //         Looks like you found everyone. While waiting for other groups to form, introduce yourself to your teammates.
+    //         </div>
+    //     </div>
+    //   );
+    // }
+
+    // return (
+    //   <div className="team-formation-main">
+    //     <div className="shape-main">
+    //       <div>Find others with this shape and color</div>
+    //       <img className="shape-img" src={`/shapes/${shape}-solid-${color}.jpg`} alt={`${color} ${shape}`} />
+    //       {!confirmed && <div>Select members found:</div>}
+    //     </div>
+    //     {this.renderTeammates()}
+    //   </div>
+    // );
   }
 }
 

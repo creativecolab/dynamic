@@ -1,0 +1,42 @@
+@import '../../../ui/assets/main';
+.pic-content-main {
+  //width: 98%;
+  text-align: center;
+  align-self: center;
+  margin: 0 0.5em;
+
+  .title {
+    margin: 1em auto 0;
+    text-align: center
+  }
+  
+  .descrip {
+    padding: 0 1.5em;
+    font-size: 0.8em;
+    color: #808080cc;
+    margin: 0;
+    text-align: left;
+  }
+    
+  .subtitle {
+    align-self: center;
+    padding: 0 0.5em;
+  }
+  
+  .children {
+    height: 100%;
+  }
+
+  .image {
+    margin: 1em 0;
+    padding: 5%;
+    //object-fit: contain;
+    object-fit: cover;
+    max-width: 70%;
+    max-height: 70%;
+    width: auto;
+    height: auto;
+ }
+}
+
+

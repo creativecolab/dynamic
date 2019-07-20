@@ -16,6 +16,7 @@ import TeammateSliders from '../Components/TeammateSliders/TeammateSliders';
 import Clock from '../../Clock/Clock';
 
 import './TeamDiscussion.scss';
+import PictureContent from '../../Components/PictureContent/PictureContent';
 
 class TeamDiscussion extends Component {
   static propTypes = {
@@ -72,6 +73,7 @@ class TeamDiscussion extends Component {
 
     // team input phase
     if (status === ActivityEnums.status.INPUT_TEAM) {
+
       return (
         <>
           <div className="swipe-instr-top">Have group members answer:</div>
@@ -194,7 +196,7 @@ class TeamDiscussion extends Component {
         hasTimer
         hasFooter={false}
       >
-        {this.renderContent(this.props)}
+        {this.renderContent(this.props)} {/*component*/}
       </Mobile>
     );
   }
