@@ -10,6 +10,7 @@
   //                      'footer';
   // grid-template-rows: 1fr 10fr 1fr;
   user-select: none;
+  position: relative;
   // background: linear-gradient(204.79deg, #B993D6 0%, #8CA6DB 100%);
 
   .navbar {
@@ -112,7 +113,7 @@
   }
 
   .footer {
-    position: fixed;
+    position: absolute;
     bottom: 0;
     display: flex;
     height: 15%;
