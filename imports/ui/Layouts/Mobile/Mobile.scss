@@ -82,14 +82,16 @@
       background: $dynamic-light-gray;
       color: $dynamic-black;
       text-align: left;
-      margin: 0 0 0.5em 0;
-      padding: 0.5em;
+      margin: 3vw;
+      border-radius: 5px;
+      padding: 3vw;
     }
 
   }
 
   .content {
     height: 70%;
+    padding: 5%;
     grid-area: content;
     display: flex;
     flex-direction: column;
@@ -115,6 +117,11 @@
     display: flex;
     height: 15%;
     width: 100%;
+
+    .footer-text {
+      color: $dynamic-medium-gray;
+      margin: auto;
+    }
   }
 
 }

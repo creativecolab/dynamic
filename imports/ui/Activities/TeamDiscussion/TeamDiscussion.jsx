@@ -73,15 +73,14 @@ class TeamDiscussion extends Component {
 
     // team input phase
     if (status === ActivityEnums.status.INPUT_TEAM) {
-
       return (
         <>
           <div className="swipe-instr-top">Have group members answer:</div>
           <div
             className="swipe-instr-top"
-            style={{ padding: '0 1.5em', fontSize: '0.8em', color: '#808080cc', margin: 0 }}
+            style={{ textAlign: 'center', fontSize: '0.8em', color: '#808080cc', margin: 0 }}
           >
-            Swipe to see more questions. This will change your teammates' screens too!
+            Swipe to see more questions
           </div>
           <div className="slider-main">
             <ReactSwipe

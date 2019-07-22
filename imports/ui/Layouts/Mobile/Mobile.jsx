@@ -60,6 +60,7 @@ export default class Mobile extends Component {
     hasFooter: PropTypes.bool,
     hasNavbar: PropTypes.bool,
     hasTimer: PropTypes.bool,
+    title: PropTypes.string,
     displayTeam: PropTypes.bool,
     team: PropTypes.object,
     buttonAction: PropTypes.func,
@@ -71,6 +72,7 @@ export default class Mobile extends Component {
     clockStartTime: PropTypes.number,
     feedbackMsge: PropTypes.string,
     feedbackClass: PropTypes.string,
+    footerText: PropTypes.string,
     children: PropTypes.node,
     questionToggle: PropTypes.number,
     questionNumber: PropTypes.number,
@@ -79,6 +81,7 @@ export default class Mobile extends Component {
 
   static defaultProps = {
     activityName: 'Activity name',
+    title: '',
     hasFooter: true,
     hasNavbar: true,
     hasTimer: true,
@@ -91,6 +94,7 @@ export default class Mobile extends Component {
     clockStartTime: 0,
     feedbackMsge: '',
     feedbackClass: '',
+    footerText: '',
     sessionStatus: 0,
     sessionLength: 0,
     children: {}
@@ -109,12 +113,10 @@ export default class Mobile extends Component {
     if (!team) return;
 
     if (teamOpen) {
-      console.log('close!');
       this.setState({
         teamOpen: false
       });
     } else {
-      console.log('open!');
       this.setState({
         teamOpen: true
       });
@@ -126,12 +128,12 @@ export default class Mobile extends Component {
   }
 
   render() {
-    const { activityName, sessionStatus, sessionLength } = this.props;
+    const { title, sessionStatus, sessionLength } = this.props;
     const { buttonTxt, buttonAction } = this.props;
     const { feedbackMsge, feedbackClass } = this.props;
     const { clockStartTime, clockDuration, displayTeam, team } = this.props;
     const { hasFooter, hasNavbar, hasTimer } = this.props;
-    const { children } = this.props;
+    const { children, footerText } = this.props;
     const { loading, teamOpen } = this.state;
 
     let names = [];
@@ -153,7 +155,13 @@ export default class Mobile extends Component {
               </div>
               <div className="progress-status">
                 <div className="session-progress">
-                  Round {sessionStatus} of {sessionLength}
+                  {title ? (
+                    <>{title}</>
+                  ) : (
+                    <>
+                      Round {sessionStatus} of {sessionLength}
+                    </>
+                  )}
                 </div>
               </div>
               <div className="clock">
@@ -180,6 +188,11 @@ export default class Mobile extends Component {
             <Button size="small" onClick={buttonAction}>
               {buttonTxt}
             </Button>
+          </Footer>
+        )}
+        {footerText && (
+          <Footer className="footer">
+            <div className="footer-text">{footerText}</div>
           </Footer>
         )}
       </div>

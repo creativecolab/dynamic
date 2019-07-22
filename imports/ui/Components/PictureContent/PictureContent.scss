@@ -1,41 +1,41 @@
 @import '../../../ui/assets/main';
+
 .pic-content-main {
-  //width: 98%;
+  width: 90vw;
+  height: 100%;
+  // margin: auto;
   text-align: center;
   align-self: center;
-  margin: 0 0.5em;
+  // margin: 1em 0.5em;
 
-  .title {
-    margin: 1em auto 0;
-    text-align: center
+  .pic-title {
+    font-size: 8vw;
+    font-weight: 600;
+    text-align: center;
   }
   
-  .descrip {
-    padding: 0 1.5em;
+  .pic-desc {
     font-size: 0.8em;
-    color: #808080cc;
+    color: $dynamic-medium-gray;
     margin: 0;
     text-align: left;
   }
     
   .subtitle {
-    align-self: center;
-    padding: 0 0.5em;
-  }
-  
-  .children {
-    height: 100%;
+    padding: 0 5%;
+    font-size: 0.8em;
+    color: $dynamic-medium-gray;
+    margin: 0;
+    text-align: left;
   }
 
-  .image {
+  .pic-image {
+    // background: red;
     margin: 1em 0;
     padding: 5%;
-    //object-fit: contain;
     object-fit: cover;
-    max-width: 70%;
-    max-height: 70%;
-    width: auto;
-    height: auto;
+    max-width: 80vw;
+    max-height: 50%;
  }
 }
 
