@@ -152,6 +152,7 @@ export function buildInitialTeams(act_id, participants, questions) {
         members: { pid: newTeam[0], confirmed: false }
       }
     });
+
     // update the first odd-one-out user's team history
     Users.update(
       { pid: newTeam[0] },
@@ -166,6 +167,7 @@ export function buildInitialTeams(act_id, participants, questions) {
         }
       }
     );
+
     // keep track of this now team of 4
     oldTeam.push(newTeam[0]);
 

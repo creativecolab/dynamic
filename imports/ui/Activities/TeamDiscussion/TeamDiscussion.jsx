@@ -46,18 +46,8 @@ class TeamDiscussion extends Component {
     };
   }
 
-  shuffle(a) {
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-
-    return a;
-  }
-
   // renders based on activity status
-  renderContent = ({ status, pid, activity_id, questions, team, index }) => {
+  renderContent = ({ status, pid, activity_id, questions, team }) => {
     // individual input phase (none for this activity)
     if (status === ActivityEnums.status.INPUT_INDV) {
       return 'Indvidual input';
@@ -73,7 +63,6 @@ class TeamDiscussion extends Component {
 
     // team input phase
     if (status === ActivityEnums.status.INPUT_TEAM) {
-      questions = this.shuffle(questions)
       return (
         <>
           <div className="swipe-instr-top">Have group members answer:</div>
@@ -86,7 +75,7 @@ class TeamDiscussion extends Component {
           <div className="slider-main">
             <ReactSwipe
               className="carousel"
-              swipeOptions={{ continuous: true, callback: this.onSlideChange, startSlide: index }}
+              swipeOptions={{ continuous: true, callback: this.onSlideChange }}
               ref={el => (this.reactSwipeEl = el)}
             >
               {questions.map((q, index) => {
@@ -216,14 +205,25 @@ export default withTracker(({ pid, activity_id }) => {
     { sort: { teamCreated: -1 } }
   );
 
+  const shuffle = a => {
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+
+    return a;
+  };
+
   // get all the quesitons
-  let questions = Questions.find().fetch();
-  let index = 0;
+  const questions = Questions.find({}).fetch();
+
+  if (questions) shuffle(questions);
 
   // if (team) {
   //   questions = team.questions;
   //   index = team.index;
   // }
 
-  return { questions, index, team };
+  return { questions, team };
 })(TeamDiscussion);

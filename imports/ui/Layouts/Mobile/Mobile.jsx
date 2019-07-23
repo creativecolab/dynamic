@@ -158,10 +158,10 @@ export default class Mobile extends Component {
                   {title ? (
                     <>{title}</>
                   ) : (
-                      <>
-                        Round {sessionStatus} of {sessionLength}
-                      </>
-                    )}
+                    <>
+                      Round {sessionStatus} of {sessionLength}
+                    </>
+                  )}
                 </div>
               </div>
               <div className="clock">

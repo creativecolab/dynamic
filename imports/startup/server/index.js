@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Restivus } from 'meteor/nimble:restivus';
-import { PythonShell } from 'python-shell'
+import { PythonShell } from 'python-shell';
 
 import ActivityEnums from '../../enums/activities';
 
@@ -14,7 +14,7 @@ import Responses from '../../api/responses';
 
 import dbquestions from './dbquestions';
 import './register-api';
-import { buildInitialTeams, buildNewTeams } from './grouping-helper.js'
+import { buildInitialTeams, buildNewTeams } from './grouping-helper.js';
 
 function getPreference() {
   const session = Sessions.findOne({ code: 'quiz2' });
@@ -63,7 +63,6 @@ function getPreference() {
   });
 
   return ret;
-
 }
 
 if (Meteor.isServer) {
@@ -91,7 +90,7 @@ if (Meteor.isServer) {
   // });
 }
 
-var timeout_timer;
+let timeout_timer;
 
 /* Meteor methods (server-side function, mostly database work) */
 Meteor.methods({
@@ -154,6 +153,7 @@ Meteor.methods({
           return currentStatus + 1;
         default:
           console.log('No longer incrementing');
+
           return -1;
       }
     } catch (error) {
@@ -163,10 +163,11 @@ Meteor.methods({
 
   'users.addPoints': function({ user_id, session_id, points }) {
     Users.update(
-      { _id: user_id, 
-        'sessionHistory' : { 
+      {
+        _id: user_id,
+        sessionHistory: {
           $elemMatch: {
-            'session': session_id
+            session: session_id
           }
         }
       },
@@ -192,6 +193,7 @@ function createQuestions() {
   if (Questions.find({}).count() != 0) {
     return;
   }
+
   Questions.remove({});
   dbquestions.map(q => {
     Questions.insert({
@@ -328,7 +330,7 @@ Meteor.startup(() => {
       }
 
       // debug flag, useful for styling
-      const debug = true;
+      const debug = false;
 
       // called to end an activity phase
       const endPhase = Meteor.bindEnvironment((activity_id, status) => {
@@ -348,58 +350,60 @@ Meteor.startup(() => {
       if (update.status === 1) {
         console.log('[INDIVIDUAL PHASE]');
         clearTimeout(timeout_timer);
-        timeout_timer = setTimeout(() => endPhase(_id, 2), duration * 1000); 
+        timeout_timer = setTimeout(() => endPhase(_id, 2), duration * 1000);
       }
 
       // team formation
       if (update.status === 2) {
         console.log('[TEAM FORMATION PHASE]');
 
-        questions = Questions.find({}).fetch();
+        const questions = Questions.find({}).fetch();
 
         // get snapshot of participants and activities in session
         const session_id = Activities.findOne(_id).session_id;
         const sess = Sessions.findOne(session_id);
         const participants = sess.participants;
-        // const acts = sess.activities;
+        const acts = sess.activities;
 
         //decide which kind of team formation to undergo
-        // const prevActIndex = acts.indexOf(_id) - 1;
-        // let teams = [];
-        // if (prevActIndex < 0) teams = buildInitialTeams(_id, participants.slice(0), questions);
-        // else teams = buildNewTeams(_id, participants.slice(0), questions);
+        const prevActIndex = acts.indexOf(_id) - 1;
+        let teams = [];
+
+        if (prevActIndex < 0) teams = buildInitialTeams(_id, participants.slice(0), questions);
+        else teams = buildNewTeams(_id, participants.slice(0), questions);
 
         //FIXME: Using python script
-        var options = {
-          args: [session_id, _id, participants.join(',')]
-        }
+        // const options = {
+        //   args: [session_id, _id, participants.join(',')]
+        // };
 
-        const form_teams = Assets.absoluteFilePath('teamFormation/form_teams.py');
+        // const form_teams = Assets.absoluteFilePath('teamFormation/form_teams.py');
 
-        PythonShell.run(form_teams, options, function (err, results) {
-          if (err) throw err;
-          // results is an array consisting of messages collected during execution
-          console.log('results: %j', results);
-        });
+        // PythonShell.run(form_teams, options, function(err, results) {
+        //   if (err) throw err;
+
+        //   // results is an array consisting of messages collected during execution
+        //   console.log('results: %j', results);
+        // });
 
         // start and update activity on database
-        // Activities.update(
-        //   _id,
-        //   {
-        //     $set: {
-        //       'statusStartTimes.teamForm': new Date().getTime(),
-        //       teams,
-        //       allTeamsFound: false
-        //     }
-        //   },
-        //   error => {
-        //     if (!error) {
-        //       console.log('Teams created!');
-        //     } else {
-        //       console.log(error);
-        //     }
-        //   }
-        // );
+        Activities.update(
+          _id,
+          {
+            $set: {
+              'statusStartTimes.teamForm': new Date().getTime(),
+              teams,
+              allTeamsFound: false
+            }
+          },
+          error => {
+            if (!error) {
+              console.log('Teams created!');
+            } else {
+              console.log(error);
+            }
+          }
+        );
       }
 
       // discussion time!
@@ -426,7 +430,7 @@ Meteor.startup(() => {
             }
           });
         }
-        // start next activity! // FIXME: nono 
+        // start next activity! // FIXME: nono
         else {
           Meteor.call('activities.updateStatus', nextActivity._id, (err, res) => {
             if (err) {
