@@ -158,10 +158,10 @@ export default class Mobile extends Component {
                   {title ? (
                     <>{title}</>
                   ) : (
-                    <>
-                      Round {sessionStatus} of {sessionLength}
-                    </>
-                  )}
+                      <>
+                        Round {sessionStatus} of {sessionLength}
+                      </>
+                    )}
                 </div>
               </div>
               <div className="clock">
@@ -179,7 +179,7 @@ export default class Mobile extends Component {
             </Container>
           </>
         )}
-        <div className="content">
+        <div className={hasFooter ? 'content' : 'content-full'}>
           {children}
           <div className={classNames('feedback-msge', feedbackClass)}>{feedbackMsge}</div>
         </div>
