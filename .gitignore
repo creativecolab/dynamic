@@ -4,3 +4,6 @@ dump/
 dump2105/
 backupdb/
 dumpquiz2/
+*.pyc
+pycache
+.vscode

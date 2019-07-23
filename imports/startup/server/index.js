@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Restivus } from 'meteor/nimble:restivus';
+import { PythonShell } from 'python-shell'
 
 import ActivityEnums from '../../enums/activities';
 
@@ -354,8 +355,7 @@ Meteor.startup(() => {
       if (update.status === 2) {
         console.log('[TEAM FORMATION PHASE]');
 
-        // get the questions we need
-        const questions = Questions.find({}).fetch(); // TODO: move this somewhere else
+        questions = Questions.find({}).fetch();
 
         // get snapshot of participants and activities in session
         const session_id = Activities.findOne(_id).session_id;
@@ -363,11 +363,22 @@ Meteor.startup(() => {
         const participants = sess.participants;
         const acts = sess.activities;
 
-        // decide which kind of team formation to undergo
+        //decide which kind of team formation to undergo
         const prevActIndex = acts.indexOf(_id) - 1;
         let teams = [];
         if (prevActIndex < 0) teams = buildInitialTeams(_id, participants.slice(0), questions);
         else teams = buildNewTeams(_id, participants.slice(0), questions);
+
+        // FIXME: Using python script
+        // var options = {
+        //   args: [session_id, _id, participants]
+        // }
+
+        // PythonShell.run('/teamFormation/form_teams.py', options, function (err, results) {
+        //   if (err) throw err;
+        //   // results is an array consisting of messages collected during execution
+        //   console.log('results: %j', results);
+        // });
 
         // start and update activity on database
         Activities.update(

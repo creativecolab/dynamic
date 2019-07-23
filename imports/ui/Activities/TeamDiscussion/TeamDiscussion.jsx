@@ -66,13 +66,14 @@ class TeamDiscussion extends Component {
     // team formation phase
     if (status === ActivityEnums.status.TEAM_FORMATION) {
       // joined after team formation
-      if (!team) return <Waiting text="You have not been assigned a team. Please wait for the next activity." />;
+      if (!team) return <Loading />;
 
       return <TeamFormation team_id={team._id} pid={pid} />;
     }
 
     // team input phase
     if (status === ActivityEnums.status.INPUT_TEAM) {
+      questions = this.shuffle(questions)
       return (
         <>
           <div className="swipe-instr-top">Have group members answer:</div>
@@ -150,25 +151,25 @@ class TeamDiscussion extends Component {
   };
 
   onSlideChange = () => {
-    const { team } = this.props;
+    // const { team } = this.props;
 
-    if (team) {
-      Teams.update(
-        team._id,
-        {
-          $set: {
-            index: this.reactSwipeEl.getPos()
-          }
-        },
-        error => {
-          if (!error) {
-            console.log(this.reactSwipeEl.getPos());
-          } else {
-            console.log(error);
-          }
-        }
-      );
-    }
+    // if (team) {
+    //   Teams.update(
+    //     team._id,
+    //     {
+    //       $set: {
+    //         index: this.reactSwipeEl.getPos()
+    //       }
+    //     },
+    //     error => {
+    //       if (!error) {
+    //         console.log(this.reactSwipeEl.getPos());
+    //       } else {
+    //         console.log(error);
+    //       }
+    //     }
+    //   );
+    // }
 
     const { questions } = this.props;
 
@@ -219,10 +220,10 @@ export default withTracker(({ pid, activity_id }) => {
   let questions = Questions.find().fetch();
   let index = 0;
 
-  if (team) {
-    questions = team.questions;
-    index = team.index;
-  }
+  // if (team) {
+  //   questions = team.questions;
+  //   index = team.index;
+  // }
 
   return { questions, index, team };
 })(TeamDiscussion);
