@@ -37,7 +37,7 @@ export default function OnboardingInstructions() {
         <div className="instr-card-wrapper">
           <PictureContent
             title="3. Participate in group activity"
-            subtitle="Talk to people. The goal is to get to know your potential teammates."
+            subtitle="Talk to people! The goal is to get to know your potential teammates."
             imageSrc="./discussion.png"
           />
         </div>

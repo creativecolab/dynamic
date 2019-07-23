@@ -115,25 +115,28 @@ class TeamFormation extends Component {
     const { shape, color } = team;
 
     if (allConfirmed) {
-      return <PictureContent
-        title={"Introduce yourself!"}
-        hasImage={true}
-        imageSrc={"/intro.jpg"}
-        hasSubtitle={true}
-        subtitle={"Looks like you found everyone. While waiting for other groups to form, introduce yourself to your teammates."}
-      >
-      </PictureContent>
+      return (
+        <PictureContent
+          title="Introduce yourself!"
+          hasImage
+          imageSrc="/intro.jpg"
+          hasSubtitle
+          subtitle="Looks like you found everyone. While waiting for other groups to form, introduce yourself to your teammates."
+        />
+      );
     }
 
-    return <PictureContent
-      title={"Find others with this shape and color"}
-      hasImage={true}
-      imageSrc={`/shapes/${shape}-solid-${color}.jpg`}
-      hasSubtitle={true}
-      subtitle={"Select members found:"}
-    >
-      {this.renderTeammates()}
-    </PictureContent>
+    return (
+      <PictureContent
+        title="Find others with this shape and color"
+        hasImage
+        imageSrc={`/shapes/${shape}-solid-${color}.jpg`}
+        hasSubtitle
+        subtitle="Select members found:"
+      >
+        {this.renderTeammates()}
+      </PictureContent>
+    );
 
     // if (allConfirmed) {
     //   return (

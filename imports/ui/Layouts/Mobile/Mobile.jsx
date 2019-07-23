@@ -179,7 +179,7 @@ export default class Mobile extends Component {
             </Container>
           </>
         )}
-        <div className="content">
+        <div className={hasFooter ? 'content' : 'content-full'}>
           {children}
           <div className={classNames('feedback-msge', feedbackClass)}>{feedbackMsge}</div>
         </div>

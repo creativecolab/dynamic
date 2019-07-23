@@ -8,5 +8,12 @@
     height: 196px;
     padding: 1rem;
   }
+
+  @media screen and (max-height: 470px) {
+    .logo {
+      display: none;
+    }
+  }
+
 }
 

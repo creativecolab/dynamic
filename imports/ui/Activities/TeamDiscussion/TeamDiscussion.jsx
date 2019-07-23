@@ -46,18 +46,8 @@ class TeamDiscussion extends Component {
     };
   }
 
-  shuffle(a) {
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-
-    return a;
-  }
-
   // renders based on activity status
-  renderContent = ({ status, pid, activity_id, questions, team, index }) => {
+  renderContent = ({ status, pid, activity_id, questions, team }) => {
     // individual input phase (none for this activity)
     if (status === ActivityEnums.status.INPUT_INDV) {
       return 'Indvidual input';
@@ -66,7 +56,7 @@ class TeamDiscussion extends Component {
     // team formation phase
     if (status === ActivityEnums.status.TEAM_FORMATION) {
       // joined after team formation
-      if (!team) return <Waiting text="You have not been assigned a team. Please wait for the next activity." />;
+      if (!team) return <Loading />;
 
       return <TeamFormation team_id={team._id} pid={pid} />;
     }
@@ -85,7 +75,7 @@ class TeamDiscussion extends Component {
           <div className="slider-main">
             <ReactSwipe
               className="carousel"
-              swipeOptions={{ continuous: true, callback: this.onSlideChange, startSlide: index }}
+              swipeOptions={{ continuous: true, callback: this.onSlideChange }}
               ref={el => (this.reactSwipeEl = el)}
             >
               {questions.map((q, index) => {
@@ -150,25 +140,25 @@ class TeamDiscussion extends Component {
   };
 
   onSlideChange = () => {
-    const { team } = this.props;
+    // const { team } = this.props;
 
-    if (team) {
-      Teams.update(
-        team._id,
-        {
-          $set: {
-            index: this.reactSwipeEl.getPos()
-          }
-        },
-        error => {
-          if (!error) {
-            console.log(this.reactSwipeEl.getPos());
-          } else {
-            console.log(error);
-          }
-        }
-      );
-    }
+    // if (team) {
+    //   Teams.update(
+    //     team._id,
+    //     {
+    //       $set: {
+    //         index: this.reactSwipeEl.getPos()
+    //       }
+    //     },
+    //     error => {
+    //       if (!error) {
+    //         console.log(this.reactSwipeEl.getPos());
+    //       } else {
+    //         console.log(error);
+    //       }
+    //     }
+    //   );
+    // }
 
     const { questions } = this.props;
 
@@ -215,14 +205,25 @@ export default withTracker(({ pid, activity_id }) => {
     { sort: { teamCreated: -1 } }
   );
 
+  const shuffle = a => {
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+
+    return a;
+  };
+
   // get all the quesitons
-  let questions = Questions.find().fetch();
-  let index = 0;
+  const questions = Questions.find({}).fetch();
 
-  if (team) {
-    questions = team.questions;
-    index = team.index;
-  }
+  if (questions) shuffle(questions);
 
-  return { questions, index, team };
+  // if (team) {
+  //   questions = team.questions;
+  //   index = team.index;
+  // }
+
+  return { questions, team };
 })(TeamDiscussion);
