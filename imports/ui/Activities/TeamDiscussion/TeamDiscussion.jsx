@@ -56,9 +56,12 @@ class TeamDiscussion extends Component {
     // team formation phase
     if (status === ActivityEnums.status.TEAM_FORMATION) {
       // joined after team formation
-      if (!team) return <Loading />;
+      if (!team) {
+        console.log("No team!>?")
+        return <Loading />;
+      }
 
-      return <TeamFormation team_id={team._id} pid={pid} />;
+      return <TeamFormation team_id={(team._id)} pid={pid} />;
     }
 
     // team input phase
@@ -106,7 +109,7 @@ class TeamDiscussion extends Component {
         // joined after team formation
         if (!team) return <Waiting text="You have not been assigned a team. Please wait for the next activity." />;
 
-        return <TeammateSliders team_id={team._id} pid={pid} handleChosen={this.handleChooseTeammate} />;
+        return <TeammateSliders team_id={(team._id)} pid={pid} handleChosen={this.handleChooseTeammate} />;
       }
     }
 
@@ -169,7 +172,7 @@ class TeamDiscussion extends Component {
     const { questions, team } = this.props;
     const { displayTeam } = this.state;
 
-    if (!questions) return <Loading />;
+    if (!questions) return <Loading />
 
     const { progress, sessionLength, statusStartTime, duration } = this.props;
 
@@ -202,8 +205,14 @@ export default withTracker(({ pid, activity_id }) => {
       },
       activity_id
     },
-    { sort: { teamCreated: -1 } }
+    { sort: { teamCreated: -1 } },
+    error => {
+      if (error) console.log(error);
+      else console.log('Team Found!');
+    }
   );
+
+
 
   const shuffle = a => {
     for (let i = a.length - 1; i > 0; i--) {

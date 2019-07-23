@@ -12,10 +12,11 @@ NUM_PARTICIPANTS = 62
 
 #first round, just group people up. Gonna be a 2D numpy array if NUM_PARTICIPANTS is a multiple of 3, gonne be a list of arrays otherwise
 def firstRoundGroups(participants):
+    np.random.shuffle(participants)
     if (participants.size % MAX_TEAM_SIZE == 0):
         return np.reshape(participants, (int(participants.size/MAX_TEAM_SIZE), MAX_TEAM_SIZE))
-    if (participants.size <= MAX_TEAM_SIZE):
-        return (np.array(participants))
+    if (participants.size == 5): # evil number
+        return (np.array([participants[:3], participants[3:]]))
     return np.array(np.array_split(participants, participants.size/MAX_TEAM_SIZE))
 
 # produce unique groups by simply choosing people that each person hasn't worked with before
@@ -43,6 +44,8 @@ def brute_force_unique_groups(participants, teamHistory):
         
     # list of where to add the leftover people
     add_positions = []
+
+    pprint.pprint(new_groups)
     
     # handle cases where groups are not even
     while ungrouped.size > 0:
@@ -53,9 +56,8 @@ def brute_force_unique_groups(participants, teamHistory):
         
         # rank the most compatible teams for this leftover person and choose the best one
         teams_ranked = tfh.optimalTeamQueue(leftover_person, new_groups, add_positions, teamHistory)
-        print(teams_ranked)
+        # pprint.pprint(teams_ranked)        
         best_ranked_team = pq.heappop(teams_ranked)
-        # print(best_ranked_team)        
         best_team = np.array(best_ranked_team[1].split(','))
         
         # find where to add the leftover people

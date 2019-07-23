@@ -8,13 +8,14 @@ import Button from '../../../Components/Button/Button';
 import Loading from '../../../Components/Loading/Loading';
 import './TeamFormation.scss';
 import PictureContent from '../../../Components/PictureContent/PictureContent';
+import teams from '../../../../api/teams';
 
 class TeamFormation extends Component {
   static propTypes = {
     pid: PropTypes.string.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
     team: PropTypes.object,
-    team_id: PropTypes.string.isRequired,
+    team_id: PropTypes.object.isRequired, //ObjectId
     confirmed: PropTypes.bool.isRequired,
     allConfirmed: PropTypes.bool.isRequired
   };
@@ -166,7 +167,7 @@ class TeamFormation extends Component {
 }
 
 export default withTracker(props => {
-  const team = Teams.findOne(props.team_id);
+  const team = Teams.findOne({ "_id": props.team_id });
   let confirmed = false;
   let allConfirmed = false;
 
