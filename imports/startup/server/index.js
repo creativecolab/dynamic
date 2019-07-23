@@ -369,8 +369,9 @@ Meteor.startup(() => {
         const prevActIndex = acts.indexOf(_id) - 1;
         let teams = [];
 
-        if (prevActIndex < 0) teams = buildInitialTeams(_id, participants.slice(0), questions);
-        else teams = buildNewTeams(_id, participants.slice(0), questions);
+        teams = buildInitialTeams(_id, participants.slice(0), questions);
+        // if (prevActIndex < 0) teams = buildInitialTeams(_id, participants.slice(0), questions);
+        // else teams = buildNewTeams(_id, participants.slice(0), questions);
 
         //FIXME: Using python script
         // const options = {
