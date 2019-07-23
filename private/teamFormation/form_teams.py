@@ -75,24 +75,24 @@ def main(args):
     teams = db['teams']
     inserted_teams = teams.insert_many(teams_to_insert)
     team_ids = inserted_teams.inserted_ids
-    pprint.pprint(team_ids)
 
     # update the teamHistory for each of the users
     users = db['dynamic-users']
     for idx, team_id in enumerate(team_ids):
         team_ids[idx] = str(team_id)
-        for member in next_teams[idx]: # because the number of team_ids == the number of teams
-            users.update_one({
-                "pid": member
-            },{
-                "$push": {
-                    "teamHistory": {
-                        "team": str(team_id),
-                        "activity_id": act_id
-                    }
+        print(next_teams[idx])
+        users.update_one({
+            "pid": next_teams[idx]
+        },{
+            "$push": {
+                "teamHistory": {
+                    "team": team_ids[idx],
+                    "activity_id": act_id
                 }
-            })
+            }
+        })
 
+    pprint.pprint(team_ids)
     # update the activity collection to have these teams saved
     db['activities'].update_one({
             '_id': act_id
