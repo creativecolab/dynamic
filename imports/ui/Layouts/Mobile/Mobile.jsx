@@ -106,6 +106,18 @@ export default class Mobile extends Component {
     });
   }
 
+  componentDidUpdate(prevProps) {
+    const { team } = this.props;
+
+    if (!team || !prevProps.team) return;
+
+    if (prevProps.team._id !== team._id) {
+      this.setState({
+        teamOpen: false
+      });
+    }
+  }
+
   openTeam() {
     const { teamOpen } = this.state;
     const { team } = this.props;
