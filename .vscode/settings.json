@@ -6,4 +6,5 @@
   "eslint.autoFixOnSave": true,
   "editor.tabSize": 2,
   "eslint.alwaysShowStatus": true,
+  "python.formatting.provider": "black",
 }
