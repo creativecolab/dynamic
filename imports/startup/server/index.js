@@ -361,43 +361,45 @@ Meteor.startup(() => {
         const session_id = Activities.findOne(_id).session_id;
         const sess = Sessions.findOne(session_id);
         const participants = sess.participants;
-        const acts = sess.activities;
+        // const acts = sess.activities;
 
         //decide which kind of team formation to undergo
-        const prevActIndex = acts.indexOf(_id) - 1;
-        let teams = [];
-        if (prevActIndex < 0) teams = buildInitialTeams(_id, participants.slice(0), questions);
-        else teams = buildNewTeams(_id, participants.slice(0), questions);
+        // const prevActIndex = acts.indexOf(_id) - 1;
+        // let teams = [];
+        // if (prevActIndex < 0) teams = buildInitialTeams(_id, participants.slice(0), questions);
+        // else teams = buildNewTeams(_id, participants.slice(0), questions);
 
-        // FIXME: Using python script
-        // var options = {
-        //   args: [session_id, _id, participants]
-        // }
+        //FIXME: Using python script
+        var options = {
+          args: [session_id, _id, participants.join(',')]
+        }
 
-        // PythonShell.run('/teamFormation/form_teams.py', options, function (err, results) {
-        //   if (err) throw err;
-        //   // results is an array consisting of messages collected during execution
-        //   console.log('results: %j', results);
-        // });
+        const form_teams = Assets.absoluteFilePath('teamFormation/form_teams.py');
+
+        PythonShell.run(form_teams, options, function (err, results) {
+          if (err) throw err;
+          // results is an array consisting of messages collected during execution
+          console.log('results: %j', results);
+        });
 
         // start and update activity on database
-        Activities.update(
-          _id,
-          {
-            $set: {
-              'statusStartTimes.teamForm': new Date().getTime(),
-              teams,
-              allTeamsFound: false
-            }
-          },
-          error => {
-            if (!error) {
-              console.log('Teams created!');
-            } else {
-              console.log(error);
-            }
-          }
-        );
+        // Activities.update(
+        //   _id,
+        //   {
+        //     $set: {
+        //       'statusStartTimes.teamForm': new Date().getTime(),
+        //       teams,
+        //       allTeamsFound: false
+        //     }
+        //   },
+        //   error => {
+        //     if (!error) {
+        //       console.log('Teams created!');
+        //     } else {
+        //       console.log(error);
+        //     }
+        //   }
+        // );
       }
 
       // discussion time!
