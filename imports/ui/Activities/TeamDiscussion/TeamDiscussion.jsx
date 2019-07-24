@@ -126,7 +126,13 @@ class TeamDiscussion extends Component {
             className="swipe-instr-top"
             style={{ textAlign: 'center', fontSize: '0.8em', color: '#808080cc', margin: 0 }}
           >
-            Swipe to see more questions.
+            <strong>Swipe</strong> to see more questions
+            {team && (
+              <>
+                <br />
+                <strong>Share</strong> favorites with group
+              </>
+            )}
           </div>
           <div className="slider-main">
             <ReactSwipe
@@ -139,9 +145,11 @@ class TeamDiscussion extends Component {
                   <div className="question-card-wrapper" key={q._id}>
                     <div className="question-card">
                       {index + 1}. {q.prompt}
-                      <div onClick={() => this.handleShare()} className="suggest-question-tag">
-                        Share
-                      </div>
+                      {team && (
+                        <div onClick={() => this.handleShare()} className="suggest-question-tag">
+                          Share
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
@@ -156,13 +164,16 @@ class TeamDiscussion extends Component {
             </button>
 
             <Message className="pose-msge" pose={this.state.shared ? 'visible' : 'hidden'}>
-              Shared!
+              Shared with group!
             </Message>
-            <Message className="pose-msge" pose={this.state.sharedBy ? 'visible' : 'hidden'}>
-              <strong>{this.getName(team.shared)}</strong>
-              <br />
-              shared this question!
-            </Message>
+
+            {team && (
+              <Message className="pose-msge" pose={this.state.sharedBy ? 'visible' : 'hidden'}>
+                <strong>{this.getName(team.shared)}</strong>
+                <br />
+                shared this question!
+              </Message>
+            )}
           </div>
         </>
       );
@@ -186,7 +197,9 @@ class TeamDiscussion extends Component {
 
     if (
       prevProps.team &&
+      team &&
       prevProps.team.shared &&
+      team.shared &&
       team.shared.index !== prevProps.team.shared.index &&
       team.shared.by !== pid
     ) {
