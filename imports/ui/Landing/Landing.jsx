@@ -245,7 +245,7 @@ export default class Landing extends Component {
             invalid={invalidName}
             invalidMsg="Not a valid name!"
             label="What is your name?"
-            placeholder="King Triton"
+            placeholder="Jane Doe"
           />
           <TextInput
             name="pid"
@@ -255,7 +255,7 @@ export default class Landing extends Component {
             invalid={invalidPID}
             invalidMsg="Not a valid username!"
             label="What do you want your username to be?"
-            placeholder="theking"
+            placeholder="jdoe"
           />
           {/* <Tags
             label="What time is your section?"
