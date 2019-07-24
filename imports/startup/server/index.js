@@ -369,23 +369,23 @@ Meteor.startup(() => {
         //const prevActIndex = acts.indexOf(_id) - 1;
         let teams = [];
 
-        //teams = buildInitialTeams(_id, participants.slice(0), questions);
+        teams = buildInitialTeams(_id, participants.slice(0), questions);
         // if (prevActIndex < 0) teams = buildInitialTeams(_id, participants.slice(0), questions);
         // else teams = buildNewTeams(_id, participants.slice(0), questions);
 
         //FIXME: Using python script
-        const options = {
-          args: [session_id, _id, participants.join(',')]
-        };
+        // const options = {
+        //   args: [session_id, _id, participants.join(',')]
+        // };
 
-        const form_teams = Assets.absoluteFilePath('teamFormation/form_teams.py');
+        // const form_teams = Assets.absoluteFilePath('teamFormation/form_teams.py');
 
-        PythonShell.run(form_teams, options, function(err, results) {
-          if (err) throw err;
+        // PythonShell.run(form_teams, options, function(err, results) {
+        //   if (err) throw err;
 
-          // results is an array consisting of messages collected during execution
-          console.log('results: %j', results);
-        });
+        //   // results is an array consisting of messages collected during execution
+        //   console.log('results: %j', results);
+        // });
 
         // start and update activity on database
         Activities.update(

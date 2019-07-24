@@ -15,7 +15,8 @@ class TeamFormation extends Component {
     pid: PropTypes.string.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
     team: PropTypes.object,
-    team_id: PropTypes.object.isRequired, //ObjectId
+    // team_id: PropTypes.object.isRequired, //ObjectId
+    team_id: PropTypes.string.isRequired,
     confirmed: PropTypes.bool.isRequired,
     allConfirmed: PropTypes.bool.isRequired
   };

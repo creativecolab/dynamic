@@ -18,7 +18,8 @@ import PictureContent from '../../../Components/PictureContent/PictureContent';
 export default class TeammateSliders extends Component {
   static propTypes = {
     pid: PropTypes.string.isRequired,
-    team_id: PropTypes.object.isRequired, //ObjectId
+    // team_id: PropTypes.object.isRequired, //ObjectId
+    team_id: PropTypes.string.isRequired,
     handleChosen: PropTypes.func
   };
 
