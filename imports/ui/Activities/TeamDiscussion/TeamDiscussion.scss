@@ -39,10 +39,40 @@
   // display: flex;
 }
 
+.pose-msge {
+  position: absolute;
+  width: 90%;
+  bottom: 2vh;
+  text-align: center;
+  z-index: -1;
+}
+
 .question-card {
   margin: 1em 0.9em;
   padding: 1em;
   border: 2px solid $dynamic-black;
   border-radius: 5px;
+  position: relative;
+    display: flex;
+    flex-direction: column;
+
+    .suggest-question-tag {
+      border: 2px solid black;
+      margin-top: 0.5em;
+      /* color: white; */
+      width: fit-content;
+      padding: 0.2em;
+      border-radius: 5px;
+      /* bottom: -1em; */
+      /* right: -1em; */
+      font-weight: 600;
+      align-self: flex-end;
+    }
+
+    .suggest-question-tag:active {
+background: red;
+    }
+
+
 }
 

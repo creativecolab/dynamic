@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Restivus } from 'meteor/nimble:restivus';
-import { PythonShell } from 'python-shell';
+// import { PythonShell } from 'python-shell';
 
 import ActivityEnums from '../../enums/activities';
 

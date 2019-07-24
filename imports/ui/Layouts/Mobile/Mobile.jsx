@@ -112,9 +112,18 @@ export default class Mobile extends Component {
     if (!team || !prevProps.team) return;
 
     if (prevProps.team._id !== team._id) {
-      this.setState({
-        teamOpen: false
-      });
+      this.setState(
+        {
+          teamOpen: true
+        },
+        () => {
+          setTimeout(() => {
+            this.setState({
+              teamOpen: false
+            });
+          }, 500);
+        }
+      );
     }
   }
 
@@ -180,7 +189,10 @@ export default class Mobile extends Component {
                 {hasTimer && <Clock big startTime={clockStartTime} totalTime={clockDuration} />}
               </div>
             </nav>
-            <Container className="teammate-container" pose={teamOpen ? 'open' : 'closed'}>
+            <Container
+              className={teamOpen ? 'teammate-container open' : 'teammate-container closed'}
+              pose={teamOpen ? 'open' : 'closed'}
+            >
               {names.map(name => (
                 <Slot className="teammate-slot" pose={teamOpen ? 'visible' : 'hidden'} key={name}>
                   <Textfit max={24} mode="single" forceSingleModeWidth={false}>

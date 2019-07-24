@@ -120,9 +120,7 @@ class TeamFormation extends Component {
       return (
         <PictureContent
           title="Introduce yourself!"
-          hasImage
           imageSrc="/intro.jpg"
-          hasSubtitle
           subtitle="Looks like you found everyone. While waiting for other groups to form, introduce yourself to your teammates."
         />
       );
@@ -131,10 +129,8 @@ class TeamFormation extends Component {
     return (
       <PictureContent
         title="Find others with this shape and color"
-        hasImage
         imageSrc={`/shapes/${shape}-solid-${color}.jpg`}
-        hasSubtitle
-        subtitle="Select members found:"
+        subtitle={confirmed ? '' : 'Select members found:'}
       >
         {this.renderTeammates()}
       </PictureContent>
@@ -168,7 +164,7 @@ class TeamFormation extends Component {
 }
 
 export default withTracker(props => {
-  const team = Teams.findOne({ "_id": props.team_id });
+  const team = Teams.findOne({ _id: props.team_id });
   let confirmed = false;
   let allConfirmed = false;
 

@@ -77,7 +77,6 @@
     // padding-top: 0.5em;
     position: fixed;
     width: 100%;
-    z-index: 1;
 
     .teammate-slot {
       background: $dynamic-light-gray;
@@ -88,6 +87,14 @@
       padding: 3vw;
     }
 
+  }
+
+  .open {
+    z-index: 1;
+  }
+
+  .closed {
+    z-index: -1;
   }
 
   .content {
