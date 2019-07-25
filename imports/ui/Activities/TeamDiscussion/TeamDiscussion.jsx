@@ -323,10 +323,11 @@ export default withTracker(({ pid, activity_id }) => {
 
   // if (questions) shuffle(questions);
 
-  // if (team) {
-  //   questions = team.questions;
-  //   index = team.index;
-  // }
+  if (team) {
+    const { members, shared } = team;
+
+    return { questions, team, members, shared };
+  }
 
   return { questions, team };
 })(TeamDiscussion);
