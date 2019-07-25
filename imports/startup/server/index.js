@@ -467,7 +467,7 @@ Meteor.startup(() => {
             Teams.insert({
               activity_id: _id,
               teamCreated: new Date().getTime(),
-              members: teams[i].map(pid => ({ pid, confirmed: false })),
+              members: teams[i].map(pid => ({ pid, userNumber: Math.floor(Math.random() * 9) + 1 })),
               color: colored_shapes[i].color,
               shape: colored_shapes[i].shape,
               teamNumber: teams.length,
@@ -482,7 +482,7 @@ Meteor.startup(() => {
               $push: {
                 teamHistory: {
                   team: team_ids[i],
-                  teamNumber: Math.floor(Math.random() * 9) + 1, // for the sum game
+                  //teamNumber: Math.floor(Math.random() * 9) + 1, // for the sum game
                   activity_id: _id
                 }
               },
