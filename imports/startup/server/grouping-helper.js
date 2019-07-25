@@ -53,6 +53,7 @@ export function firstRoundTeams(participants) {
   let addIndex = 0;
   while (ungrouped.length > 0) {
     teams[addIndex].push(ungrouped.pop());
+    addIndex++;
   } 
 
   console.log(teams);
