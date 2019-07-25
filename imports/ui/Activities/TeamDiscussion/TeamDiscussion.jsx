@@ -127,12 +127,12 @@ class TeamDiscussion extends Component {
             style={{ textAlign: 'center', fontSize: '0.8em', color: '#808080cc', margin: 0 }}
           >
             <strong>Swipe</strong> to see more questions
-            {team && (
+            {/* {team && (
               <>
                 <br />
                 <strong>Share</strong> favorites with group
               </>
-            )}
+            )} */}
           </div>
           <div className="slider-main">
             <ReactSwipe
@@ -145,11 +145,11 @@ class TeamDiscussion extends Component {
                   <div className="question-card-wrapper" key={q._id}>
                     <div className="question-card">
                       {index + 1}. {q.prompt}
-                      {team && (
+                      {/* {team && (
                         <div onClick={() => this.handleShare()} className="suggest-question-tag">
                           Share
                         </div>
-                      )}
+                      )} */}
                     </div>
                   </div>
                 );
@@ -322,6 +322,7 @@ export default withTracker(({ pid, activity_id }) => {
   const questions = Questions.find({}).fetch();
 
   // if (questions) shuffle(questions);
+  // const numQuestions = questions.length;
 
   if (team) {
     const { members, shared } = team;

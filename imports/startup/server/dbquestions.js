@@ -1,5 +1,6 @@
 const dbquestions = [
   'Share what you did this summer.',
+  'Maya is a 5th grader with ADHD. She has difficulty controlling her fidgeting and hyperactivity while in class. What solutions might you design to help with this problem?',
   'Where do you see yourself five years in the future?',
   'If you could travel anywhere in the world, where would you travel?',
   'What is the last movie you watched and would you recommend it?',
