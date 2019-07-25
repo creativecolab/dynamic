@@ -47,12 +47,12 @@ def main(args):
     participants = np.array(sys.argv[3].split(','))
 
     # connect to the database, get the necessary collections
-    client = MongoClient(
-        'mongodb://python:python3@ds059634.mlab.com:59634/heroku_wv2vnn66'
-    )  # TODO: hide these credentials
-    db = client.heroku_wv2vnn66
-    # client = MongoClient('mongodb://127.0.0.1:3001/meteor')
-    # db = client.meteor
+    # client = MongoClient(
+    #     'mongodb://python:python3@ds059634.mlab.com:59634/heroku_wv2vnn66'
+    # )  # TODO: hide these credentials
+    # db = client.heroku_wv2vnn66
+    client = MongoClient('mongodb://127.0.0.1:3001/meteor')
+    db = client.meteor
 
     # set up the colored shapes for the teams collection insertion
     colored_shapes = []

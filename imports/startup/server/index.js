@@ -14,7 +14,7 @@ import Responses from '../../api/responses';
 
 import dbquestions from './dbquestions';
 import './register-api';
-import { buildInitialTeams, buildNewTeams } from './grouping-helper.js';
+import { formTeams } from './team-former.js';
 
 function getPreference() {
   const session = Sessions.findOne({ code: 'quiz2' });
@@ -206,6 +206,30 @@ function createQuestions() {
   });
 }
 
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+
+  return a;
+}
+
+// set up the colors that the teams will use
+function buildColoredShapes(colored_shapes) {
+  const shapes = shuffle(['circle', 'plus', 'moon', 'square', 'star', 'heart', 'triangle']);
+  const shapeColors = shuffle(['blue', 'purple', 'green', 'yellow', 'red']);
+
+  for (let i = 0; i < shapes.length; i++) {
+    for (let j = 0; j < shapeColors.length; j++) {
+      colored_shapes.push({ shape: shapes[i], color: shapeColors[j] });
+    }
+  }
+
+  shuffle(colored_shapes);
+}
+
 /* Meteor start-up function, called once server starts */
 Meteor.startup(() => {
   // updateRoster();
@@ -363,17 +387,58 @@ Meteor.startup(() => {
         const session_id = Activities.findOne(_id).session_id;
         const sess = Sessions.findOne(session_id);
         const participants = sess.participants;
-        const acts = sess.activities;
+    
 
-        //decide which kind of team formation to undergo
-        //const prevActIndex = acts.indexOf(_id) - 1;
+        // decide which kind of team formation to undergo
+        const acts = sess.activities;
+        const prevActIndex = acts.indexOf(_id) - 1;
+        var teamFormStart = new Date();
         let teams = [];
 
-        teams = buildInitialTeams(_id, participants.slice(0), questions);
+        // get the teamHistory from Sessions
+        //const teamHistory = sess.teamHistory;
+        const teamHistory = {}
+        let colored_shapes = []
+
+        // Stable team-building??
+        buildColoredShapes(colored_shapes);
+        teams = formTeams(participants.slice(0), prevActIndex, teamHistory);
+
+        let team_ids = []
+        for (let i = 0; i < teams.length; i++) {
+          team_ids.push(Teams.insert({
+            activity_id: _id,
+            teamCreated: new Date().getTime(),
+            members: teams[i].map((pid) => ({ pid: pid, confirmed: false })),
+            color: colored_shapes[i].color,
+            shape: colored_shapes[i].shape,
+            teamNumber: teams.length,
+            responses: [],
+          }));
+          for (let j = 0; j < teams[i].length; j++) {
+            Users.update({
+              "pid": teams[i][j]
+            }, {
+              $push: {
+                teamHistory: {
+                  team: team_ids[i],
+                  teamNumber: i, // the oldest team saved is 2 teams ago
+                  teamPosition: j,
+                  activity_id: _id
+                }
+              }
+            }
+            )
+          }
+        }
+        
+
+        // Unstable team-building?
         // if (prevActIndex < 0) teams = buildInitialTeams(_id, participants.slice(0), questions);
         // else teams = buildNewTeams(_id, participants.slice(0), questions);
 
         //FIXME: Using python script
+        // var python_start = new Date();
         // const options = {
         //   args: [session_id, _id, participants.join(',')]
         // };
@@ -384,16 +449,18 @@ Meteor.startup(() => {
         //   if (err) throw err;
 
         //   // results is an array consisting of messages collected during execution
+        //   console.log(new Date() - python_start);
         //   console.log('results: %j', results);
         // });
 
-        // start and update activity on database
+
+        //start and update activity on database
         Activities.update(
           _id,
           {
             $set: {
               'statusStartTimes.teamForm': new Date().getTime(),
-              teams,
+              team_ids,
               allTeamsFound: false
             }
           },
@@ -403,6 +470,8 @@ Meteor.startup(() => {
             } else {
               console.log(error);
             }
+          }, () => {
+            console.log(new Date() - teamFormStart);
           }
         );
       }
