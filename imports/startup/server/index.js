@@ -190,18 +190,23 @@ Meteor.methods({
 });
 
 function createQuestions() {
-  if (Questions.find({}).count() != 0) {
+  if (Questions.find({}).count() !== 0) {
     return;
   }
 
+  let round = 0;
+
   Questions.remove({});
-  dbquestions.map(q => {
+  dbquestions.map((q, index) => {
+    if (index % 10 === 0) round += 1;
+
     Questions.insert({
       prompt: q,
       default: true,
       createdTime: new Date().getTime(),
       viewedTimer: 0,
-      selectedCount: 0
+      selectedCount: 0,
+      round
     });
   });
 }
@@ -387,51 +392,55 @@ Meteor.startup(() => {
         const session_id = Activities.findOne(_id).session_id;
         const sess = Sessions.findOne(session_id);
         const participants = sess.participants;
-    
 
         // decide which kind of team formation to undergo
         const acts = sess.activities;
         const prevActIndex = acts.indexOf(_id) - 1;
-        var teamFormStart = new Date();
+        const teamFormStart = new Date();
         let teams = [];
 
         // get the teamHistory from Sessions
         //const teamHistory = sess.teamHistory;
-        const teamHistory = {}
-        let colored_shapes = []
+        const teamHistory = {};
+        const colored_shapes = [];
 
         // Stable team-building??
         buildColoredShapes(colored_shapes);
         teams = formTeams(participants.slice(0), prevActIndex, teamHistory);
 
-        let team_ids = []
+        const team_ids = [];
+
         for (let i = 0; i < teams.length; i++) {
-          team_ids.push(Teams.insert({
-            activity_id: _id,
-            teamCreated: new Date().getTime(),
-            members: teams[i].map((pid) => ({ pid: pid, confirmed: false })),
-            color: colored_shapes[i].color,
-            shape: colored_shapes[i].shape,
-            teamNumber: teams.length,
-            responses: [],
-          }));
+          team_ids.push(
+            Teams.insert({
+              activity_id: _id,
+              teamCreated: new Date().getTime(),
+              members: teams[i].map(pid => ({ pid, confirmed: false })),
+              color: colored_shapes[i].color,
+              shape: colored_shapes[i].shape,
+              teamNumber: teams.length,
+              responses: []
+            })
+          );
+
           for (let j = 0; j < teams[i].length; j++) {
-            Users.update({
-              "pid": teams[i][j]
-            }, {
-              $push: {
-                teamHistory: {
-                  team: team_ids[i],
-                  teamNumber: i, // the oldest team saved is 2 teams ago
-                  teamPosition: j,
-                  activity_id: _id
+            Users.update(
+              {
+                pid: teams[i][j]
+              },
+              {
+                $push: {
+                  teamHistory: {
+                    team: team_ids[i],
+                    teamNumber: i, // the oldest team saved is 2 teams ago
+                    teamPosition: j,
+                    activity_id: _id
+                  }
                 }
               }
-            }
-            )
+            );
           }
         }
-        
 
         // Unstable team-building?
         // if (prevActIndex < 0) teams = buildInitialTeams(_id, participants.slice(0), questions);
@@ -453,7 +462,6 @@ Meteor.startup(() => {
         //   console.log('results: %j', results);
         // });
 
-
         //start and update activity on database
         Activities.update(
           _id,
@@ -470,7 +478,8 @@ Meteor.startup(() => {
             } else {
               console.log(error);
             }
-          }, () => {
+          },
+          () => {
             console.log(new Date() - teamFormStart);
           }
         );

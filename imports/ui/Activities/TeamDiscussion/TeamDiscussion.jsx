@@ -294,7 +294,7 @@ class TeamDiscussion extends Component {
   }
 }
 
-export default withTracker(({ pid, activity_id }) => {
+export default withTracker(({ pid, activity_id, progress }) => {
   // get the team that this user is in for this activity
   const team = Teams.findOne(
     {
@@ -319,7 +319,7 @@ export default withTracker(({ pid, activity_id }) => {
   };
 
   // get all the quesitons
-  const questions = Questions.find({}).fetch();
+  const questions = Questions.find({ round: progress }).fetch();
 
   // if (questions) shuffle(questions);
   // const numQuestions = questions.length;
