@@ -114,7 +114,7 @@ class TeamDiscussion extends Component {
         return <Loading />;
       }
 
-      return <TeamFormation team_id={team._id} pid={pid} />;
+      return <TeamFormation pid={pid} {...team} />;
     }
 
     // team input phase
@@ -283,7 +283,7 @@ class TeamDiscussion extends Component {
         sessionLength={sessionLength}
         clockDuration={duration}
         clockStartTime={statusStartTime}
-        team={team}
+        {...team}
         displayTeam={displayTeam}
         hasTimer
         hasFooter={false}
@@ -308,21 +308,8 @@ export default withTracker(({ pid, activity_id }) => {
     { sort: { teamCreated: -1 } }
   );
 
-  const shuffle = a => {
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-
-    return a;
-  };
-
   // get all the quesitons
   const questions = Questions.find({}).fetch();
-
-  // if (questions) shuffle(questions);
-  // const numQuestions = questions.length;
 
   if (team) {
     const { members, shared } = team;

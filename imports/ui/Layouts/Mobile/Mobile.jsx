@@ -62,7 +62,11 @@ export default class Mobile extends Component {
     hasTimer: PropTypes.bool,
     title: PropTypes.string,
     displayTeam: PropTypes.bool,
-    team: PropTypes.object,
+    // team: PropTypes.object,
+    _id: PropTypes.string,
+    members: PropTypes.array,
+    color: PropTypes.string,
+    shape: PropTypes.string,
     buttonAction: PropTypes.func,
     buttonTxt: PropTypes.string,
     activityName: PropTypes.string,
@@ -107,11 +111,11 @@ export default class Mobile extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { team } = this.props;
+    const team_id = this.props._id;
 
-    if (!team || !prevProps.team) return;
+    if (!team_id || !prevProps.team) return;
 
-    if (prevProps.team._id !== team._id) {
+    if (prevProps.team_id !== team_id) {
       this.setState(
         {
           teamOpen: true
@@ -129,9 +133,9 @@ export default class Mobile extends Component {
 
   openTeam() {
     const { teamOpen } = this.state;
-    const { team } = this.props;
+    const team_id = this.props._id;
 
-    if (!team) return;
+    if (!team_id) return;
 
     if (teamOpen) {
       this.setState({
@@ -152,14 +156,15 @@ export default class Mobile extends Component {
     const { title, sessionStatus, sessionLength } = this.props;
     const { buttonTxt, buttonAction } = this.props;
     const { feedbackMsge, feedbackClass } = this.props;
-    const { clockStartTime, clockDuration, displayTeam, team } = this.props;
+    const { clockStartTime, clockDuration, displayTeam, members, shape, color } = this.props;
     const { hasFooter, hasNavbar, hasTimer } = this.props;
     const { children, footerText } = this.props;
     const { loading, teamOpen } = this.state;
+    const team_id = this.props._id
 
     let names = [];
 
-    if (displayTeam && team) names = this.getTeammateNames(team.members);
+    if (displayTeam && team_id) names = this.getTeammateNames(members);
 
     return (
       <div className="mobile-main">
@@ -167,9 +172,9 @@ export default class Mobile extends Component {
           <>
             <nav className="navbar">
               <div onClick={() => this.openTeam()} className="nav-team-shape">
-                {displayTeam && team && (
+                {displayTeam && team_id && (
                   <>
-                    <img src={`/shapes/${team.shape}-solid-${team.color}-small.png`} alt="" />
+                    <img src={`/shapes/${shape}-solid-${color}-small.png`} alt="" />
                     {teamOpen ? <span>&#9650;</span> : <span>&#9660;</span>}
                   </>
                 )}
@@ -179,10 +184,10 @@ export default class Mobile extends Component {
                   {title ? (
                     <>{title}</>
                   ) : (
-                    <>
-                      Round {sessionStatus} of {sessionLength}
-                    </>
-                  )}
+                      <>
+                        Round {sessionStatus} of {sessionLength}
+                      </>
+                    )}
                 </div>
               </div>
               <div className="clock">

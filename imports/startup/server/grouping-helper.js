@@ -76,7 +76,7 @@ export function buildNewTeams(participants, session_id) {
   var ungrouped = participants.slice(0);
 
   // obtain the teamHistory of this session
-  var teamHistory = Sessions.findOne({session_id}).teamHistory;
+  var teamHistory = Sessions.findOne(session_id).teamHistory;
 
 
   // build floor(num_participants / MAX_TEAM_SIZE) teams
