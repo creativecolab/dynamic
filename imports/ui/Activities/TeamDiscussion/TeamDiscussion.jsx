@@ -315,6 +315,8 @@ export default withTracker(({ pid, activity_id, progress }) => {
     const { members, shared } = team;
 
     return { questions, team, members, shared };
+
+    // Users.find({pid}).teamHistory[].teamNumber
   }
 
   return { questions, team };
