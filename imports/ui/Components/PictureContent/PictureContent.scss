@@ -8,6 +8,9 @@
   align-self: center;
   // margin: 1em 0.5em;
   overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
   .pic-title {
     font-size: 7vw;
