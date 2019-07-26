@@ -95,7 +95,7 @@ class TeamFormation extends Component {
     return (
       <PictureContent
         fitTitle
-        title="Find teammates with this shape and color"
+        title="Find those with this shape and color"
         imageSrc={`/shapes/${shape}-solid-${color}.jpg`}
       >
         <div className="member-list">
@@ -103,13 +103,10 @@ class TeamFormation extends Component {
             <div>{this.getNameFromPid(m.pid)}</div>
           ))}
         </div>
-        <div>
+        <div className="user-number">
           You have <b>{myNum}</b> orange{myNum === 1 ? '' : 's'}.
         </div>
         <Textfit mode="single">How many oranges does your team have?</Textfit>
-        <div className="team-instruct" />
-
-        {/*<div className="sum-input-flex">*/}
         <TextInput
           className="text-sum"
           name="enter-team-number"
@@ -122,10 +119,7 @@ class TeamFormation extends Component {
           placeholder="Sum of oranges"
           hasButton
         />
-        {/* <Button size="small" onClick={() => this.handleSubmit(sum)}>
-          Enter
-        </Button> */}
-        {/*</div>*/}
+
       </PictureContent>
     );
 
