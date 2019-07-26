@@ -119,6 +119,18 @@ class TeamDiscussion extends Component {
 
     // team input phase
     if (status === ActivityEnums.status.INPUT_TEAM) {
+      if (questions.length === 0) {
+        console.log('No questions?');
+
+        return <Loading />;
+      }
+      if (questions.length != 10) {
+        console.log('Not enough questions?');
+        console.log(questions)
+
+        return <Loading />;
+      }
+      console.log(questions)
       return (
         <>
           <div className="swipe-instr-top">Choose questions to discuss as a group</div>
@@ -183,7 +195,7 @@ class TeamDiscussion extends Component {
     if (status === ActivityEnums.status.ASSESSMENT) {
       if (!this.state.choseTeammate) {
         // joined after team formation
-        if (!team) return <Waiting text="You have not been assigned a team. Please wait for the next activity." />;
+        if (!team) { console.log("No team"); console.log(team); return <Waiting text="You have not been assigned a team. Please wait for the next activity." />; }
 
         return <TeammateSliders team_id={team._id} pid={pid} handleChosen={this.handleChooseTeammate} />;
       }
@@ -272,7 +284,7 @@ class TeamDiscussion extends Component {
     const { questions, team } = this.props;
     const { displayTeam } = this.state;
 
-    if (!questions) return <Loading />;
+    if (questions.length === 0) return <Loading />;
 
     const { progress, sessionLength, statusStartTime, duration } = this.props;
 
@@ -310,14 +322,6 @@ export default withTracker(({ pid, activity_id, progress }) => {
 
   // get all the quesitons
   const questions = Questions.find({ round: progress }).fetch();
-
-  // if (team) {
-  //   const { members, shared } = team;
-
-  //   return { questions, team, members, shared };
-
-  // Users.find({pid}).teamHistory[].teamNumber
-  // }
 
   return { questions, team };
 })(TeamDiscussion);
