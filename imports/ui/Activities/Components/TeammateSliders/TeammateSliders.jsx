@@ -93,15 +93,15 @@ export default class TeammateSliders extends Component {
   getLabel(value) {
     switch (value) {
       case 0:
-        return 'Not at all!';
+        return 'Not well at all';
       case 1:
-        return 'Not well';
+        return 'Slightly well';
       case 2:
-        return 'Neutral';
+        return 'Moderately well';
       case 3:
-        return 'Well';
+        return 'Very well';
       case 4:
-        return 'Very well!';
+        return 'Extremely well';
     }
   }
 
