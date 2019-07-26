@@ -26,6 +26,7 @@ export default class TextInput extends Component {
   };
 
   handleSubmit(evt) {
+    // evt.preventDefault();
     const { onSubmit } = this.props;
 
     if (evt.key === 'Enter') onSubmit();
@@ -55,7 +56,7 @@ export default class TextInput extends Component {
                 Go!
               </Button>
             )}
-            {invalid && <span className="input-message">{invalidMsg}</span>}
+            {/* {invalid && <span className="input-message">{invalidMsg}</span>} */}
           </div>
         </label>
       </div>

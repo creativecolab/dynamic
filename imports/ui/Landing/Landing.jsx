@@ -64,9 +64,7 @@ export default class Landing extends Component {
   };
 
   // once the user enters the session code, try go to that session's page
-  handleCodeSubmission = evt => {
-    evt.preventDefault();
-
+  handleCodeSubmission = () => {
     // eslint-disable-next-line react/destructuring-assignment
     const code = this.state.code.toLowerCase();
 
@@ -117,7 +115,7 @@ export default class Landing extends Component {
 
   // TODO: maybe -- use localStorage to suggest login
   handleLogin = evt => {
-    evt.preventDefault();
+    // evt.preventDefault();
 
     const { name } = this.state;
 
@@ -188,16 +186,24 @@ export default class Landing extends Component {
           },
           () => {
             if (session.status === SessionEnums.status.ACTIVE) {
-              console.log("your mom");
-              Meteor.call('sessions.updateTeamHistory_LateJoinees', session.participants, pid, session.teamHistory, session._id, (err, res) => {
-                if (err) {
-                  alert(err);
-                } else {
-                  // success!
-                  console.log('\nSuccessfully joined late. ' + res);
+              console.log('your mom');
+              Meteor.call(
+                'sessions.updateTeamHistory_LateJoinees',
+                session.participants,
+                pid,
+                session.teamHistory,
+                session._id,
+                (err, res) => {
+                  if (err) {
+                    alert(err);
+                  } else {
+                    // success!
+                    console.log('\nSuccessfully joined late. ' + res);
+                  }
                 }
-              });
+              );
             }
+
             this.setState({
               ready: true
             });
@@ -234,16 +240,24 @@ export default class Landing extends Component {
         },
         () => {
           if (session.status === SessionEnums.status.ACTIVE) {
-            console.log("your mom");
-            Meteor.call('sessions.updateTeamHistory_LateJoinees', session.participants, pid, session.teamHistory, session._id, (err, res) => {
-              if (err) {
-                alert(err);
-              } else {
-                // success!
-                console.log('\nSuccessfully joined late. ' + res);
+            console.log('your mom');
+            Meteor.call(
+              'sessions.updateTeamHistory_LateJoinees',
+              session.participants,
+              pid,
+              session.teamHistory,
+              session._id,
+              (err, res) => {
+                if (err) {
+                  alert(err);
+                } else {
+                  // success!
+                  console.log('\nSuccessfully joined late. ' + res);
+                }
               }
-            });
+            );
           }
+
           this.setState({
             ready: true
           });
