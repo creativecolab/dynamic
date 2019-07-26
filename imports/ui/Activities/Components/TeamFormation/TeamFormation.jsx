@@ -104,13 +104,17 @@ class TeamFormation extends Component {
         title="Find teammates with this shape and color"
         imageSrc={`/shapes/${shape}-solid-${color}.jpg`}
       >
-        <div />
-        <div className="team-instruct">
-          You have <b>{myNum}</b> oranges.
-          <br />
-          How many oranges does your team have?
+        <div className="member-list">
+          {this.state.teammates.map(m => (<div>
+            {this.getNameFromPid(m.pid)}</div>))}
         </div>
-        <Textfit mode="single">Find you teammates and enter the sum:</Textfit>
+        {myNum === 1 ? <div>You have <b>{myNum}</b> orange.</div> :
+          <div>You have <b>{myNum}</b> oranges.</div>}
+        <Textfit mode="single">How many oranges does your team have?</Textfit>
+        <div className="team-instruct">
+
+        </div>
+
         {/*<div className="sum-input-flex">*/}
         <TextInput
           className="text-sum"
@@ -121,11 +125,11 @@ class TeamFormation extends Component {
           invalid={invalid}
           label=""
           invalidMsg="Incorrect sum. Try again!"
-          placeholder="Sum of oranges"
+          placeholder="Enter total"
         />
-        <Button size="small" onClick={() => this.handleSubmit(sum)}>
+        {/* <Button size="small" onClick={() => this.handleSubmit(sum)}>
           Enter
-        </Button>
+        </Button> */}
         {/*</div>*/}
       </PictureContent>
     );
