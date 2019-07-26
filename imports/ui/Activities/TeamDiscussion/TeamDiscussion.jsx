@@ -98,6 +98,23 @@ class TeamDiscussion extends Component {
     );
   };
 
+  // check if we're ready to go
+  shouldComponentUpdate(nextProps) {
+    const { questions } = nextProps;
+    if (questions.length === 0) {
+      console.log('No questions?');
+
+      return false;
+    }
+    if (questions.length != 10) {
+      console.log('Not enough questions?');
+      console.log(questions)
+
+      return false;
+    }
+    return true;
+  }
+
   // renders based on activity status
   renderContent = ({ status, pid, questions, team }) => {
     // individual input phase (none for this activity)
@@ -119,17 +136,17 @@ class TeamDiscussion extends Component {
 
     // team input phase
     if (status === ActivityEnums.status.INPUT_TEAM) {
-      if (questions.length === 0) {
-        console.log('No questions?');
+      // if (questions.length === 0) {
+      //   console.log('No questions?');
 
-        return <Loading />;
-      }
-      if (questions.length != 10) {
-        console.log('Not enough questions?');
-        console.log(questions)
+      //   return <Loading />;
+      // }
+      // if (questions.length != 10) {
+      //   console.log('Not enough questions?');
+      //   console.log(questions)
 
-        return <Loading />;
-      }
+      //   return <Loading />;
+      // }
       console.log(questions)
       return (
         <>
