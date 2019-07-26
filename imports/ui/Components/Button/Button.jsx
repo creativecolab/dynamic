@@ -26,6 +26,7 @@ export default class Button extends Component {
     if (size === 'small') className += ' btn-small';
     else if (size === 'large') className += ' btn-large';
     else if (size === 'tags') className += ' btn-tags';
+    else if (size === 'same-line') className += ' btn-same-line';
 
     className += active ? ' btn-active' : '';
     className += disabled ? ' btn-disabled' : '';

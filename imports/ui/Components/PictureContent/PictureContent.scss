@@ -10,7 +10,8 @@
   overflow-y: scroll;
 
   .pic-title {
-    font-size: 8vw;
+
+    font-size: 7vw;
     font-weight: 600;
     text-align: center;
   }
@@ -33,10 +34,10 @@
   .pic-image {
     // background: red;
     margin: 1em 0;
-    padding: 5%;
+    //padding: 3%;
     object-fit: cover;
-    max-width: 80vw;
-    max-height: 50%;
+    max-width: 70vw;
+    max-height: 55%;
  }
 }
 

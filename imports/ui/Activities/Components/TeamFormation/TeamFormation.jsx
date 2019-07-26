@@ -8,18 +8,16 @@ import Button from '../../../Components/Button/Button';
 import Loading from '../../../Components/Loading/Loading';
 import './TeamFormation.scss';
 import PictureContent from '../../../Components/PictureContent/PictureContent';
-import teams from '../../../../api/teams';
+import TextInput from '../../../Components/TextInput/TextInput';
 
 class TeamFormation extends Component {
   static propTypes = {
     pid: PropTypes.string.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
-    members: PropTypes.array.isRequired,
-    _id: PropTypes.string.isRequired,
-    // team_id: PropTypes.object.isRequired, //ObjectId
-    // team_id: PropTypes.string.isRequired,
-    confirmed: PropTypes.bool,
-    allConfirmed: PropTypes.bool
+    team: PropTypes.object,
+    team_id: PropTypes.string.isRequired,
+    confirmed: PropTypes.bool.isRequired,
+    allConfirmed: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -37,7 +35,11 @@ class TeamFormation extends Component {
     this.state = {
       teammates: members
         .filter(member => member.pid !== pid)
-        .map(member => ({ pid: member.pid, confirmed: false }))
+        .map(member => ({ pid: member.pid, confirmed: false })),
+      sum: '',
+      invalidSum: false,
+      ready: false,
+      sumSubmitted: false
     };
   }
 
@@ -105,7 +107,8 @@ class TeamFormation extends Component {
   }
 
   render() {
-    const { members, shape, color, confirmed, allConfirmed } = this.props;
+    const { handleSum, handleSubmit, sum, invalid } = this.props;
+    const { team, confirmed, allConfirmed } = this.props;
 
     if (!members) return <Loading />;
 
@@ -123,13 +126,40 @@ class TeamFormation extends Component {
 
     return (
       <PictureContent
+        fitTitle
         title="Find others with this shape and color"
         imageSrc={`/shapes/${shape}-solid-${color}.jpg`}
-        subtitle={confirmed ? '' : 'Select members found:'}
+      //lowSubtitle="How many oranges does your team have in total?"
       >
-        {this.renderTeammates()}
+        <div>You have <b>3</b> oranges </div>
+        <div className="team-instruct">How many oranges total in your team?</div>
+        {/*<div className="sum-input-flex">*/}
+        <TextInput className="text-sum"
+          name="enter-team-number"
+          onSubmit={handleSubmit}
+          onChange={handleSum}
+          value={sum}
+          invalid={invalid}
+          label=''
+          invalidMsg="Incorrect sum. Try again!"
+          placeholder=" # oranges"
+        />
+        <Button size="small">Enter</Button>
+        {/*</div>*/}
       </PictureContent>
     );
+
+    // return (
+    //   <PictureContent
+    //     title="Find others with this shape and color"
+    //     hasImage
+    //     imageSrc={`/shapes/${shape}-solid-${color}.jpg`}
+    //     hasSubtitle
+    //     subtitle="Select members found:"
+    //   >
+    //     {this.renderTeammates()}
+    //   </PictureContent>
+    // );
 
     // if (allConfirmed) {
     //   return (

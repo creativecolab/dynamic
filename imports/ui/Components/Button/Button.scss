@@ -33,6 +33,10 @@
   background: $dynamic-yellow;
 }
 
+.btn-same-line {
+  margin-left: 0.5vw;
+}
+
 .btn:active:not(.btn-disabled) {
   box-shadow: $button-shadow-active;
   .btn-badge {
