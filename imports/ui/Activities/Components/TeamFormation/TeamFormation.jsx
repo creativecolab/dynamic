@@ -98,13 +98,17 @@ class TeamFormation extends Component {
         title="Find teammates with this shape and color"
         imageSrc={`/shapes/${shape}-solid-${color}.jpg`}
       >
-        <div />
-        <div className="team-instruct">
-          You have <b>{myNum}</b> oranges.
-          <br />
-          How many oranges does your team have?
+        <div className="member-list">
+          {this.state.teammates.map(m => (
+            <div>{this.getNameFromPid(m.pid)}</div>
+          ))}
         </div>
-        <Textfit mode="single">Find you teammates and enter the sum:</Textfit>
+        <div>
+          You have <b>{myNum}</b> orange{myNum === 1 ? '' : 's'}.
+        </div>
+        <Textfit mode="single">How many oranges does your team have?</Textfit>
+        <div className="team-instruct" />
+
         {/*<div className="sum-input-flex">*/}
         <TextInput
           className="text-sum"
