@@ -86,7 +86,7 @@ export default class SharedDisplay extends Component {
           teamPhase: 0,
           peerAssessment: 0
         },
-        teams: [],
+        team_ids: [],
         allTeamsFound: false,
         endTime: 0
       });
