@@ -19,5 +19,31 @@
     min-width: 100px;
   }
 
+
+  // .sum-input {
+  //   background-color: black;
+  //   margin: 2vh;
+  //   display: flex;
+  // }
 }
+
+.team-instruct {
+  color: grey;
+  font-size: 6vw;
+  //text-align: left;
+}
+
+.sum-input-flex {
+  display: flex;
+  flex-direction: row;
+
+  > div {
+    margin: 0;
+  }
+
+  div > label > div > input {
+    width: auto;
+  }
+}
+
 

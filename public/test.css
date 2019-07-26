@@ -7,13 +7,15 @@ body, html {
   margin: 0;
   width: 100%;
   height: 100%;
+  font-family: "arial";
 }
 
 .mobile {
   height: 100%;
+  min-height: 200px;
   width: 100%;
   color: white;
-  background: black;
+  background: white;
   user-select: none;
   position: relative;
 }
@@ -22,9 +24,54 @@ body, html {
   width: 100%;
   height: 70%;
   display: flex;
+  flex-direction: column;
 }
 
-.pic {
+.instructions {
+  font-weight: 600;
+  padding: 5vh;
+  font-size: 3.5vh;
+  text-align: center;
+  color: black;
+}
+
+.img {
+  display: flex;
+}
+
+.img img{
+  align-self: center;
+  max-height: 70vh;
+  max-width: 70vw;
+  margin: auto;
+  padding: 3vh;
+}
+
+.instructions-bottom-grey {
+  color:grey;
+  font-size: 3vh;
+  padding-left: 10vw;
+  padding-top: 5vh;
+  padding-bottom: 2vh;
+}
+
+.instructions-bottom {
+  color:black;
+  font-size: 3.5vh;
+  padding-left: 10vw;
+  padding-right: 10vw;
+}
+
+nav {
+  background: black;
+  font-weight: 600;
+  text-align: center;
+  padding: 3vw;
+  min-height: 15px;
+  font-size: 9vw;
+}
+
+/* .pic {
   height: 50px;
   width: 50px;
   line-height: 50px;
@@ -32,9 +79,9 @@ body, html {
   text-align: center;
   background: blue;
   position: relative;
-}
+} */
 
-.pic span {
+/* .pic span {
   background: yellow;
   color: black;
   line-height: initial;
@@ -43,9 +90,4 @@ body, html {
   width: 1em;
   right: -0.5em;
   top: -0.5em;
-}
-
-nav {
-  height: 30%;
-  background: red;
-}
+} */
