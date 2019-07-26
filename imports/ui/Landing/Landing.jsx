@@ -12,6 +12,8 @@ import TextInput from '../Components/TextInput/TextInput';
 
 import '../assets/_main.scss';
 import './Landing.scss';
+import SessionEnd from '../SessionProgress/Components/SessionEnd';
+import SessionEnums from '../../enums/sessions';
 
 export default class Landing extends Component {
   constructor(props) {
@@ -185,6 +187,17 @@ export default class Landing extends Component {
             }
           },
           () => {
+            if (session.status === SessionEnums.status.ACTIVE) {
+              console.log("your mom");
+              Meteor.call('sessions.updateTeamHistory_LateJoinees', session.participants, pid, session.teamHistory, session._id, (err, res) => {
+                if (err) {
+                  alert(err);
+                } else {
+                  // success!
+                  console.log('\nSuccessfully joined late. ' + res);
+                }
+              });
+            }
             this.setState({
               ready: true
             });
@@ -220,6 +233,17 @@ export default class Landing extends Component {
           }
         },
         () => {
+          if (session.status === SessionEnums.status.ACTIVE) {
+            console.log("your mom");
+            Meteor.call('sessions.updateTeamHistory_LateJoinees', session.participants, pid, session.teamHistory, session._id, (err, res) => {
+              if (err) {
+                alert(err);
+              } else {
+                // success!
+                console.log('\nSuccessfully joined late. ' + res);
+              }
+            });
+          }
           this.setState({
             ready: true
           });
@@ -245,7 +269,7 @@ export default class Landing extends Component {
             invalid={invalidName}
             invalidMsg="Not a valid name!"
             label="What is your name?"
-            placeholder="King Triton"
+            placeholder="Jane Doe"
           />
           <TextInput
             name="pid"
@@ -255,7 +279,7 @@ export default class Landing extends Component {
             invalid={invalidPID}
             invalidMsg="Not a valid username!"
             label="What do you want your username to be?"
-            placeholder="theking"
+            placeholder="jdoe"
           />
           {/* <Tags
             label="What time is your section?"

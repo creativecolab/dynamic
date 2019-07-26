@@ -18,6 +18,7 @@ import PictureContent from '../../../Components/PictureContent/PictureContent';
 export default class TeammateSliders extends Component {
   static propTypes = {
     pid: PropTypes.string.isRequired,
+    // team_id: PropTypes.object.isRequired, //ObjectId
     team_id: PropTypes.string.isRequired,
     handleChosen: PropTypes.func
   };
@@ -163,7 +164,7 @@ export default class TeammateSliders extends Component {
     return (
       <>
         <div className="end-main">
-          <div className="slider-instructions">Rate how likely you are to work with these members again:</div>
+          <div className="slider-instructions">How likely are you to choose these people to be in a team with you?</div>
           <div>{this.renderOptions()}</div>
         </div>
         <Button onClick={this.handleVote}>Submit</Button>

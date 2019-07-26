@@ -19,7 +19,7 @@ function shuffle(a) {
   Produce the teams for the first round. Should be random, with a goal of teams of 3.
   Will return an array of arrays, with each internal array have pids representing a team
  */
-export function firstRoundTeams(participants) {
+function firstRoundTeams(participants) {
 
   // shake them up
   shuffle(participants);
@@ -63,10 +63,10 @@ export function firstRoundTeams(participants) {
 }
 
 // builds teams for subsequent rounds of team formation (where duplicates are avoided)
-export function buildNewTeams(participants, session_id) {
+function buildNewTeams(participants, teamHistory) {
 
   // edge case, when num_participants < 6, can't guarantee uniqueness so just make random
-  if (participants.length < 6) return buildInitialTeams(participants);
+  if (participants.length < 6) return firstRoundTeams(participants);
 
   // shake 'em up
   shuffle(participants);
@@ -74,10 +74,6 @@ export function buildNewTeams(participants, session_id) {
   // list to hold all of our teams and one to keep track of grouped people
   let teams = [];
   var ungrouped = participants.slice(0);
-
-  // obtain the teamHistory of this session
-  var teamHistory = Sessions.findOne(session_id).teamHistory;
-
 
   // build floor(num_participants / MAX_TEAM_SIZE) teams
   while (teams.length != Math.floor(participants.length / MAX_TEAM_SIZE)) {
@@ -106,10 +102,12 @@ export function buildNewTeams(participants, session_id) {
       }
       // add the best person that we found
       nextTeam.push(best_wup["person"]);
+      ungrouped = ungrouped.filter((person) => person != best_wup["person"]);
     }
     teams.push(nextTeam);
   }
 
+  console.log(ungrouped);
   // handles uneven groups
   while (ungrouped.length > 0) {
     let leftover_person = ungrouped.pop();
@@ -120,10 +118,13 @@ export function buildNewTeams(participants, session_id) {
     };
     // check each team
     for (let i = 0; i < teams.length; i++) {
+      // stop at teams of size 4
+      if (teams[i].length > MAX_TEAM_SIZE) continue;
+      // gather the weight of this team to see potential fit
       team_match = {
         "team_idx": i,
         "weight": teamHistory[leftover_person][teams[i][0]]
-      };
+      }
       for (let j = 1; j < teams[i].length; j++) {
         team_match["weight"] = team_match["weight"] + teamHistory[leftover_person][teams[i][j]];
       }
@@ -132,10 +133,20 @@ export function buildNewTeams(participants, session_id) {
       }
     }
     // add the ungrouped user to the best-matching team that we found
+    console.log(best_team_match["team_idx"])
     teams[best_team_match["team_idx"]].push(leftover_person);
   } 
 
   console.log(teams);
   // return our completed teams
   return teams;
+}
+
+export function formTeams(participants, prevActIndex, teamHistory) {
+  
+  //return firstRoundTeams(participants);
+
+  // if we're on the first activity, call first teams. Otherwise, build based on teamHistory 
+  if (prevActIndex < 0) return firstRoundTeams(participants);
+  return buildNewTeams(participants, teamHistory)
 }

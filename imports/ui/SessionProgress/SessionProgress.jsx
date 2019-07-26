@@ -33,6 +33,15 @@ class SessionProgress extends Component {
   startSession() {
     if (this.props.session.participants.length < 2) return;
 
+    Meteor.call('sessions.buildTeamHistory', this.props.session.participants, this.props.session._id, (err, res) => {
+      if (err) {
+        alert(err);
+      } else {
+        // success!
+        console.log('\nBuilt the Team History matrix ' + res);
+      }
+    });
+
     Sessions.update(this.props.session._id, {
       $set: {
         status: 1,

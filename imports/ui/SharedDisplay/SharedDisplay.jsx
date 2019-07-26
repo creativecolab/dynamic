@@ -52,6 +52,7 @@ export default class SharedDisplay extends Component {
       {
         code: code.toLowerCase(),
         participants: [],
+        teamHistory: {},
         activities: [],
         status: SessionEnums.status.READY,
         creationTime: new Date().getTime(),
@@ -67,7 +68,7 @@ export default class SharedDisplay extends Component {
     // create 3 default activities
     const activities = [];
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 6; i++) {
       const activity_id = Activities.insert({
         name: ActivityEnums.name.TEAM_DISCUSSION,
         session_id,

@@ -9,7 +9,6 @@ import Loading from '../../../Components/Loading/Loading';
 import './TeamFormation.scss';
 import PictureContent from '../../../Components/PictureContent/PictureContent';
 import TextInput from '../../../Components/TextInput/TextInput';
-import { ENGINE_METHOD_NONE } from 'constants';
 
 class TeamFormation extends Component {
   static propTypes = {
@@ -29,12 +28,12 @@ class TeamFormation extends Component {
     super(props);
 
     // find team in context
-    const team = Teams.findOne(props.team_id);
-    const { pid } = props;
+    //const team = Teams.findOne(props.team_id);
+    const { pid, members } = props;
 
     // state always starts as false
     this.state = {
-      teammates: team.members
+      teammates: members
         .filter(member => member.pid !== pid)
         .map(member => ({ pid: member.pid, confirmed: false })),
       sum: '',
@@ -56,7 +55,7 @@ class TeamFormation extends Component {
       // get index of this user
       let pidIndex = -1;
 
-      this.props.team.members.map((m, index) => {
+      this.props.members.map((m, index) => {
         if (m.pid === this.props.pid) {
           pidIndex = index;
         }
@@ -64,7 +63,7 @@ class TeamFormation extends Component {
 
       // update that index on db
       Teams.update(
-        this.props.team_id,
+        this.props._id,
         {
           $set: {
             [`members.${pidIndex}.confirmed`]: true
@@ -100,12 +99,6 @@ class TeamFormation extends Component {
   renderTeammates() {
     if (this.props.confirmed) return 'Confirmed. Waiting for other groupmates.';
 
-    // return <div className="team-formation-main">this.state.teammates.map(m => (
-    //   <Button key={m.pid} active={m.confirmed} onClick={() => this.handleConfirmed(m.pid)}>
-    //     {this.getNameFromPid(m.pid)}
-    //   </Button>
-    //   ));</div>
-
     return this.state.teammates.map(m => (
       <Button key={m.pid} active={m.confirmed} onClick={() => this.handleConfirmed(m.pid)}>
         {this.getNameFromPid(m.pid)}
@@ -114,20 +107,18 @@ class TeamFormation extends Component {
   }
 
   render() {
-    const { handleSum, handleSubmit, sum, invalid, invalidMsg } = this.props;
+    const { handleSum, handleSubmit, sum, invalid } = this.props;
     const { team, confirmed, allConfirmed } = this.props;
 
-    if (!team) return <Loading />;
+    if (!members) return <Loading />;
 
-    const { shape, color } = team;
+    //const { shape, color } = team;
 
     if (allConfirmed) {
       return (
         <PictureContent
           title="Introduce yourself!"
-          hasImage
           imageSrc="/intro.jpg"
-          hasSubtitle
           subtitle="Looks like you found everyone. While waiting for other groups to form, introduce yourself to your teammates."
         />
       );
@@ -198,19 +189,20 @@ class TeamFormation extends Component {
 }
 
 export default withTracker(props => {
-  const team = Teams.findOne(props.team_id);
+  //const team = Teams.findOne({ _id: props.team_id });
+  const { members } = props
   let confirmed = false;
   let allConfirmed = false;
 
   try {
-    confirmed = team.members.filter(m => m.pid === props.pid)[0].confirmed;
+    confirmed = members.filter(m => m.pid === props.pid)[0].confirmed;
     allConfirmed = true;
-    team.members.forEach(member => {
+    members.forEach(member => {
       if (!member.confirmed) allConfirmed = false;
     });
   } catch (error) {
     console.log(error);
   }
 
-  return { team, confirmed, allConfirmed };
+  return { confirmed, allConfirmed };
 })(TeamFormation);

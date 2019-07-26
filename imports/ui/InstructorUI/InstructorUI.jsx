@@ -51,6 +51,7 @@ class InstructorUI extends Component {
       {
         code: code.toLowerCase(),
         participants: [],
+        teamHistory: {},
         activities: [],
         status: SessionEnums.status.READY,
         creationTime: new Date().getTime(),

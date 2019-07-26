@@ -1,3 +1,6 @@
+// Use flex justify-content: center and flex-wrap: wrap
+// align-content: center
+
 .shape-grid > div {
   display: grid;
   grid-template-columns: auto repeat(5, 1fr);

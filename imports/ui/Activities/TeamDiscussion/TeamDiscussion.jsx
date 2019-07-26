@@ -2,31 +2,48 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
 import ReactSwipe from 'react-swipe';
+import posed from 'react-pose';
 
 import Questions from '../../../api/questions';
 import Teams from '../../../api/teams';
+import Users from '../../../api/users';
 import ActivityEnums from '../../../enums/activities';
 import Mobile from '../../Layouts/Mobile/Mobile';
 
-// import Button from '../../Components/Button/Button';
 import Loading from '../../Components/Loading/Loading';
 import Waiting from '../../Components/Waiting/Waiting';
 import TeamFormation from '../Components/TeamFormation/TeamFormation';
 import TeammateSliders from '../Components/TeammateSliders/TeammateSliders';
-import Clock from '../../Clock/Clock';
 
 import './TeamDiscussion.scss';
-import PictureContent from '../../Components/PictureContent/PictureContent';
+
+const Message = posed.div({
+  hidden: {
+    opacity: 0,
+    transition: { duration: 150 }
+  },
+  visible: {
+    opacity: 1,
+    transition: { duration: 50 }
+  }
+});
 
 class TeamDiscussion extends Component {
   static propTypes = {
     pid: PropTypes.string.isRequired,
+    questions: PropTypes.array,
+    team: PropTypes.object,
     activity_id: PropTypes.string.isRequired, // to handle responses
     status: PropTypes.number.isRequired, // status of this activity
     statusStartTime: PropTypes.number.isRequired, // start time of this status
     sessionLength: PropTypes.number.isRequired, // length of this session in num of activities
     progress: PropTypes.number.isRequired, // (index + 1) of activity in session's [Activity]
     duration: PropTypes.number.isRequired // calculated in parent
+  };
+
+  static defaultProps = {
+    questions: [],
+    team: null
   };
 
   constructor(props) {
@@ -46,8 +63,43 @@ class TeamDiscussion extends Component {
     };
   }
 
+  getName(shared) {
+    if (shared && shared.by) return Users.findOne({ pid: shared.by }).name;
+
+    return '';
+  }
+
+  handleShare = () => {
+    const { team, pid } = this.props;
+    const { sharedBy } = this.state;
+
+    if (sharedBy) return;
+
+    if (!team) return;
+
+    Teams.update(team._id, {
+      $set: {
+        shared: { by: pid, index: this.reactSwipeEl.getPos() }
+      }
+    });
+
+    this.setState(
+      {
+        shared: true
+      },
+      () => {
+        console.log('Sharing question #' + this.reactSwipeEl.getPos());
+        setTimeout(() => {
+          this.setState({
+            shared: false
+          });
+        }, 500);
+      }
+    );
+  };
+
   // renders based on activity status
-  renderContent = ({ status, pid, activity_id, questions, team }) => {
+  renderContent = ({ status, pid, questions, team }) => {
     // individual input phase (none for this activity)
     if (status === ActivityEnums.status.INPUT_INDV) {
       return 'Indvidual input';
@@ -56,21 +108,31 @@ class TeamDiscussion extends Component {
     // team formation phase
     if (status === ActivityEnums.status.TEAM_FORMATION) {
       // joined after team formation
-      if (!team) return <Loading />;
+      if (!team) {
+        console.log('No team!>?');
 
-      return <TeamFormation team_id={team._id} pid={pid} />;
+        return <Loading />;
+      }
+
+      return <TeamFormation pid={pid} {...team} />;
     }
 
     // team input phase
     if (status === ActivityEnums.status.INPUT_TEAM) {
       return (
         <>
-          <div className="swipe-instr-top">Have group members answer:</div>
+          <div className="swipe-instr-top">Choose questions to discuss as a group</div>
           <div
             className="swipe-instr-top"
             style={{ textAlign: 'center', fontSize: '0.8em', color: '#808080cc', margin: 0 }}
           >
-            Swipe to see more questions
+            <strong>Swipe</strong> to see more questions
+            {/* {team && (
+              <>
+                <br />
+                <strong>Share</strong> favorites with group
+              </>
+            )} */}
           </div>
           <div className="slider-main">
             <ReactSwipe
@@ -83,6 +145,11 @@ class TeamDiscussion extends Component {
                   <div className="question-card-wrapper" key={q._id}>
                     <div className="question-card">
                       {index + 1}. {q.prompt}
+                      {/* {team && (
+                        <div onClick={() => this.handleShare()} className="suggest-question-tag">
+                          Share
+                        </div>
+                      )} */}
                     </div>
                   </div>
                 );
@@ -95,6 +162,18 @@ class TeamDiscussion extends Component {
             <button className="next" type="button" onClick={() => this.reactSwipeEl.next()}>
               &rarr;
             </button>
+
+            <Message className="pose-msge" pose={this.state.shared ? 'visible' : 'hidden'}>
+              Shared with group!
+            </Message>
+
+            {team && (
+              <Message className="pose-msge" pose={this.state.sharedBy ? 'visible' : 'hidden'}>
+                <strong>{this.getName(team.shared)}</strong>
+                <br />
+                shared this question!
+              </Message>
+            )}
           </div>
         </>
       );
@@ -114,7 +193,31 @@ class TeamDiscussion extends Component {
   };
 
   componentDidUpdate(prevProps) {
-    const { status } = this.props;
+    const { status, team, pid } = this.props;
+
+    if (
+      prevProps.team &&
+      team &&
+      prevProps.team.shared &&
+      team.shared &&
+      team.shared.index !== prevProps.team.shared.index &&
+      team.shared.by !== pid
+    ) {
+      this.reactSwipeEl.slide(team.shared.index, 300);
+      this.setState(
+        {
+          sharedBy: true
+        },
+        () => {
+          console.log('Sharing question #' + this.reactSwipeEl.getPos());
+          setTimeout(() => {
+            this.setState({
+              sharedBy: false
+            });
+          }, 2000);
+        }
+      );
+    }
 
     if (prevProps.status !== status) {
       this.setState({
@@ -175,12 +278,12 @@ class TeamDiscussion extends Component {
 
     return (
       <Mobile
-        activityName="IceBreakers" //TODO: turn this string into state
+        activityName="IceBreaker" //TODO: turn this string into state
         sessionStatus={progress}
         sessionLength={sessionLength}
         clockDuration={duration}
         clockStartTime={statusStartTime}
-        team={team}
+        {...team}
         displayTeam={displayTeam}
         hasTimer
         hasFooter={false}
@@ -191,7 +294,7 @@ class TeamDiscussion extends Component {
   }
 }
 
-export default withTracker(({ pid, activity_id }) => {
+export default withTracker(({ pid, activity_id, progress }) => {
   // get the team that this user is in for this activity
   const team = Teams.findOne(
     {
@@ -205,25 +308,14 @@ export default withTracker(({ pid, activity_id }) => {
     { sort: { teamCreated: -1 } }
   );
 
-  const shuffle = a => {
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-
-    return a;
-  };
-
   // get all the quesitons
-  const questions = Questions.find({}).fetch();
+  const questions = Questions.find({ round: progress }).fetch();
 
-  if (questions) shuffle(questions);
+  if (team) {
+    const { members, shared } = team;
 
-  // if (team) {
-  //   questions = team.questions;
-  //   index = team.index;
-  // }
+    return { questions, team, members, shared };
+  }
 
   return { questions, team };
 })(TeamDiscussion);

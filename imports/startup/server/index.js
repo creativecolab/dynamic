@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Restivus } from 'meteor/nimble:restivus';
-import { PythonShell } from 'python-shell';
+// import { PythonShell } from 'python-shell';
 
 import ActivityEnums from '../../enums/activities';
 
@@ -14,7 +14,7 @@ import Responses from '../../api/responses';
 
 import dbquestions from './dbquestions';
 import './register-api';
-import { buildInitialTeams, buildNewTeams } from './grouping-helper.js';
+import { formTeams } from './team-former.js';
 
 function getPreference() {
   const session = Sessions.findOne({ code: 'quiz2' });
@@ -94,6 +94,51 @@ let timeout_timer;
 
 /* Meteor methods (server-side function, mostly database work) */
 Meteor.methods({
+
+  'sessions.buildTeamHistory': function(participants, session_id) {
+    teamHistory = {}; 
+    participants.forEach((participant) => {
+      teamHistory[participant] = {};
+      participants.forEach((other_participants) => {
+        if (other_participants != participant) teamHistory[participant][other_participants] = 0;
+      }); 
+    });
+    Sessions.update(session_id, {
+      $set: {
+        teamHistory: teamHistory
+      }
+    });
+  },
+
+  'sessions.updateTeamHistory_TeamFormation': function(teams, teamHistory, session_id) {
+    teams.forEach((team) => {
+      team.forEach((member) => {
+        team.forEach((other_member) => {
+          if (member != other_member) teamHistory[member][other_member] = teamHistory[member][other_member] + 1;
+        });   
+      });
+    });
+    Sessions.update(session_id, {
+      $set: {
+        teamHistory: teamHistory
+      }
+    });
+  },
+
+  'sessions.updateTeamHistory_LateJoinees': function(participants, new_person, teamHistory, session_id) {
+    teamHistory[new_person] = {};
+    participants.forEach((participant) => {
+      if (participant != new_person) teamHistory[participant][new_person] = 0;
+      teamHistory[new_person][participant] = 0;  
+    });
+    Sessions.update(session_id, {
+      $set: {
+        teamHistory: teamHistory
+      }
+    });
+    console.log(teamHistory);
+  },
+
   'activities.updateStatus': function(activity_id) {
     try {
       const activity = Activities.findOne(activity_id);
@@ -190,20 +235,49 @@ Meteor.methods({
 });
 
 function createQuestions() {
-  if (Questions.find({}).count() != 0) {
+  if (Questions.find({}).count() !== 0) {
     return;
   }
 
+  let round = 0;
+
   Questions.remove({});
-  dbquestions.map(q => {
+  dbquestions.map((q, index) => {
+    if (index % 10 === 0) round += 1;
+
     Questions.insert({
       prompt: q,
       default: true,
       createdTime: new Date().getTime(),
       viewedTimer: 0,
-      selectedCount: 0
+      selectedCount: 0,
+      round
     });
   });
+}
+
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+
+  return a;
+}
+
+// set up the colors that the teams will use
+function buildColoredShapes(colored_shapes) {
+  const shapes = shuffle(['circle', 'plus', 'moon', 'square', 'star', 'heart', 'triangle']);
+  const shapeColors = shuffle(['blue', 'purple', 'green', 'yellow', 'red']);
+
+  for (let i = 0; i < shapes.length; i++) {
+    for (let j = 0; j < shapeColors.length; j++) {
+      colored_shapes.push({ shape: shapes[i], color: shapeColors[j] });
+    }
+  }
+
+  shuffle(colored_shapes);
 }
 
 /* Meteor start-up function, called once server starts */
@@ -357,23 +431,68 @@ Meteor.startup(() => {
       if (update.status === 2) {
         console.log('[TEAM FORMATION PHASE]');
 
-        const questions = Questions.find({}).fetch();
-
         // get snapshot of participants and activities in session
         const session_id = Activities.findOne(_id).session_id;
         const sess = Sessions.findOne(session_id);
         const participants = sess.participants;
-        const acts = sess.activities;
 
-        //decide which kind of team formation to undergo
+        // decide which kind of team formation to undergo
+        const acts = sess.activities;
         const prevActIndex = acts.indexOf(_id) - 1;
+        var teamFormStart = new Date();
+
+        // get the teamHistory from Sessions
+        const teamHistory = sess.teamHistory;
+        let colored_shapes = []
         let teams = [];
 
-        teams = buildInitialTeams(_id, participants.slice(0), questions);
-        // if (prevActIndex < 0) teams = buildInitialTeams(_id, participants.slice(0), questions);
-        // else teams = buildNewTeams(_id, participants.slice(0), questions);
+        // Stable team-building??
+        buildColoredShapes(colored_shapes);
+        teams = formTeams(participants.slice(0), prevActIndex, teamHistory);
+
+        // update the teamHistory matrix 
+        Meteor.call('sessions.updateTeamHistory_TeamFormation', teams, sess.teamHistory, session_id, (err, res) => {
+          if (err) {
+            alert(err);
+          } else {
+            // success!
+            console.log('\nUpdated Team History Matrix.');
+          }
+        });   
+
+        // update the database collections
+        let team_ids = []
+        for (let i = 0; i < teams.length; i++) {
+          team_ids.push(
+            Teams.insert({
+              activity_id: _id,
+              teamCreated: new Date().getTime(),
+              members: teams[i].map(pid => ({ pid, userNumber: Math.floor(Math.random() * 9) + 1 })),
+              color: colored_shapes[i].color,
+              shape: colored_shapes[i].shape,
+              teamNumber: teams.length,
+              responses: []
+            })
+          );
+
+          for (let j = 0; j < teams[i].length; j++) {
+            Users.update({
+              "pid": teams[i][j]
+            }, {
+              $push: {
+                teamHistory: {
+                  team: team_ids[i],
+                  //teamNumber: Math.floor(Math.random() * 9) + 1, // for the sum game
+                  activity_id: _id
+                }
+              },
+            }
+            )
+          }
+        }
 
         //FIXME: Using python script
+        // var python_start = new Date();
         // const options = {
         //   args: [session_id, _id, participants.join(',')]
         // };
@@ -384,16 +503,17 @@ Meteor.startup(() => {
         //   if (err) throw err;
 
         //   // results is an array consisting of messages collected during execution
+        //   console.log(new Date() - python_start);
         //   console.log('results: %j', results);
         // });
 
-        // start and update activity on database
+        //start and update activity on database
         Activities.update(
           _id,
           {
             $set: {
               'statusStartTimes.teamForm': new Date().getTime(),
-              teams,
+              team_ids,
               allTeamsFound: false
             }
           },
@@ -403,6 +523,9 @@ Meteor.startup(() => {
             } else {
               console.log(error);
             }
+          },
+          () => {
+            console.log(new Date() - teamFormStart);
           }
         );
       }
