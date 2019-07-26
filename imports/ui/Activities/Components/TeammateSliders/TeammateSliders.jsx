@@ -34,13 +34,13 @@ export default class TeammateSliders extends Component {
 
     if (user) {
       this.props.handleChosen();
-      const teammates = team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 3 }));
+      const teammates = team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 2 }));
 
       this.state = {
         teammates
       };
     } else {
-      const teammates = team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 3 }));
+      const teammates = team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 2 }));
 
       this.state = {
         teammates
@@ -93,19 +93,15 @@ export default class TeammateSliders extends Component {
   getLabel(value) {
     switch (value) {
       case 0:
-        return 'Nope';
+        return 'Not at all!';
       case 1:
-        return 'Unlikely';
+        return 'Not well';
       case 2:
-        return 'Somewhat unlikely';
-      case 3:
         return 'Neutral';
+      case 3:
+        return 'Well';
       case 4:
-        return 'Somewhat likely';
-      case 5:
-        return 'Likely';
-      case 6:
-        return 'Yeah!';
+        return 'Very well!';
     }
   }
 
@@ -123,16 +119,14 @@ export default class TeammateSliders extends Component {
         label: <strong>{this.getLabel(0)}</strong>
       },
       1: {},
-      2: {},
-      3: this.getLabel(3),
-      4: {},
-      5: {},
-      6: {
+      2: this.getLabel(),
+      3: {},
+      4: {
         style: {
           color: '#00DD90'
           // 'font-size': '18px'
         },
-        label: <strong>{this.getLabel(6)}</strong>
+        label: <strong>{this.getLabel(4)}</strong>
       }
     };
 
@@ -148,9 +142,9 @@ export default class TeammateSliders extends Component {
             marks={marks}
             // tooltipVisible
             tipFormatter={this.getLabel}
-            defaultValue={30}
+            // defaultValue={30}
             min={0}
-            max={6}
+            max={4}
             step={1}
             onChange={value => this.handleChange(value, index)}
           />
@@ -164,7 +158,7 @@ export default class TeammateSliders extends Component {
     return (
       <>
         <div className="end-main">
-          <div className="slider-instructions">How likely are you to choose these people to be in a team with you?</div>
+          <div className="slider-instructions">To what extend did you get to know your groupmates?</div>
           <div>{this.renderOptions()}</div>
         </div>
         <Button onClick={this.handleVote}>Submit</Button>

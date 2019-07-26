@@ -22,7 +22,7 @@ export default class TextInput extends Component {
     placeholder: 'Placeholder',
     label: 'Label',
     hasButton: false,
-    onSubmit: () => {}
+    onSubmit: () => { }
   };
 
   handleSubmit(evt) {
@@ -38,7 +38,7 @@ export default class TextInput extends Component {
       <div className="field-container">
         <label className="field-title" htmlFor={name}>
           {label}
-          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', position: 'relative' }}>
             <div className="input-container">
               <input
                 className={'input-text' + (invalid ? ' invalid' : '') + (hasButton ? ' with-btn' : '')}
@@ -49,13 +49,13 @@ export default class TextInput extends Component {
                 onChange={evt => onChange(evt)}
                 onKeyPress={evt => this.handleSubmit(evt)}
               />
-              {invalid && <span className="input-message">{invalidMsg}</span>}
             </div>
             {hasButton && (
               <Button size="input-text" onClick={evt => this.handleSubmit(evt)}>
                 Go!
               </Button>
             )}
+            {invalid && <span className="input-message">{invalidMsg}</span>}
           </div>
         </label>
       </div>

@@ -4,7 +4,7 @@
   min-width: 4em;
   width: 100%;
   max-width: 18em;
-  margin: 0 auto 1em;
+  margin: 0 auto 2em;
 
   .input-container {
     position: relative;
@@ -23,6 +23,7 @@
     text-align: left;
     font-size: 22px;
     width: calc(100% - 2*#{$button-padding});
+    height: calc(100% - 2*#{$button-padding});
   }
 
   .with-btn {
@@ -41,7 +42,9 @@
 
   .invalid {
     color: $dynamic-red;
-    border-bottom: 2px solid $dynamic-red;
+    // border-bottom: 2px solid $dynamic-red;
+    // height: calc(100% - 2*#{$button-padding} - 2px);
+
   }
 
 }
