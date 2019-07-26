@@ -160,7 +160,7 @@ export default class Mobile extends Component {
     const { hasFooter, hasNavbar, hasTimer } = this.props;
     const { children, footerText } = this.props;
     const { loading, teamOpen } = this.state;
-    const team_id = this.props._id
+    const team_id = this.props._id;
 
     let names = [];
 
@@ -184,10 +184,10 @@ export default class Mobile extends Component {
                   {title ? (
                     <>{title}</>
                   ) : (
-                      <>
-                        Round {sessionStatus} of {sessionLength}
-                      </>
-                    )}
+                    <>
+                      Round {sessionStatus} of {sessionLength}
+                    </>
+                  )}
                 </div>
               </div>
               <div className="clock">

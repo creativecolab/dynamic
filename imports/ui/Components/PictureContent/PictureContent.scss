@@ -1,7 +1,7 @@
 @import '../../../ui/assets/main';
 
 .pic-content-main {
-  width: 90vw;
+  width: 100%;
   height: 100%;
   // margin: auto;
   text-align: center;
@@ -10,8 +10,8 @@
   overflow-y: scroll;
 
   .pic-title {
-
     font-size: 7vw;
+    padding: 0 1px; // because of bolding
     font-weight: 600;
     text-align: center;
   }

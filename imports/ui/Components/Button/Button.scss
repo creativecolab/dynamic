@@ -19,6 +19,26 @@
 //   transform: scale(1.3);
 // }
 
+.btn-input-text {
+  border-radius: 0 5px 5px 0;
+  box-shadow: none;
+  text-align: center;
+  margin: 0;
+  margin-top: 0.2em;
+  width: 30%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-transition: background 300ms;
+  transition: background 300ms;
+}
+
+.btn-input-text:active {
+  box-shadow: none!important;
+  background: $dynamic-medium-gray;
+}
+
 .btn-small {
   width: 30%;
 }

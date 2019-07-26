@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './TextInput.scss';
+import Button from '../Button/Button';
 
 export default class TextInput extends Component {
   static propTypes = {
@@ -11,7 +12,8 @@ export default class TextInput extends Component {
     invalid: PropTypes.bool,
     invalidMsg: PropTypes.string,
     onChange: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func
+    onSubmit: PropTypes.func,
+    hasButton: PropTypes.bool
   };
 
   static defaultProps = {
@@ -19,6 +21,7 @@ export default class TextInput extends Component {
     invalidMsg: 'Invalid input',
     placeholder: 'Placeholder',
     label: 'Label',
+    hasButton: false,
     onSubmit: () => {}
   };
 
@@ -29,23 +32,35 @@ export default class TextInput extends Component {
   }
 
   render() {
-    const { name, value, label, placeholder, invalid, invalidMsg, onChange } = this.props;
+    const { name, value, label, placeholder, invalid, invalidMsg, onChange, hasButton } = this.props;
 
     return (
       <div className="field-container">
         <label className="field-title" htmlFor={name}>
           {label}
-          <div className="input-container">
-            <input
-              className={'input-text' + (invalid ? ' invalid' : '')}
-              type="text"
-              name={name}
-              placeholder={placeholder}
-              value={value}
-              onChange={evt => onChange(evt)}
-              onKeyPress={evt => this.handleSubmit(evt)}
-            />
-            {invalid && <span className="input-message">{invalidMsg}</span>}
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+            <div className="input-container">
+              <input
+                className={'input-text' + (invalid ? ' invalid' : '') + (hasButton ? ' with-btn' : '')}
+                type="text"
+                name={name}
+                placeholder={placeholder}
+                value={value}
+                onChange={evt => onChange(evt)}
+                onKeyPress={evt => this.handleSubmit(evt)}
+              />
+              {invalid && <span className="input-message">{invalidMsg}</span>}
+            </div>
+            {hasButton && (
+              <Button
+                size="input-text"
+                onClick={() => {
+                  console.log('Yes!');
+                }}
+              >
+                Go!
+              </Button>
+            )}
           </div>
         </label>
       </div>

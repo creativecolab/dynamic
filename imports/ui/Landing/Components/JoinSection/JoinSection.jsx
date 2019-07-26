@@ -54,7 +54,7 @@ export default class JoinSection extends Component {
     const { handleCode, handleSubmit, code, invalid, invalidMsg } = this.props;
 
     return (
-      <div className="join-section-main">
+      <>
         <Logo className="logo" pose={visible ? 'visible' : 'hidden'}>
           <img src="./favicon-196.png" alt="" />
         </Logo>
@@ -68,7 +68,7 @@ export default class JoinSection extends Component {
           label="Session code"
           placeholder="CODE"
         />
-      </div>
+      </>
     );
   }
 }

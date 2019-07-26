@@ -15,14 +15,8 @@ class TeamFormation extends Component {
   static propTypes = {
     pid: PropTypes.string.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
-    team: PropTypes.object,
-    team_id: PropTypes.string.isRequired,
-    confirmed: PropTypes.bool.isRequired,
-    allConfirmed: PropTypes.bool.isRequired
-  };
-
-  static defaultProps = {
-    team: {}
+    _id: PropTypes.string.isRequired,
+    confirmed: PropTypes.bool.isRequired
   };
 
   constructor(props) {
@@ -122,10 +116,11 @@ class TeamFormation extends Component {
           label=""
           invalidMsg="Incorrect sum. Try again!"
           placeholder="Sum of oranges"
+          hasButton
         />
-        <Button size="small" onClick={() => this.handleSubmit(sum)}>
+        {/* <Button size="small" onClick={() => this.handleSubmit(sum)}>
           Enter
-        </Button>
+        </Button> */}
         {/*</div>*/}
       </PictureContent>
     );
