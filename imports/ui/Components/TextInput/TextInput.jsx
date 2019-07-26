@@ -19,14 +19,14 @@ export default class TextInput extends Component {
     invalidMsg: 'Invalid input',
     placeholder: 'Placeholder',
     label: 'Label',
-    onSubmit: () => { }
+    onSubmit: () => {}
   };
 
   handleSubmit(evt) {
     const { onSubmit } = this.props;
 
     if (evt.key === 'Enter') onSubmit(evt);
-  };
+  }
 
   render() {
     const { name, value, label, placeholder, invalid, invalidMsg, onChange } = this.props;
@@ -51,26 +51,25 @@ export default class TextInput extends Component {
       </div>
     );
   }
-
 }
 
-  // TextInput.propTypes = {
-  //   name: PropTypes.string.isRequired,
-  //   value: PropTypes.string.isRequired,
-  //   label: PropTypes.string,
-  //   placeholder: PropTypes.string,
-  //   invalid: PropTypes.bool,
-  //   invalidMsg: PropTypes.string,
-  //   onChange: PropTypes.func.isRequired,
-  //   onSubmit: PropTypes.func
-  // };
+// TextInput.propTypes = {
+//   name: PropTypes.string.isRequired,
+//   value: PropTypes.string.isRequired,
+//   label: PropTypes.string,
+//   placeholder: PropTypes.string,
+//   invalid: PropTypes.bool,
+//   invalidMsg: PropTypes.string,
+//   onChange: PropTypes.func.isRequired,
+//   onSubmit: PropTypes.func
+// };
 
-  // TextInput.defaultProps = {
-  //   invalid: false,
-  //   invalidMsg: 'Invalid input',
-  //   placeholder: 'Placeholder',
-  //   label: 'Label',
-  //   onSubmit: () => { }
-  // };
+// TextInput.defaultProps = {
+//   invalid: false,
+//   invalidMsg: 'Invalid input',
+//   placeholder: 'Placeholder',
+//   label: 'Label',
+//   onSubmit: () => { }
+// };
 
-  // export default TextInput;
+// export default TextInput;

@@ -94,46 +94,46 @@ let timeout_timer;
 
 /* Meteor methods (server-side function, mostly database work) */
 Meteor.methods({
-
   'sessions.buildTeamHistory': function(participants, session_id) {
-    teamHistory = {}; 
-    participants.forEach((participant) => {
+    teamHistory = {};
+    participants.forEach(participant => {
       teamHistory[participant] = {};
-      participants.forEach((other_participants) => {
+      participants.forEach(other_participants => {
         if (other_participants != participant) teamHistory[participant][other_participants] = 0;
-      }); 
+      });
     });
     Sessions.update(session_id, {
       $set: {
-        teamHistory: teamHistory
+        teamHistory
       }
     });
   },
 
   'sessions.updateTeamHistory_TeamFormation': function(teams, teamHistory, session_id) {
-    teams.forEach((team) => {
-      team.forEach((member) => {
-        team.forEach((other_member) => {
+    teams.forEach(team => {
+      team.forEach(member => {
+        team.forEach(other_member => {
           if (member != other_member) teamHistory[member][other_member] = teamHistory[member][other_member] + 1;
-        });   
+        });
       });
     });
     Sessions.update(session_id, {
       $set: {
-        teamHistory: teamHistory
+        teamHistory
       }
     });
   },
 
   'sessions.updateTeamHistory_LateJoinees': function(participants, new_person, teamHistory, session_id) {
     teamHistory[new_person] = {};
-    participants.forEach((participant) => {
+    participants.forEach(participant => {
       if (participant != new_person) teamHistory[participant][new_person] = 0;
-      teamHistory[new_person][participant] = 0;  
+
+      teamHistory[new_person][participant] = 0;
     });
     Sessions.update(session_id, {
       $set: {
-        teamHistory: teamHistory
+        teamHistory
       }
     });
     console.log(teamHistory);
@@ -325,25 +325,25 @@ Meteor.startup(() => {
   Teams.find({}).observeChanges({
     changed(_id, update) {
       // set team formation time
-      if (update.members) {
+      if (update.confirmed) {
         // if all confirmed, set team formation time
-        if (update.members.map(x => x.confirmed).reduce((res, x) => res && x)) {
-          const team = Teams.findOne(_id);
-          const activity = Activities.findOne(team.activity_id);
+        // if (update.members.map(x => x.confirmed).reduce((res, x) => res && x)) {
+        const team = Teams.findOne(_id);
+        const activity = Activities.findOne(team.activity_id);
 
-          Teams.update(team._id, {
-            $set: {
-              teamFormationTime: new Date().getTime() - activity.statusStartTimes.indvPhase
-            }
-          });
-        }
+        Teams.update(team._id, {
+          $set: {
+            teamFormationTime: new Date().getTime() - activity.statusStartTimes.indvPhase
+          }
+        });
+        // }
       }
 
       // get current activity in context
       const activity_id = Teams.findOne(_id).activity_id;
 
       // get number of teams that have not confirmed yet
-      const num_not_confirmed = Teams.find({ activity_id, 'members.confirmed': false }).count();
+      const num_not_confirmed = Teams.find({ activity_id, confirmed: false }).count();
 
       console.log(num_not_confirmed + " teams haven't confirmed yet.");
 
@@ -439,18 +439,18 @@ Meteor.startup(() => {
         // decide which kind of team formation to undergo
         const acts = sess.activities;
         const prevActIndex = acts.indexOf(_id) - 1;
-        var teamFormStart = new Date();
+        const teamFormStart = new Date();
 
         // get the teamHistory from Sessions
         const teamHistory = sess.teamHistory;
-        let colored_shapes = []
+        const colored_shapes = [];
         let teams = [];
 
         // Stable team-building??
         buildColoredShapes(colored_shapes);
         teams = formTeams(participants.slice(0), prevActIndex, teamHistory);
 
-        // update the teamHistory matrix 
+        // update the teamHistory matrix
         Meteor.call('sessions.updateTeamHistory_TeamFormation', teams, sess.teamHistory, session_id, (err, res) => {
           if (err) {
             alert(err);
@@ -458,10 +458,11 @@ Meteor.startup(() => {
             // success!
             console.log('\nUpdated Team History Matrix.');
           }
-        });   
+        });
 
         // update the database collections
-        let team_ids = []
+        const team_ids = [];
+
         for (let i = 0; i < teams.length; i++) {
           team_ids.push(
             Teams.insert({
@@ -471,23 +472,26 @@ Meteor.startup(() => {
               color: colored_shapes[i].color,
               shape: colored_shapes[i].shape,
               teamNumber: teams.length,
+              confirmed: false,
               responses: []
             })
           );
 
           for (let j = 0; j < teams[i].length; j++) {
-            Users.update({
-              "pid": teams[i][j]
-            }, {
-              $push: {
-                teamHistory: {
-                  team: team_ids[i],
-                  //teamNumber: Math.floor(Math.random() * 9) + 1, // for the sum game
-                  activity_id: _id
-                }
+            Users.update(
+              {
+                pid: teams[i][j]
               },
-            }
-            )
+              {
+                $push: {
+                  teamHistory: {
+                    team: team_ids[i],
+                    //teamNumber: Math.floor(Math.random() * 9) + 1, // for the sum game
+                    activity_id: _id
+                  }
+                }
+              }
+            );
           }
         }
 

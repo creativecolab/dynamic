@@ -9,6 +9,7 @@ import Loading from '../../../Components/Loading/Loading';
 import './TeamFormation.scss';
 import PictureContent from '../../../Components/PictureContent/PictureContent';
 import TextInput from '../../../Components/TextInput/TextInput';
+import { Textfit } from 'react-textfit';
 
 class TeamFormation extends Component {
   static propTypes = {
@@ -17,7 +18,7 @@ class TeamFormation extends Component {
     team: PropTypes.object,
     team_id: PropTypes.string.isRequired,
     confirmed: PropTypes.bool.isRequired,
-    allConfirmed: PropTypes.bool.isRequired,
+    allConfirmed: PropTypes.bool.isRequired
   };
 
   static defaultProps = {
@@ -33,67 +34,15 @@ class TeamFormation extends Component {
 
     // state always starts as false
     this.state = {
-      teammates: members
-        .filter(member => member.pid !== pid)
-        .map(member => ({ pid: member.pid, confirmed: false })),
+      teammates: members.filter(member => member.pid !== pid).map(member => ({ pid: member.pid, confirmed: false })),
       sum: '',
       invalidSum: false,
-      ready: false,
-      sumSubmitted: false
+      ready: false
     };
-  }
-
-  // check if confirmed
-  componentDidUpdate() {
-    let confirmedAll = true;
-
-    this.state.teammates.forEach(member => {
-      if (!member.confirmed) confirmedAll = false;
-    });
-
-    if (confirmedAll) {
-      // get index of this user
-      let pidIndex = -1;
-
-      this.props.members.map((m, index) => {
-        if (m.pid === this.props.pid) {
-          pidIndex = index;
-        }
-      });
-
-      // update that index on db
-      Teams.update(
-        this.props._id,
-        {
-          $set: {
-            [`members.${pidIndex}.confirmed`]: true
-          }
-        },
-        error => {
-          if (error) console.log(error);
-          else console.log('All confirmed!');
-        }
-      );
-    }
   }
 
   getNameFromPid(pid) {
     return Users.findOne({ pid }).name;
-  }
-
-  // sets team member's state confirmed to true
-  handleConfirmed(pid) {
-    //console.log(`Found ${pid}`);
-    this.setState(state => {
-      // look for teammate and update state
-      state.teammates.forEach(member => {
-        if (member.pid === pid) {
-          member.confirmed = true;
-        }
-      });
-
-      return state;
-    });
   }
 
   renderTeammates() {
@@ -106,15 +55,40 @@ class TeamFormation extends Component {
     ));
   }
 
-  render() {
-    const { handleSum, handleSubmit, sum, invalid } = this.props;
-    const { team, confirmed, allConfirmed } = this.props;
+  handleSubmit = sum => {
+    const { _id, members } = this.props;
 
-    if (!members) return <Loading />;
+    console.log('submitted sum' + sum);
+
+    if (sum == members.map(m => m.userNumber).reduce((res, m) => res + m)) {
+      Teams.update(_id, {
+        $set: {
+          confirmed: true
+        }
+      });
+    } else {
+      this.setState({
+        invalid: true
+      });
+    }
+  };
+
+  handleSumChange = evt => {
+    this.setState({ sum: evt.target.value, invalid: false });
+  };
+
+  render() {
+    const { pid, confirmed, _id, members, shape, color } = this.props;
+
+    const { sum, invalid } = this.state;
+
+    if (!_id) return <Loading />;
 
     //const { shape, color } = team;
 
-    if (allConfirmed) {
+    const myNum = members.filter(m => m.pid === pid)[0].userNumber;
+
+    if (confirmed) {
       return (
         <PictureContent
           title="Introduce yourself!"
@@ -127,24 +101,31 @@ class TeamFormation extends Component {
     return (
       <PictureContent
         fitTitle
-        title="Find others with this shape and color"
+        title="Find teammates with this shape and color"
         imageSrc={`/shapes/${shape}-solid-${color}.jpg`}
-      //lowSubtitle="How many oranges does your team have in total?"
       >
-        <div>You have <b>3</b> oranges </div>
-        <div className="team-instruct">How many oranges total in your team?</div>
+        <div />
+        <div className="team-instruct">
+          You have <b>{myNum}</b> oranges.
+          <br />
+          How many oranges does your team have?
+        </div>
+        <Textfit mode="single">Find you teammates and enter the sum:</Textfit>
         {/*<div className="sum-input-flex">*/}
-        <TextInput className="text-sum"
+        <TextInput
+          className="text-sum"
           name="enter-team-number"
-          onSubmit={handleSubmit}
-          onChange={handleSum}
+          onSubmit={() => this.handleSubmit(sum)}
+          onChange={this.handleSumChange}
           value={sum}
           invalid={invalid}
-          label=''
+          label=""
           invalidMsg="Incorrect sum. Try again!"
-          placeholder=" # oranges"
+          placeholder="Sum of oranges"
         />
-        <Button size="small">Enter</Button>
+        <Button size="small" onClick={() => this.handleSubmit(sum)}>
+          Enter
+        </Button>
         {/*</div>*/}
       </PictureContent>
     );
@@ -188,21 +169,4 @@ class TeamFormation extends Component {
   }
 }
 
-export default withTracker(props => {
-  //const team = Teams.findOne({ _id: props.team_id });
-  const { members } = props
-  let confirmed = false;
-  let allConfirmed = false;
-
-  try {
-    confirmed = members.filter(m => m.pid === props.pid)[0].confirmed;
-    allConfirmed = true;
-    members.forEach(member => {
-      if (!member.confirmed) allConfirmed = false;
-    });
-  } catch (error) {
-    console.log(error);
-  }
-
-  return { confirmed, allConfirmed };
-})(TeamFormation);
+export default TeamFormation;

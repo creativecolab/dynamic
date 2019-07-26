@@ -311,13 +311,13 @@ export default withTracker(({ pid, activity_id, progress }) => {
   // get all the quesitons
   const questions = Questions.find({ round: progress }).fetch();
 
-  if (team) {
-    const { members, shared } = team;
+  // if (team) {
+  //   const { members, shared } = team;
 
-    return { questions, team, members, shared };
+  //   return { questions, team, members, shared };
 
-    // Users.find({pid}).teamHistory[].teamNumber
-  }
+  // Users.find({pid}).teamHistory[].teamNumber
+  // }
 
   return { questions, team };
 })(TeamDiscussion);
