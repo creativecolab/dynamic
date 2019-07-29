@@ -23,10 +23,12 @@ $button-padding: 0.4em;
 $button-border-radius: 5px;
 
 // MOBILE DIMENSIONS
-$navbar-height: 6%;
-$navbar-padding: 4%;
-$content-padding: 5%;
+$navbar-height: 4%;
+$navbar-padding: 3%;
 $content-height: 100%; 
+$content-padding: 5%;
+$footer-height: 15%;
+$footer-padding: 3%;
 
 *, *::before, *::after {
   -webkit-box-sizing: border-box;
