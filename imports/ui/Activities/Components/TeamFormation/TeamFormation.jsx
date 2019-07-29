@@ -86,6 +86,7 @@ class TeamFormation extends Component {
       return (
         <PictureContent
           title="Introduce yourself!"
+          imageSpaced
           imageSrc="/intro.jpg"
           subtitle="Looks like you found everyone. While waiting for other groups to form, introduce yourself to your teammates."
         />
