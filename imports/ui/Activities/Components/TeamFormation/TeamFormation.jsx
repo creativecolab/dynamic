@@ -86,6 +86,7 @@ class TeamFormation extends Component {
       return (
         <PictureContent
           title="Introduce yourself!"
+          imageSpaced
           imageSrc="/intro.jpg"
           subtitle="Looks like you found everyone. While waiting for other groups to form, introduce yourself to your teammates."
         />
@@ -100,7 +101,7 @@ class TeamFormation extends Component {
       >
         <div className="member-list">
           {this.state.teammates.map(m => (
-            <div>{this.getNameFromPid(m.pid)}</div>
+            <div key={m.pid}>{this.getNameFromPid(m.pid)}</div>
           ))}
         </div>
         <div>

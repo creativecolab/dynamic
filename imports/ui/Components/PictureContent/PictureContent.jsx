@@ -9,6 +9,7 @@ function PictureContent(props) {
   const { fitTitle } = props;
   const { desc } = props;
   const { imageSrc } = props;
+  const { imageSpaced } = props;
   const { subtitle } = props;
   const { children } = props;
 
@@ -23,7 +24,11 @@ function PictureContent(props) {
           <div className="pic-title">{title}</div>
         )}
         <div className="pic-desc">{desc}</div>
-        <img className="pic-image" src={imageSrc} alt="" />
+        {imageSpaced ? (
+          <img className="pic-image-spaced" src={imageSrc} alt="" />
+        ) : (
+          <img className="pic-image" src={imageSrc} alt="" />
+        )}
         <div className="subtitle">{subtitle}</div>
       </div>
       <>{children}</>
@@ -36,6 +41,7 @@ PictureContent.propTypes = {
   fitTitle: PropTypes.bool,
   desc: PropTypes.string,
   imageSrc: PropTypes.string,
+  imageSpaced: PropTypes.bool,
   subtitle: PropTypes.string
 };
 

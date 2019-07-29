@@ -152,6 +152,20 @@ export default class Mobile extends Component {
     return members.map(m => Users.findOne({ pid: m.pid }).name);
   }
 
+  getContentClass() {
+    const { hasFooter, hasNavbar } = this.props;
+
+    let contentStyle = 'content';
+
+    if (hasFooter && hasNavbar) contentStyle += ' has-footer-navbar';
+
+    else if (hasFooter) contentStyle += ' has-footer';
+
+    else if (hasNavbar) contentStyle += ' has-navbar';
+
+    return contentStyle;
+  }
+
   render() {
     const { title, sessionStatus, sessionLength } = this.props;
     const { buttonTxt, buttonAction } = this.props;
@@ -184,10 +198,10 @@ export default class Mobile extends Component {
                   {title ? (
                     <>{title}</>
                   ) : (
-                    <>
-                      Round {sessionStatus} of {sessionLength}
-                    </>
-                  )}
+                      <>
+                        Round {sessionStatus} of {sessionLength}
+                      </>
+                    )}
                 </div>
               </div>
               <div className="clock">
@@ -208,7 +222,8 @@ export default class Mobile extends Component {
             </Container>
           </>
         )}
-        <div className={hasFooter ? 'content' : 'content-full'}>
+        <div className={this.getContentClass()}>
+          {/*<div className={hasFooter ? 'content' : 'content-full'}>*/}
           {children}
           <div className={classNames('feedback-msge', feedbackClass)}>{feedbackMsge}</div>
         </div>

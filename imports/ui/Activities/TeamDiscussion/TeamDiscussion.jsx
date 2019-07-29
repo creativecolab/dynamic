@@ -43,7 +43,7 @@ class TeamDiscussion extends Component {
 
   static defaultProps = {
     questions: [],
-    team: null
+    team: {}
   };
 
   constructor(props) {
@@ -51,17 +51,29 @@ class TeamDiscussion extends Component {
     this.reactSwipeEl = null;
     let displayTeam = false;
 
-    const { status, questions } = this.props;
+    const { status, pid, team, activity_id } = this.props;
 
     if (status === ActivityEnums.status.INPUT_TEAM || status === ActivityEnums.status.ASSESSMENT) {
       displayTeam = true;
     }
 
+    let voted = Users.findOne({ pid, 'preference.activity_id': activity_id }) !== undefined;
+
+    let teammates = [];
+
+    if (team && team.members) {
+      teammates = team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 2 }));
+    } else {
+      voted = true;
+    }
+
     this.state = {
-      choseTeammate: false,
-      displayTeam,
       prevQuestion: 0,
-      startTime: new Date().getTime()
+      startTime: new Date().getTime(),
+      choseTeammate: voted,
+      displayTeam,
+      hasFooter: props.status === ActivityEnums.status.ASSESSMENT && !voted,
+      teammates
     };
 
   }
@@ -75,34 +87,34 @@ class TeamDiscussion extends Component {
     return '';
   }
 
-  handleShare = () => {
-    const { team, pid } = this.props;
-    const { sharedBy } = this.state;
+  // handleShare = () => {
+  //   const { team, pid } = this.props;
+  //   const { sharedBy } = this.state;
 
-    if (sharedBy) return;
+  //   if (sharedBy) return;
 
-    if (!team) return;
+  //   if (!team) return;
 
-    Teams.update(team._id, {
-      $set: {
-        shared: { by: pid, index: this.reactSwipeEl.getPos() }
-      }
-    });
+  //   Teams.update(team._id, {
+  //     $set: {
+  //       shared: { by: pid, index: this.reactSwipeEl.getPos() }
+  //     }
+  //   });
 
-    this.setState(
-      {
-        shared: true
-      },
-      () => {
-        console.log('Sharing question #' + this.reactSwipeEl.getPos());
-        setTimeout(() => {
-          this.setState({
-            shared: false
-          });
-        }, 500);
-      }
-    );
-  };
+  //   this.setState(
+  //     {
+  //       shared: true
+  //     },
+  //     () => {
+  //       console.log('Sharing question #' + this.reactSwipeEl.getPos());
+  //       setTimeout(() => {
+  //         this.setState({
+  //           shared: false
+  //         });
+  //       }, 500);
+  //     }
+  //   );
+  // };
 
   handleChooseTeammate = () => {
     this.setState({
@@ -141,9 +153,10 @@ class TeamDiscussion extends Component {
 
       return false;
     }
+
     if (questions.length != 10) {
       console.log('Not enough questions?');
-      console.log(questions)
+      console.log(questions);
 
       return false;
     }
@@ -171,10 +184,10 @@ class TeamDiscussion extends Component {
     // team formation phase
     if (status === ActivityEnums.status.TEAM_FORMATION) {
       // joined after team formation
-      if (!team) {
+      if (team == false) {
         console.log('No team!>?');
 
-        return <Loading />;
+        return <div>No team? Try reloading the page!</div>;
       }
 
       return <TeamFormation pid={pid} {...team} />;
@@ -186,17 +199,8 @@ class TeamDiscussion extends Component {
       return (
         <>
           <div className="swipe-instr-top">Choose questions to discuss as a group</div>
-          <div
-            className="swipe-instr-top"
-            style={{ textAlign: 'center', fontSize: '0.8em', color: '#808080cc', margin: 0 }}
-          >
+          <div className="swipe-subinstr-top">
             <strong>Swipe</strong> to see more questions
-            {/* {team && (
-              <>
-                <br />
-                <strong>Share</strong> favorites with group
-              </>
-            )} */}
           </div>
           <div className="slider-main">
             <ReactSwipe
@@ -227,7 +231,7 @@ class TeamDiscussion extends Component {
               &rarr;
             </button>
 
-            <Message className="pose-msge" pose={this.state.shared ? 'visible' : 'hidden'}>
+            {/* <Message className="pose-msge" pose={this.state.shared ? 'visible' : 'hidden'}>
               Shared with group!
             </Message>
 
@@ -237,7 +241,7 @@ class TeamDiscussion extends Component {
                 <br />
                 shared this question!
               </Message>
-            )}
+            )} */}
           </div>
         </>
       );
@@ -247,46 +251,95 @@ class TeamDiscussion extends Component {
     if (status === ActivityEnums.status.ASSESSMENT) {
       if (!this.state.choseTeammate) {
         // joined after team formation
-        if (!team) { console.log("No team"); console.log(team); return <Waiting text="You have not been assigned a team. Please wait for the next activity." />; }
+        if (!team._id) {
+          console.log('No team');
+          console.log(team);
 
-        return <TeammateSliders team_id={team._id} pid={pid} handleChosen={this.handleChooseTeammate} />;
+          return <Waiting text="You have not been assigned a team. Please wait for the next activity." />;
+        }
+
+        return (
+          <TeammateSliders
+            team_id={team._id}
+            pid={pid}
+            teammates={this.state.teammates}
+            handleChange={this.handlePreferenceChange}
+          />
+        );
       }
     }
 
-    return <Waiting text="Waiting for next activity of this session to begin..." />;
+    return <Waiting text="Awesome! Now wait for the next activity to begin..." />;
+  };
+
+  handlePreferenceChange = (value, index) => {
+    const { teammates } = this.state;
+
+    teammates[index].value = value;
+    this.setState({
+      teammates
+    });
+    console.log(teammates);
+  };
+
+  handleVote = () => {
+    const { pid, activity_id } = this.props;
+    const { teammates } = this.state;
+
+    const user = Users.findOne({ pid });
+
+    Users.update(
+      user._id,
+      {
+        $push: {
+          preference: {
+            values: teammates,
+            activity_id,
+            timestamp: new Date().getTime()
+          }
+        }
+      },
+      error => {
+        if (error) {
+          console.log(error);
+        } else {
+          this.setState({
+            choseTeammate: true,
+            hasFooter: false
+          });
+        }
+      }
+    );
   };
 
   componentDidUpdate(prevProps) {
-    const { status, team, pid } = this.props;
+    const { status, team, activity_id, pid } = this.props;
 
-    if (
-      prevProps.team &&
-      team &&
-      prevProps.team.shared &&
-      team.shared &&
-      team.shared.index !== prevProps.team.shared.index &&
-      team.shared.by !== pid
-    ) {
-      this.reactSwipeEl.slide(team.shared.index, 300);
-      this.setState(
-        {
-          sharedBy: true
-        },
-        () => {
-          console.log('Sharing question #' + this.reactSwipeEl.getPos());
-          setTimeout(() => {
-            this.setState({
-              sharedBy: false
-            });
-          }, 2000);
-        }
-      );
+    // new team!
+    if (prevProps.team && team && prevProps.team._id !== team._id) {
+      this.setState({
+        teammates: team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 2 }))
+      });
     }
 
     if (prevProps.status !== status) {
       this.setState({
         choseTeammate: false
       });
+
+      if (status === ActivityEnums.status.ASSESSMENT) {
+        const voted = Users.findOne({ pid, 'preference.activity_id': activity_id }) !== undefined;
+
+        this.setState({
+          teammates: team ? team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 2 })) : [],
+          choseTeammate: voted,
+          hasFooter: !voted && team
+        });
+      } else {
+        this.setState({
+          hasFooter: false
+        });
+      }
 
       if (status === ActivityEnums.status.INPUT_TEAM || status === ActivityEnums.status.ASSESSMENT) {
         this.setState({
@@ -302,7 +355,7 @@ class TeamDiscussion extends Component {
 
   render() {
     const { questions, team } = this.props;
-    const { displayTeam } = this.state;
+    const { displayTeam, hasFooter } = this.state;
 
     if (questions.length === 0) return <Loading />;
 
@@ -310,7 +363,7 @@ class TeamDiscussion extends Component {
 
     return (
       <Mobile
-        activityName="IceBreaker" //TODO: turn this string into state
+        activityName="Icebreaker" //TODO: turn this string into state
         sessionStatus={progress}
         sessionLength={sessionLength}
         clockDuration={duration}
@@ -318,7 +371,9 @@ class TeamDiscussion extends Component {
         {...team}
         displayTeam={displayTeam}
         hasTimer
-        hasFooter={false}
+        hasFooter={hasFooter}
+        buttonAction={this.handleVote}
+        buttonTxt="Submit"
       >
         {this.renderContent(this.props)} {/*component*/}
       </Mobile>
