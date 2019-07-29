@@ -152,6 +152,18 @@ export default class Mobile extends Component {
     return members.map(m => Users.findOne({ pid: m.pid }).name);
   }
 
+  getContentClass() {
+    const { hasFooter, hasNavbar } = this.props;
+
+    let contentStyle = 'content';
+
+    if (hasFooter) contentStyle += ' has-footer';
+
+    if (hasNavbar) contentStyle += ' has-navbar';
+
+    return contentStyle;
+  }
+
   render() {
     const { title, sessionStatus, sessionLength } = this.props;
     const { buttonTxt, buttonAction } = this.props;

@@ -101,17 +101,20 @@ class TeamDiscussion extends Component {
   // check if we're ready to go
   shouldComponentUpdate(nextProps) {
     const { questions } = nextProps;
+
     if (questions.length === 0) {
       console.log('No questions?');
 
       return false;
     }
+
     if (questions.length != 10) {
       console.log('Not enough questions?');
-      console.log(questions)
+      console.log(questions);
 
       return false;
     }
+
     return true;
   }
 
@@ -147,21 +150,13 @@ class TeamDiscussion extends Component {
 
       //   return <Loading />;
       // }
-      console.log(questions)
+      console.log(questions);
+
       return (
         <>
           <div className="swipe-instr-top">Choose questions to discuss as a group</div>
-          <div
-            className="swipe-instr-top"
-            style={{ textAlign: 'center', fontSize: '0.8em', color: '#808080cc', margin: 0 }}
-          >
+          <div className="swipe-subinstr-top">
             <strong>Swipe</strong> to see more questions
-            {/* {team && (
-              <>
-                <br />
-                <strong>Share</strong> favorites with group
-              </>
-            )} */}
           </div>
           <div className="slider-main">
             <ReactSwipe
@@ -192,7 +187,7 @@ class TeamDiscussion extends Component {
               &rarr;
             </button>
 
-            <Message className="pose-msge" pose={this.state.shared ? 'visible' : 'hidden'}>
+            {/* <Message className="pose-msge" pose={this.state.shared ? 'visible' : 'hidden'}>
               Shared with group!
             </Message>
 
@@ -202,7 +197,7 @@ class TeamDiscussion extends Component {
                 <br />
                 shared this question!
               </Message>
-            )}
+            )} */}
           </div>
         </>
       );
@@ -212,13 +207,18 @@ class TeamDiscussion extends Component {
     if (status === ActivityEnums.status.ASSESSMENT) {
       if (!this.state.choseTeammate) {
         // joined after team formation
-        if (!team) { console.log("No team"); console.log(team); return <Waiting text="You have not been assigned a team. Please wait for the next activity." />; }
+        if (!team) {
+          console.log('No team');
+          console.log(team);
+
+          return <Waiting text="You have not been assigned a team. Please wait for the next activity." />;
+        }
 
         return <TeammateSliders team_id={team._id} pid={pid} handleChosen={this.handleChooseTeammate} />;
       }
     }
 
-    return <Waiting text="Waiting for next activity of this session to begin..." />;
+    return <Waiting text="Awesome! Now wait for the next activity to begin..." />;
   };
 
   componentDidUpdate(prevProps) {
@@ -272,26 +272,6 @@ class TeamDiscussion extends Component {
   };
 
   onSlideChange = () => {
-    // const { team } = this.props;
-
-    // if (team) {
-    //   Teams.update(
-    //     team._id,
-    //     {
-    //       $set: {
-    //         index: this.reactSwipeEl.getPos()
-    //       }
-    //     },
-    //     error => {
-    //       if (!error) {
-    //         console.log(this.reactSwipeEl.getPos());
-    //       } else {
-    //         console.log(error);
-    //       }
-    //     }
-    //   );
-    // }
-
     const { questions } = this.props;
 
     console.log('changed: ' + questions[this.reactSwipeEl.getPos()].prompt);
@@ -307,7 +287,7 @@ class TeamDiscussion extends Component {
 
     return (
       <Mobile
-        activityName="IceBreaker" //TODO: turn this string into state
+        activityName="Icebreaker" //TODO: turn this string into state
         sessionStatus={progress}
         sessionLength={sessionLength}
         clockDuration={duration}

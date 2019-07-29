@@ -121,6 +121,16 @@
 
   }
 
+  .has-footer {
+    height: calc($content-height - $footer-height);
+  }
+
+  .has-navbar {
+    height: calc($content-height - $footer-height);
+  }
+
+  
+
   .footer {
     position: absolute;
     bottom: 0;
