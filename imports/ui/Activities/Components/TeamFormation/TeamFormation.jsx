@@ -101,7 +101,7 @@ class TeamFormation extends Component {
       >
         <div className="member-list">
           {this.state.teammates.map(m => (
-            <div>{this.getNameFromPid(m.pid)}</div>
+            <div key={m.pid}>{this.getNameFromPid(m.pid)}</div>
           ))}
         </div>
         <div>
