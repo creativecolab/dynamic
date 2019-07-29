@@ -103,23 +103,24 @@ class TeamFormation extends Component {
             <div>{this.getNameFromPid(m.pid)}</div>
           ))}
         </div>
-        <div className="user-number">
-          You have <b>{myNum}</b> orange{myNum === 1 ? '' : 's'}.
+        <div>
+          <div className="user-number">
+            You have <b>{myNum}</b> orange{myNum === 1 ? '' : 's'}.
+          </div>
+          <Textfit mode="single">How many oranges does your team have?</Textfit>
+          <TextInput
+            className="text-sum"
+            name="enter-team-number"
+            onSubmit={() => this.handleSubmit(sum)}
+            onChange={this.handleSumChange}
+            value={sum}
+            invalid={invalid}
+            label=""
+            invalidMsg="Incorrect sum. Try again!"
+            placeholder="Sum of oranges"
+            hasButton
+          />
         </div>
-        <Textfit mode="single">How many oranges does your team have?</Textfit>
-        <TextInput
-          className="text-sum"
-          name="enter-team-number"
-          onSubmit={() => this.handleSubmit(sum)}
-          onChange={this.handleSumChange}
-          value={sum}
-          invalid={invalid}
-          label=""
-          invalidMsg="Incorrect sum. Try again!"
-          placeholder="Sum of oranges"
-          hasButton
-        />
-
       </PictureContent>
     );
 

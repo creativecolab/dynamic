@@ -26,7 +26,7 @@ function PictureContent(props) {
         <img className="pic-image" src={imageSrc} alt="" />
         <div className="subtitle">{subtitle}</div>
       </div>
-      <div>{children}</div>
+      <>{children}</>
     </div>
   );
 }
