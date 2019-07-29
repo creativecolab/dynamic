@@ -8,7 +8,6 @@ import 'antd/lib/icon/style/css';
 
 // import Typography from '@material-ui/core/Typography';
 
-import Teams from '../../../../api/teams';
 import Users from '../../../../api/users';
 import '../../../assets/_main.scss';
 import './TeammateSliders.scss';

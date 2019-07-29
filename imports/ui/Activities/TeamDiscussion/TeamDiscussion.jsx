@@ -57,13 +57,21 @@ class TeamDiscussion extends Component {
       displayTeam = true;
     }
 
-    const voted = Users.findOne({ pid, 'preference.activity_id': activity_id }) !== undefined;
+    let voted = Users.findOne({ pid, 'preference.activity_id': activity_id }) !== undefined;
+
+    let teammates = [];
+
+    if (team && team.members) {
+      teammates = team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 2 }));
+    } else {
+      voted = true;
+    }
 
     this.state = {
       choseTeammate: voted,
       displayTeam,
       hasFooter: props.status === ActivityEnums.status.ASSESSMENT && !voted,
-      teammates: team ? team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 2 })) : []
+      teammates
     };
   }
 
@@ -132,10 +140,10 @@ class TeamDiscussion extends Component {
     // team formation phase
     if (status === ActivityEnums.status.TEAM_FORMATION) {
       // joined after team formation
-      if (!team) {
+      if (team == false) {
         console.log('No team!>?');
 
-        return <Loading />;
+        return <div>No team? Try reloading the page!</div>;
       }
 
       return <TeamFormation pid={pid} {...team} />;
@@ -211,7 +219,7 @@ class TeamDiscussion extends Component {
     if (status === ActivityEnums.status.ASSESSMENT) {
       if (!this.state.choseTeammate) {
         // joined after team formation
-        if (!team) {
+        if (!team._id) {
           console.log('No team');
           console.log(team);
 
@@ -293,7 +301,7 @@ class TeamDiscussion extends Component {
         this.setState({
           teammates: team ? team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 2 })) : [],
           choseTeammate: voted,
-          hasFooter: !voted
+          hasFooter: !voted && team
         });
       } else {
         this.setState({
