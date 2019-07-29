@@ -38,7 +38,7 @@ class SessionProgress extends Component {
         alert(err);
       } else {
         // success!
-        console.log('\nBuilt the Team History matrix ' + res);
+        console.log('\nBuilt the Team History matrix ');
       }
     });
 

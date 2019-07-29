@@ -206,6 +206,36 @@ Meteor.methods({
     }
   },
 
+  // write the the database for tracking question time
+  'questions.updateTimers': function(past_question, next_question, startTime, endTime) {
+    // save the time spent on the last question
+    Questions.update(past_question, {
+      $inc: {
+        viewTimer: (endTime - startTime)
+      }
+    },
+      error => {
+        if (!error) {
+          console.log('Saved past question');
+        } else {
+          console.log(error);
+        }
+      });
+    // update how many times the next question has been viewed
+    Questions.update(next_question, {
+      $inc: {
+        timesViewed: 1
+      }
+    },
+      error => {
+        if (!error) {
+          console.log('Saved next question');
+        } else {
+          console.log(error);
+        }
+      });
+  },
+
   'users.addPoints': function({ user_id, session_id, points }) {
     Users.update(
       {
@@ -249,8 +279,8 @@ function createQuestions() {
       prompt: q,
       default: true,
       createdTime: new Date().getTime(),
-      viewedTimer: 0,
-      selectedCount: 0,
+      viewTimer: 0,
+      timesViewed: 0,
       round
     });
   });

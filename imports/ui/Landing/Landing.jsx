@@ -186,7 +186,6 @@ export default class Landing extends Component {
           },
           () => {
             if (session.status === SessionEnums.status.ACTIVE) {
-              console.log('your mom');
               Meteor.call(
                 'sessions.updateTeamHistory_LateJoinees',
                 session.participants,

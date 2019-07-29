@@ -51,7 +51,7 @@ class TeamDiscussion extends Component {
     this.reactSwipeEl = null;
     let displayTeam = false;
 
-    const { status } = this.props;
+    const { status, questions } = this.props;
 
     if (status === ActivityEnums.status.INPUT_TEAM || status === ActivityEnums.status.ASSESSMENT) {
       displayTeam = true;
@@ -59,9 +59,15 @@ class TeamDiscussion extends Component {
 
     this.state = {
       choseTeammate: false,
-      displayTeam
+      displayTeam,
+      prevQuestion: 0,
+      startTime: new Date().getTime()
     };
+
   }
+
+
+  /* Helper and Handler Methods */
 
   getName(shared) {
     if (shared && shared.by) return Users.findOne({ pid: shared.by }).name;
@@ -98,9 +104,38 @@ class TeamDiscussion extends Component {
     );
   };
 
-  // check if we're ready to go
+  handleChooseTeammate = () => {
+    this.setState({
+      choseTeammate: true
+    });
+  };
+
+  onSlideChange = () => {
+    const endTime = new Date().getTime();
+    const { startTime } = this.state;
+
+    const { questions } = this.props;
+
+    const past_question = questions[this.state.prevQuestion]._id
+    const next_question = questions[this.reactSwipeEl.getPos()]._id
+
+    //update questions
+    Meteor.call('questions.updateTimers', past_question, next_question, startTime, endTime, (error) => {
+      if (!error) console.log("Tracked questions successfully")
+      else console.log(error)
+    });
+
+    // keep track of this current question and when it began
+    this.setState({
+      prevQuestion: this.reactSwipeEl.getPos(),
+      startTime: new Date().getTime()
+    });
+
+  };
+
+  // check if we're ready to go with questions and teams
   shouldComponentUpdate(nextProps) {
-    const { questions } = nextProps;
+    const { questions, team } = nextProps;
     if (questions.length === 0) {
       console.log('No questions?');
 
@@ -111,6 +146,17 @@ class TeamDiscussion extends Component {
       console.log(questions)
 
       return false;
+    }
+    if (!team) {
+      console.log('No team yet?');
+      console.log(team);
+      return false;
+    }
+    if (team.members === []) {
+      console.log('No teammates?');
+      console.log(team);
+      return false;
+
     }
     return true;
   }
@@ -136,18 +182,7 @@ class TeamDiscussion extends Component {
 
     // team input phase
     if (status === ActivityEnums.status.INPUT_TEAM) {
-      // if (questions.length === 0) {
-      //   console.log('No questions?');
-
-      //   return <Loading />;
-      // }
-      // if (questions.length != 10) {
-      //   console.log('Not enough questions?');
-      //   console.log(questions)
-
-      //   return <Loading />;
-      // }
-      console.log(questions)
+      //console.log(questions)
       return (
         <>
           <div className="swipe-instr-top">Choose questions to discuss as a group</div>
@@ -265,38 +300,6 @@ class TeamDiscussion extends Component {
     }
   }
 
-  handleChooseTeammate = () => {
-    this.setState({
-      choseTeammate: true
-    });
-  };
-
-  onSlideChange = () => {
-    // const { team } = this.props;
-
-    // if (team) {
-    //   Teams.update(
-    //     team._id,
-    //     {
-    //       $set: {
-    //         index: this.reactSwipeEl.getPos()
-    //       }
-    //     },
-    //     error => {
-    //       if (!error) {
-    //         console.log(this.reactSwipeEl.getPos());
-    //       } else {
-    //         console.log(error);
-    //       }
-    //     }
-    //   );
-    // }
-
-    const { questions } = this.props;
-
-    console.log('changed: ' + questions[this.reactSwipeEl.getPos()].prompt);
-  };
-
   render() {
     const { questions, team } = this.props;
     const { displayTeam } = this.state;
@@ -320,6 +323,17 @@ class TeamDiscussion extends Component {
         {this.renderContent(this.props)} {/*component*/}
       </Mobile>
     );
+  }
+
+  componentDidMount() {
+    //update question 1
+    const { questions } = this.props;
+    if (questions.length != 0) {
+      Meteor.call('questions.updateTimers', questions[0]._id, questions[0]._id, 0, 0, (error) => {
+        if (!error) console.log("Tracked questions successfully")
+        else console.log(error)
+      });
+    }
   }
 }
 

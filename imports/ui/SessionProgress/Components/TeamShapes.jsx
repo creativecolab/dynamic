@@ -15,7 +15,7 @@ class TeamShapes extends Component {
     return (
       <div>
         {teams.map(team => {
-          if (team.members.map(x => x.confirmed).reduce((res, x) => res && x)) {
+          if (team.confirmed) {
             return (
               <div key={team._id} className="shape-box">
                 <img
