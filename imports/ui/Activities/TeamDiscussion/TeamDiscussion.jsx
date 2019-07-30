@@ -47,6 +47,7 @@ class TeamDiscussion extends Component {
   };
 
   constructor(props) {
+    console.log('ctor');
     super(props);
     this.reactSwipeEl = null;
     let displayTeam = false;
@@ -144,34 +145,35 @@ class TeamDiscussion extends Component {
 
   // check if we're ready to go with questions and teams
   shouldComponentUpdate(nextProps) {
+    console.log('Should udpdate');
     const { questions, team } = nextProps;
 
-    if (questions.length === 0) {
-      console.log('No questions?');
+    // if (questions.length === 0) {
+    //   console.log('No questions?');
 
-      return false;
-    }
+    //   return false;
+    // }
 
-    if (questions.length != 10) {
-      console.log('Not enough questions?');
-      console.log(questions);
+    // if (questions.length != 10) {
+    //   console.log('Not enough questions?');
+    //   console.log(questions);
 
-      return false;
-    }
+    //   return false;
+    // }
 
-    if (!team) {
-      console.log('No team yet?');
-      console.log(team);
+    // if (!team) {
+    //   console.log('No team yet?');
+    //   console.log(team);
 
-      return false;
-    }
+    //   return false;
+    // }
 
-    if (team.members === []) {
-      console.log('No teammates?');
-      console.log(team);
+    // if (team.members === []) {
+    //   console.log('No teammates?');
+    //   console.log(team);
 
-      return false;
-    }
+    //   return false;
+    // }
 
     return true;
   }
@@ -315,6 +317,7 @@ class TeamDiscussion extends Component {
   };
 
   componentDidUpdate(prevProps) {
+    console.log('DidUpdate');
     const { status, team, activity_id, pid } = this.props;
 
     // new team!
@@ -356,6 +359,7 @@ class TeamDiscussion extends Component {
   }
 
   render() {
+    console.log('Render');
     const { questions, team } = this.props;
     const { displayTeam, hasFooter } = this.state;
 
@@ -383,6 +387,7 @@ class TeamDiscussion extends Component {
   }
 
   componentDidMount() {
+    console.log('ComponentDidMount()');
     //update question 1
     const { questions } = this.props;
 
@@ -410,7 +415,9 @@ export default withTracker(({ pid, activity_id, progress }) => {
   );
 
   // get all the quesitons
-  const questions = Questions.find({ round: progress }).fetch();
+  const questions = Questions.find({ round: { $in: [progress, 0] } }).fetch();
+
+  console.log('withTracker() ' + questions.length);
 
   return { questions, team };
 })(TeamDiscussion);
