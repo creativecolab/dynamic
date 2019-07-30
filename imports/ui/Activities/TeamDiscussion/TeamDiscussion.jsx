@@ -214,6 +214,7 @@ class TeamDiscussion extends Component {
                 return (
                   <div className="question-card-wrapper" key={q._id}>
                     <div className="question-card">
+                      <div className="label">ICEBREAKER</div>
                       {index + 1}. {q.prompt}
                       {/* {team && (
                         <div onClick={() => this.handleShare()} className="suggest-question-tag">
