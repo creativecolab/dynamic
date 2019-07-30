@@ -209,31 +209,37 @@ Meteor.methods({
   // write the the database for tracking question time
   'questions.updateTimers': function(past_question, next_question, startTime, endTime) {
     // save the time spent on the last question
-    Questions.update(past_question, {
-      $inc: {
-        viewTimer: (endTime - startTime)
-      }
-    },
+    Questions.update(
+      past_question,
+      {
+        $inc: {
+          viewTimer: endTime - startTime
+        }
+      },
       error => {
         if (!error) {
           console.log('Saved past question');
         } else {
           console.log(error);
         }
-      });
-    // update how many times the next question has been viewed
-    Questions.update(next_question, {
-      $inc: {
-        timesViewed: 1
       }
-    },
+    );
+    // update how many times the next question has been viewed
+    Questions.update(
+      next_question,
+      {
+        $inc: {
+          timesViewed: 1
+        }
+      },
       error => {
         if (!error) {
           console.log('Saved next question');
         } else {
           console.log(error);
         }
-      });
+      }
+    );
   },
 
   'users.addPoints': function({ user_id, session_id, points }) {
@@ -269,20 +275,55 @@ function createQuestions() {
     return;
   }
 
-  let round = 0;
+  // for each group of questions
+  dbquestions.map(group => {
+    // icebreaker questions
+    // add 5 icebreaker questions per round
+    // up to round 4
+    if (group.label === 'icebreaker') {
+      let round = 0;
 
-  Questions.remove({});
-  dbquestions.map((q, index) => {
-    if (index % 10 === 0) round += 1;
+      group.prompts.map((q, index) => {
+        if (index % 5 === 0) round += 1;
 
-    Questions.insert({
-      prompt: q,
-      default: true,
-      createdTime: new Date().getTime(),
-      viewTimer: 0,
-      timesViewed: 0,
-      round
-    });
+        if (round > 3) return;
+
+        Questions.insert({
+          prompt: q,
+          default: true,
+          createdTime: new Date().getTime(),
+          viewTimer: 0,
+          timesViewed: 0,
+          round
+        });
+      });
+    } else if (group.label === 'design') {
+      let round = 3;
+
+      group.prompts.map((q, index) => {
+        if (index % 3 === 0) round += 1;
+
+        Questions.insert({
+          prompt: q,
+          default: true,
+          createdTime: new Date().getTime(),
+          viewTimer: 0,
+          timesViewed: 0,
+          round
+        });
+      });
+    } else if (group.label === 'team') {
+      group.prompts.map(q => {
+        Questions.insert({
+          prompt: q,
+          default: true,
+          createdTime: new Date().getTime(),
+          viewTimer: 0,
+          timesViewed: 0,
+          round: 0
+        });
+      });
+    }
   });
 }
 
