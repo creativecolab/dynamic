@@ -48,12 +48,15 @@ class TeamDiscussion extends Component {
 
   constructor(props) {
     super(props);
+
+    console.log('Constructor')
+
     this.reactSwipeEl = null;
     let displayTeam = false;
 
     const { status, pid, team, activity_id } = this.props;
 
-    if (status === ActivityEnums.status.INPUT_TEAM || status === ActivityEnums.status.ASSESSMENT) {
+    if (status === ActivityEnums.status.INPUT_TEAM) {
       displayTeam = true;
     }
 
@@ -68,14 +71,16 @@ class TeamDiscussion extends Component {
     }
 
     this.state = {
-      prevQuestion: 0,
+      prevQuestionIndex: 0,
       startTime: new Date().getTime(),
       choseTeammate: voted,
       displayTeam,
       hasFooter: props.status === ActivityEnums.status.ASSESSMENT && !voted,
       teammates
     };
+
   }
+
 
   /* Helper and Handler Methods */
 
@@ -126,26 +131,28 @@ class TeamDiscussion extends Component {
 
     const { questions } = this.props;
 
-    const past_question = questions[this.state.prevQuestion]._id;
+    const past_question = questions[this.state.prevQuestionIndex]._id;
     const next_question = questions[this.reactSwipeEl.getPos()]._id;
 
     //update questions
-    Meteor.call('questions.updateTimers', past_question, next_question, startTime, endTime, error => {
-      if (!error) console.log('Tracked questions successfully');
+    Meteor.call('questions.updateTimers', past_question, next_question, startTime, endTime, (error) => {
+      if (!error) console.log("Tracked questions successfully");
       else console.log(error);
     });
 
     // keep track of this current question and when it began
     this.setState({
-      prevQuestion: this.reactSwipeEl.getPos(),
+      prevQuestionIndex: this.reactSwipeEl.getPos(),
       startTime: new Date().getTime()
     });
+
   };
 
   // check if we're ready to go with questions and teams
   shouldComponentUpdate(nextProps) {
-    const { questions, team } = nextProps;
+    console.log('ShouldComponentUpdate')
 
+    const { questions, team } = nextProps;
     if (questions.length === 0) {
       console.log('No questions?');
 
@@ -158,21 +165,17 @@ class TeamDiscussion extends Component {
 
       return false;
     }
-
     if (!team) {
       console.log('No team yet?');
       console.log(team);
-
       return false;
     }
-
     if (team.members === []) {
       console.log('No teammates?');
       console.log(team);
-
       return false;
-    }
 
+    }
     return true;
   }
 
@@ -315,6 +318,8 @@ class TeamDiscussion extends Component {
   };
 
   componentDidUpdate(prevProps) {
+    console.log('ComponentDidUpdate')
+
     const { status, team, activity_id, pid } = this.props;
 
     // new team!
@@ -324,16 +329,18 @@ class TeamDiscussion extends Component {
       });
     }
 
+    // changed status
     if (prevProps.status !== status) {
       this.setState({
         choseTeammate: false
       });
 
+      // set up footer and voted 
       if (status === ActivityEnums.status.ASSESSMENT) {
         const voted = Users.findOne({ pid, 'preference.activity_id': activity_id }) !== undefined;
 
         this.setState({
-          teammates: team ? team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 2 })) : [],
+          teammates: (team != {}) ? team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 2 })) : [],
           choseTeammate: voted,
           hasFooter: !voted && team
         });
@@ -343,19 +350,46 @@ class TeamDiscussion extends Component {
         });
       }
 
-      if (status === ActivityEnums.status.INPUT_TEAM || status === ActivityEnums.status.ASSESSMENT) {
+      // decide whether or not to display the team in the navbar, also update the time question 1 was viewed
+      if (status === ActivityEnums.status.INPUT_TEAM) {
         this.setState({
-          displayTeam: true
+          displayTeam: true,
+          startTime: new Date().getTime()
         });
+        // update question 1 times viewed
+        const { questions } = this.props;
+        if (questions.length != 0) {
+          Meteor.call('questions.updateTimers', questions[0]._id, questions[0]._id, 0, 0, (error) => {
+            if (!error) console.log("Tracked question 1 successfully");
+            else console.log(error);
+          });
+        }
+
       } else {
         this.setState({
           displayTeam: false
         });
       }
+
+      // save the view time of the last viewed question
+      if (prevProps.status === ActivityEnums.status.INPUT_TEAM) {
+        // update the amount of time the last question that we are on was viewed
+        const endTime = new Date().getTime();
+        const { prevQuestionIndex, startTime } = this.state;
+        const { questions } = this.props;
+        if (questions.length != 0) {
+          Meteor.call('questions.updateTimers', questions[prevQuestionIndex]._id, "", startTime, endTime, (error) => {
+            if (!error) console.log("Tracked final question successfully");
+            else console.log(error);
+          });
+        }
+      }
     }
   }
 
   render() {
+    console.log('Render')
+
     const { questions, team } = this.props;
     const { displayTeam, hasFooter } = this.state;
 
@@ -381,21 +415,10 @@ class TeamDiscussion extends Component {
       </Mobile>
     );
   }
-
-  componentDidMount() {
-    //update question 1
-    const { questions } = this.props;
-
-    if (questions.length != 0) {
-      Meteor.call('questions.updateTimers', questions[0]._id, questions[0]._id, 0, 0, error => {
-        if (!error) console.log('Tracked questions successfully');
-        else console.log(error);
-      });
-    }
-  }
 }
 
 export default withTracker(({ pid, activity_id, progress }) => {
+  console.log("withTracker");
   // get the team that this user is in for this activity
   const team = Teams.findOne(
     {

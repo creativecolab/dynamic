@@ -18,7 +18,6 @@ export default class Clock extends Component {
   constructor(props) {
     super(props);
     // use a state to track the time left
-    console.log(new Date().getTime());
     this.state = {
       timeLeft: props.totalTime - parseInt(Math.abs(props.startTime - new Date().getTime()) / 1000)
     };
