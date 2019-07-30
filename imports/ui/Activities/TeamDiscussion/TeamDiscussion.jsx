@@ -75,9 +75,7 @@ class TeamDiscussion extends Component {
       hasFooter: props.status === ActivityEnums.status.ASSESSMENT && !voted,
       teammates
     };
-
   }
-
 
   /* Helper and Handler Methods */
 
@@ -128,13 +126,13 @@ class TeamDiscussion extends Component {
 
     const { questions } = this.props;
 
-    const past_question = questions[this.state.prevQuestion]._id
-    const next_question = questions[this.reactSwipeEl.getPos()]._id
+    const past_question = questions[this.state.prevQuestion]._id;
+    const next_question = questions[this.reactSwipeEl.getPos()]._id;
 
     //update questions
-    Meteor.call('questions.updateTimers', past_question, next_question, startTime, endTime, (error) => {
-      if (!error) console.log("Tracked questions successfully")
-      else console.log(error)
+    Meteor.call('questions.updateTimers', past_question, next_question, startTime, endTime, error => {
+      if (!error) console.log('Tracked questions successfully');
+      else console.log(error);
     });
 
     // keep track of this current question and when it began
@@ -142,12 +140,12 @@ class TeamDiscussion extends Component {
       prevQuestion: this.reactSwipeEl.getPos(),
       startTime: new Date().getTime()
     });
-
   };
 
   // check if we're ready to go with questions and teams
   shouldComponentUpdate(nextProps) {
     const { questions, team } = nextProps;
+
     if (questions.length === 0) {
       console.log('No questions?');
 
@@ -160,17 +158,21 @@ class TeamDiscussion extends Component {
 
       return false;
     }
+
     if (!team) {
       console.log('No team yet?');
       console.log(team);
+
       return false;
     }
+
     if (team.members === []) {
       console.log('No teammates?');
       console.log(team);
-      return false;
 
+      return false;
     }
+
     return true;
   }
 
@@ -383,10 +385,11 @@ class TeamDiscussion extends Component {
   componentDidMount() {
     //update question 1
     const { questions } = this.props;
+
     if (questions.length != 0) {
-      Meteor.call('questions.updateTimers', questions[0]._id, questions[0]._id, 0, 0, (error) => {
-        if (!error) console.log("Tracked questions successfully")
-        else console.log(error)
+      Meteor.call('questions.updateTimers', questions[0]._id, questions[0]._id, 0, 0, error => {
+        if (!error) console.log('Tracked questions successfully');
+        else console.log(error);
       });
     }
   }
