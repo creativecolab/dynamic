@@ -69,6 +69,9 @@ class SessionHandler extends Component {
     // extract activity props
     const { activity } = this.props;
 
+    // end of activity, link to survey
+    if (status === SessionEnums.status.FINISHED) return <Survey />;
+
     // before the activities begin
     if (status === SessionEnums.status.READY) return <OnboardingInstructions />;
 
@@ -78,13 +81,8 @@ class SessionHandler extends Component {
 
     const progress = activities.indexOf(activity._id) + 1;
 
-    // pass control over to the activities
     if (status === SessionEnums.status.ACTIVE)
       return <ActivityHandler pid={pid} sessionLength={length} progress={progress} activity_id={activity._id} />;
-
-    // end of activity, link to survey
-    if (status === SessionEnums.status.FINISHED) return <Survey />;
-
 
     return <Loading />;
   }

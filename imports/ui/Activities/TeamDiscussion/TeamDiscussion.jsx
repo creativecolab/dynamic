@@ -47,10 +47,9 @@ class TeamDiscussion extends Component {
   };
 
   constructor(props) {
-    console.log('ctor');
     super(props);
 
-    console.log('Constructor')
+    console.log('Constructor');
 
     this.reactSwipeEl = null;
     let displayTeam = false;
@@ -154,27 +153,26 @@ class TeamDiscussion extends Component {
     console.log('ShouldComponentUpdate');
 
     const { questions, team } = nextProps;
-    if (questions.length === 0) {
-      console.log('No questions?');
 
-      return false;
-    }
-
-    if (questions.length != 10) {
+    if (questions.length < 10) {
       console.log('Not enough questions?');
       console.log(questions);
+      return false;
 
     }
-    if (!team) {
-      console.log('No team yet?');
-      console.log(team);
-      return false;
-    }
-    if (team.members === []) {
-      console.log('No teammates?');
-      console.log(team);
-      return false;
-    }
+
+    // if (!team) {
+    //   console.log('No team yet?');
+    //   console.log(team);
+    //   return false;
+    // }
+    // if (team.members === []) {
+    //   console.log('No teammates?');
+    //   console.log(team);
+    //   return false;
+    // }
+
+    return true;
   }
 
   // renders based on activity status
@@ -187,11 +185,12 @@ class TeamDiscussion extends Component {
     // team formation phase
     if (status === ActivityEnums.status.TEAM_FORMATION) {
       // joined after team formation
-      if (team == false) {
-        console.log('No team!>?');
+      // if (Object.keys(team).length == 0) {
+      //   console.log('No team!>?');
 
-        return <div>No team? Try reloading the page!</div>;
-      }
+      //   return <div>No team? Try reloading the page!</div>;
+      // }
+      // console.log(team)
 
       return <TeamFormation pid={pid} {...team} />;
     }
@@ -317,7 +316,7 @@ class TeamDiscussion extends Component {
   };
 
   componentDidUpdate(prevProps) {
-    console.log('ComponentDidUpdate')
+    console.log('ComponentDidUpdate');
 
     const { status, team, activity_id, pid } = this.props;
 
@@ -416,7 +415,6 @@ class TeamDiscussion extends Component {
 }
 
 export default withTracker(({ pid, activity_id, progress }) => {
-  console.log("withTracker");
   // get the team that this user is in for this activity
   const team = Teams.findOne(
     {
@@ -433,7 +431,8 @@ export default withTracker(({ pid, activity_id, progress }) => {
   // get all the quesitons
   const questions = Questions.find({ round: { $in: [progress, 0] } }).fetch();
 
-  console.log('withTracker() ' + questions.length);
+  console.log('withTracker, #questions: ' + questions.length);
+  console.log(team);
 
   return { questions, team };
 })(TeamDiscussion);
