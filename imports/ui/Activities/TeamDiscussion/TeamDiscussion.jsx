@@ -47,6 +47,7 @@ class TeamDiscussion extends Component {
   };
 
   constructor(props) {
+    console.log('ctor');
     super(props);
 
     console.log('Constructor')
@@ -150,7 +151,7 @@ class TeamDiscussion extends Component {
 
   // check if we're ready to go with questions and teams
   shouldComponentUpdate(nextProps) {
-    console.log('ShouldComponentUpdate')
+    console.log('ShouldComponentUpdate');
 
     const { questions, team } = nextProps;
     if (questions.length === 0) {
@@ -163,7 +164,6 @@ class TeamDiscussion extends Component {
       console.log('Not enough questions?');
       console.log(questions);
 
-      return false;
     }
     if (!team) {
       console.log('No team yet?');
@@ -174,9 +174,7 @@ class TeamDiscussion extends Component {
       console.log('No teammates?');
       console.log(team);
       return false;
-
     }
-    return true;
   }
 
   // renders based on activity status
@@ -217,6 +215,7 @@ class TeamDiscussion extends Component {
                 return (
                   <div className="question-card-wrapper" key={q._id}>
                     <div className="question-card">
+                      <div className="label">ICEBREAKER</div>
                       {index + 1}. {q.prompt}
                       {/* {team && (
                         <div onClick={() => this.handleShare()} className="suggest-question-tag">
@@ -388,8 +387,7 @@ class TeamDiscussion extends Component {
   }
 
   render() {
-    console.log('Render')
-
+    console.log('Render');
     const { questions, team } = this.props;
     const { displayTeam, hasFooter } = this.state;
 
@@ -433,7 +431,9 @@ export default withTracker(({ pid, activity_id, progress }) => {
   );
 
   // get all the quesitons
-  const questions = Questions.find({ round: progress }).fetch();
+  const questions = Questions.find({ round: { $in: [progress, 0] } }).fetch();
+
+  console.log('withTracker() ' + questions.length);
 
   return { questions, team };
 })(TeamDiscussion);

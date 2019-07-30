@@ -118,9 +118,9 @@ class SessionProgress extends Component {
     // team-finding phase. Same across all Activities
     if (currentActivity.status === ActivityEnums.status.TEAM_FORMATION) {
       if (currentActivity.name === ActivityEnums.name.QUIZ) {
-        return ['Begin Activity', 'Form Groups', 'Find others with the same colored shape and introduce yourself.'];
+        return ['Begin Activity', 'Find Groups', 'Find others with the same colored shape and introduce yourself.'];
       } else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
-        return ['Begin Activity', 'Form Groups', 'Find others with the same colored shape and introduce yourself.'];
+        return ['Begin Activity', 'Find Groups', 'Find others with the same colored shape and introduce yourself.'];
       }
     }
 
@@ -133,7 +133,7 @@ class SessionProgress extends Component {
           'Read through the question and select the correct answer or respond accordingly.'
         ];
       } else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
-        return ['Finish Activity', 'Team Discussion', 'Answer icebreaker questions within your group.'];
+        return ['Finish Activity', 'Group Discussion', 'Discuss questions with your group members.'];
       }
     }
 
@@ -142,11 +142,7 @@ class SessionProgress extends Component {
       if (currentActivity.name === ActivityEnums.name.QUIZ) {
         return ['Next Activity', 'Quiz', 'Statistics'];
       } else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
-        return [
-          'Next Activity',
-          'Member Preferences',
-          'Reflect on the activity and rate your group member preferences.'
-        ];
+        return ['Next Activity', 'Group Assessment', 'Assess how well you got to know your group members.'];
       }
     }
   }
@@ -254,7 +250,9 @@ class SessionProgress extends Component {
           {/* <SessionBegin session_id={this.props.session._id}></SessionBegin> */}
           <img className="contentPic" src="/dynamic.gif" alt="" />
           <div className="joinees">
-            {numJoined != 0 && <h2>{Users.findOne({ pid: session.participants[numJoined - 1] }).name + ' just joined!'}</h2>}
+            {numJoined != 0 && (
+              <h2>{Users.findOne({ pid: session.participants[numJoined - 1] }).name + ' just joined!'}</h2>
+            )}
           </div>
         </BigScreen>
       );

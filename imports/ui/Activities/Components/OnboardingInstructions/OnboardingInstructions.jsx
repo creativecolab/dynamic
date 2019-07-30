@@ -24,7 +24,7 @@ export default function OnboardingInstructions() {
           <PictureContent
             title="1. Stand up"
             imageSrc="./crowd1.jpg"
-            subtitle="Get ready to move around! Come on, don't be afraid."
+            subtitle="Get ready to move around during this activity!"
           />
         </div>
         <div className="instr-card-wrapper">
