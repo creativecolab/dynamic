@@ -222,24 +222,23 @@ Meteor.methods({
         } else {
           console.log(error);
         }
-      }
-    );
+      });
     // update how many times the next question has been viewed
-    Questions.update(
-      next_question,
-      {
+    if (next_question != "") {
+      Questions.update(next_question, {
         $inc: {
           timesViewed: 1
         }
       },
-      error => {
-        if (!error) {
-          console.log('Saved next question');
-        } else {
-          console.log(error);
-        }
-      }
-    );
+        error => {
+          if (!error) {
+            console.log('Saved next question');
+          } else {
+            console.log(error);
+          }
+        });
+    }
+    
   },
 
   'users.addPoints': function({ user_id, session_id, points }) {

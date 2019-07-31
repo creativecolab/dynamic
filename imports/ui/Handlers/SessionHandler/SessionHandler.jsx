@@ -44,6 +44,19 @@ class SessionHandler extends Component {
     super(props);
   }
 
+  // called before render
+  shouldComponentUpdate(nextProps) {
+
+    const { status } = this.props;
+
+    // don't re-render OnboardingInstructions just because someone joins
+    if (status === SessionEnums.status.READY && nextProps.status === status) {
+      return false;
+    }
+
+    return true;
+  }
+
   render() {
     // check if user logged in
     const { pid } = this.props;
@@ -56,8 +69,10 @@ class SessionHandler extends Component {
     // extract activity props
     const { activity } = this.props;
 
+    // end of activity, link to survey
     if (status === SessionEnums.status.FINISHED) return <Survey />;
 
+    // before the activities begin
     if (status === SessionEnums.status.READY) return <OnboardingInstructions />;
 
     if (!activity) {

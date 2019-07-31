@@ -114,7 +114,7 @@ export default class Landing extends Component {
   };
 
   // TODO: maybe -- use localStorage to suggest login
-  handleLogin = evt => {
+  handleLogin = () => {
     // evt.preventDefault();
 
     const { name } = this.state;
@@ -239,7 +239,6 @@ export default class Landing extends Component {
         },
         () => {
           if (session.status === SessionEnums.status.ACTIVE) {
-            console.log('your mom');
             Meteor.call(
               'sessions.updateTeamHistory_LateJoinees',
               session.participants,
@@ -251,7 +250,7 @@ export default class Landing extends Component {
                   alert(err);
                 } else {
                   // success!
-                  console.log('\nSuccessfully joined late. ' + res);
+                  console.log('\nSuccessfully joined late.');
                 }
               }
             );
@@ -303,38 +302,6 @@ export default class Landing extends Component {
       </Mobile>
     );
   }
-
-  // renderSessionCode() {
-  //   const { code, invalidCode } = this.state;
-
-  //   return (
-  //     <Wrapper>
-  //       <h1 id="title-dynamic">Dynamic!</h1>
-  //       <img id="landing-logo" src="./small_dynamic.png" alt="" />
-
-  //       <form id="session-form" onSubmit={evt => this.handleCodeSubmission(evt)}>
-  //         <div id="session-code" className="field-container">
-  //           <label className="field-title" htmlFor="session-code">
-  //             Session code:
-  //             <div className="input-container">
-  //               <input
-  //                 className={invalidCode ? 'input-text-invalid' : 'input-text'}
-  //                 type="text"
-  //                 name="session-code"
-  //                 id="session-code"
-  //                 placeholder="Enter your session code"
-  //                 value={code}
-  //                 onChange={evt => this.handleCode(evt)}
-  //               />
-  //               {invalidCode && <span className="invalid-input-message">A session with that code does not exist!</span>}
-  //             </div>
-  //           </label>
-  //         </div>
-  //         <input className="small-button" type="submit" value="Continue" />
-  //       </form>
-  //     </Wrapper>
-  //   );
-  // }
 
   render() {
     const { codeSubmitted, code, invalidCode } = this.state;

@@ -59,7 +59,7 @@ class TeamShapes extends Component {
 export default withTracker(props => {
   const { activity_id } = props;
   const teams = Teams.find({ activity_id }).fetch();
-  const notConfirmed = Teams.find({ activity_id, 'members.confirmed': false }).count();
+  const notConfirmed = Teams.find({ activity_id, 'confirmed': false }).count();
 
   return { teams, notConfirmed };
 })(TeamShapes);
