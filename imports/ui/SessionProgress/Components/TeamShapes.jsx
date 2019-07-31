@@ -13,6 +13,18 @@ class TeamShapes extends Component {
   };
 
   mapShapes(teams) {
+    // const ret = [];
+
+    // for (let i = 0; i < 23; i++) {
+    //   ret.push(
+    //     <div key={i} className="shape-box">
+    //       <img src={'/shapes/' + 'square' + '-outline-' + 'blue' + '.jpg'} />
+    //     </div>
+    //   );
+    // }
+
+    // return ret;
+
     return (
       <>
         {teams.map(team => {
@@ -52,7 +64,7 @@ class TeamShapes extends Component {
 
     return (
       <>
-        {teams && this.mapShapes(teams)}
+        {teams && <div className="shapes-flex">{this.mapShapes(teams)}</div>}
         {teams && <h2>{numTeams + '/' + teams.length} teams are ready!</h2>}
       </>
     );

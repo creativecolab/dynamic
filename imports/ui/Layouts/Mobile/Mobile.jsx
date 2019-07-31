@@ -41,7 +41,7 @@ const Slot = posed.div({
   hidden: {
     // y: -10,
     opacity: 0,
-    transition: { duration: 150 }
+    transition: { duration: 50 }
   },
   visible: {
     // y: 0,

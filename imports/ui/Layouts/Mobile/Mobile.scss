@@ -27,16 +27,17 @@
     // width: 100vw;
     // background: $dynamic-light-gray;
     text-align: center;
+    z-index: 2;
 
     .nav-team-shape {
       // cursor: pointer;
       // margin: -$navbar-padding;
       // padding: $navbar-padding;
       // background: rgb(12, 12, 12);
-      width: 13%;
+      width: 46px;
       color: $dynamic-gray;
       // line-height: 25px;
-      font-size: 4vw;
+      font-size: 18px;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
@@ -69,6 +70,7 @@
       letter-spacing: 2px;
       text-align: center;
       // margin-top: 1px;
+      font-size: 15px;
     }
 
     .progress-status {
@@ -88,7 +90,7 @@
     }
 
     .clock {
-      width: 13%;
+      width: 46px;
       font-size: 7vw;
       line-height: $navbar-height;
       text-align: right;
@@ -108,6 +110,7 @@
     // padding-top: 0.5em;
     position: fixed;
     width: 100%;
+    top: $navbar-height + 2*$navbar-padding - 1px;
 
     .teammate-slot {
       background: $dynamic-light-gray;

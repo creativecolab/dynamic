@@ -7,18 +7,22 @@
 //   grid-template-rows: auto;
 // }
 
-.shape-box {
-  width: 550px;
-  margin: 20px;
+.shapes-flex {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+  width: 80%;
 
-  img {
-    max-width: 100px;
-    max-height: 100px;
+  .shape-box {
+    margin: 14px;
+    img {
+      max-width: 100px;
+      max-height: 100px;
+    }
   }
 }
+
+
 
 .outer {
   display: flex;
