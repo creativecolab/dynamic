@@ -66,7 +66,7 @@ class TeamDiscussion extends Component {
     let teammates = [];
 
     if (team._id && team.members) {
-      teammates = team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 2 }));
+      teammates = team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 0 }));
     } else {
       voted = true;
     }
@@ -287,7 +287,7 @@ class TeamDiscussion extends Component {
     // new team!
     if (prevProps.team._id && team._id && prevProps.team._id !== team._id) {
       this.setState({
-        teammates: team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 2 }))
+        teammates: team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 0 }))
       });
     }
 
@@ -302,7 +302,7 @@ class TeamDiscussion extends Component {
         const voted = Users.findOne({ pid, 'preferences.activity_id': activity_id }) !== undefined;
 
         this.setState({
-          teammates: team._id ? team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 2 })) : [],
+          teammates: team._id ? team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 0 })) : [],
           choseTeammate: voted,
           hasFooter: !voted && team._id
         });
@@ -318,7 +318,6 @@ class TeamDiscussion extends Component {
             else console.log(error);
           });
         }
-
       } else {
         this.setState({
           hasFooter: false
@@ -351,33 +350,37 @@ class TeamDiscussion extends Component {
       // if voted is true, check if other team members have voted
       const voted = Users.findOne({ pid, 'preferences.activity_id': activity_id }) !== undefined;
 
-      console.log(voted && team._id && !team.assessed)
+      console.log(voted && team._id && !team.assessed);
+
       if (voted && team._id && !team.assessed) {
         let num_assessed = 1; // since this is only called after the client submits their vote
-        team.members.forEach((member) => {
+
+        team.members.forEach(member => {
           if (member.pid != pid) {
-            if (Users.findOne({ pid: member.pid, 'preferences.activity_id': activity_id }) !== undefined) num_assessed++;
+            if (Users.findOne({ pid: member.pid, 'preferences.activity_id': activity_id }) !== undefined)
+              num_assessed++;
           }
         });
         console.log(num_assessed);
         console.log(team.members.length);
+
         if (num_assessed === team.members.length) {
           // since everyone in this team has submitted their assessments, we can mark this team as assessed (and tell the other clients)
-          Teams.update(team._id,
+          Teams.update(
+            team._id,
             {
               $set: {
                 assessed: true
               }
             },
-            (error) => {
-              if (!error) console.log("Team assessed!");
+            error => {
+              if (!error) console.log('Team assessed!');
               else console.log(error);
             }
           );
         }
       }
     }
-
   }
 
   componentWillUnmount() {
