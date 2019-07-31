@@ -61,7 +61,7 @@ export default class TeammateSliders extends Component {
     return teammates.map((mate, index) => (
       <div key={mate.pid}>
         <div className="slider-label">
-          <strong>{this.getName(mate.pid)}</strong>
+          <div>{this.getName(mate.pid)}</div>
         </div>
         <div className="icon-wrapper">
           <Icon type="frown-o" />

@@ -1,16 +1,18 @@
 // Use flex justify-content: center and flex-wrap: wrap
 // align-content: center
 
-.shape-grid > div {
-  display: grid;
-  grid-template-columns: auto repeat(5, 1fr);
-  grid-template-rows: auto;
-}
+// .shape-grid > div {
+//   display: grid;
+//   grid-template-columns: auto repeat(5, 1fr);
+//   grid-template-rows: auto;
+// }
 
 .shape-box {
-  min-width: 100px;
-  min-height: 100px;
+  width: 550px;
   margin: 20px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
 
   img {
     max-width: 100px;

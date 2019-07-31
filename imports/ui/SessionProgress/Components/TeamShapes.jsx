@@ -5,6 +5,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import Teams from '../../../api/teams';
 
 import './TeamShapes.scss';
+import Users from '../../../api/users';
 
 class TeamShapes extends Component {
   static propTypes = {
@@ -13,7 +14,7 @@ class TeamShapes extends Component {
 
   mapShapes(teams) {
     return (
-      <div>
+      <>
         {teams.map(team => {
           if (team.confirmed) {
             return (
@@ -21,6 +22,7 @@ class TeamShapes extends Component {
                 <img
                   src={'/shapes/' + team.shape + '-solid-' + team.color + '.jpg'}
                   alt={team.color + ' ' + team.shape}
+                  title={team.members.map(m => Users.findOne(m.pid).name).join(', ')}
                 />
               </div>
             );
@@ -30,12 +32,13 @@ class TeamShapes extends Component {
                 <img
                   src={'/shapes/' + team.shape + '-outline-' + team.color + '.jpg'}
                   alt={team.color + ' ' + team.shape}
+                  title={team.members.map(m => Users.findOne({ pid: m.pid }).name).join(', ')}
                 />
               </div>
             );
           }
         })}
-      </div>
+      </>
     );
   }
 
@@ -48,10 +51,10 @@ class TeamShapes extends Component {
     }
 
     return (
-      <div className="teams">
-        {teams && <div className="shape-grid">{this.mapShapes(teams)}</div>}
+      <>
+        {teams && this.mapShapes(teams)}
         {teams && <h2>{numTeams + '/' + teams.length} teams are ready!</h2>}
-      </div>
+      </>
     );
   }
 }
@@ -59,7 +62,7 @@ class TeamShapes extends Component {
 export default withTracker(props => {
   const { activity_id } = props;
   const teams = Teams.find({ activity_id }).fetch();
-  const notConfirmed = Teams.find({ activity_id, 'confirmed': false }).count();
+  const notConfirmed = Teams.find({ activity_id, confirmed: false }).count();
 
   return { teams, notConfirmed };
 })(TeamShapes);
