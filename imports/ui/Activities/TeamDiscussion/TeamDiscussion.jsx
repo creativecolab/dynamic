@@ -4,6 +4,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import ReactSwipe from 'react-swipe';
 import posed from 'react-pose';
 
+import { Textfit } from 'react-textfit';
 import Questions from '../../../api/questions';
 import Teams from '../../../api/teams';
 import Users from '../../../api/users';
@@ -16,7 +17,6 @@ import TeamFormation from '../Components/TeamFormation/TeamFormation';
 import TeammateSliders from '../Components/TeammateSliders/TeammateSliders';
 
 import './TeamDiscussion.scss';
-import Group from 'antd/lib/input/Group';
 
 const Message = posed.div({
   hidden: {
@@ -197,8 +197,12 @@ class TeamDiscussion extends Component {
     if (status === ActivityEnums.status.INPUT_TEAM) {
       //console.log(questions)
       return (
-        <>
-          <div className="swipe-instr-top">Choose questions to discuss as a group</div>
+        <div>
+          <div className="swipe-instr-top">
+            <Textfit mode="single" max="36">
+              Choose questions to discuss as a group
+            </Textfit>
+          </div>
           <div className="swipe-subinstr-top">
             <strong>Swipe</strong> to see more questions
           </div>
@@ -244,7 +248,7 @@ class TeamDiscussion extends Component {
               </Message>
             )} */}
           </div>
-        </>
+        </div>
       );
     }
 
