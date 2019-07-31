@@ -85,7 +85,7 @@ export default class TeammateSliders extends Component {
   render() {
     return (
       <div>
-        <div className="slider-instructions">To what extend did you get to know your groupmates?</div>
+        <div className="slider-instructions">To what extent did you get to know your groupmates?</div>
         <div>{this.renderOptions()}</div>
       </div>
     );
