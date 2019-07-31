@@ -86,6 +86,9 @@ export default class TeammateSliders extends Component {
     return (
       <div>
         <div className="slider-instructions">To what extent did you get to know your groupmates?</div>
+        <div className="slider-subinstructions">
+          Use the <strong>sliders</strong> to set your response.
+        </div>
         <div>{this.renderOptions()}</div>
       </div>
     );

@@ -22,14 +22,14 @@ function PictureContent(props) {
             {title}
           </Textfit>
         ) : (
-            <div className="pic-title">{title}</div>
-          )}
+          <div className="pic-title">{title}</div>
+        )}
         <div className="pic-desc">{desc}</div>
         {imageSpaced ? (
           <img className="pic-image-spaced" src={imageSrc} alt="" />
         ) : (
-            <img className="pic-image" src={imageSrc} alt="" />
-          )}
+          <img className="pic-image" src={imageSrc} alt="" />
+        )}
         <div className="subtitle">{subtitle}</div>
       </div>
       <>{children}</>
