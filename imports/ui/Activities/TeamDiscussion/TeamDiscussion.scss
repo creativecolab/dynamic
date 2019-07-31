@@ -20,7 +20,7 @@
 
 .slider-main {
   // width: 100vw;
-  height: 100%;
+  height: 100%; // TODO: fix this!!
 
   button {
     position: absolute;
@@ -56,7 +56,7 @@
 }
 
 .question-card {
-  margin: 2em 0.9em;
+  margin: 1.1em 0.9em;
   padding: 1em;
   border: 2px solid $dynamic-black;
   border-radius: 5px;
@@ -92,7 +92,7 @@
       //bottom: -0.8em;
       //right: -0.3em;
       //align-self: center;
-      font-size: 3vh;
+      font-size: 0.8em;
       border-radius: $button-border-radius;
       background: $dynamic-blue;
       padding: 0rem 0.2rem;

@@ -79,9 +79,7 @@ class TeamDiscussion extends Component {
       hasFooter: props.status === ActivityEnums.status.ASSESSMENT && !voted,
       teammates
     };
-
   }
-
 
   /* Helper and Handler Methods */
 
@@ -136,8 +134,8 @@ class TeamDiscussion extends Component {
     const next_question = questions[this.reactSwipeEl.getPos()]._id;
 
     //update questions
-    Meteor.call('questions.updateTimers', past_question, next_question, startTime, endTime, (error) => {
-      if (!error) console.log("Tracked questions successfully");
+    Meteor.call('questions.updateTimers', past_question, next_question, startTime, endTime, error => {
+      if (!error) console.log('Tracked questions successfully');
       else console.log(error);
     });
 
@@ -146,7 +144,6 @@ class TeamDiscussion extends Component {
       prevQuestionIndex: this.reactSwipeEl.getPos(),
       startTime: new Date().getTime()
     });
-
   };
 
   // check if we're ready to go with questions and teams
@@ -155,12 +152,12 @@ class TeamDiscussion extends Component {
 
     const { questions, team } = nextProps;
 
-    if (questions.length < 10) {
-      console.log('Not enough questions?');
-      console.log(questions);
-      return false;
+    // if (questions.length < 10) {
+    //   console.log('Not enough questions?');
+    //   console.log(questions);
 
-    }
+    //   return false;
+    // }
 
     // if (!team) {
     //   console.log('No team yet?');
@@ -186,12 +183,11 @@ class TeamDiscussion extends Component {
     // team formation phase
     if (status === ActivityEnums.status.TEAM_FORMATION) {
       // joined after team formation
-      // if (Object.keys(team).length == 0) {
-      //   console.log('No team!>?');
+      if (!team) {
+        console.log('No team!>?');
 
-      //   return <div>No team? Try reloading the page!</div>;
-      // }
-      // console.log(team)
+        return <div>No team? Try reloading the page!</div>;
+      }
 
       return <TeamFormation pid={pid} {...team} />;
     }
@@ -334,12 +330,12 @@ class TeamDiscussion extends Component {
         choseTeammate: false
       });
 
-      // set up footer and voted 
+      // set up footer and voted
       if (status === ActivityEnums.status.ASSESSMENT) {
         const voted = Users.findOne({ pid, 'preference.activity_id': activity_id }) !== undefined;
 
         this.setState({
-          teammates: (team != {}) ? team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 2 })) : [],
+          teammates: team != {} ? team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 2 })) : [],
           choseTeammate: voted,
           hasFooter: !voted && team
         });
@@ -357,13 +353,13 @@ class TeamDiscussion extends Component {
         });
         // update question 1 times viewed
         const { questions } = this.props;
+
         if (questions.length != 0) {
-          Meteor.call('questions.updateTimers', questions[0]._id, questions[0]._id, 0, 0, (error) => {
-            if (!error) console.log("Tracked question 1 successfully");
+          Meteor.call('questions.updateTimers', questions[0]._id, questions[0]._id, 0, 0, error => {
+            if (!error) console.log('Tracked question 1 successfully');
             else console.log(error);
           });
         }
-
       } else {
         this.setState({
           displayTeam: false
@@ -376,9 +372,10 @@ class TeamDiscussion extends Component {
         const endTime = new Date().getTime();
         const { prevQuestionIndex, startTime } = this.state;
         const { questions } = this.props;
+
         if (questions.length != 0) {
-          Meteor.call('questions.updateTimers', questions[prevQuestionIndex]._id, "", startTime, endTime, (error) => {
-            if (!error) console.log("Tracked final question successfully");
+          Meteor.call('questions.updateTimers', questions[prevQuestionIndex]._id, '', startTime, endTime, error => {
+            if (!error) console.log('Tracked final question successfully');
             else console.log(error);
           });
         }

@@ -151,8 +151,8 @@ export default class SharedDisplay extends Component {
             <Card tag="3" title="Make small groups">
               <img src="./teamformation.png" alt="" />
             </Card>
-            <Card tag="4" title="Assess teammate preference">
-              <img src="./rating.png" alt="" />
+            <Card tag="4" title="Perform group activities">
+              <img src="./discussion.png" alt="" />
             </Card>
           </div>
         </section>

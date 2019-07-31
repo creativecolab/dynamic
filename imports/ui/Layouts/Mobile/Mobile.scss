@@ -29,16 +29,27 @@
 
     .nav-team-shape {
       // cursor: pointer;
+      // margin: -$navbar-padding;
+      // padding: $navbar-padding;
+      // background: rgb(12, 12, 12);
       width: 13%;
       color: $dynamic-gray;
-      line-height: 7vw;
+      // line-height: 25px;
       font-size: 4vw;
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
       z-index: 2;
+
       img {
-        height: 6.9vw;
+        height: 25px;
+        width: auto;
       }
+
+      span {
+        line-height: 25px;
+      }
+
       
       // .name-flex {
       //   display: flex;
@@ -49,6 +60,16 @@
       //   }
       //  }
     }
+
+
+    .nav-team-shape-label {
+      width: 100%;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-align: center;
+      // margin-top: 1px;
+    }
+
     .progress-status {
       width: 50%;
 
@@ -59,8 +80,8 @@
 
       .session-progress {
         font-weight: 600;
-        font-size: 9vw;
-        line-height: 7vw;
+        font-size: 10vw;
+        line-height: $navbar-height;
       }
 
     }
@@ -68,7 +89,8 @@
     .clock {
       width: 13%;
       font-size: 7vw;
-      line-height: 7vw;
+      line-height: $navbar-height;
+      text-align: right;
     }
 
     .navbar-hr {

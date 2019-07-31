@@ -64,16 +64,6 @@ const dbquestions = [
     ]
   },
   {
-    label: 'team',
-    prompts: [
-      'Have you taken any previous courses related to this class? If so, which ones?',
-      'What previous group projects have you taken on and what was your role on the team?',
-      "Based on previous team projects, what do you think worked and didn't work for you?",
-      'What do you believe is the most important factor for a successful team?',
-      'What are your strengths as a team member?'
-    ]
-  },
-  {
     label: 'design',
     prompts: [
       'Jane is a college student who has trouble staying awake in class. Apart from sleep trackers, what product can you design to help Jane overcome this problem?',
@@ -85,6 +75,16 @@ const dbquestions = [
       'Alex is a wheelchair user and often runs into problems of accessibility due to lack of ramps or elevators. What product/service can you design to improve these accessibility issues?',
       'Luke has difficulty controlling his eating. What product/service can you design to help him eat healthier?',
       'Charlie is an energetic middle schooler who has difficulty controlling his hyperactivity and fidgeting while in class. What solutions can you design to help him concentrate?'
+    ]
+  },
+  {
+    label: 'team',
+    prompts: [
+      'Have you taken any previous courses related to this class? If so, which ones?',
+      'What previous group projects have you taken on and what was your role on the team?',
+      "Based on previous team projects, what do you think worked and didn't work for you?",
+      'What do you believe is the most important factor for a successful team?',
+      'What are your strengths as a team member?'
     ]
   }
 ];

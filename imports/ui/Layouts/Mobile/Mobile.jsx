@@ -158,9 +158,7 @@ export default class Mobile extends Component {
     let contentStyle = 'content';
 
     if (hasFooter && hasNavbar) contentStyle += ' has-footer-navbar';
-
     else if (hasFooter) contentStyle += ' has-footer';
-
     else if (hasNavbar) contentStyle += ' has-navbar';
 
     return contentStyle;
@@ -193,6 +191,7 @@ export default class Mobile extends Component {
                       <div className="group-name-label">names</div> */}
                     {teamOpen ? <span>&#9650;</span> : <span>&#9660;</span>}
                     {/* </div> */}
+                    <div className="nav-team-shape-label">GROUP</div>
                   </>
                 )}
               </div>
@@ -201,10 +200,10 @@ export default class Mobile extends Component {
                   {title ? (
                     <>{title}</>
                   ) : (
-                      <>
-                        Round {sessionStatus} of {sessionLength}
-                      </>
-                    )}
+                    <>
+                      Round {sessionStatus} of {sessionLength}
+                    </>
+                  )}
                 </div>
               </div>
               <div className="clock">
