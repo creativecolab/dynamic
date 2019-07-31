@@ -61,7 +61,7 @@ class TeamDiscussion extends Component {
       displayTeam = true;
     }
 
-    let voted = Users.findOne({ pid, 'preference.activity_id': activity_id }) !== undefined;
+    let voted = Users.findOne({ pid, 'preferences.activity_id': activity_id }) !== undefined;
 
     let teammates = [];
 
@@ -264,7 +264,7 @@ class TeamDiscussion extends Component {
             team_id={team._id}
             pid={pid}
             teammates={this.state.teammates}
-            handleChange={this.handlePreferenceChange}
+            handleChange={this.handlepreferenceChange}
           />
         );
       }
@@ -273,7 +273,7 @@ class TeamDiscussion extends Component {
     return <Waiting text="Awesome! Now wait for the next activity to begin..." />;
   };
 
-  handlePreferenceChange = (value, index) => {
+  handlepreferenceChange = (value, index) => {
     const { teammates } = this.state;
 
     teammates[index].value = value;
@@ -284,7 +284,7 @@ class TeamDiscussion extends Component {
   };
 
   handleVote = () => {
-    const { pid, activity_id } = this.props;
+    const { pid, activity_id, team } = this.props;
     const { teammates } = this.state;
 
     const user = Users.findOne({ pid });
@@ -293,7 +293,7 @@ class TeamDiscussion extends Component {
       user._id,
       {
         $push: {
-          preference: {
+          preferences: {
             values: teammates,
             activity_id,
             timestamp: new Date().getTime()
@@ -333,13 +333,26 @@ class TeamDiscussion extends Component {
 
       // set up footer and voted
       if (status === ActivityEnums.status.ASSESSMENT) {
-        const voted = Users.findOne({ pid, 'preference.activity_id': activity_id }) !== undefined;
+        const voted = Users.findOne({ pid, 'preferences.activity_id': activity_id }) !== undefined;
 
         this.setState({
           teammates: team._id ? team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 2 })) : [],
           choseTeammate: voted,
-          hasFooter: !voted && team
+          hasFooter: !voted && team._id
         });
+
+        // update the amount of time the last question that we were on was viewed
+        const endTime = new Date().getTime();
+        const { prevQuestionIndex, startTime } = this.state;
+        const { questions } = this.props;
+
+        if (questions.length != 0) {
+          Meteor.call('questions.updateTimers', questions[prevQuestionIndex]._id, '', startTime, endTime, error => {
+            if (!error) console.log('Tracked final question successfully');
+            else console.log(error);
+          });
+        }
+
       } else {
         this.setState({
           hasFooter: false
@@ -366,22 +379,39 @@ class TeamDiscussion extends Component {
           displayTeam: false
         });
       }
+    }
 
-      // save the view time of the last viewed question
-      if (prevProps.status === ActivityEnums.status.INPUT_TEAM) {
-        // update the amount of time the last question that we are on was viewed
-        const endTime = new Date().getTime();
-        const { prevQuestionIndex, startTime } = this.state;
-        const { questions } = this.props;
+    if (status === ActivityEnums.status.ASSESSMENT) {
+      // if voted is true, check if other team members have voted
+      const voted = Users.findOne({ pid, 'preferences.activity_id': activity_id }) !== undefined;
 
-        if (questions.length != 0) {
-          Meteor.call('questions.updateTimers', questions[prevQuestionIndex]._id, '', startTime, endTime, error => {
-            if (!error) console.log('Tracked final question successfully');
-            else console.log(error);
-          });
+      console.log(voted && team._id && !team.assessed)
+      if (voted && team._id && !team.assessed) {
+        let num_assessed = 1; // since this is only called after the client submits their vote
+        team.members.forEach((member) => {
+          if (member.pid != pid) {
+            if (Users.findOne({ pid: member.pid, 'preferences.activity_id': activity_id }) !== undefined) num_assessed++;
+          }
+        });
+        console.log(num_assessed);
+        console.log(team.members.length);
+        if (num_assessed === team.members.length) {
+          // since everyone in this team has submitted their assessments, we can mark this team as assessed (and tell the other clients)
+          Teams.update(team._id,
+            {
+              $set: {
+                assessed: true
+              }
+            },
+            (error) => {
+              if (!error) console.log("Team assessed!");
+              else console.log(error);
+            }
+          );
         }
       }
     }
+
   }
 
   render() {

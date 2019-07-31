@@ -106,10 +106,7 @@ class SessionProgress extends Component {
     if (currentActivity.status === ActivityEnums.status.INPUT_INDV) {
       if (currentActivity.name === ActivityEnums.name.QUIZ) {
         return [
-          'Team Formation',
-          'Quiz',
-          'Read through the question and select the correct answer or respond accordingly.'
-        ];
+          'Team Formation', 'Quiz', 'Read through the question and select the correct answer or respond accordingly.'];
       } else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
         return ['Team Formation', 'Team Discussion', 'No individual phase!'];
       }

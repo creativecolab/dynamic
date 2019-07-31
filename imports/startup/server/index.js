@@ -416,32 +416,70 @@ Meteor.startup(() => {
             teamFormationTime: new Date().getTime() - activity.statusStartTimes.indvPhase
           }
         });
-        // }
+      }
+
+      // set team formation time
+      if (update.assessed) {
+        // if all confirmed, set team formation time
+        // if (update.members.map(x => x.confirmed).reduce((res, x) => res && x)) {
+        const team = Teams.findOne(_id);
+        const activity = Activities.findOne(team.activity_id);
+
+        Teams.update(team._id, {
+          $set: {
+            peerAssessmentTime: new Date().getTime() - activity.statusStartTimes.teamPhase
+          }
+        });
       }
 
       // get current activity in context
       const activity_id = Teams.findOne(_id).activity_id;
 
-      // get number of teams that have not confirmed yet
-      const num_not_confirmed = Teams.find({ activity_id, confirmed: false }).count();
+      // during teamFormation, see if all teams have confirmed to try to move on
+      if (Activities.findOne(activity_id).status === ActivityEnums.status.TEAM_FORMATION) {
+        // get number of teams that have not confirmed yet
+        const num_not_confirmed = Teams.find({ activity_id, confirmed: false }).count();
 
-      console.log(num_not_confirmed + " teams haven't confirmed yet.");
+        console.log(num_not_confirmed + " teams haven't confirmed yet.");
 
-      // everyone confirmed, no need to wait
-      if (num_not_confirmed === 0 && Activities.findOne(activity_id).status === ActivityEnums.status.TEAM_FORMATION) {
-        Activities.update(activity_id, {
-          $set: {
-            allTeamsFound: true
-          }
-        });
-        Meteor.call('activities.updateStatus', activity_id, (err, res) => {
-          if (err) {
-            alert(err);
-          } else {
-            // success!
-            console.log('Starting Activity Status ' + res);
-          }
-        });
+        // everyone confirmed, no need to wait
+        if (num_not_confirmed === 0) {
+          Activities.update(activity_id, {
+            $set: {
+              allTeamsFound: true
+            }
+          });
+          Meteor.call('activities.updateStatus', activity_id, (err, res) => {
+            if (err) {
+              alert(err);
+            } else {
+              // success!
+              console.log('Starting Activity Status ' + res);
+            }
+          });
+        }
+      } else if (Activities.findOne(activity_id).status === ActivityEnums.status.ASSESSMENT) {
+        // get number of teams that have not confirmed yet
+        const num_not_assessed = Teams.find({ activity_id, assessed: false }).count();
+
+        console.log(num_not_assessed + " teams haven't assessed yet.");
+
+        // everyone confirmed, no need to wait
+        if (num_not_assessed === 0) {
+          Activities.update(activity_id, {
+            $set: {
+              allTeamsAssessed: true
+            }
+          });
+          Meteor.call('activities.updateStatus', activity_id, (err, res) => {
+            if (err) {
+              alert(err);
+            } else {
+              // success!
+              console.log('Ending Activity ' + res);
+            }
+          });
+        }
       }
     }
   });
@@ -553,7 +591,9 @@ Meteor.startup(() => {
               shape: colored_shapes[i].shape,
               teamNumber: teams.length,
               confirmed: false,
-              responses: []
+              assessed: false,
+              teamFormationTime: 0,
+              peerAssessmentTime: 0
             })
           );
 
