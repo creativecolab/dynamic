@@ -183,10 +183,11 @@ class TeamDiscussion extends Component {
     // team formation phase
     if (status === ActivityEnums.status.TEAM_FORMATION) {
       // joined after team formation
-      if (!team) {
+      if (!team._id) {
         console.log('No team!>?');
 
-        return <div>No team? Try reloading the page!</div>;
+        // return <div>No team? Try reloading t?he page!</div>;
+        return <Waiting text="No team? Try refreshing this page!" />;
       }
 
       return <TeamFormation pid={pid} {...team} />;
@@ -335,7 +336,7 @@ class TeamDiscussion extends Component {
         const voted = Users.findOne({ pid, 'preference.activity_id': activity_id }) !== undefined;
 
         this.setState({
-          teammates: team != {} ? team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 2 })) : [],
+          teammates: team._id ? team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 2 })) : [],
           choseTeammate: voted,
           hasFooter: !voted && team
         });
