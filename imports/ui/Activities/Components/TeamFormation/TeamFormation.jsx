@@ -88,8 +88,16 @@ class TeamFormation extends Component {
           title="Introduce yourself!"
           imageSpaced
           imageSrc="/intro.jpg"
-          subtitle="Looks like you found everyone. While waiting for other groups to form, introduce yourself to your teammates."
-        />
+        >
+          <div className="member-list">
+            {this.state.teammates.map(m => (
+              <div key={m.pid}>{this.getNameFromPid(m.pid)}</div>
+            ))}
+          </div>
+          <div className="team-instruct">
+            Looks like you found everyone. While waiting for other groups to form, introduce yourself to your teammates.
+          </div>
+        </PictureContent>
       );
     }
 

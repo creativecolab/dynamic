@@ -16,6 +16,7 @@ import TeamFormation from '../Components/TeamFormation/TeamFormation';
 import TeammateSliders from '../Components/TeammateSliders/TeammateSliders';
 
 import './TeamDiscussion.scss';
+import Group from 'antd/lib/input/Group';
 
 const Message = posed.div({
   hidden: {
@@ -145,7 +146,7 @@ class TeamDiscussion extends Component {
 
   // check if we're ready to go with questions and teams
   shouldComponentUpdate(nextProps) {
-    console.log('Should udpdate');
+    console.log('Should update');
     const { questions, team } = nextProps;
 
     // if (questions.length === 0) {
@@ -216,7 +217,7 @@ class TeamDiscussion extends Component {
                 return (
                   <div className="question-card-wrapper" key={q._id}>
                     <div className="question-card">
-                      <div className="label">ICEBREAKER</div>
+                      <div className="label">{q.label}</div>
                       {index + 1}. {q.prompt}
                       {/* {team && (
                         <div onClick={() => this.handleShare()} className="suggest-question-tag">

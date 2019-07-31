@@ -85,7 +85,6 @@ const dbquestions = [
       'Alex is a wheelchair user and often runs into problems of accessibility due to lack of ramps or elevators. What product/service can you design to improve these accessibility issues?',
       'Luke has difficulty controlling his eating. What product/service can you design to help him eat healthier?',
       'Charlie is an energetic middle schooler who has difficulty controlling his hyperactivity and fidgeting while in class. What solutions can you design to help him concentrate?'
-
     ]
   }
 ];

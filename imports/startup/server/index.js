@@ -294,6 +294,7 @@ function createQuestions() {
           createdTime: new Date().getTime(),
           viewTimer: 0,
           timesViewed: 0,
+          label: 'ICEBREAKER',
           round
         });
       });
@@ -309,6 +310,7 @@ function createQuestions() {
           createdTime: new Date().getTime(),
           viewTimer: 0,
           timesViewed: 0,
+          label: 'DESIGN QUESTION',
           round
         });
       });
@@ -320,6 +322,7 @@ function createQuestions() {
           createdTime: new Date().getTime(),
           viewTimer: 0,
           timesViewed: 0,
+          label: 'TEAM QUESTION',
           round: 0
         });
       });

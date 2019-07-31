@@ -189,8 +189,10 @@ export default class Mobile extends Component {
                 {displayTeam && team_id && (
                   <>
                     <img src={`/shapes/${shape}-solid-${color}-small.png`} alt="" />
-                    <div className="group-name-label">names</div>
+                    {/* <div className="name-flex">
+                      <div className="group-name-label">names</div> */}
                     {teamOpen ? <span>&#9650;</span> : <span>&#9660;</span>}
+                    {/* </div> */}
                   </>
                 )}
               </div>
