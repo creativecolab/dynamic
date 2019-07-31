@@ -65,7 +65,7 @@ class TeamDiscussion extends Component {
 
     let teammates = [];
 
-    if (team && team.members) {
+    if (team._id && team.members) {
       teammates = team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 2 }));
     } else {
       voted = true;
@@ -319,7 +319,7 @@ class TeamDiscussion extends Component {
     const { status, team, activity_id, pid } = this.props;
 
     // new team!
-    if (prevProps.team && team && prevProps.team._id !== team._id) {
+    if (prevProps.team._id && team._id && prevProps.team._id !== team._id) {
       this.setState({
         teammates: team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 2 }))
       });

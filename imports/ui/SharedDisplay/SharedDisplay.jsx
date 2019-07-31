@@ -65,13 +65,14 @@ export default class SharedDisplay extends Component {
       }
     );
 
-    // create 3 default activities
+    // create 6 default activities
     const activities = [];
 
     for (let i = 0; i < 6; i++) {
       const activity_id = Activities.insert({
         name: ActivityEnums.name.TEAM_DISCUSSION,
         session_id,
+        index: i,
         teamSize: 3, // TODO: default value?
         hasIndvPhase: false,
         durationIndv: 180,

@@ -222,23 +222,27 @@ Meteor.methods({
         } else {
           console.log(error);
         }
-      });
+      }
+    );
+
     // update how many times the next question has been viewed
-    if (next_question != "") {
-      Questions.update(next_question, {
-        $inc: {
-          timesViewed: 1
-        }
-      },
+    if (next_question != '') {
+      Questions.update(
+        next_question,
+        {
+          $inc: {
+            timesViewed: 1
+          }
+        },
         error => {
           if (!error) {
             console.log('Saved next question');
           } else {
             console.log(error);
           }
-        });
+        }
+      );
     }
-    
   },
 
   'users.addPoints': function({ user_id, session_id, points }) {
@@ -374,7 +378,10 @@ Meteor.startup(() => {
         // start first activity
         const session = Sessions.findOne(_id);
 
-        Meteor.call('activities.updateStatus', session.activities[0], (err, res) => {
+        // TODO: check if this works
+        const firstActivity = Activities.findOne({ session_id: _id, index: 0 });
+
+        Meteor.call('activities.updateStatus', firstActivity._id, (err, res) => {
           if (err) {
             alert(err);
           } else {
@@ -421,7 +428,7 @@ Meteor.startup(() => {
       console.log(num_not_confirmed + " teams haven't confirmed yet.");
 
       // everyone confirmed, no need to wait
-      if (num_not_confirmed === 0 && Activities.findOne(activity_id).status === 2) {
+      if (num_not_confirmed === 0 && Activities.findOne(activity_id).status === ActivityEnums.status.TEAM_FORMATION) {
         Activities.update(activity_id, {
           $set: {
             allTeamsFound: true
@@ -620,7 +627,10 @@ Meteor.startup(() => {
         const session = Sessions.findOne({ activities: _id });
 
         // get next activity
-        const nextActivity = Activities.findOne({ session_id: session._id, status: 0 }, { sort: { timestamp: 1 } });
+        const nextActivity = Activities.findOne(
+          { session_id: session._id, status: ActivityEnums.status.READY },
+          { sort: { index: 1 } }
+        );
 
         // no activities left!! end session...
         if (!nextActivity) {
