@@ -95,7 +95,7 @@ class TeamFormation extends Component {
             ))}
           </div>
           <div className="team-instruct">
-            Looks like you found everyone. While waiting for other groups to form, introduce yourself to your teammates.
+            Looks like you found everyone. While waiting for other groups to form, introduce yourself to your group members.
           </div>
         </PictureContent>
       );
@@ -116,7 +116,7 @@ class TeamFormation extends Component {
           <div className="user-number">
             You have <b>{myNum}</b> orange{myNum === 1 ? '' : 's'}.
           </div>
-          <Textfit mode="single">How many oranges does your team have?</Textfit>
+          <Textfit mode="single">How many oranges does your group have?</Textfit>
           <TextInput
             className="text-sum"
             name="enter-team-number"

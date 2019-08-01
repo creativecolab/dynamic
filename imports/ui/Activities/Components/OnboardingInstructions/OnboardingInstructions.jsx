@@ -29,7 +29,7 @@ export default function OnboardingInstructions() {
         </div>
         <div className="instr-card-wrapper">
           <PictureContent
-            title="2. Find your teammates"
+            title="2. Find your group members"
             subtitle="Once you find them, move away from the center of the room."
             imageSrc="./hold_phones1.jpg"
           />
