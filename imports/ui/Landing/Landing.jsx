@@ -144,6 +144,7 @@ export default class Landing extends Component {
 
     // find user by pid on database
     const user = Users.findOne({ pid });
+    console.log(user);
 
     // find current session
     const session = Sessions.findOne({ code });
