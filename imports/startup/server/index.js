@@ -333,6 +333,25 @@ function createQuestions() {
   });
 }
 
+function createUsers() {
+  const lab_members = ['Sam', 'Gus', 'Amy', 'Steven', 'Steve', 'Ashley', 'Jason', 'Regina', 'Maysnow', 'Krystal',
+                      'Brian', 'Jungwon', 'Kashdog', 'Tone', 'Tiffany', 'Vincent', 'Steven', 'Lu', 'Yuhan', 
+                      'Kylee', 'Bryce', 'Boya', 'Hannah', 'Lan']
+
+  lab_members.forEach((member) => {
+    let skill =  Math.floor(Math.random() * 2) + 1
+    Users.insert({
+      name: member,
+      pid: member + "1",
+      skill: skill > 1 ? "wizard" : "jedi",
+      joinTime: new Date().getTime(),
+      teamHistory: [],
+      sessionHistory: [],
+      preferences: []
+    });
+  })
+}
+
 function shuffle(a) {
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -364,6 +383,8 @@ Meteor.startup(() => {
   getPreference();
 
   createQuestions();
+
+  createUsers();
 
   // handles session start/end
   const sessionCursor = Sessions.find({});

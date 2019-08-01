@@ -28,20 +28,21 @@
 }
 
 .confirmation {
+  margin-top: 20%;
   text-align: center;
 
   .question {
-    font-size: 22px;
+    font-size: 32px;
   }
 
   .name {
-    font-weight: bold;
-    font-family: $font-stack;
+    font-size: 48px;
+    margin: 5%;
   }
 
   .skill {
-    font-weight: bold;
-    font-family: $font-stack;
+    font-size: 48px;
+    margin: 5%;
 
   }
 }

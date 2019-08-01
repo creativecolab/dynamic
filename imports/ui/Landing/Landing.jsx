@@ -302,7 +302,7 @@ export default class Landing extends Component {
     user.skill = "wizard";
 
     return (
-      <Mobile buttonAction={this.handleConfirmation} buttonText={"Yes"} hasNavbar={false}>
+      <Mobile buttonAction={this.handleConfirmation} buttonTxt={"Yes"} hasNavbar={false}>
         {this.renderRedirect()}
         <div className="confirmation">
           <div className="question">Is this you?</div>
