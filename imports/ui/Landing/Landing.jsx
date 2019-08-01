@@ -39,14 +39,14 @@ export default class Landing extends Component {
     });
   };
 
-  // // update the pid as the user types
-  // handleName = evt => {
-  //   if (evt.target.value.length > 30) return;
+  // update the name as the user types
+  handleName = evt => {
+    if (evt.target.value.length > 30) return;
 
-  //   this.setState({
-  //     name: evt.target.value
-  //   });
-  // };
+    this.setState({
+      name: evt.target.value
+    });
+  };
 
   // update the pid as the user types
   handlePid = evt => {
@@ -109,26 +109,11 @@ export default class Landing extends Component {
 
   // TODO: maybe -- use localStorage to suggest login
   handleLogin = () => {
-    // evt.preventDefault();
-
-    const { name } = this.state;
 
     /* eslint-disable react/destructuring-assignment */
     const pid = this.state.pid.toLowerCase().trim();
     const code = this.state.code.toLowerCase().trim();
     /* eslint-enable react/destructuring-assignment */
-
-    // if (name.length === 0) {
-    //   this.setState({
-    //     invalidName: true
-    //   });
-
-    //   return;
-    // } else {
-    //   this.setState({
-    //     invalidName: false
-    //   });
-    // }
 
     if (pid.length === 0) {
       this.setState({
@@ -153,7 +138,8 @@ export default class Landing extends Component {
       // user is already a participant in this session! TODO: handle case where two diff people enter the same username >:O
       if (session.participants.includes(pid)) {
         this.setState({
-          pidSubmitted: true
+          pidSubmitted: true,
+          name: user.name
         });
       }
 
@@ -198,7 +184,8 @@ export default class Landing extends Component {
             }
 
             this.setState({
-              pidSubmitted: true
+              pidSubmitted: true,
+              name: user.name
             });
           }
         );
@@ -208,7 +195,7 @@ export default class Landing extends Component {
     // creating user for the first time! AKA signup
     else {
 
-      // NOT ALLOWED RN
+      // NOT ALLOWED, must use a key that we gave to them
       this.setState({
         invalidPID: true
       });
@@ -264,14 +251,40 @@ export default class Landing extends Component {
     }
   };
 
+
   handleConfirmation = () => {
+    const { pid } = this.state;
+    const name = this.state.name.trim();
+
+    if (name.length === 0) {
+      this.setState({
+        invalidName: true
+      });
+      return;
+    } else {
+      this.setState({
+        invalidName: false
+      });
+    }
+
+    // find user by pid on database
+    const user = Users.findOne({ pid });
+
+    // update the user's name to their preferred name
+    Users.update(user._id, {
+      $set: {
+        name: name
+      }
+    });
+
     this.setState({
       ready: true
     });
-  };
+  }
+
 
   renderLogin() {
-    const { name, pid, invalidName, invalidPID } = this.state;
+    const { pid, invalidPID } = this.state;
 
     return (
       <Mobile buttonAction={this.handleLogin} hasNavbar={false}>
@@ -302,21 +315,22 @@ export default class Landing extends Component {
   }
 
   renderConfirmation() {
-    const { pid } = this.state;
-    const user = Users.findOne({ pid });
+    const { name, invalidName } = this.state;
 
     return (
       <Mobile buttonAction={this.handleConfirmation} buttonTxt="Yes" hasNavbar={false}>
         {this.renderRedirect()}
         <div className="confirmation">
-          <div className="question">Is this you?</div>
-          {/* TODO: Make this a TextInput with value = user.name. Update their names when they press "Yes"*/}
-          <div className="name">
-            Name: <strong>{user.name}</strong>
-          </div>
-          <div className="skill">
-            Jedi or Wizard?: <strong>{user.skill}</strong>
-          </div>
+          <TextInput
+            name="name"
+            onSubmit={this.handleConfirmation}
+            onChange={this.handleName}
+            value={name}
+            invalid={invalidName}
+            invalidMsg="Invalid Name!"
+            label={"Is this your preferred name?"}
+            placeholder="Enter your preferred name here."
+          />
         </div>
       </Mobile>
     );

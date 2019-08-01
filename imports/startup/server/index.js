@@ -303,14 +303,11 @@ function createQuestions() {
 function createUsers() {
   const cogs_187A_students = JSON.parse(Assets.getText('cogs_187A/students.json'));
   cogs_187A_students.forEach((student) => {
-    //prepare skills and names
-    let skill =  Math.floor(Math.random() * 2) + 1
-    if (!student.skill) student.skill = skill;
+    //insert each user into the databse
     Users.upsert({pid: student.code.toString()},
     {
       name: student.name,
       pid: student.code.toString(),
-      skill: skill > 1 ? "wizard" : "jedi",
       joinTime: new Date().getTime(),
       teamHistory: [],
       sessionHistory: [],
