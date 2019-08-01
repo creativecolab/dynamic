@@ -15,55 +15,7 @@ import Responses from '../../api/responses';
 import dbquestions from './dbquestions';
 import './register-api';
 import { formTeams } from './team-former.js';
-
-function getPreference() {
-  const session = Sessions.findOne({ code: 'quiz2' });
-
-  // TODO: currently assumes there is only one session, need to make more general in the future
-
-  if (!session) {
-    return 'No session named quiz2 yet!';
-  }
-
-  const { participants } = session;
-
-  if (!participants) {
-    return 'No particpants for this session yet';
-  }
-
-  // csv format
-  let ret = 'pid,pref_0,rating_0,pref_1,rating_1,pref_2,rating_2\n';
-
-  // get the data on the preferences of each participant
-  participants.map(user_pid => {
-    ret += `"${user_pid.toUpperCase()}",`;
-    const user = Users.findOne({ pid: user_pid });
-
-    if (user) {
-      user.preference.map(activity_pref => {
-        activity_pref.values.map((pref, index) => {
-          ret += pref.pid + ',' + pref.value;
-
-          // add a comma when not on preference 3
-          if (index != 2) ret += ',';
-        });
-
-        // handles ratings from only 2 people
-        if (activity_pref.values.length < 3) ret += ',\n';
-        else ret += '\n';
-      });
-
-      // when user exists but has no preference data (happens sometimes)
-      if (user.preference.length == 0) ret += ',,,,,\n';
-    } else {
-      // no preference info on this user for some reason
-      ret += ',,,,,\n';
-    }
-    // ret += '\n';
-  });
-
-  return ret;
-}
+import { getPreference, getInteractions } from './data-getter.js';
 
 if (Meteor.isServer) {
   // Global API configuration
@@ -85,9 +37,21 @@ if (Meteor.isServer) {
     }
   });
 
-  // Meteor.publish('responses.private', function() {
-  //   return Responses.find();
-  // });
+  Api.addRoute('interactions/:code', {
+    get() {
+      const content_disposition = 'attachment; filename=interactions_' + this.urlParams.code + '.csv';
+      return {
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'text/csv',
+          'Content-Disposition': content_disposition
+        },
+        body: getInteractions(this.urlParams.code)
+      };
+    }
+  });
+
+  
 }
 
 let timeout_timer;
@@ -338,13 +302,12 @@ function createQuestions() {
 
 function createUsers() {
   const cogs_187A_students = JSON.parse(Assets.getText('cogs_187A/students.json'));
-  console.log(cogs_187A_students);
   cogs_187A_students.forEach((student) => {
     //prepare skills and names
     let skill =  Math.floor(Math.random() * 2) + 1
-    console.log(student);
     if (!student.skill) student.skill = skill;
-    Users.insert({
+    Users.upsert({pid: student.code.toString()},
+    {
       name: student.name,
       pid: student.code.toString(),
       skill: skill > 1 ? "wizard" : "jedi",
@@ -353,7 +316,7 @@ function createUsers() {
       sessionHistory: [],
       preferences: []
     });
-  })
+  });
   
 }
 
