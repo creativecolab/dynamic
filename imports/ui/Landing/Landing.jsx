@@ -299,7 +299,6 @@ export default class Landing extends Component {
 
     const { pid } = this.state;
     const user = Users.findOne({ pid });
-    user.skill = "wizard";
 
     return (
       <Mobile buttonAction={this.handleConfirmation} buttonTxt={"Yes"} hasNavbar={false}>
