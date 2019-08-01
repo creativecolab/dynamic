@@ -34,7 +34,15 @@ class TeamShapes extends Component {
                 <img
                   src={'/shapes/' + team.shape + '-solid-' + team.color + '.jpg'}
                   alt={team.color + ' ' + team.shape}
-                  title={team.members.map(m => Users.findOne(m.pid).name).join(', ')}
+                  title={team.members
+                    .map(m => {
+                      const user = Users.findOne(m.pid);
+
+                      if (user) return user.name;
+
+                      return '';
+                    })
+                    .join(', ')}
                 />
               </div>
             );
@@ -44,7 +52,15 @@ class TeamShapes extends Component {
                 <img
                   src={'/shapes/' + team.shape + '-outline-' + team.color + '.jpg'}
                   alt={team.color + ' ' + team.shape}
-                  title={team.members.map(m => Users.findOne({ pid: m.pid }).name).join(', ')}
+                  title={team.members
+                    .map(m => {
+                      const user = Users.findOne(m.pid);
+
+                      if (user) return user.name;
+
+                      return '';
+                    })
+                    .join(', ')}
                 />
               </div>
             );
