@@ -7,4 +7,4 @@ dumpquiz2/
 *.pyc
 pycache
 .vscode
-private/*
+private/cogs_187A
