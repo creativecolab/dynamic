@@ -99,7 +99,6 @@ export default class TeammateSliders extends Component {
 
   componentWillUnmount() {
     //when the component is unmounting, save whatever the user has done on the slider if they haven't submitted
-    console.log("Sliders unmounting");
     const { pid, activity_id, teammates } = this.props;
 
     const user = Users.findOne({ pid });
@@ -124,7 +123,7 @@ export default class TeammateSliders extends Component {
         if (error) {
           console.log(error);
         } else {
-          console.log("Submitted preferences after unmounting");
+          console.log("Submitted preferences after the sliders unmounted");
         }
       }
     );

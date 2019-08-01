@@ -350,8 +350,6 @@ class TeamDiscussion extends Component {
       // if voted is true, check if other team members have voted
       const voted = Users.findOne({ pid, 'preferences.activity_id': activity_id }) !== undefined;
 
-      console.log(voted && team._id && !team.assessed);
-
       if (voted && team._id && !team.assessed) {
         let num_assessed = 1; // since this is only called after the client submits their vote
 
@@ -361,8 +359,6 @@ class TeamDiscussion extends Component {
               num_assessed++;
           }
         });
-        console.log(num_assessed);
-        console.log(team.members.length);
 
         if (num_assessed === team.members.length) {
           // since everyone in this team has submitted their assessments, we can mark this team as assessed (and tell the other clients)
