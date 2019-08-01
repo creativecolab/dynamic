@@ -22,7 +22,7 @@ export default class TextInput extends Component {
     placeholder: 'Placeholder',
     label: 'Label',
     hasButton: false,
-    onSubmit: () => {}
+    onSubmit: () => { }
   };
 
   handleSubmit(evt) {
@@ -33,7 +33,7 @@ export default class TextInput extends Component {
   }
 
   render() {
-    const { name, value, label, placeholder, invalid, onSubmit, onChange, hasButton } = this.props;
+    const { name, value, label, placeholder, invalid, invalidMsg, onSubmit, onChange, hasButton } = this.props;
 
     return (
       <div className="field-container">
@@ -56,7 +56,7 @@ export default class TextInput extends Component {
                 Go!
               </Button>
             )}
-            {/* {invalid && <span className="input-message">{invalidMsg}</span>} */}
+            {invalid && <span className="input-message">{invalidMsg}</span>}
           </div>
         </label>
       </div>
