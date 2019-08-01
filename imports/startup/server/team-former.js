@@ -1,5 +1,3 @@
-/* File is meant to build the teams for team formation given the participants and team history */
-import Sessions from '../../api/sessions'
 // Some constants
 const MAX_TEAM_SIZE = 3;
 
@@ -144,8 +142,6 @@ function buildNewTeams(participants, teamHistory) {
 
 export function formTeams(participants, prevActIndex, teamHistory) {
   
-  //return firstRoundTeams(participants);
-
   // if we're on the first activity, call first teams. Otherwise, build based on teamHistory 
   if (prevActIndex < 0) return firstRoundTeams(participants);
   return buildNewTeams(participants, teamHistory)
