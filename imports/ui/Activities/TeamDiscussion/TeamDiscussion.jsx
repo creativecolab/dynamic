@@ -66,7 +66,7 @@ class TeamDiscussion extends Component {
     let teammates = [];
 
     if (team._id && team.members) {
-      teammates = team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 2 }));
+      teammates = team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 0 }));
     } else {
       voted = true;
     }
@@ -88,35 +88,6 @@ class TeamDiscussion extends Component {
 
     return '';
   }
-
-  // handleShare = () => {
-  //   const { team, pid } = this.props;
-  //   const { sharedBy } = this.state;
-
-  //   if (sharedBy) return;
-
-  //   if (!team) return;
-
-  //   Teams.update(team._id, {
-  //     $set: {
-  //       shared: { by: pid, index: this.reactSwipeEl.getPos() }
-  //     }
-  //   });
-
-  //   this.setState(
-  //     {
-  //       shared: true
-  //     },
-  //     () => {
-  //       console.log('Sharing question #' + this.reactSwipeEl.getPos());
-  //       setTimeout(() => {
-  //         this.setState({
-  //           shared: false
-  //         });
-  //       }, 500);
-  //     }
-  //   );
-  // };
 
   handleChooseTeammate = () => {
     this.setState({
@@ -146,35 +117,56 @@ class TeamDiscussion extends Component {
     });
   };
 
-  // check if we're ready to go with questions and teams
+  // make sure we submit preferences for people
   shouldComponentUpdate(nextProps) {
     console.log('ShouldComponentUpdate');
-
-    const { questions, team } = nextProps;
-
-    // if (questions.length < 10) {
-    //   console.log('Not enough questions?');
-    //   console.log(questions);
-
-    //   return false;
-    // }
-
-    // if (!team) {
-    //   console.log('No team yet?');
-    //   console.log(team);
-    //   return false;
-    // }
-    // if (team.members === []) {
-    //   console.log('No teammates?');
-    //   console.log(team);
-    //   return false;
-    // }
 
     return true;
   }
 
+  handlepreferenceChange = (value, index) => {
+    const { teammates } = this.state;
+
+    teammates[index].value = value;
+    this.setState({
+      teammates
+    });
+    console.log(teammates);
+  };
+
+  handleVote = () => {
+    const { pid, activity_id } = this.props;
+    const { teammates } = this.state;
+
+    const user = Users.findOne({ pid });
+
+    Users.update(
+      user._id,
+      {
+        $push: {
+          preferences: {
+            values: teammates,
+            activity_id,
+            timestamp: new Date().getTime()
+          }
+        }
+      },
+      error => {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("Submitted preferences");
+          this.setState({
+            choseTeammate: true,
+            hasFooter: false
+          });
+        }
+      }
+    );
+  };
+
   // renders based on activity status
-  renderContent = ({ status, pid, questions, team }) => {
+  renderContent = ({ status, pid, activity_id, questions, team }) => {
     // individual input phase (none for this activity)
     if (status === ActivityEnums.status.INPUT_INDV) {
       return 'Indvidual input';
@@ -184,9 +176,8 @@ class TeamDiscussion extends Component {
     if (status === ActivityEnums.status.TEAM_FORMATION) {
       // joined after team formation
       if (!team._id) {
-        console.log('No team!>?');
+        console.log('No team!?');
 
-        // return <div>No team? Try reloading t?he page!</div>;
         return <Waiting text="No team? Try refreshing this page!" />;
       }
 
@@ -218,11 +209,6 @@ class TeamDiscussion extends Component {
                     <div className="question-card">
                       <div className="label">{q.label}</div>
                       {index + 1}. {q.prompt}
-                      {/* {team && (
-                        <div onClick={() => this.handleShare()} className="suggest-question-tag">
-                          Share
-                        </div>
-                      )} */}
                     </div>
                   </div>
                 );
@@ -235,18 +221,6 @@ class TeamDiscussion extends Component {
             <button className="next" type="button" onClick={() => this.reactSwipeEl.next()}>
               &rarr;
             </button>
-
-            {/* <Message className="pose-msge" pose={this.state.shared ? 'visible' : 'hidden'}>
-              Shared with group!
-            </Message>
-
-            {team && (
-              <Message className="pose-msge" pose={this.state.sharedBy ? 'visible' : 'hidden'}>
-                <strong>{this.getName(team.shared)}</strong>
-                <br />
-                shared this question!
-              </Message>
-            )} */}
           </div>
         </div>
       );
@@ -265,8 +239,8 @@ class TeamDiscussion extends Component {
 
         return (
           <TeammateSliders
-            team_id={team._id}
             pid={pid}
+            activity_id={activity_id}
             teammates={this.state.teammates}
             handleChange={this.handlepreferenceChange}
           />
@@ -277,47 +251,35 @@ class TeamDiscussion extends Component {
     return <Waiting text="Awesome! Now wait for the next activity to begin..." />;
   };
 
-  handlepreferenceChange = (value, index) => {
-    const { teammates } = this.state;
+  render() {
+    console.log('Render');
+    const { questions, team } = this.props;
+    const { displayTeam, hasFooter } = this.state;
 
-    teammates[index].value = value;
-    this.setState({
-      teammates
-    });
-    console.log(teammates);
-  };
+    if (questions.length === 0) return <Loading />;
 
-  handleVote = () => {
-    const { pid, activity_id, team } = this.props;
-    const { teammates } = this.state;
+    const { progress, sessionLength, statusStartTime, duration } = this.props;
 
-    const user = Users.findOne({ pid });
-
-    Users.update(
-      user._id,
-      {
-        $push: {
-          preferences: {
-            values: teammates,
-            activity_id,
-            timestamp: new Date().getTime()
-          }
-        }
-      },
-      error => {
-        if (error) {
-          console.log(error);
-        } else {
-          this.setState({
-            choseTeammate: true,
-            hasFooter: false
-          });
-        }
-      }
+    return (
+      <Mobile
+        activityName="Icebreaker" //TODO: turn this string into state
+        sessionStatus={progress}
+        sessionLength={sessionLength}
+        clockDuration={duration}
+        clockStartTime={statusStartTime}
+        {...team}
+        displayTeam={displayTeam}
+        hasTimer
+        hasFooter={hasFooter}
+        buttonAction={this.handleVote}
+        buttonTxt="Submit"
+      >
+        {this.renderContent(this.props)} {/*component*/}
+      </Mobile>
     );
-  };
+  }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     console.log('ComponentDidUpdate');
 
     const { status, team, activity_id, pid } = this.props;
@@ -325,7 +287,7 @@ class TeamDiscussion extends Component {
     // new team!
     if (prevProps.team._id && team._id && prevProps.team._id !== team._id) {
       this.setState({
-        teammates: team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 2 }))
+        teammates: team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 0 }))
       });
     }
 
@@ -340,7 +302,7 @@ class TeamDiscussion extends Component {
         const voted = Users.findOne({ pid, 'preferences.activity_id': activity_id }) !== undefined;
 
         this.setState({
-          teammates: team._id ? team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 2 })) : [],
+          teammates: team._id ? team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 0 })) : [],
           choseTeammate: voted,
           hasFooter: !voted && team._id
         });
@@ -356,7 +318,6 @@ class TeamDiscussion extends Component {
             else console.log(error);
           });
         }
-
       } else {
         this.setState({
           hasFooter: false
@@ -389,62 +350,39 @@ class TeamDiscussion extends Component {
       // if voted is true, check if other team members have voted
       const voted = Users.findOne({ pid, 'preferences.activity_id': activity_id }) !== undefined;
 
-      console.log(voted && team._id && !team.assessed)
       if (voted && team._id && !team.assessed) {
         let num_assessed = 1; // since this is only called after the client submits their vote
-        team.members.forEach((member) => {
+
+        team.members.forEach(member => {
           if (member.pid != pid) {
-            if (Users.findOne({ pid: member.pid, 'preferences.activity_id': activity_id }) !== undefined) num_assessed++;
+            if (Users.findOne({ pid: member.pid, 'preferences.activity_id': activity_id }) !== undefined)
+              num_assessed++;
           }
         });
-        console.log(num_assessed);
-        console.log(team.members.length);
+
         if (num_assessed === team.members.length) {
           // since everyone in this team has submitted their assessments, we can mark this team as assessed (and tell the other clients)
-          Teams.update(team._id,
+          Teams.update(
+            team._id,
             {
               $set: {
                 assessed: true
               }
             },
-            (error) => {
-              if (!error) console.log("Team assessed!");
+            error => {
+              if (!error) console.log('Team assessed!');
               else console.log(error);
             }
           );
         }
       }
     }
-
   }
 
-  render() {
-    console.log('Render');
-    const { questions, team } = this.props;
-    const { displayTeam, hasFooter } = this.state;
-
-    if (questions.length === 0) return <Loading />;
-
-    const { progress, sessionLength, statusStartTime, duration } = this.props;
-
-    return (
-      <Mobile
-        activityName="Icebreaker" //TODO: turn this string into state
-        sessionStatus={progress}
-        sessionLength={sessionLength}
-        clockDuration={duration}
-        clockStartTime={statusStartTime}
-        {...team}
-        displayTeam={displayTeam}
-        hasTimer
-        hasFooter={hasFooter}
-        buttonAction={this.handleVote}
-        buttonTxt="Submit"
-      >
-        {this.renderContent(this.props)} {/*component*/}
-      </Mobile>
-    );
+  componentWillUnmount() {
+    console.log("ComponentWillUnmount");
   }
+
 }
 
 export default withTracker(({ pid, activity_id, progress }) => {

@@ -84,11 +84,7 @@ class TeamFormation extends Component {
 
     if (confirmed) {
       return (
-        <PictureContent
-          title="Introduce yourself!"
-          imageSpaced
-          imageSrc="/intro.jpg"
-        >
+        <PictureContent title="Introduce yourself!" imageSpaced imageSrc="/intro.jpg">
           <div className="member-list">
             {this.state.teammates.map(m => (
               <div key={m.pid}>{this.getNameFromPid(m.pid)}</div>
@@ -104,14 +100,16 @@ class TeamFormation extends Component {
     return (
       <PictureContent
         fitTitle
-        title="Find those with this shape and color"
+        title="Find others with this shape and color"
         imageSrc={`/shapes/${shape}-solid-${color}.jpg`}
       >
+        {/* <hr style={{ width: '100%', margin: 0 }} /> */}
         <div className="member-list">
           {this.state.teammates.map(m => (
             <div key={m.pid}>{this.getNameFromPid(m.pid)}</div>
           ))}
         </div>
+        {/* <hr style={{ width: '100%', margin: 0 }} /> */}
         <div>
           <div className="user-number">
             You have <b>{myNum}</b> orange{myNum === 1 ? '' : 's'}.

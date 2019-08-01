@@ -11,11 +11,14 @@ import 'antd/lib/icon/style/css';
 import Users from '../../../../api/users';
 import '../../../assets/_main.scss';
 import './TeammateSliders.scss';
+import { action } from 'popmotion';
 
 export default class TeammateSliders extends Component {
   static propTypes = {
+    pid: PropTypes.string.isRequired,
+    activity_id: PropTypes.string.isRequired,
     teammates: PropTypes.array.isRequired,
-    handleChange: PropTypes.func.isRequired
+    handleChange: PropTypes.func.isRequired,
   };
 
   getName(pid) {
@@ -86,8 +89,43 @@ export default class TeammateSliders extends Component {
     return (
       <div>
         <div className="slider-instructions">To what extent did you get to know your groupmates?</div>
+        <div className="slider-subinstructions">
+          Use the <strong>sliders</strong> to set your response.
+        </div>
         <div>{this.renderOptions()}</div>
       </div>
+    );
+  }
+
+  componentWillUnmount() {
+    //when the component is unmounting, save whatever the user has done on the slider if they haven't submitted
+    const { pid, activity_id, teammates } = this.props;
+
+    const user = Users.findOne({ pid });
+
+    const voted = user.preferences.filter((pref) => pref.activity_id == activity_id).length === 1
+
+    // if the user already voted, we don't need to save their preferences
+    if (voted) return;
+
+    Users.update(
+      user._id,
+      {
+        $push: {
+          preferences: {
+            values: teammates,
+            activity_id,
+            timestamp: new Date().getTime()
+          }
+        }
+      },
+      error => {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("Submitted preferences after the sliders unmounted");
+        }
+      }
     );
   }
 }

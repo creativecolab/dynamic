@@ -26,7 +26,8 @@ export default class Landing extends Component {
       invalidName: false,
       invalidPID: false,
       ready: false,
-      codeSubmitted: false
+      codeSubmitted: false,
+      pidSubmitted: false
     };
   }
 
@@ -38,21 +39,14 @@ export default class Landing extends Component {
     });
   };
 
-  // update the pid as the user types
-  handleName = evt => {
-    if (evt.target.value.length > 30) return;
+  // // update the pid as the user types
+  // handleName = evt => {
+  //   if (evt.target.value.length > 30) return;
 
-    this.setState({
-      name: evt.target.value
-    });
-  };
-
-  // update the section as the user types -- deprecated currently
-  // handleSection(section) {
   //   this.setState({
-  //     section
+  //     name: evt.target.value
   //   });
-  // }
+  // };
 
   // update the pid as the user types
   handlePid = evt => {
@@ -124,17 +118,17 @@ export default class Landing extends Component {
     const code = this.state.code.toLowerCase().trim();
     /* eslint-enable react/destructuring-assignment */
 
-    if (name.length === 0) {
-      this.setState({
-        invalidName: true
-      });
+    // if (name.length === 0) {
+    //   this.setState({
+    //     invalidName: true
+    //   });
 
-      return;
-    } else {
-      this.setState({
-        invalidName: false
-      });
-    }
+    //   return;
+    // } else {
+    //   this.setState({
+    //     invalidName: false
+    //   });
+    // }
 
     if (pid.length === 0) {
       this.setState({
@@ -159,7 +153,7 @@ export default class Landing extends Component {
       // user is already a participant in this session! TODO: handle case where two diff people enter the same username >:O
       if (session.participants.includes(pid)) {
         this.setState({
-          ready: true
+          pidSubmitted: true
         });
       }
 
@@ -204,7 +198,7 @@ export default class Landing extends Component {
             }
 
             this.setState({
-              ready: true
+              pidSubmitted: true
             });
           }
         );
@@ -257,23 +251,26 @@ export default class Landing extends Component {
           }
 
           this.setState({
-            ready: true
+            pidSubmitted: true
           });
         }
       );
     }
   };
 
+  handleConfirmation = () => {
+    this.setState({
+      ready: true
+    });
+  }
+
   renderLogin() {
     const { name, pid, invalidName, invalidPID } = this.state;
 
     return (
       <Mobile buttonAction={this.handleLogin} hasNavbar={false}>
-        {this.renderRedirect()}
         <div className="login-main">
-          {/* <div>Please fill the information below to participate</div>
-          <hr /> */}
-          <TextInput
+          {/* <TextInput
             name="name"
             onSubmit={this.handleLogin}
             onChange={this.handleName}
@@ -282,30 +279,44 @@ export default class Landing extends Component {
             invalidMsg="Not a valid name!"
             label="What is your name?"
             placeholder="Jane Doe"
-          />
+          /> */}
           <TextInput
             name="pid"
             onSubmit={this.handleLogin}
             onChange={this.handlePid}
             value={pid}
             invalid={invalidPID}
-            invalidMsg="Not a valid username!"
-            label="What do you want your username to be?"
-            placeholder="jdoe"
+            invalidMsg="That key is not recognized!"
+            label="Please enter the 4-digit key given to you by email."
+            placeholder="abcd"
           />
-          {/* <Tags
-            label="What time is your section?"
-            onSelection={evt => this.handleSection(evt)}
-            options={['2PM', '3PM', '4PM']}
-          /> */}
         </div>
       </Mobile>
     );
   }
 
-  render() {
-    const { codeSubmitted, code, invalidCode } = this.state;
+  renderConfirmation() {
 
+    const { pid } = this.state;
+    const user = Users.findOne({ pid });
+
+    return (
+      <Mobile buttonAction={this.handleConfirmation} buttonTxt={"Yes"} hasNavbar={false}>
+        {this.renderRedirect()}
+        <div className="confirmation">
+          <div className="question">Is this you?</div>
+          <div className="name">Name: <strong>{user.name}</strong></div>
+          <div className="skill">Jedi or Wizard?: <strong>{user.skill}</strong></div>
+        </div>
+      </Mobile>
+    );
+
+  }
+
+  render() {
+    const { codeSubmitted, pidSubmitted, code, invalidCode } = this.state;
+
+    if (pidSubmitted) return this.renderConfirmation();
     if (codeSubmitted) return this.renderLogin();
     else
       return (

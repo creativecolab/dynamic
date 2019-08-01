@@ -1,3 +1,5 @@
+@import '../assets/main';
+
 #container-top-margin{
   margin-top: 15%; 
 }
@@ -23,5 +25,25 @@
 
 #landing-logo {
   max-width: 100px;
+}
+
+.confirmation {
+  margin-top: 20%;
+  text-align: center;
+
+  .question {
+    font-size: 32px;
+  }
+
+  .name {
+    font-size: 48px;
+    margin: 5%;
+  }
+
+  .skill {
+    font-size: 48px;
+    margin: 5%;
+
+  }
 }
 
