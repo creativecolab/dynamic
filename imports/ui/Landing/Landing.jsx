@@ -268,7 +268,7 @@ export default class Landing extends Component {
     this.setState({
       ready: true
     });
-  }
+  };
 
   renderLogin() {
     const { name, pid, invalidName, invalidPID } = this.state;
@@ -302,27 +302,31 @@ export default class Landing extends Component {
   }
 
   renderConfirmation() {
-
     const { pid } = this.state;
     const user = Users.findOne({ pid });
 
     return (
-      <Mobile buttonAction={this.handleConfirmation} buttonTxt={"Yes"} hasNavbar={false}>
+      <Mobile buttonAction={this.handleConfirmation} buttonTxt="Yes" hasNavbar={false}>
         {this.renderRedirect()}
         <div className="confirmation">
           <div className="question">Is this you?</div>
-          <div className="name">Name: <strong>{user.name}</strong></div>
-          <div className="skill">Jedi or Wizard?: <strong>{user.skill}</strong></div>
+          {/* TODO: Make this a TextInput with value = user.name. Update their names when they press "Yes"*/}
+          <div className="name">
+            Name: <strong>{user.name}</strong>
+          </div>
+          <div className="skill">
+            Jedi or Wizard?: <strong>{user.skill}</strong>
+          </div>
         </div>
       </Mobile>
     );
-
   }
 
   render() {
     const { codeSubmitted, pidSubmitted, code, invalidCode } = this.state;
 
     if (pidSubmitted) return this.renderConfirmation();
+
     if (codeSubmitted) return this.renderLogin();
     else
       return (
