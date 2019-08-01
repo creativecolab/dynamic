@@ -334,15 +334,16 @@ function createQuestions() {
 }
 
 function createUsers() {
-  const lab_members = ['Sam', 'Gus', 'Amy', 'Steven', 'Steve', 'Ashley', 'Jason', 'Regina', 'Maysnow', 'Krystal',
-                      'Brian', 'Jungwon', 'Kashdog', 'Tone', 'Tiffany', 'Vincent', 'Steven', 'Lu', 'Yuhan', 
-                      'Kylee', 'Bryce', 'Boya', 'Hannah', 'Lan']
-
-  lab_members.forEach((member) => {
+  const cogs_187A_students = JSON.parse(Assets.getText('cogs_187A/students.json'));
+  console.log(cogs_187A_students);
+  cogs_187A_students.forEach((student) => {
+    //prepare skills and names
     let skill =  Math.floor(Math.random() * 2) + 1
+    console.log(student);
+    if (!student.skill) student.skill = skill;
     Users.insert({
-      name: member,
-      pid: member + "1",
+      name: student.name,
+      pid: student.code.toString(),
       skill: skill > 1 ? "wizard" : "jedi",
       joinTime: new Date().getTime(),
       teamHistory: [],
@@ -350,6 +351,7 @@ function createUsers() {
       preferences: []
     });
   })
+  
 }
 
 function shuffle(a) {

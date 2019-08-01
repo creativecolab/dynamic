@@ -233,7 +233,7 @@ class SessionProgress extends Component {
 
     const numJoined = session.participants.length;
 
-    // session not yet begun, provide details about what will happen. TODO: Make this fit in BigScreen layout
+    // session not yet begun, provide details about what will happen.
     if (session.status === 0)
       return (
         <BigScreen
