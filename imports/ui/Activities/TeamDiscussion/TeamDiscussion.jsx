@@ -207,7 +207,7 @@ class TeamDiscussion extends Component {
                 return (
                   <div className="question-card-wrapper" key={q._id}>
                     <div className="question-card">
-                      <div className="label">{q.label}</div>
+                      <div className="label" style={{ background: q.color }}>{q.label}</div>
                       {index + 1}. {q.prompt}
                     </div>
                   </div>

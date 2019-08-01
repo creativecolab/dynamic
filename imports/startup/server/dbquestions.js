@@ -1,6 +1,7 @@
 const dbquestions = [
   {
     label: 'icebreaker',
+    color: "#1E91D6", 
     prompts: [
       'Share what you did this summer.',
       'Where do you see yourself five years in the future?',
@@ -65,20 +66,22 @@ const dbquestions = [
   },
   {
     label: 'design',
+    color: "#F05D5E",
     prompts: [
       'Jane is a college student who has trouble staying awake in class. Apart from sleep trackers, what product can you design to help Jane overcome this problem?',
-      'Brian is struggling to quit smoking. What product/service can you design to help Brian quit?',
+      'Rob is struggling to quit smoking. What product/service can you design to help Brian quit?',
       'Ben is a high school student with anger management issues. What product/service can you design to help Ben better manage his emotions?',
       'Jerry doesn’t get enough exercise. Apart from activity trackers, what product/service can you design to help motivate him to exercise?',
       'Claire struggles with frequent stress at work. What product/service can you design to help Claire cope with her stress?',
       'Ann is a busy mother who can’t spend much time at home with her 4 year old child. What product/service can you design for Ann to stay connected with her child?',
-      'Alex is a wheelchair user and often runs into problems of accessibility due to lack of ramps or elevators. What product/service can you design to improve these accessibility issues?',
-      'Luke has difficulty controlling his eating. What product/service can you design to help him eat healthier?',
+      'Susie is a wheelchair user and often runs into problems of accessibility due to lack of ramps or elevators. What product/service can you design to improve these accessibility issues?',
+      'Luke has difficulty managing a healthy diet. What product/service can you design to help him eat healthier?',
       'Charlie is an energetic middle schooler who has difficulty controlling his hyperactivity and fidgeting while in class. What solutions can you design to help him concentrate?'
     ]
   },
   {
     label: 'team',
+    color: "#0CB755",
     prompts: [
       'Have you taken any previous courses related to this class? If so, which ones?',
       'What previous group projects have you taken on and what was your role on the team?',
