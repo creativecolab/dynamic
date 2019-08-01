@@ -7,3 +7,4 @@ dumpquiz2/
 *.pyc
 pycache
 .vscode
+private/*
