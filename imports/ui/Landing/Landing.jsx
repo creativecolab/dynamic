@@ -145,8 +145,6 @@ export default class Landing extends Component {
     // find user by pid on database
     const user = Users.findOne({ pid });
 
-    console.log(user);
-
     // find current session
     const session = Sessions.findOne({ code });
 
@@ -209,54 +207,60 @@ export default class Landing extends Component {
 
     // creating user for the first time! AKA signup
     else {
-      // create db object
-      Users.insert({
-        name,
-        pid,
-        joinTime: new Date().getTime(),
-        teamHistory: [],
-        sessionHistory: [
-          {
-            session_id: session._id,
-            sessionJoinTime: new Date().getTime(),
-            points: 0
-          }
-        ],
-        preferences: []
+
+      // NOT ALLOWED RN
+      this.setState({
+        invalidPID: true
       });
 
-      // add user to session
-      Sessions.update(
-        session._id,
-        {
-          $push: {
-            participants: pid
-          }
-        },
-        () => {
-          if (session.status === SessionEnums.status.ACTIVE) {
-            Meteor.call(
-              'sessions.updateTeamHistory_LateJoinees',
-              session.participants,
-              pid,
-              session.teamHistory,
-              session._id,
-              (err, res) => {
-                if (err) {
-                  alert(err);
-                } else {
-                  // success!
-                  console.log('\nSuccessfully joined late.');
-                }
-              }
-            );
-          }
+      // // create db object
+      // Users.insert({
+      //   name,
+      //   pid,
+      //   joinTime: new Date().getTime(),
+      //   teamHistory: [],
+      //   sessionHistory: [
+      //     {
+      //       session_id: session._id,
+      //       sessionJoinTime: new Date().getTime(),
+      //       points: 0
+      //     }
+      //   ],
+      //   preferences: []
+      // });
 
-          this.setState({
-            pidSubmitted: true
-          });
-        }
-      );
+      // // add user to session
+      // Sessions.update(
+      //   session._id,
+      //   {
+      //     $push: {
+      //       participants: pid
+      //     }
+      //   },
+      //   () => {
+      //     if (session.status === SessionEnums.status.ACTIVE) {
+      //       Meteor.call(
+      //         'sessions.updateTeamHistory_LateJoinees',
+      //         session.participants,
+      //         pid,
+      //         session.teamHistory,
+      //         session._id,
+      //         (err, res) => {
+      //           if (err) {
+      //             alert(err);
+      //           } else {
+      //             // success!
+      //             console.log('\nSuccessfully joined late.');
+      //           }
+      //         }
+      //       );
+      //     }
+
+      //     this.setState({
+      //       pidSubmitted: true
+      //     });
+      //   }
+      // );
     }
   };
 
@@ -288,7 +292,7 @@ export default class Landing extends Component {
             onChange={this.handlePid}
             value={pid}
             invalid={invalidPID}
-            invalidMsg="That key is not recognized!"
+            invalidMsg="Invalid key!"
             label="Please enter the 4-digit key given to you by email."
             placeholder="abcd"
           />
