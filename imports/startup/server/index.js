@@ -298,6 +298,7 @@ function createQuestions() {
           viewTimer: 0,
           timesViewed: 0,
           label: 'ICEBREAKER',
+          color: group.color,
           round
         });
       });
@@ -314,6 +315,7 @@ function createQuestions() {
           viewTimer: 0,
           timesViewed: 0,
           label: 'DESIGN QUESTION',
+          color: group.color,
           round
         });
       });
@@ -326,6 +328,7 @@ function createQuestions() {
           viewTimer: 0,
           timesViewed: 0,
           label: 'TEAM QUESTION',
+          color: group.color,
           round: 0
         });
       });
