@@ -36,7 +36,7 @@ class TeamShapes extends Component {
                   alt={team.color + ' ' + team.shape}
                   title={team.members
                     .map(m => {
-                      const user = Users.findOne(m.pid);
+                      const user = Users.findOne({ pid: m.pid });
 
                       if (user) return user.name;
 
@@ -54,7 +54,7 @@ class TeamShapes extends Component {
                   alt={team.color + ' ' + team.shape}
                   title={team.members
                     .map(m => {
-                      const user = Users.findOne(m.pid);
+                      const user = Users.findOne({ pid: m.pid });
 
                       if (user) return user.name;
 
