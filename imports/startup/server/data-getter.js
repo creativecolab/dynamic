@@ -51,7 +51,7 @@ export function getPreference() {
 
 
 /* 
-  Goal: Obtain the interactions of each participant in a session.
+  Goal: Obtain details of the interactions of each participant in a session.
   Does so from the information saved by the "teamHistory" matrix in the queried session.
 */
 export function getInteractions(session_code) {
@@ -98,8 +98,85 @@ export function getInteractions(session_code) {
 
 }
 
-// TODO:
-export function getPeerAssessments(session_code) {
-  return '';
+/* 
+  Goal: Obtain information on each participants teams and ratings of their teams.
+  Does so through looking through a User's team history, preference, and session history. 
+*/
+export function getUserHistory(session_code) {
+
+  const session = Sessions.findOne({ code: session_code.toLowerCase() });
+
+  if (!session) {
+    return 'No session named ' + session_code + ' yet!';
+  }
+
+  const { participants, activities } = session;
+
+  if (!participants) {
+    return 'No particpants for the session ' + session_code + ' yet';
+  }
+
+  let ret = 'participant,num_teams,num_teams_confirmed,avg_team_formation_time,num_ratings_given,avg_rating_given,num_ratings_received,avg_rating_received\n';
+
+  // get the data for each participant in this sessiom
+  participants.forEach((participant) => {
+
+    let user = Users.findOne({pid: participant});
+
+    // get information on user's team contributions
+    let user_teams = user.teamHistory.filter((team) => (activities.includes(team.activity_id)));
+    let num_teams = user_teams.length;
+    let num_teams_confirmed = 0;
+    let avg_team_formation_time = 0;
+    user_teams.forEach((user_team) => {
+      const actual_team = Teams.findOne(user_team.team);
+      if (actual_team.confirmed) {
+        avg_team_formation_time = avg_team_formation_time + actual_team.teamFormationTime;
+        num_teams_confirmed = num_teams_confirmed + 1;
+      }
+    });
+    avg_team_formation_time = avg_team_formation_time / num_teams;
+
+    // get rating information on a user
+    let user_preferences = user.preferences.filter((preference) => (activities.includes(preference.activity_id)));
+    let num_ratings_given = 0;
+    let avg_rating_given = 0;
+    let num_ratings_received = 0;
+    let avg_rating_received = 0;
+    let other_ratings_checked = {};
+    user_preferences.forEach((user_preference) => {
+      user_preference.values.forEach((rating) => {
+        num_ratings_given = num_ratings_given + 1;
+        avg_rating_given = avg_rating_given + rating.value;
+        // now get the ratings attributed to them
+        if (!(other_ratings_checked[rating.pid])) {
+          other_ratings_checked[rating.pid] = true;
+          let other_user = Users.findOne({pid: rating.pid});
+          let other_user_prefs = other_user.preferences.filter((preference) => (activities.includes(preference.activity_id)));
+          // check the other user's ratings
+          other_user_prefs.forEach((other_user_pref) => {
+            other_user_pref.values.forEach((other_rating) => {
+              if (other_rating.pid === participant) {
+                num_ratings_received = num_ratings_received + 1;
+                avg_rating_received = avg_rating_received + other_rating.value; 
+              }
+            });
+          });
+        }
+      });
+    });
+    // calculate the averages 
+    avg_rating_given = avg_rating_given / num_ratings_given;
+    avg_rating_received = avg_rating_received / num_ratings_received;
+
+    // put it all together for this user
+    ret += participant + ',' + num_teams + ',' + num_teams_confirmed + ',' + avg_team_formation_time + ',' +
+            num_ratings_given + ',' + avg_rating_given + ',' + num_ratings_received + ',' + avg_rating_received + '\n';
+
+  
+  });
+
+
+  return ret;
 }
  
