@@ -36,7 +36,7 @@ class TeamShapes extends Component {
                   alt={team.color + ' ' + team.shape}
                   title={team.members
                     .map(m => {
-                      const user = Users.findOne(m.pid);
+                      const user = Users.findOne({ pid: m.pid });
 
                       if (user) return user.name;
 
@@ -54,7 +54,7 @@ class TeamShapes extends Component {
                   alt={team.color + ' ' + team.shape}
                   title={team.members
                     .map(m => {
-                      const user = Users.findOne(m.pid);
+                      const user = Users.findOne({ pid: m.pid });
 
                       if (user) return user.name;
 
@@ -91,6 +91,7 @@ export default withTracker(props => {
   const { activity_id } = props;
   const teams = Teams.find({ activity_id }).fetch();
   const notConfirmed = Teams.find({ activity_id, confirmed: false }).count();
+  const users = Users.find().fetch();
 
-  return { teams, notConfirmed };
+  return { teams, users, notConfirmed };
 })(TeamShapes);

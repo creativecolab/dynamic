@@ -10,12 +10,13 @@ import Users from '../../api/users';
 import Teams from '../../api/teams';
 import Logs from '../../api/logs';
 import Questions from '../../api/questions';
-import Responses from '../../api/responses';
 
 import dbquestions from './dbquestions';
 import './register-api';
-import { formTeams } from './team-former.js';
-import { getPreference, getInteractions } from './data-getter.js';
+import { formTeams } from './team-former';
+import { getPreference, getInteractions } from './data-getter';
+import { buildColoredShapes, calculateDuration } from './helper-funcs';
+import { updateTeamHistory_LateJoinees, updateTeamHistory_TeamFormation } from './team-historian';
 
 if (Meteor.isServer) {
   // Global API configuration
@@ -40,6 +41,7 @@ if (Meteor.isServer) {
   Api.addRoute('interactions/:code', {
     get() {
       const content_disposition = 'attachment; filename=interactions_' + this.urlParams.code + '.csv';
+
       return {
         statusCode: 200,
         headers: {
@@ -50,8 +52,6 @@ if (Meteor.isServer) {
       };
     }
   });
-
-  
 }
 
 let timeout_timer;
@@ -71,36 +71,6 @@ Meteor.methods({
         teamHistory
       }
     });
-  },
-
-  'sessions.updateTeamHistory_TeamFormation': function(teams, teamHistory, session_id) {
-    teams.forEach(team => {
-      team.forEach(member => {
-        team.forEach(other_member => {
-          if (member != other_member) teamHistory[member][other_member] = teamHistory[member][other_member] + 1;
-        });
-      });
-    });
-    Sessions.update(session_id, {
-      $set: {
-        teamHistory
-      }
-    });
-  },
-
-  'sessions.updateTeamHistory_LateJoinees': function(participants, new_person, teamHistory, session_id) {
-    teamHistory[new_person] = {};
-    participants.forEach(participant => {
-      if (participant != new_person) teamHistory[participant][new_person] = 0;
-
-      teamHistory[new_person][participant] = 0;
-    });
-    Sessions.update(session_id, {
-      $set: {
-        teamHistory
-      }
-    });
-    console.log(teamHistory);
   },
 
   'activities.updateStatus': function(activity_id) {
@@ -237,6 +207,8 @@ Meteor.methods({
   }
 });
 
+/* helper methods for various server tasks */
+
 function createQuestions() {
   if (Questions.find({}).count() !== 0) {
     return;
@@ -302,50 +274,25 @@ function createQuestions() {
 
 function createUsers() {
   const cogs_187A_students = JSON.parse(Assets.getText('cogs_187A/students.json'));
-  cogs_187A_students.forEach((student) => {
+
+  cogs_187A_students.forEach(student => {
     //insert each user into the databse
-    Users.upsert({pid: student.code.toString()},
-    {
-      name: student.name,
-      pid: student.code.toString(),
-      joinTime: new Date().getTime(),
-      teamHistory: [],
-      sessionHistory: [],
-      preferences: []
-    });
+    Users.upsert(
+      { pid: student.code.toString() },
+      {
+        name: student.name,
+        pid: student.code.toString(),
+        joinTime: new Date().getTime(),
+        teamHistory: [],
+        sessionHistory: [],
+        preferences: []
+      }
+    );
   });
-  
-}
-
-function shuffle(a) {
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-
-  return a;
-}
-
-// set up the colors that the teams will use
-function buildColoredShapes(colored_shapes) {
-  const shapes = shuffle(['circle', 'plus', 'moon', 'square', 'star', 'heart', 'triangle']);
-  const shapeColors = shuffle(['blue', 'purple', 'green', 'yellow', 'red']);
-
-  for (let i = 0; i < shapes.length; i++) {
-    for (let j = 0; j < shapeColors.length; j++) {
-      colored_shapes.push({ shape: shapes[i], color: shapeColors[j] });
-    }
-  }
-
-  shuffle(colored_shapes);
 }
 
 /* Meteor start-up function, called once server starts */
 Meteor.startup(() => {
-  // updateRoster();
-
-  getPreference();
 
   createQuestions();
 
@@ -459,7 +406,7 @@ Meteor.startup(() => {
           });
           Meteor.call('activities.updateStatus', activity_id, (err, res) => {
             if (err) {
-              alert(err);
+              console.log(err);
             } else {
               // success!
               console.log('Ending Activity ' + res);
@@ -469,26 +416,6 @@ Meteor.startup(() => {
       }
     }
   });
-
-  // set duration based on activity status and session progress
-  function calculateDuration(activity) {
-    // get activity status
-    const { status, index } = activity;
-
-    // get durations
-    const { durationIndv, durationOffsetIndv } = activity;
-    const { durationTeam, durationOffsetTeam } = activity;
-
-    // individual input phase
-    if (status === ActivityEnums.status.INPUT_INDV)
-      return index === 0 ? durationIndv : durationIndv - durationOffsetIndv;
-
-    // team input phase
-    if (status === ActivityEnums.status.INPUT_TEAM)
-      return index === 0 ? durationTeam : durationTeam - durationOffsetTeam;
-
-    return -1;
-  }
 
   // handles team formation
   const activitiesCursor = Activities.find({});
@@ -516,7 +443,7 @@ Meteor.startup(() => {
 
         Meteor.call('activities.updateStatus', activity_id, (err, res) => {
           if (err) {
-            alert(err);
+            console.log(err);
           } else {
             // success!
             console.log('Starting Activity Status ' + res);
@@ -535,34 +462,27 @@ Meteor.startup(() => {
       if (update.status === 2) {
         console.log('[TEAM FORMATION PHASE]');
 
-        // get snapshot of participants and activities in session
+        // get snapshot of participants and teamHistory in session that this activity is in
         const session_id = Activities.findOne(_id).session_id;
-        const sess = Sessions.findOne(session_id);
-        const participants = sess.participants;
+        const { activities } = Sessions.findOne(session_id);
 
-        // decide which kind of team formation to undergo
-        const acts = sess.activities;
-        const prevActIndex = acts.indexOf(_id) - 1;
-        const teamFormStart = new Date();
-
-        // get the teamHistory from Sessions
-        const teamHistory = sess.teamHistory;
+        // prepare for team formation
         const colored_shapes = [];
         let teams = [];
+        const prevActIndex = activities.indexOf(_id) - 1;
+
+        // time our team formation
+        const teamFormStart = new Date();
+
+        // update the teamHistory matrix in case we got some late joinees
+        updateTeamHistory_LateJoinees(session_id);
 
         // Stable team-building??
         buildColoredShapes(colored_shapes);
-        teams = formTeams(participants.slice(0), prevActIndex, teamHistory);
+        teams = formTeams(session_id, prevActIndex);
 
-        // update the teamHistory matrix
-        Meteor.call('sessions.updateTeamHistory_TeamFormation', teams, sess.teamHistory, session_id, (err, res) => {
-          if (err) {
-            alert(err);
-          } else {
-            // success!
-            console.log('\nUpdated Team History Matrix.');
-          }
-        });
+        // update the teamHistory matrix after the teams have been formed
+        updateTeamHistory_TeamFormation(session_id, teams);
 
         // update the database collections
         const team_ids = [];
@@ -572,7 +492,7 @@ Meteor.startup(() => {
             Teams.insert({
               activity_id: _id,
               teamCreated: new Date().getTime(),
-              members: teams[i].map(pid => ({ pid, userNumber: Math.floor(Math.random() * 9) + 1 })),
+              members: teams[i].map(pid => ({ pid, fruitNumber: Math.floor(Math.random() * 9) + 1 })),
               color: colored_shapes[i].color,
               shape: colored_shapes[i].shape,
               teamNumber: teams.length,
@@ -592,7 +512,6 @@ Meteor.startup(() => {
                 $push: {
                   teamHistory: {
                     team: team_ids[i],
-                    //teamNumber: Math.floor(Math.random() * 9) + 1, // for the sum game
                     activity_id: _id
                   }
                 }
@@ -635,7 +554,7 @@ Meteor.startup(() => {
             }
           },
           () => {
-            console.log(new Date() - teamFormStart);
+            console.log("Team Formation Elapsed Time: " + (new Date() - teamFormStart));
           }
         );
       }

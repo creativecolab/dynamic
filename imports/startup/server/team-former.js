@@ -1,17 +1,9 @@
+/* This File contains all the code necessary to build teams for a round in an activity */
+import Sessions from '../../api/sessions'
+import { shuffle } from './helper-funcs';
+
 // Some constants
 const MAX_TEAM_SIZE = 3;
-
-// helper function to shuffle array
-// reference: https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array
-function shuffle(a) {
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-
-  return a;
-}
 
 /*
   Produce the teams for the first round. Should be random, with a goal of teams of 3.
@@ -105,7 +97,6 @@ function buildNewTeams(participants, teamHistory) {
     teams.push(nextTeam);
   }
 
-  console.log(ungrouped);
   // handles uneven groups
   while (ungrouped.length > 0) {
     let leftover_person = ungrouped.pop();
@@ -131,7 +122,6 @@ function buildNewTeams(participants, teamHistory) {
       }
     }
     // add the ungrouped user to the best-matching team that we found
-    console.log(best_team_match["team_idx"])
     teams[best_team_match["team_idx"]].push(leftover_person);
   } 
 
@@ -140,7 +130,9 @@ function buildNewTeams(participants, teamHistory) {
   return teams;
 }
 
-export function formTeams(participants, prevActIndex, teamHistory) {
+export function formTeams(session_id, prevActIndex) {
+
+  const { participants, teamHistory} = Sessions.findOne(session_id);
   
   // if we're on the first activity, call first teams. Otherwise, build based on teamHistory 
   if (prevActIndex < 0) return firstRoundTeams(participants);
