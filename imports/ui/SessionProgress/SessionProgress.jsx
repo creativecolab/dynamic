@@ -237,7 +237,7 @@ class SessionProgress extends Component {
             <img className="contentPic" src="/rating.png" alt="" />
             <h2>{`${this.props.teamsAssessed} out of ${
               this.props.teamsTotal === 1 ? '1 team' : this.props.teamsTotal + ' teams'
-            } sumitted their responses`}</h2>
+            } submitted their responses`}</h2>
           </>
         );
       }
