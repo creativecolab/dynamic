@@ -18,7 +18,7 @@ export default class TeammateSliders extends Component {
     pid: PropTypes.string.isRequired,
     activity_id: PropTypes.string.isRequired,
     teammates: PropTypes.array.isRequired,
-    handleChange: PropTypes.func.isRequired,
+    handleChange: PropTypes.func.isRequired
   };
 
   getName(pid) {
@@ -103,7 +103,7 @@ export default class TeammateSliders extends Component {
 
     const user = Users.findOne({ pid });
 
-    const voted = user.preferences.filter((pref) => pref.activity_id == activity_id).length === 1
+    const voted = user.preferences.filter(pref => pref.activity_id == activity_id).length === 1;
 
     // if the user already voted, we don't need to save their preferences
     if (voted) return;
@@ -123,7 +123,7 @@ export default class TeammateSliders extends Component {
         if (error) {
           console.log(error);
         } else {
-          console.log("Submitted preferences after the sliders unmounted");
+          console.log('Submitted preferences after the sliders unmounted');
         }
       }
     );
