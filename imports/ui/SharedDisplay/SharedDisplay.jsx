@@ -158,7 +158,7 @@ export default class SharedDisplay extends Component {
           </div>
         </section>
         <Button
-          style={{ color: 'white', background: '#844EAE', fontWeight: 600 }}
+          style={{ color: 'white', background: '#080808', fontWeight: 600 }}
           size="small"
           onClick={this.createSession}
         >
