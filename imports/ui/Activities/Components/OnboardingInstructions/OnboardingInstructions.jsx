@@ -23,7 +23,7 @@ export default function OnboardingInstructions() {
         <div className="instr-card-wrapper">
           <PictureContent
             title="1. Stand up"
-            imageSrc="./crowd1.jpg"
+            imageSrc="./crowd-jpg-500.jpg"
             subtitle="Get ready to move around during this activity!"
           />
         </div>
@@ -31,14 +31,14 @@ export default function OnboardingInstructions() {
           <PictureContent
             title="2. Find your group members"
             subtitle="Once you find them, move away from the center of the room."
-            imageSrc="./hold_phones1.jpg"
+            imageSrc="./teams-jpg-500.jpg"
           />
         </div>
         <div className="instr-card-wrapper">
           <PictureContent
             title="3. Participate in group activity"
             subtitle="Talk to people! The goal is to get to know your potential teammates."
-            imageSrc="./discussion.png"
+            imageSrc="./discuss-jpg-500.jpg"
           />
         </div>
         <div className="instr-card-wrapper">
@@ -46,7 +46,7 @@ export default function OnboardingInstructions() {
             title="4. Assess your experience"
             // desc="These data are kept private and won't be shared with anyone."
             subtitle="Data collected are kept private and available to our research team only."
-            imageSrc="./rating1.jpg"
+            imageSrc="./slider-jpg-500.jpg"
           />
         </div>
       </ReactSwipe>
