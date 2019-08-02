@@ -34,6 +34,7 @@ class TeamDiscussion extends Component {
     pid: PropTypes.string.isRequired,
     questions: PropTypes.array,
     team: PropTypes.object,
+    voted: PropTypes.bool,
     activity_id: PropTypes.string.isRequired, // to handle responses
     status: PropTypes.number.isRequired, // status of this activity
     statusStartTime: PropTypes.number.isRequired, // start time of this status
@@ -44,7 +45,8 @@ class TeamDiscussion extends Component {
 
   static defaultProps = {
     questions: [],
-    team: {}
+    team: {},
+    voted: false
   };
 
   constructor(props) {
@@ -55,26 +57,21 @@ class TeamDiscussion extends Component {
     this.reactSwipeEl = null;
     let displayTeam = false;
 
-    const { status, pid, team, activity_id } = this.props;
+    const { status, pid, team, voted } = this.props;
 
     if (status === ActivityEnums.status.INPUT_TEAM) {
       displayTeam = true;
     }
 
-    let voted = Users.findOne({ pid, 'preferences.activity_id': activity_id }) !== undefined;
-
     let teammates = [];
 
     if (team._id && team.members) {
       teammates = team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 0 }));
-    } else {
-      voted = true;
     }
 
     this.state = {
       prevQuestionIndex: 0,
       startTime: new Date().getTime(),
-      choseTeammate: voted,
       displayTeam,
       hasFooter: props.status === ActivityEnums.status.ASSESSMENT && !voted,
       teammates
@@ -88,12 +85,6 @@ class TeamDiscussion extends Component {
 
     return '';
   }
-
-  handleChooseTeammate = () => {
-    this.setState({
-      choseTeammate: true
-    });
-  };
 
   onSlideChange = () => {
     const endTime = new Date().getTime();
@@ -155,9 +146,8 @@ class TeamDiscussion extends Component {
         if (error) {
           console.log(error);
         } else {
-          console.log("Submitted preferences");
+          console.log('Submitted preferences');
           this.setState({
-            choseTeammate: true,
             hasFooter: false
           });
         }
@@ -190,7 +180,7 @@ class TeamDiscussion extends Component {
       return (
         <div>
           <div className="swipe-instr-top">
-            <Textfit mode="single" max="36">
+            <Textfit mode="single" max={36}>
               Choose questions to discuss as a group
             </Textfit>
           </div>
@@ -207,7 +197,9 @@ class TeamDiscussion extends Component {
                 return (
                   <div className="question-card-wrapper" key={q._id}>
                     <div className="question-card">
-                      <div className="label" style={{ background: q.color }}>{q.label}</div>
+                      <div className="label" style={{ background: q.color }}>
+                        {q.label}
+                      </div>
                       {index + 1}. {q.prompt}
                     </div>
                   </div>
@@ -228,7 +220,7 @@ class TeamDiscussion extends Component {
 
     // summary phase
     if (status === ActivityEnums.status.ASSESSMENT) {
-      if (!this.state.choseTeammate) {
+      if (!this.props.voted) {
         // joined after team formation
         if (!team._id) {
           console.log('No team');
@@ -245,9 +237,12 @@ class TeamDiscussion extends Component {
             handleChange={this.handlepreferenceChange}
           />
         );
+      } else {
+        return <Waiting text="Response recorded! Now wait for the next activity to begin..." />;
       }
     }
 
+    // should never get here
     return <Waiting text="Awesome! Now wait for the next activity to begin..." />;
   };
 
@@ -279,7 +274,7 @@ class TeamDiscussion extends Component {
     );
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     console.log('ComponentDidUpdate');
 
     const { status, team, activity_id, pid } = this.props;
@@ -293,18 +288,13 @@ class TeamDiscussion extends Component {
 
     // changed status
     if (prevProps.status !== status) {
-      this.setState({
-        choseTeammate: false
-      });
-
       // set up footer and voted
       if (status === ActivityEnums.status.ASSESSMENT) {
-        const voted = Users.findOne({ pid, 'preferences.activity_id': activity_id }) !== undefined;
+        const { voted } = this.props;
 
         this.setState({
           teammates: team._id ? team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 0 })) : [],
-          choseTeammate: voted,
-          hasFooter: !voted && team._id
+          hasFooter: !voted
         });
 
         // update the amount of time the last question that we were on was viewed
@@ -346,15 +336,20 @@ class TeamDiscussion extends Component {
       }
     }
 
-    if (status === ActivityEnums.status.ASSESSMENT) {
-      // if voted is true, check if other team members have voted
-      const voted = Users.findOne({ pid, 'preferences.activity_id': activity_id }) !== undefined;
+    const { voted } = this.props;
 
-      if (voted && team._id && !team.assessed) {
+    // if assessment and this user submitted a vote...
+    if (status === ActivityEnums.status.ASSESSMENT && prevProps.voted !== voted) {
+      this.setState({
+        hasFooter: !voted
+      });
+
+      // if voted is true, check if other team members have voted
+      if (voted && !team.assessed) {
         let num_assessed = 1; // since this is only called after the client submits their vote
 
         team.members.forEach(member => {
-          if (member.pid != pid) {
+          if (member.pid !== pid) {
             if (Users.findOne({ pid: member.pid, 'preferences.activity_id': activity_id }) !== undefined)
               num_assessed++;
           }
@@ -380,9 +375,8 @@ class TeamDiscussion extends Component {
   }
 
   componentWillUnmount() {
-    console.log("ComponentWillUnmount");
+    console.log('ComponentWillUnmount');
   }
-
 }
 
 export default withTracker(({ pid, activity_id, progress }) => {
@@ -402,8 +396,7 @@ export default withTracker(({ pid, activity_id, progress }) => {
   // get all the quesitons
   const questions = Questions.find({ round: { $in: [progress, 0] } }).fetch();
 
-  console.log('withTracker, #questions: ' + questions.length);
-  console.log(team);
+  const voted = Users.findOne({ pid, 'preferences.activity_id': activity_id }) !== undefined;
 
-  return { questions, team };
+  return { questions, team, voted };
 })(TeamDiscussion);
