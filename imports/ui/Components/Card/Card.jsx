@@ -10,7 +10,7 @@ function Card({ title, children, tag }) {
         <span className="card-tag">{tag}</span>
         {title}
       </div>
-      <hr />
+      {/* <hr /> */}
       <div className="card-content">{children}</div>
     </div>
   );

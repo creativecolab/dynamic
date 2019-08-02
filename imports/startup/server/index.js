@@ -15,7 +15,7 @@ import dbquestions from './dbquestions';
 import './register-api';
 import { formTeams } from './team-former';
 import { getPreference, getInteractions } from './data-getter';
-import { buildColoredShapes, calculateDuration } from './helper_funcs';
+import { buildColoredShapes, calculateDuration } from './helper-funcs';
 import { updateTeamHistory_LateJoinees, updateTeamHistory_TeamFormation } from './team-historian';
 
 if (Meteor.isServer) {
