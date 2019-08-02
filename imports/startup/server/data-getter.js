@@ -75,7 +75,8 @@ export function getInteractions(session_code) {
     ret += participant + ',{';
     for (var person in participant_interactions) {
       if (participant_interactions.hasOwnProperty(person)) {
-          ret += person + ': ' + participant_interactions[person] + '; ';
+          if (participant_interactions[person] !== 0)
+            ret += person + ': ' + participant_interactions[person] + '; ';
       }
     }
     ret = ret.slice(0, -2);
