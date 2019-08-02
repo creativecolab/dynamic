@@ -74,9 +74,9 @@ const dbquestions = [
       'Jerry doesn’t get enough exercise. Apart from activity trackers, what product/service can you design to help motivate him to exercise?',
       'Claire struggles with frequent stress at work. What product/service can you design to help Claire cope with her stress?',
       'Ann is a busy mother who can’t spend much time at home with her 4 year old child. What product/service can you design for Ann to stay connected with her child?',
-      'Susie is a wheelchair user and often runs into problems of accessibility due to lack of ramps or elevators. What product/service can you design to improve these accessibility issues?',
       'Luke has difficulty managing a healthy diet. What product/service can you design to help him eat healthier?',
-      'Charlie is an energetic middle schooler who has difficulty controlling his hyperactivity and fidgeting while in class. What solutions can you design to help him concentrate?'
+      'Charlie is an energetic middle schooler who has difficulty controlling his hyperactivity and fidgeting while in class. What solutions can you design to help him concentrate?',
+      'Apart from the prompts you’ve already seen, what other health-related design problems are you interested in working on this quarter?'
     ]
   },
   {
