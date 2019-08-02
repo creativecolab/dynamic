@@ -14,7 +14,7 @@ import Questions from '../../api/questions';
 import dbquestions from './dbquestions';
 import './register-api';
 import { formTeams } from './team-former';
-import { getPreference, getInteractions } from './data-getter';
+import { getPreference, getInteractions, getUserHistory } from './data-getter';
 import { buildColoredShapes, calculateDuration } from './helper-funcs';
 import { updateTeamHistory_LateJoinees, updateTeamHistory_TeamFormation } from './team-historian';
 
@@ -49,6 +49,21 @@ if (Meteor.isServer) {
           'Content-Disposition': content_disposition
         },
         body: getInteractions(this.urlParams.code)
+      };
+    }
+  });
+
+  Api.addRoute('users/:code', {
+    get() {
+      const content_disposition = 'attachment; filename=users_' + this.urlParams.code + '.csv';
+
+      return {
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'text/csv',
+          'Content-Disposition': content_disposition
+        },
+        body: getUserHistory(this.urlParams.code)
       };
     }
   });
@@ -277,17 +292,19 @@ function createUsers() {
 
   cogs_187A_students.forEach(student => {
     //insert each user into the databse
-    Users.upsert(
-      { pid: student.code.toString() },
-      {
-        name: student.name,
-        pid: student.code.toString(),
-        joinTime: new Date().getTime(),
-        teamHistory: [],
-        sessionHistory: [],
-        preferences: []
-      }
-    );
+    if (Users.findOne({pid: student.code.toString()}) === undefined) {
+      Users.insert(
+        { pid: student.code.toString() },
+        {
+          name: student.name,
+          pid: student.code.toString(),
+          joinTime: new Date().getTime(),
+          teamHistory: [],
+          sessionHistory: [],
+          preferences: []
+        }
+      );
+    }
   });
 }
 
