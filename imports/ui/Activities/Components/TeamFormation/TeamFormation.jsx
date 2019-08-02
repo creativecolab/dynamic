@@ -54,7 +54,7 @@ class TeamFormation extends Component {
 
     console.log('submitted sum' + sum);
 
-    if (sum == members.map(m => m.userNumber).reduce((res, m) => res + m)) {
+    if (sum == members.map(m => m.fruitNumber).reduce((res, m) => res + m)) {
       Teams.update(_id, {
         $set: {
           confirmed: true
@@ -80,7 +80,7 @@ class TeamFormation extends Component {
 
     //const { shape, color } = team;
 
-    const myNum = members.filter(m => m.pid === pid)[0].userNumber;
+    const myNum = members.filter(m => m.pid === pid)[0].fruitNumber;
 
     if (confirmed) {
       return (
@@ -91,7 +91,8 @@ class TeamFormation extends Component {
             ))}
           </div>
           <div className="team-instruct">
-            Looks like you found everyone. While waiting for other groups to form, introduce yourself to your group members.
+            Looks like you found everyone. While waiting for other groups to form, introduce yourself to your group
+            members.
           </div>
         </PictureContent>
       );

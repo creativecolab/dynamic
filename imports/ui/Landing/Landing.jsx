@@ -4,16 +4,13 @@ import { Redirect } from 'react-router-dom';
 import Sessions from '../../api/sessions';
 import Users from '../../api/users';
 
-import Tags from '../Components/Tags/Tags';
-import Wrapper from '../Wrapper/Wrapper';
-import JoinSection from './Components/JoinSection/JoinSection';
 import Mobile from '../Layouts/Mobile/Mobile';
+
+import JoinSection from './Components/JoinSection/JoinSection';
 import TextInput from '../Components/TextInput/TextInput';
 
 import '../assets/_main.scss';
 import './Landing.scss';
-import SessionEnd from '../SessionProgress/Components/SessionEnd';
-import SessionEnums from '../../enums/sessions';
 
 export default class Landing extends Component {
   constructor(props) {
@@ -165,24 +162,7 @@ export default class Landing extends Component {
             }
           },
           () => {
-            if (session.status === SessionEnums.status.ACTIVE) {
-              Meteor.call(
-                'sessions.updateTeamHistory_LateJoinees',
-                session.participants,
-                pid,
-                session.teamHistory,
-                session._id,
-                (err, res) => {
-                  if (err) {
-                    alert(err);
-                  } else {
-                    // success!
-                    console.log('\nSuccessfully joined late. ' + res);
-                  }
-                }
-              );
-            }
-
+            console.log(pid + " successfully joined the session!");
             this.setState({
               pidSubmitted: true,
               name: user.name
@@ -225,27 +205,12 @@ export default class Landing extends Component {
       //     }
       //   },
       //   () => {
-      //     if (session.status === SessionEnums.status.ACTIVE) {
-      //       Meteor.call(
-      //         'sessions.updateTeamHistory_LateJoinees',
-      //         session.participants,
-      //         pid,
-      //         session.teamHistory,
-      //         session._id,
-      //         (err, res) => {
-      //           if (err) {
-      //             alert(err);
-      //           } else {
-      //             // success!
-      //             console.log('\nSuccessfully joined late.');
-      //           }
-      //         }
-      //       );
-      //     }
+      //    console.log(pid + " successfully joined the session!");
 
-      //     this.setState({
-      //       pidSubmitted: true
-      //     });
+      //    this.setState({
+      //      pidSubmitted: true,
+      //      name: user.name
+      //    });
       //   }
       // );
     }

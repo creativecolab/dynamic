@@ -56,7 +56,7 @@ export function getPreference() {
 */
 export function getInteractions(session_code) {
 
-  const session = Sessions.findOne({ code: session_code });
+  const session = Sessions.findOne({ code: session_code.toLowerCase() });
 
   if (!session) {
     return 'No session named ' + session_code + ' yet!';
@@ -68,18 +68,30 @@ export function getInteractions(session_code) {
     return 'No particpants for the session ' + session_code + ' yet';
   }
 
-  let ret = 'participant,interacted_with\n';
+  let ret = 'participant,all_interactions,people_interacted_with,num_interactions,num_unique_interactions\n';
 
   participants.forEach((participant) => {
     participant_interactions = teamHistory[participant];
-    ret += participant + ',{';
+    let i_actions = ',{';
+    let uniq_i_actions = '[';
+    let total_interactions = 0;
+    let unique_interactions = 0;
     for (var person in participant_interactions) {
       if (participant_interactions.hasOwnProperty(person)) {
-          ret += person + ': ' + participant_interactions[person] + '; ';
+          if (participant_interactions[person] !== 0) {
+            i_actions += person + ': ' + participant_interactions[person] + '; ';
+            uniq_i_actions += person + '; ';
+            total_interactions = total_interactions + participant_interactions[person];
+            unique_interactions = unique_interactions + 1;
+
+          }
       }
     }
-    ret = ret.slice(0, -2);
-    ret += '}\n';
+    i_actions = i_actions.slice(0, -2);
+    i_actions += '},';
+    uniq_i_actions = uniq_i_actions.slice(0, -2);
+    uniq_i_actions += '],';
+    ret += participant + i_actions + uniq_i_actions + total_interactions + ',' + unique_interactions + '\n';
   });
 
   return ret;
