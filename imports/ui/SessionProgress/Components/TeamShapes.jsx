@@ -91,6 +91,7 @@ export default withTracker(props => {
   const { activity_id } = props;
   const teams = Teams.find({ activity_id }).fetch();
   const notConfirmed = Teams.find({ activity_id, confirmed: false }).count();
+  const users = Users.find().fetch();
 
-  return { teams, notConfirmed };
+  return { teams, users, notConfirmed };
 })(TeamShapes);
