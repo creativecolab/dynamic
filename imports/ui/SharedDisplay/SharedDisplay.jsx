@@ -144,16 +144,16 @@ export default class SharedDisplay extends Component {
           </div>
           <div className="how-to-card-container">
             <Card tag="1" title="Gather a group of people">
-              <img src="./crowd.png" alt="" />
+              <img src="./crowd-jpg-500.jpg" alt="" />
             </Card>
             <Card tag="2" title="Use mobile devices">
-              <img src="./homescreen.png" alt="" />
+              <img src="./phone-jpg-500.jpg" alt="" />
             </Card>
             <Card tag="3" title="Make small groups">
-              <img src="./teamformation.png" alt="" />
+              <img src="./teams-jpg-500.jpg" alt="" />
             </Card>
             <Card tag="4" title="Perform group activities">
-              <img src="./discussion.png" alt="" />
+              <img src="./discuss-jpg-500.jpg" alt="" />
             </Card>
           </div>
         </section>
