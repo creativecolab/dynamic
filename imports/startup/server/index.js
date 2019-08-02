@@ -40,6 +40,7 @@ if (Meteor.isServer) {
   Api.addRoute('interactions/:code', {
     get() {
       const content_disposition = 'attachment; filename=interactions_' + this.urlParams.code + '.csv';
+
       return {
         statusCode: 200,
         headers: {
@@ -50,8 +51,6 @@ if (Meteor.isServer) {
       };
     }
   });
-
-  
 }
 
 let timeout_timer;
@@ -302,19 +301,21 @@ function createQuestions() {
 
 function createUsers() {
   const cogs_187A_students = JSON.parse(Assets.getText('cogs_187A/students.json'));
-  cogs_187A_students.forEach((student) => {
+
+  cogs_187A_students.forEach(student => {
     //insert each user into the databse
-    Users.upsert({pid: student.code.toString()},
-    {
-      name: student.name,
-      pid: student.code.toString(),
-      joinTime: new Date().getTime(),
-      teamHistory: [],
-      sessionHistory: [],
-      preferences: []
-    });
+    Users.upsert(
+      { pid: student.code.toString() },
+      {
+        name: student.name,
+        pid: student.code.toString(),
+        joinTime: new Date().getTime(),
+        teamHistory: [],
+        sessionHistory: [],
+        preferences: []
+      }
+    );
   });
-  
 }
 
 function shuffle(a) {
@@ -572,7 +573,7 @@ Meteor.startup(() => {
             Teams.insert({
               activity_id: _id,
               teamCreated: new Date().getTime(),
-              members: teams[i].map(pid => ({ pid, userNumber: Math.floor(Math.random() * 9) + 1 })),
+              members: teams[i].map(pid => ({ pid, fruitNumber: Math.floor(Math.random() * 9) + 1 })),
               color: colored_shapes[i].color,
               shape: colored_shapes[i].shape,
               teamNumber: teams.length,
