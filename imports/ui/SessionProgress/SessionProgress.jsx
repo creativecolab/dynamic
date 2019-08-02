@@ -215,7 +215,7 @@ class SessionProgress extends Component {
           </div>
         );
       } else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
-        return <img className="contentPic" src="/discussion.png" alt="" />;
+        return <img className="contentPic" src="/discuss-jpg-500.jpg" alt="" />;
       }
     }
 
@@ -234,10 +234,10 @@ class SessionProgress extends Component {
       } else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
         return (
           <>
-            <img className="contentPic" src="/rating.png" alt="" />
+            <img className="contentPic" src="/slider-jpg-500.jpg" alt="" />
             <h2>{`${this.props.teamsAssessed} out of ${
               this.props.teamsTotal === 1 ? '1 team' : this.props.teamsTotal + ' teams'
-            } sumitted their responses`}</h2>
+              } sumitted their responses`}</h2>
           </>
         );
       }
