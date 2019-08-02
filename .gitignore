@@ -7,4 +7,5 @@ dumpquiz2/
 *.pyc
 pycache
 .vscode
-private/*
+private/cogs_187A
+dump_protolab_friday_before/

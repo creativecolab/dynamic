@@ -6,6 +6,7 @@ import { Random } from 'meteor/random';
 import Activities from '../../api/activities';
 import Sessions from '../../api/sessions';
 import Users from '../../api/users';
+import Teams from '../../api/teams';
 import Logs from '../../api/logs';
 import Quizzes from '../../api/quizzes';
 
@@ -23,7 +24,15 @@ import SessionBegin from './Components/SessionBegin';
 
 class SessionProgress extends Component {
   static propTypes = {
-    //code: PropTypes.string.isRequired,
+    users: PropTypes.array,
+    teamsAssessed: PropTypes.number,
+    teamsTotal: PropTypes.number
+  };
+
+  static defaultProps = {
+    users: [],
+    teamsAssessed: 0,
+    teamsTotal: 0
   };
 
   state = {
@@ -106,7 +115,10 @@ class SessionProgress extends Component {
     if (currentActivity.status === ActivityEnums.status.INPUT_INDV) {
       if (currentActivity.name === ActivityEnums.name.QUIZ) {
         return [
-          'Team Formation', 'Quiz', 'Read through the question and select the correct answer or respond accordingly.'];
+          'Team Formation',
+          'Quiz',
+          'Read through the question and select the correct answer or respond accordingly.'
+        ];
       } else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
         return ['Team Formation', 'Team Discussion', 'No individual phase!'];
       }
@@ -220,14 +232,21 @@ class SessionProgress extends Component {
           />
         );
       } else if (currentActivity.name === ActivityEnums.name.TEAM_DISCUSSION) {
-        return <img className="contentPic" src="/rating.png" alt="" />;
+        return (
+          <>
+            <img className="contentPic" src="/rating.png" alt="" />
+            <h2>{`${this.props.teamsAssessed} out of ${
+              this.props.teamsTotal === 1 ? '1 team' : this.props.teamsTotal + ' teams'
+            } sumitted their responses`}</h2>
+          </>
+        );
       }
     }
   }
 
   // render content based on the session progress
   renderLayout() {
-    const { session, currentActivity } = this.props;
+    const { session, currentActivity, users } = this.props;
 
     if (!session) return 'Oh.';
 
@@ -247,8 +266,13 @@ class SessionProgress extends Component {
           {/* <SessionBegin session_id={this.props.session._id}></SessionBegin> */}
           <img className="contentPic" src="/dynamic.gif" alt="" />
           <div className="joinees">
-            {numJoined != 0 && (
-              <h2>{Users.findOne({ pid: session.participants[numJoined - 1] }).name + ' just joined!'}</h2>
+            {numJoined !== 0 && (
+              <h2>
+                {users.filter(u => u.pid === session.participants[numJoined - 1]).length > 0
+                  ? users.filter(u => u.pid === session.participants[numJoined - 1])[0].name
+                  : 'Someone'}{' '}
+                just joined!
+              </h2>
             )}
           </div>
         </BigScreen>
@@ -309,9 +333,14 @@ export default withTracker(props => {
     { sort: { status: 1 } }
   );
 
-  if (!currentActivity) return { session, activities, currentActivity };
+  const users = Users.find({}).fetch();
+
+  if (!currentActivity) return { session, users, activities, currentActivity };
 
   const quiz = Quizzes.findOne({ activity_id: currentActivity._id });
 
-  return { session, activities, currentActivity, quiz };
+  const teamsAssessed = Teams.find({ activity_id: currentActivity._id, assessed: true }).count();
+  const teamsTotal = Teams.find({ activity_id: currentActivity._id }).count();
+
+  return { session, users, teamsAssessed, teamsTotal, activities, currentActivity, quiz };
 })(SessionProgress);
