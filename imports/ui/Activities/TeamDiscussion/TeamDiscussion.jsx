@@ -73,7 +73,7 @@ class TeamDiscussion extends Component {
       prevQuestionIndex: 0,
       startTime: new Date().getTime(),
       displayTeam,
-      hasFooter: props.status === ActivityEnums.status.ASSESSMENT && !voted,
+      hasFooter: props.status === ActivityEnums.status.ASSESSMENT && !voted && team._id,
       teammates
     };
   }
@@ -301,7 +301,7 @@ class TeamDiscussion extends Component {
 
         this.setState({
           teammates: team._id ? team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 0 })) : [],
-          hasFooter: !voted
+          hasFooter: !voted && team._id
         });
 
         // update the amount of time the last question that we were on was viewed
