@@ -106,10 +106,8 @@ export default class Landing extends Component {
 
   // TODO: maybe -- use localStorage to suggest login
   handleLogin = () => {
-
     /* eslint-disable react/destructuring-assignment */
     const pid = this.state.pid.toLowerCase().trim();
-    const code = this.state.code.toLowerCase().trim();
     /* eslint-enable react/destructuring-assignment */
 
     if (pid.length === 0) {
@@ -127,54 +125,17 @@ export default class Landing extends Component {
     // find user by pid on database
     const user = Users.findOne({ pid });
 
-    // find current session
-    const session = Sessions.findOne({ code });
-
     // user exists!
     if (user) {
       // user is already a participant in this session! TODO: handle case where two diff people enter the same username >:O
-      if (session.participants.includes(pid)) {
-        this.setState({
-          pidSubmitted: true,
-          name: user.name
-        });
-      }
-
-      // user hasn't joined this session yet
-      else {
-        // prepare points for this session, note the session join time
-        Users.update(user._id, {
-          $push: {
-            sessionHistory: {
-              session_id: session._id,
-              sessionJoinTime: new Date().getTime(),
-              points: 0
-            }
-          }
-        });
-
-        // add user to session
-        Sessions.update(
-          session._id,
-          {
-            $push: {
-              participants: pid
-            }
-          },
-          () => {
-            console.log(pid + " successfully joined the session!");
-            this.setState({
-              pidSubmitted: true,
-              name: user.name
-            });
-          }
-        );
-      }
+      this.setState({
+        pidSubmitted: true,
+        name: user.name
+      });
     }
 
     // creating user for the first time! AKA signup
     else {
-
       // NOT ALLOWED, must use a key that we gave to them
       this.setState({
         invalidPID: true
@@ -216,15 +177,16 @@ export default class Landing extends Component {
     }
   };
 
-
   handleConfirmation = () => {
-    const { pid } = this.state;
+    const pid = this.state.pid.toLowerCase().trim();
     const name = this.state.name.trim();
+    const code = this.state.code.toLowerCase().trim();
 
     if (name.length === 0) {
       this.setState({
         invalidName: true
       });
+
       return;
     } else {
       this.setState({
@@ -238,15 +200,49 @@ export default class Landing extends Component {
     // update the user's name to their preferred name
     Users.update(user._id, {
       $set: {
-        name: name
+        name
       }
     });
 
-    this.setState({
-      ready: true
-    });
-  }
+    // find current session
+    const session = Sessions.findOne({ code });
 
+    if (session.participants.includes(pid)) {
+      this.setState({
+        ready: true
+      });
+    }
+
+    // user hasn't joined this session yet
+    else {
+      // prepare points for this session, note the session join time
+      Users.update(user._id, {
+        $push: {
+          sessionHistory: {
+            session_id: session._id,
+            sessionJoinTime: new Date().getTime(),
+            points: 0
+          }
+        }
+      });
+
+      // add user to session
+      Sessions.update(
+        session._id,
+        {
+          $push: {
+            participants: pid
+          }
+        },
+        () => {
+          console.log(pid + ' successfully joined the session!');
+          this.setState({
+            ready: true
+          });
+        }
+      );
+    }
+  };
 
   renderLogin() {
     const { pid, invalidPID } = this.state;
@@ -293,7 +289,7 @@ export default class Landing extends Component {
             value={name}
             invalid={invalidName}
             invalidMsg="Invalid Name!"
-            label={"Is this your preferred name?"}
+            label="Is this your preferred name?"
             placeholder="Enter your preferred name here."
           />
         </div>
