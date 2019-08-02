@@ -68,19 +68,30 @@ export function getInteractions(session_code) {
     return 'No particpants for the session ' + session_code + ' yet';
   }
 
-  let ret = 'participant,interacted_with\n';
+  let ret = 'participant,interacted_with_total,interaction_with,total_interactions,unique_interactions\n';
 
   participants.forEach((participant) => {
     participant_interactions = teamHistory[participant];
-    ret += participant + ',{';
+    ret1 += participant + ',{';
+    ret2 += '[';
+    let total_interactions = 0;
+    let unique_interactions = 0;
     for (var person in participant_interactions) {
       if (participant_interactions.hasOwnProperty(person)) {
-          if (participant_interactions[person] !== 0)
-            ret += person + ': ' + participant_interactions[person] + '; ';
+          if (participant_interactions[person] !== 0) {
+            ret1 += person + ': ' + participant_interactions[person] + '; ';
+            ret2 += person + '; ';
+            total_interactions = total_interactions + participant_interactions[person];
+            unique_interactions = unique_interactions + 1;
+
+          }
       }
     }
-    ret = ret.slice(0, -2);
-    ret += '}\n';
+    ret1 = ret1.slice(0, -2);
+    ret1 += '},';
+    ret2 = ret2.slice(0, -2);
+    ret2 += '],';
+    ret = ret1 + ret2 + total_interactions + ',' + unique_interactions;
   });
 
   return ret;

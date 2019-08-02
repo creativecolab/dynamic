@@ -1,6 +1,6 @@
 /* This File contains all the code necessary to build teams for a round in an activity */
 import Sessions from '../../api/sessions'
-import { shuffle } from './helper_funcs';
+import { shuffle } from './helper-funcs';
 
 // Some constants
 const MAX_TEAM_SIZE = 3;
