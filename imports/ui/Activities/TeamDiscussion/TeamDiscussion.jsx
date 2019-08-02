@@ -127,6 +127,11 @@ class TeamDiscussion extends Component {
 
   handleVote = () => {
     const { pid, activity_id } = this.props;
+
+    if (!this.props.team._id) {
+      return;
+    }
+
     const { teammates } = this.state;
 
     const user = Users.findOne({ pid });
@@ -348,7 +353,7 @@ class TeamDiscussion extends Component {
     // if assessment and this user submitted a vote...
     if (status === ActivityEnums.status.ASSESSMENT && prevProps.voted !== voted) {
       this.setState({
-        hasFooter: !voted
+        hasFooter: !voted && team._id
       });
 
       // if voted is true, check if other team members have voted
