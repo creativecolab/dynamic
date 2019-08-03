@@ -116,7 +116,10 @@ export function getUserHistory(session_code) {
     return 'No particpants for the session ' + session_code + ' yet';
   }
 
-  let ret = 'participant,num_teams,num_teams_confirmed,avg_team_formation_time,num_ratings_given,avg_rating_given,num_ratings_received,avg_rating_received\n';
+  //TODO: get data on avg_assessment_time
+
+  let ret = 'participant,num_teams,num_teams_confirmed,avg_team_formation_time,' + 
+            'num_ratings_given,avg_rating_given,num_ratings_received,avg_rating_received\n';
 
   // get the data for each participant in this sessiom
   participants.forEach((participant) => {
