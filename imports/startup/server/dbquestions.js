@@ -69,7 +69,7 @@ const dbquestions = [
     color: "#F05D5E",
     prompts: [
       'Jane is a college student who has trouble staying awake in class. Apart from sleep trackers, what product can you design to help Jane overcome this problem?',
-      'Rob is struggling to quit smoking. What product/service can you design to help Brian quit?',
+      'Rob is struggling to quit smoking. What product/service can you design to help Rob quit?',
       'Ben is a high school student with anger management issues. What product/service can you design to help Ben better manage his emotions?',
       'Jerry doesn’t get enough exercise. Apart from activity trackers, what product/service can you design to help motivate him to exercise?',
       'Claire struggles with frequent stress at work. What product/service can you design to help Claire cope with her stress?',

@@ -25,14 +25,14 @@ import SessionBegin from './Components/SessionBegin';
 class SessionProgress extends Component {
   static propTypes = {
     users: PropTypes.array,
-    teamsAssessed: PropTypes.number,
-    teamsTotal: PropTypes.number
+    usersAssessed: PropTypes.number,
+    usersTotal: PropTypes.number
   };
 
   static defaultProps = {
     users: [],
-    teamsAssessed: 0,
-    teamsTotal: 0
+    usersAssessed: 0,
+    usersTotal: 0
   };
 
   state = {
@@ -235,9 +235,8 @@ class SessionProgress extends Component {
         return (
           <>
             <img className="contentPic" src="/slider-jpg-500.jpg" alt="" />
-            <h2>{`${this.props.teamsAssessed} out of ${
-              this.props.teamsTotal === 1 ? '1 team' : this.props.teamsTotal + ' teams'
-              } submitted their responses`}</h2>
+            <h2>{`${this.props.usersAssessed} out of ${this.props.usersTotal +
+              ' participants'} have submitted their responses`}</h2>
           </>
         );
       }
@@ -339,8 +338,10 @@ export default withTracker(props => {
 
   const quiz = Quizzes.findOne({ activity_id: currentActivity._id });
 
-  const teamsAssessed = Teams.find({ activity_id: currentActivity._id, assessed: true }).count();
-  const teamsTotal = Teams.find({ activity_id: currentActivity._id }).count();
+  // let usersTotal = session.participants.length;
+  const usersTotal = Users.find({ 'teamHistory.activity_id': currentActivity._id }).count();
+  const usersAssessed = Users.find({ 'preferences.activity_id': currentActivity._id }).count();
 
-  return { session, users, teamsAssessed, teamsTotal, activities, currentActivity, quiz };
+  return { session, users, usersAssessed, usersTotal, activities, currentActivity, quiz };
+
 })(SessionProgress);
