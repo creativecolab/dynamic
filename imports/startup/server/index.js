@@ -412,7 +412,7 @@ Meteor.startup(() => {
         // get number of teams that have not confirmed yet
         const num_not_assessed = Teams.find({ activity_id, assessed: false }).count();
 
-        console.log(num_not_assessed + " teams haven't assessed yet.");
+        console.log(num_not_assessed + ((num_not_assessed === 1) ? " team hasn't": " teams haven't") + " assessed yet.");
 
         // everyone confirmed, no need to wait
         if (num_not_assessed === 0) {

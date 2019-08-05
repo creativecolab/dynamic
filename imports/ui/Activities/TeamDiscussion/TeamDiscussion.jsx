@@ -356,7 +356,6 @@ class TeamDiscussion extends Component {
         hasFooter: !voted && team._id
       });
 
-      // TODO: change assessed to voted
       // if voted is true, check if other team members have voted
       if (voted && !team.assessed) {
         let num_assessed = 1; // since this is only called after the client submits their vote
