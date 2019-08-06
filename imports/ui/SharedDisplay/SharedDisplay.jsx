@@ -68,7 +68,7 @@ export default class SharedDisplay extends Component {
     // create 6 default activities
     const activities = [];
 
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 6; i++) {
       const activity_id = Activities.insert({
         name: ActivityEnums.name.TEAM_DISCUSSION,
         session_id,
