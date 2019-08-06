@@ -267,8 +267,8 @@ export default class Landing extends Component {
             value={pid}
             invalid={invalidPID}
             invalidMsg="Invalid key!"
-            label="Please enter the 4-digit key given to you by email."
-            placeholder="abcd"
+            label="Please enter your code"
+            placeholder="7"
           />
         </div>
       </Mobile>
