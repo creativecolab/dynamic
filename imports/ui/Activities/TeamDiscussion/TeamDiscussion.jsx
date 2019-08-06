@@ -17,6 +17,7 @@ import TeamFormation from '../Components/TeamFormation/TeamFormation';
 import TeammateSliders from '../Components/TeammateSliders/TeammateSliders';
 
 import './TeamDiscussion.scss';
+import PictureContent from '../../Components/PictureContent/PictureContent';
 
 const Message = posed.div({
   hidden: {
@@ -243,7 +244,13 @@ class TeamDiscussion extends Component {
           />
         );
       } else {
-        return <Waiting text="Response recorded! Now wait for the next activity to begin..." />;
+        return (
+          <PictureContent
+            imageSrc="/bye-jpg-500.jpg"
+            title="See y'all later!"
+            subtitle="Response recorded! Say goodbye to your group members and get ready to form new groups."
+          />
+        );
       }
     }
 
