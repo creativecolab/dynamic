@@ -14,7 +14,7 @@ import Questions from '../../api/questions';
 import dbquestions from './dbquestions';
 import './register-api';
 import { formTeams } from './team-former';
-import { getPreference, getInteractions, getUserHistory } from './data-getter';
+import { getPreference, getInteractions, getUserHistory, getUserJoinTimes, getTeamConfirmationTimes, getUserAssessmentTimes } from './data-getter';
 import { buildColoredShapes, calculateDuration } from './helper-funcs';
 import { updateTeamHistory_LateJoinees, updateTeamHistory_TeamFormation } from './team-historian';
 
@@ -64,6 +64,51 @@ if (Meteor.isServer) {
           'Content-Disposition': content_disposition
         },
         body: getUserHistory(this.urlParams.code)
+      };
+    }
+  });
+
+  Api.addRoute('user-join-times/:code', {
+    get() {
+      const content_disposition = 'attachment; filename=user-join-times_' + this.urlParams.code + '.txt';
+
+      return {
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'text/csv',
+          'Content-Disposition': content_disposition
+        },
+        body: getUserJoinTimes(this.urlParams.code)
+      };
+    }
+  });
+
+  Api.addRoute('team-confirmation-times/:code', {
+    get() {
+      const content_disposition = 'attachment; filename=team-confirmation-times_' + this.urlParams.code + '.txt';
+
+      return {
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'text/csv',
+          'Content-Disposition': content_disposition
+        },
+        body: getTeamConfirmationTimes(this.urlParams.code)
+      };
+    }
+  });
+
+  Api.addRoute('user-assessment-times/:code', {
+    get() {
+      const content_disposition = 'attachment; filename=user-assessment-times_' + this.urlParams.code + '.txt';
+
+      return {
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'text/csv',
+          'Content-Disposition': content_disposition
+        },
+        body: getUserAssessmentTimes(this.urlParams.code)
       };
     }
   });
