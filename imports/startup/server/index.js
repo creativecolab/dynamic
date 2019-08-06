@@ -294,7 +294,6 @@ function createUsers() {
     //insert each user into the databse
     if (Users.findOne({pid: student.code.toString()}) === undefined) {
       Users.insert(
-        { pid: student.code.toString() },
         {
           name: student.name,
           pid: student.code.toString(),
