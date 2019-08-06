@@ -292,7 +292,7 @@ function createUsers() {
 
   cogs_187A_students.forEach(student => {
     //insert each user into the databse
-    if (Users.findOne({pid: student.code.toString()}) === undefined) {
+    if (Users.findOne({ pid: student.code.toString() }) === undefined) {
       Users.insert(
         {
           name: student.name,
@@ -309,7 +309,6 @@ function createUsers() {
 
 /* Meteor start-up function, called once server starts */
 Meteor.startup(() => {
-
   createQuestions();
 
   createUsers();
@@ -411,7 +410,7 @@ Meteor.startup(() => {
         // get number of teams that have not confirmed yet
         const num_not_assessed = Teams.find({ activity_id, assessed: false }).count();
 
-        console.log(num_not_assessed + ((num_not_assessed === 1) ? " team hasn't": " teams haven't") + " assessed yet.");
+        console.log(num_not_assessed + (num_not_assessed === 1 ? " team hasn't" : " teams haven't") + ' assessed yet.');
 
         // everyone confirmed, no need to wait
         if (num_not_assessed === 0) {
@@ -570,7 +569,7 @@ Meteor.startup(() => {
             }
           },
           () => {
-            console.log("Team Formation Elapsed Time: " + (new Date() - teamFormStart));
+            console.log('Team Formation Elapsed Time: ' + (new Date() - teamFormStart));
           }
         );
       }
