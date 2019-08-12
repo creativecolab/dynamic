@@ -1,4 +1,5 @@
 /* This File contains multiple functions that various apis use to get certain data in csv format */
+import { getAverageRating } from './helper-funcs';
 
 export function getPreference() {
   const session = Sessions.findOne({ code: 'quiz2' });
@@ -62,7 +63,7 @@ export function getInteractions(session_code) {
     return 'No session named ' + session_code + ' yet!';
   }
 
-  const { participants, teamHistory } = session;
+  const { participants, teamHistory, activities } = session;
 
   if (!participants) {
     return 'No particpants for the session ' + session_code + ' yet';
@@ -72,6 +73,7 @@ export function getInteractions(session_code) {
 
   participants.forEach((participant) => {
     participant_interactions = teamHistory[participant];
+    participant_ratings = Users.findOne({pid: participant}).preferences
     let i_actions = ',{';
     let uniq_i_actions = '[';
     let total_interactions = 0;
@@ -79,7 +81,9 @@ export function getInteractions(session_code) {
     for (var person in participant_interactions) {
       if (participant_interactions.hasOwnProperty(person)) {
           if (participant_interactions[person] !== 0) {
-            i_actions += person + ': ' + participant_interactions[person] + '; ';
+            // change num to avg rating between each dude
+            let avg_rating = getAverageRating(participant, participant_ratings, person, Users.findOne({pid: person}).preferences, activities);
+            i_actions += person + ': ' + avg_rating + '; ';
             uniq_i_actions += person + '; ';
             total_interactions = total_interactions + participant_interactions[person];
             unique_interactions = unique_interactions + 1;
@@ -116,15 +120,22 @@ export function getUserHistory(session_code) {
     return 'No particpants for the session ' + session_code + ' yet';
   }
 
-  //TODO: get data on avg_assessment_time
+  let ret = 'participant,join_time,elapsed_joined_time,num_teams,num_teams_confirmed,avg_team_formation_time,' + 
+            'num_ratings_given,avg_rating_given,avg_assessement_time,num_ratings_received,avg_rating_received\n';
 
-  let ret = 'participant,num_teams,num_teams_confirmed,avg_team_formation_time,' + 
-            'num_ratings_given,avg_rating_given,num_ratings_received,avg_rating_received\n';
+
+  // used to get elapsed time
+  const first_person = Users.findOne({pid: participants[0]});
+  let first_joined_time = first_person.sessionHistory.filter((sesh) => sesh.session_id === session._id)[0].sessionJoinTime;
 
   // get the data for each participant in this sessiom
   participants.forEach((participant) => {
 
     let user = Users.findOne({pid: participant});
+
+    // get the user's join time
+    let join_time = user.sessionHistory.filter((past_session) => past_session.session_id === session._id)[0].sessionJoinTime;
+    let elapsed_join_time = ((join_time - first_joined_time) / 1000).toFixed(3);
 
     // get information on user's team contributions
     let user_teams = user.teamHistory.filter((team) => (activities.includes(team.activity_id)));
@@ -138,18 +149,23 @@ export function getUserHistory(session_code) {
         num_teams_confirmed = num_teams_confirmed + 1;
       }
     });
-    avg_team_formation_time = avg_team_formation_time / num_teams;
+    avg_team_formation_time = ((avg_team_formation_time / num_teams) / 1000).toFixed(3);
 
     // get rating information on a user
     let user_preferences = user.preferences.filter((preference) => (activities.includes(preference.activity_id)));
     let num_ratings_given = 0;
     let avg_rating_given = 0;
+    let total_assessment_time = 0;
+    let avg_assessement_time = 0;
     let num_ratings_received = 0;
     let avg_rating_received = 0;
     let other_ratings_checked = {};
     user_preferences.forEach((user_preference) => {
+      // get the time it took for this assessment and how many ratings were made, and the ratings themselves
+      let curr_act = Activities.findOne(user_preference.activity_id);
+      total_assessment_time = total_assessment_time + ((user_preference.timestamp - curr_act.statusStartTimes.peerAssessment) / 1000);
+      num_ratings_given = num_ratings_given + user_preference.values.length;
       user_preference.values.forEach((rating) => {
-        num_ratings_given = num_ratings_given + 1;
         avg_rating_given = avg_rating_given + rating.value;
         // now get the ratings attributed to them
         if (!(other_ratings_checked[rating.pid])) {
@@ -169,16 +185,17 @@ export function getUserHistory(session_code) {
       });
     });
     // calculate the averages 
-    avg_rating_given = avg_rating_given / num_ratings_given;
-    avg_rating_received = avg_rating_received / num_ratings_received;
+    avg_rating_given = (avg_rating_given / num_ratings_given).toFixed(3);
+    avg_assessement_time = (total_assessment_time / user_preferences.length).toFixed(3);
+    avg_rating_received = (avg_rating_received / num_ratings_received).toFixed(3);
 
+    
     // put it all together for this user
-    ret += participant + ',' + num_teams + ',' + num_teams_confirmed + ',' + avg_team_formation_time + ',' +
-            num_ratings_given + ',' + avg_rating_given + ',' + num_ratings_received + ',' + avg_rating_received + '\n';
-
-  
+    ret += participant + ',' + join_time + ',' + elapsed_join_time + ',' + 
+            num_teams + ',' + num_teams_confirmed + ',' + avg_team_formation_time + ',' +
+            num_ratings_given + ',' + avg_rating_given + ',' + avg_assessement_time + ',' +
+            num_ratings_received + ',' + avg_rating_received + '\n';
   });
-
 
   return ret;
 }
