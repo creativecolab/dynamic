@@ -10,7 +10,7 @@ import SessionProgress from '../../ui/SessionProgress/SessionProgress';
 import SessionHandler from '../../ui/Handlers/SessionHandler/SessionHandler';
 import DataOverview from '../../ui/DataOverview/DataOverview';
 import SharedDisplay from '../../ui/SharedDisplay/SharedDisplay';
-
+import Home from '../../ui/Home/Home';
 // eslint-disable-next-line import/prefer-default-export
 export const renderRoutes = () => (
   <Router>
@@ -20,6 +20,7 @@ export const renderRoutes = () => (
         {/* <Route exact path="/" render={() => <Landing />} /> */}
         <Route exact path="/data" component={DataOverview} />
         <Route exact path="/instructor" component={InstructorUI} />
+        <Route exact path="/home" component={Home} />
         <Route exact path="/host" component={SharedDisplay} />
         <Route exact path="/:code" component={SessionHandler} />
         <Route exact path="/:code/edit" component={Session} />

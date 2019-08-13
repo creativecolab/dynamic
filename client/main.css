@@ -6,7 +6,7 @@ html, body, #react-target, #react-target>div {
   font-size: 24px;
   color: black; 
   margin: 0;
-  /* overflow: hidden; */
+  scroll-behavior: smooth;
 }
 
 a {
@@ -16,3 +16,4 @@ a {
 button, span, div {
   outline: none;
 }
+
