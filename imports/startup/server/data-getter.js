@@ -1,5 +1,10 @@
 /* This File contains multiple functions that various apis use to get certain data in csv format */
+import Sessions from '../../api/sessions';
+import Users from '../../api/users';
+
 import { getAverageRating } from './helper-funcs';
+
+const blacklisted = ['3291', '6734', '5072', '1161', '8035'];
 
 export function getPreference() {
   const session = Sessions.findOne({ code: 'quiz2' });
@@ -72,28 +77,39 @@ export function getInteractions(session_code) {
   let ret = 'participant,all_interactions,people_interacted_with,num_interactions,num_unique_interactions\n';
 
   participants.forEach((participant) => {
-    participant_interactions = teamHistory[participant];
-    participant_ratings = Users.findOne({pid: participant}).preferences
+    const  participant_interactions = teamHistory[participant];
+    const { preferences } = Users.findOne({pid: participant});
     let i_actions = ',{';
     let uniq_i_actions = '[';
     let total_interactions = 0;
     let unique_interactions = 0;
-    for (var person in participant_interactions) {
-      if (participant_interactions.hasOwnProperty(person)) {
-          if (participant_interactions[person] !== 0) {
-            // change num to avg rating between each dude
-            let avg_rating = getAverageRating(participant, participant_ratings, person, Users.findOne({pid: person}).preferences, activities);
-            i_actions += person + ': ' + avg_rating + '; ';
-            uniq_i_actions += person + '; ';
-            total_interactions = total_interactions + participant_interactions[person];
-            unique_interactions = unique_interactions + 1;
+    if (!blacklisted.includes(participant)) {
+      for (var person in participant_interactions) {
+        if (participant_interactions.hasOwnProperty(person)) {
+          if (!blacklisted.includes(person)) {
+            if (participant_interactions[person] !== 0) {
+              // change num to avg rating between each dude
+              let avg_rating = getAverageRating(participant, preferences, person, Users.findOne({pid: person}).preferences, activities);
+              i_actions += person + ': ' + avg_rating + '; ';
+              uniq_i_actions += person + '; ';
+              total_interactions = total_interactions + participant_interactions[person];
+              unique_interactions = unique_interactions + 1;
 
+            }
           }
+        }
       }
     }
-    i_actions = i_actions.slice(0, -2);
-    i_actions += '},';
-    uniq_i_actions = uniq_i_actions.slice(0, -2);
+    if (!blacklisted.includes(participant)) {
+      i_actions = i_actions.slice(0, -2);
+      uniq_i_actions = uniq_i_actions.slice(0, -2);
+    } else {
+      i_actions += 'blacklisted'
+      uniq_i_actions += 'blacklisted';
+      total_interactions = 'blacklisted';
+      unique_interactions = 'blacklisted';
+    }
+    i_actions += '},'; 
     uniq_i_actions += '],';
     ret += participant + i_actions + uniq_i_actions + total_interactions + ',' + unique_interactions + '\n';
   });
@@ -189,6 +205,17 @@ export function getUserHistory(session_code) {
     avg_assessement_time = (total_assessment_time / user_preferences.length).toFixed(3);
     avg_rating_received = (avg_rating_received / num_ratings_received).toFixed(3);
 
+    // check for blacklistees
+    if (blacklisted.includes(participant)) {
+      num_teams = 'blacklisted';
+      num_teams_confirmed = 'blacklisted';
+      avg_team_formation_time = 'blacklisted';
+      num_ratings_given = 'blacklisted';
+      avg_rating_given = 'blacklisted';
+      avg_assessement_time = 'blacklisted';
+      num_ratings_received = 'blacklisted';
+      avg_rating_received = 'blacklisted';
+    } 
     
     // put it all together for this user
     ret += participant + ',' + join_time + ',' + elapsed_join_time + ',' + 
