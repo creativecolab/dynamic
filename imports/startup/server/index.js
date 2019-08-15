@@ -118,6 +118,20 @@ let timeout_timer;
 
 /* Meteor methods (server-side function, mostly database work) */
 Meteor.methods({
+
+  'users.addUser': function(pid) {
+    Users.insert(
+      {
+        name: "",
+        pid: pid,
+        joinTime: new Date().getTime(),
+        teamHistory: [],
+        sessionHistory: [],
+        preferences: []
+      }
+    );
+  },
+
   'sessions.buildTeamHistory': function(participants, session_id) {
     teamHistory = {};
     participants.forEach(participant => {
