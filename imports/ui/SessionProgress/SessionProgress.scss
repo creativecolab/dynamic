@@ -67,3 +67,41 @@
   padding-left: 10%; 
   padding-right: 10%; 
 }
+
+.how-to-main {
+  //background: #e0e0e0;
+  background: white;
+  // margin: 5vh;
+  padding: 2vw;
+  border-radius: 5px;
+  position: relative;
+  width: 90%;
+}
+
+.how-to-card-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  img {
+    max-width: 100%;
+    max-height: 100%;
+  }
+}
+
+.how-to-title {
+  display: flex;
+  position: absolute;
+  top: -2.5vh;
+  font-size: 1.5em;
+
+  div {
+    margin: auto;
+    padding: 0 0.2em;
+    background: #080808;
+    color: white;
+    text-align: center;
+    line-height: 5vh;
+  }
+  
+}
