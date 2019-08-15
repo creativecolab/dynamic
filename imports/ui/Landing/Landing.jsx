@@ -56,7 +56,6 @@ export default class Landing extends Component {
 
   // once the user enters the session code, try go to that session's page
   handleCodeSubmission = () => {
-    // eslint-disable-next-line react/destructuring-assignment
     const code = this.state.code.toLowerCase();
 
     // handle invalid codes
@@ -73,9 +72,26 @@ export default class Landing extends Component {
 
     // session exists
     if (session) {
-      this.setState({
-        codeSubmitted: true
+      // generate a pid for the user
+      if (localStorage.getItem("pid")) {
+        console.log("pid " + localStorage.getItem("pid") + " found");
+      }
+      let pid = [...Array(6)].map(() => Math.random().toString(36)[2]).join('');
+      let user = Users.findOne({ pid: pid });
+      while (user != undefined) {
+        console.log("Pid is already taken!");
+        pid = [...Array(6)].map(() => Math.random().toString(36)[2]).join('');
+        user = Users.findOne({ pid: pid });
+      }
+      Meteor.call('users.addUser', pid, () => {
+        localStorage.setItem("pid", pid);
+        this.setState({
+          pid: pid,
+          pidSubmitted: true,
+          codeSubmitted: true
+        });
       });
+
     }
 
     // invalid session code
@@ -106,9 +122,7 @@ export default class Landing extends Component {
 
   // TODO: maybe -- use localStorage to suggest login
   handleLogin = () => {
-    /* eslint-disable react/destructuring-assignment */
     const pid = this.state.pid.toLowerCase().trim();
-    /* eslint-enable react/destructuring-assignment */
 
     if (pid.length === 0) {
       this.setState({
