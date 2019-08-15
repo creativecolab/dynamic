@@ -1,20 +1,29 @@
 {
-  "short_name": "Dynamic!",
-  "name": "Dynamic!",
-  "description": "A dynamic team formation app.",
-  "icons": [{
-    "src": "favicon-32.png",
-    "sizes": "32x32",
-    "type": "image/png"
-  },{
-    "src": "favicon-196.png",
-    "sizes": "196x196",
-    "type": "image/png"
-  },{
-    "src": "favicon-512.png",
-    "sizes": "512x512",
-    "type": "image/png"
-  }],
+  "short_name": "ProtoTeams",
+  "name": "ProtoTeams",
+  "description": "A dynamic team formation app",
+  "icons": [
+    {
+      "src": "logo-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "logo-64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "logo-196.png",
+      "sizes": "196x196",
+      "type": "image/png"
+    },
+    {
+      "src": "logo-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
   "start_url": "/",
   "display": "fullscreen",
   "orientation": "portrait"
