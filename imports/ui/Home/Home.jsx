@@ -1,13 +1,12 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import "./Home.scss";
 import Button from '../Components/Button/Button';
 import Stepper from 'react-stepper-horizontal';
 
-const scrollToRef = (ref) => window.scrollTo(0, ref.current.offsetTop);
+//const scrollToRef = (ref) => window.scrollTo(0, ref.current.offsetTop);
 
 export default function Home() {
   const myRef = useRef(null)
-
   const executeScroll = () => { console.log(myRef.current.offsetTop); myRef.current.scrollIntoView({ behavior: 'smooth' }); }
 
   return (
@@ -36,7 +35,6 @@ export default function Home() {
                 <Button
                   style={{ color: '#FF6D5F', background: '#080808', margin: 0, boxShadow: "inset 0 0 0 3px #FF6D5F" }}
                   size="fixed"
-                  //onClick={this.createSession}
                   onClick={executeScroll}
                 >LEARN MORE
               </Button>
@@ -107,7 +105,9 @@ export default function Home() {
             <br /><br />By using this system, you are helping us better understand how in-person teams form, so we can improve the experience as well as the outcomes of working in teams.</div>
         </div>
 
+
         <div className="bye-image-bottom"><img src="./bye-jpg-500.jpg" alt="" /></div>
+
         <div className="begin-button-bottom">
           <Button
             style={{ color: 'white', background: '#FF6D5F', margin: 0 }}
