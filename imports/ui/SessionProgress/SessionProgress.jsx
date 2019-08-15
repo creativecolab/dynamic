@@ -6,7 +6,6 @@ import { Random } from 'meteor/random';
 import Activities from '../../api/activities';
 import Sessions from '../../api/sessions';
 import Users from '../../api/users';
-import Teams from '../../api/teams';
 import Logs from '../../api/logs';
 import Quizzes from '../../api/quizzes';
 
@@ -20,7 +19,7 @@ import TeamShapes from './Components/TeamShapes';
 import StatsPage from './Components/StatsPage';
 
 import './SessionProgress.scss';
-import SessionBegin from './Components/SessionBegin';
+import Card from '../Components/Card/Card';
 
 class SessionProgress extends Component {
   static propTypes = {
@@ -263,7 +262,25 @@ class SessionProgress extends Component {
           instructions={numJoined + (numJoined === 1 ? ' person has ' : ' people have ') + 'joined'}
         >
           {/* <SessionBegin session_id={this.props.session._id}></SessionBegin> */}
-          <img className="contentPic" src="/dynamic.gif" alt="" />
+          <section className="how-to-main">
+            <div className="how-to-title">
+              <div>HOW IT WORKS</div>
+            </div>
+            <div className="how-to-card-container">
+              <Card tag="1" title="Use mobile devices">
+                <img src="/phone-jpg-500.jpg" alt="" />
+              </Card>
+              <Card tag="2" title="Make small groups">
+                <img src="/teams-jpg-500.jpg" alt="" />
+              </Card>
+              <Card tag="3" title="Perform group activities">
+                <img src="/discuss-jpg-500.jpg" alt="" />
+              </Card>
+              <Card tag="4" title="Assess your experience">
+                <img src="/slider-jpg-500.jpg" alt="" />
+              </Card>
+            </div>
+          </section>
           <div className="joinees">
             {numJoined !== 0 && (
               <h2>
@@ -343,5 +360,4 @@ export default withTracker(props => {
   const usersAssessed = Users.find({ 'preferences.activity_id': currentActivity._id }).count();
 
   return { session, users, usersAssessed, usersTotal, activities, currentActivity, quiz };
-
 })(SessionProgress);
