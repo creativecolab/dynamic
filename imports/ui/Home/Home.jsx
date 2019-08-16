@@ -112,7 +112,7 @@ export default function Home() {
       <div className="landing-rect">
         <div className="header-flex">
           <img src="./logo-png-100.png" alt="" />
-          <div className="header">Prototeams</div>
+          <div className="header">ProtoTeams</div>
         </div>
 
         <div className="landing-content-flex">
@@ -263,7 +263,7 @@ export default function Home() {
             style={{ color: 'white', background: '#FF6D5F', margin: 0 }}
             size="fixed"
             onClick={createSession}
-          //onClick={() => document.getElementById('landing-title').scrollIntoView()}
+            //onClick={() => document.getElementById('landing-title').scrollIntoView()}
           >
             GET STARTED
           </Button>
