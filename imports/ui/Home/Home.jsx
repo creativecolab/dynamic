@@ -64,15 +64,15 @@ export default function Home() {
     // create 6 default activities
     const activities = [];
 
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 5; i++) {
       const activity_id = Activities.insert({
         name: ActivityEnums.name.TEAM_DISCUSSION,
         session_id,
         index: i,
         teamSize: 3, // TODO: default value?
         hasIndvPhase: false,
-        durationIndv: 180,
-        durationTeam: 180,
+        durationIndv: 300,
+        durationTeam: 300,
         durationOffsetIndv: 0,
         durationOffsetTeam: 0,
         status: ActivityEnums.status.READY,
