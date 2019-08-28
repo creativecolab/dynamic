@@ -14,7 +14,14 @@ import Questions from '../../api/questions';
 import dbquestions from './dbquestions';
 import './register-api';
 import { formTeams } from './team-former';
-import { getPreference, getInteractions, getUserHistory, getUserJoinTimes, getTeamConfirmationTimes, getUserAssessmentTimes } from './data-getter';
+import {
+  getPreference,
+  getInteractions,
+  getUserHistory,
+  getUserJoinTimes,
+  getTeamConfirmationTimes,
+  getUserAssessmentTimes
+} from './data-getter';
 import { buildColoredShapes, calculateDuration } from './helper-funcs';
 import { updateTeamHistory_LateJoinees, updateTeamHistory_TeamFormation } from './team-historian';
 
@@ -118,18 +125,15 @@ let timeout_timer;
 
 /* Meteor methods (server-side function, mostly database work) */
 Meteor.methods({
-
   'users.addUser': function(pid) {
-    Users.insert(
-      {
-        name: "",
-        pid: pid,
-        joinTime: new Date().getTime(),
-        teamHistory: [],
-        sessionHistory: [],
-        preferences: []
-      }
-    );
+    Users.insert({
+      name: '',
+      pid,
+      joinTime: new Date().getTime(),
+      teamHistory: [],
+      sessionHistory: [],
+      preferences: []
+    });
   },
 
   'sessions.buildTeamHistory': function(participants, session_id) {
@@ -297,7 +301,7 @@ function createQuestions() {
       let round = 0;
 
       group.prompts.map((q, index) => {
-        if (index % 5 === 0) round += 1;
+        if (index % 6 === 0) round += 1;
 
         if (round > 3) return;
 
@@ -316,7 +320,7 @@ function createQuestions() {
       let round = 3;
 
       group.prompts.map((q, index) => {
-        if (index % 3 === 0) round += 1;
+        if (index % 5 === 0) round += 1;
 
         Questions.insert({
           prompt: q,
@@ -352,16 +356,14 @@ function createUsers() {
   cogs_187A_students.forEach(student => {
     //insert each user into the databse
     if (Users.findOne({ pid: student.code.toString() }) === undefined) {
-      Users.insert(
-        {
-          name: student.name,
-          pid: student.code.toString(),
-          joinTime: new Date().getTime(),
-          teamHistory: [],
-          sessionHistory: [],
-          preferences: []
-        }
-      );
+      Users.insert({
+        name: student.name,
+        pid: student.code.toString(),
+        joinTime: new Date().getTime(),
+        teamHistory: [],
+        sessionHistory: [],
+        preferences: []
+      });
     }
   });
 }
