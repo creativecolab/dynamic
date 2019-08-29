@@ -27,16 +27,16 @@ const dbquestions = [
     label: 'design',
     color: '#F05D5E',
     prompts: [
-      'Júlia tem muita dificuldade para falar em público e sofre muito com insônia. Que produto você poderia criar para ajudá-la?',
-      'Maria não consegue acompanhar as aulas e se distrai muito fácil com seu celular. Que produto você poderia criar para ajudar Maria?',
-      'Cláudio chega nas aulas, pega presença e vai embora. Qual poderia ser o problema que Cláudio enfrenta e como você poderia ajudá-lo?',
-      'Eduardo não consegue parar de fumar, que produto você poderia criar para ajudar Eduardo?',
-      'Junior tem muita dificuldade em ficar acordado nas aulas, qual poderia ser o problema que Junior está enfrentando e como você poderia ajudá-lo?',
-      'Joana está tendo problemas em lidar com a raiva, o que poderia estar causando isso e como você poderia ajudá-la?',
-      'Lukas tem dificuldade em controlar sua alimentação. Que produto você poderia criar para ajudá-lo?',
-      'Charlie é tem dificuldade em controlar sua hiperatividade e inquietação durante as aulas. Que produto você poderia criar para ajudá-lo?',
-      'Sara tem estado sem motivação e está cada vez mais se isolando de seus amigos. Que produto você poderia criar para ajudar Sara?',
-      'José tem 72 anos e está com dificuldade em lembrar as coisas do dia-a-dia. Como você poderia ajudar José?'
+      'Júlia tem muita dificuldade para falar em público e sofre muito com insônia. Qual seria o problema que Júlia enfrenta?',
+      'Maria não consegue acompanhar as aulas e se distrai muito fácil com seu celular. Qual seria o problema da Maria?',
+      'Cláudio chega nas aulas, pega presença e vai embora. Qual poderia ser o problema que Cláudio enfrenta?',
+      'Eduardo não consegue parar de fumar, qual seria o problema que ele enfrenta?',
+      'Junior tem muita dificuldade em ficar acordado nas aulas, qual poderia ser o problema que Junior está enfrentando?',
+      'Joana está tendo problemas em lidar com a raiva, o que poderia estar causando isso?',
+      'Lukas tem dificuldade em controlar sua alimentação. Qual pode ser o problema que causa isso?',
+      'Charlie tem dificuldade em controlar sua hiperatividade e inquietação durante as aulas. Qual é o problema que Charlie enfrenta?',
+      'Sara tem estado sem motivação e está cada vez mais se isolando de seus amigos. Qual poderia ser o problema de Sara?',
+      'José tem 72 anos e está com dificuldade em lembrar as coisas do dia-a-dia. Qual poderia ser o problema de José?'
     ]
   },
   {
