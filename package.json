@@ -29,6 +29,7 @@
     "eslint-plugin-meteor": "^5.1.0",
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-react": "^7.12.4",
+    "eslint-utils": "^1.4.2",
     "history": "^4.7.2",
     "immutability-helper": "^3.0.0",
     "indexof": "0.0.1",
