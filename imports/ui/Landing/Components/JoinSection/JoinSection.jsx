@@ -56,7 +56,7 @@ export default class JoinSection extends Component {
     return (
       <>
         <Logo className="logo" pose={visible ? 'visible' : 'hidden'}>
-          <img src="./favicon-196.png" alt="" />
+          <img src="./logo-196.png" alt="" />
         </Logo>
         <TextInput
           name="session-code"
