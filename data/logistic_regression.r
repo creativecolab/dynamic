@@ -117,4 +117,3 @@ plot(prf)
 auc <- performance(pr, measure = "auc")
 auc <- auc@y.values[[1]]
 auc
-
