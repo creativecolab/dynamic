@@ -8,7 +8,17 @@ indv_cols <- c('Age','Creativity' ,'Prior.Social.Connections','Psychological.Col
 data <- subset(individual.data.raw, select = indv_cols)
 
 # general stepwise regression... remove pillars and dyad labels
-data <- subset(training.data.raw, select = -c(mutual, dyad, interacted, both_male, both_non_binary, both_female, social_tie, u_r, s_s, t_s, c_s, a_d, t_i, c_p, c_d, p_m))
+# data <- subset(training.data.raw, select = -c(mutual, dyad, interacted, both_male, both_non_binary, both_female, social_tie, u_r, s_s, t_s, c_s, a_d, t_i, c_p, c_d, p_m))
+data <- subset(training.data.raw, select = -c(mutual, dyad))
+data$competence = rowSums(data[,13:21])
+
+data$personality = rowSums(data[,8:11])
+data$social_measures = rowSums(data[,22:25])
+data$warmth =  rowSums(data[,30:31])
+
+data <- subset(data, select = -c(u_r, s_s, t_s, c_s, a_d, t_i, c_p, c_d, p_m, agreeableness, conscientiousness, extraversion, emotional_stability, psychological_collectivism, social_skills, leadership, creativity, personality, social_measures))
+
+
 
 # min-max normalization
 normalize <- function(x) {
@@ -20,9 +30,9 @@ set.seed(14)
 rows <- sample(nrow(data))
 data <- data[rows, ]
 
-hist(data$social_skills)
-mean(data$social_skills)
-sd(data$social_skills)
+hist(data$competence)
+mean(data$competence)
+sd(data$competence)
 
 #cor(my_data, method = "pearson")
 
@@ -31,7 +41,7 @@ sd(data$social_skills)
 # normalize data
 scaled.data <- as.data.frame(lapply(data, normalize))
 library("Hmisc")
-corr <- rcorr(as.matrix(data))
+corr <- rcorr(as.matrix(scaled.data))
 #res2 <- rcorr(as.matrix(my_data))
 #res2
 #res2
@@ -42,22 +52,56 @@ corr.P <- data.frame(corr$P)
 write.csv(corr.P,"corr_P.csv")
 
 #hist(scaled.data$interacted)
-hist(scaled.data$social_skills)
+hist(scaled.data$Social.Skills)
 #hist(scaled.data$ixr)
 
-plot(data$Age, data$School.Year)
+plot(scaled.data$Technology.Strategy, scaled.data$Technology.Implementation)
+
+scaled.data = subset(scaled.data, select = -c(warmth, competence, imagination, intercultural_sensitivity))
 
 # subset into trains and test datasets
 train <- scaled.data[1:800,]
 test <- scaled.data[801:990,]
 
 # create model
-model <- glm(team ~., family=binomial(link='logit'), data=train)
+model <- glm(team ~., family= "binomial", data=data)
 selectedMod <- step(model)
 
-summary(selectedMod)
+model <- glm(team ~ social_tie_avg + avg_rating + gender + age, family = "binomial", data=data)
+summary(model)
+pR2(model)
 
-all_vifs <- car::vif(selectedMod)
+?pR2
+
+confint(model)
+exp(coef(model))
+summary(model)
+exp(cbind(OR = coef(model), confint(model)))
+
+library(gmodels)
+
+# out of the dyads that are in the same teams (86), 53 have the same gender, 33 are not.
+CrossTable(data$gender, data$team)
+
+# out of the dyads that knew each other (36), 15 are in the same team, 21 are not.
+CrossTable(data$social_tie, data$team)
+
+# out of the dyads that interacted using ProtoTeams (202), 26 are in the same team, 176 are not.
+CrossTable(data$interacted, data$team)
+
+# take out 0 ratings
+filtered_data = subset(data, avg_rating != 0)
+scaled.filtered_data <- as.data.frame(lapply(filtered_data, normalize))
+hist(data$social_tie_avg)
+
+CrossTable(training.data.raw$social_tie, training.data.raw$team)
+
+
+
+plot(train$avg_rating, train$team, log="x")
+
+
+all_vifs <- car::vif(model)
 print(all_vifs)
 
 signif_all <- names(all_vifs)
@@ -100,7 +144,14 @@ summary(selectedMod)
 anova(selectedMod, test="Chisq")
 
 pR2(selectedMod)
+?pR2
 
+library(ResourceSelection)
+hoslem.test(train$team, fitted(selectedMod), g=10)
+
+varImp(selectedMod)
+
+?hoslem.test
 fitted.results <- predict(selectedMod, newdata=subset(test), type='response')
 fitted.results <- ifelse(fitted.results > 0.5, 1, 0)
 misClasificError <- mean(fitted.results != test$team)
