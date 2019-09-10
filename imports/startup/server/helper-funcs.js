@@ -50,9 +50,9 @@ export function getAverageRating(participant, participant_preferences, other_par
 
   // worst javascript in the world to get the ratings that pertain to the person of interest
   let ratings_for_person = participant_preferences.filter((preference) => activities.includes(preference.activity_id))
-                                      .map((rating) => rating.values.filter((value) => value.pid === other_participant))
-                                      .filter((person_rating) => person_rating.length > 0)
-                                      .map((person_rating) => person_rating[0].value);
+                                                  .map((rating) => rating.values.filter((value) => value.pid === other_participant))
+                                                  .filter((person_rating) => person_rating.length > 0)
+                                                  .map((person_rating) => person_rating[0].value);
   let participant_avg = parseFloat((ratings_for_person.reduce((total, value) => total + value, 0) / ratings_for_person.length).toFixed(3));
   if (isNaN(participant_avg)) {
     console.log("no rating given for " + other_participant + " by " + participant);
@@ -61,9 +61,9 @@ export function getAverageRating(participant, participant_preferences, other_par
 
   // more terrible javascript to get ratings from the person of interest of the participant
   let ratings_for_participant = other_participant_preferences.filter((preference) => activities.includes(preference.activity_id))
-                                      .map((rating) => rating.values.filter((value) => value.pid === participant))
-                                      .filter((person_rating) => person_rating.length > 0)
-                                      .map((person_rating) => person_rating[0].value);
+                                                            .map((rating) => rating.values.filter((value) => value.pid === participant))
+                                                            .filter((person_rating) => person_rating.length > 0)
+                                                            .map((person_rating) => person_rating[0].value);
   let other_participant_avg = parseFloat((ratings_for_participant.reduce((total, value) => total + value, 0) / ratings_for_participant.length).toFixed(3));
   if (isNaN(other_participant_avg)) {
     console.log("no rating given for " + participant + " by " + other_participant);

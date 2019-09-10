@@ -14,7 +14,10 @@ import Questions from '../../api/questions';
 import dbquestions from './dbquestions';
 import './register-api';
 import { formTeams } from './team-former';
-import { getPreference, getInteractions, getUserHistory, getUserJoinTimes, getTeamConfirmationTimes, getUserAssessmentTimes } from './data-getter';
+import { getPreference, getInteractions, getUserHistory, 
+        getUserJoinTimes, getTeamConfirmationTimes,
+         getUserAssessmentTimes, getLastTeams,
+        getUserConfirmationTimes } from './data-getter';
 import { buildColoredShapes, calculateDuration } from './helper-funcs';
 import { updateTeamHistory_LateJoinees, updateTeamHistory_TeamFormation } from './team-historian';
 
@@ -55,7 +58,7 @@ if (Meteor.isServer) {
 
   Api.addRoute('users/:code', {
     get() {
-      const content_disposition = 'attachment; filename=users_' + this.urlParams.code + '.csv';
+      const content_disposition = 'attachment; filename=users_' + this.urlParams.code.toLowerCase() + '.csv';
 
       return {
         statusCode: 200,
@@ -64,6 +67,21 @@ if (Meteor.isServer) {
           'Content-Disposition': content_disposition
         },
         body: getUserHistory(this.urlParams.code)
+      };
+    }
+  });
+
+  Api.addRoute('last-teams/:code', {
+    get() {
+      const content_disposition = 'attachment; filename=last-teams_' + this.urlParams.code + '.csv';
+
+      return {
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'text/csv',
+          'Content-Disposition': content_disposition
+        },
+        body: getLastTeams(this.urlParams.code)
       };
     }
   });
@@ -85,7 +103,7 @@ if (Meteor.isServer) {
 
   Api.addRoute('team-confirmation-times/:code', {
     get() {
-      const content_disposition = 'attachment; filename=team-confirmation-times_' + this.urlParams.code + '.txt';
+      const content_disposition = 'attachment; filename=team-confirmation-times_' + this.urlParams.code + '.csv';
 
       return {
         statusCode: 200,
@@ -94,6 +112,21 @@ if (Meteor.isServer) {
           'Content-Disposition': content_disposition
         },
         body: getTeamConfirmationTimes(this.urlParams.code)
+      };
+    }
+  });
+
+  Api.addRoute('user-confirmation-times/:code', {
+    get() {
+      const content_disposition = 'attachment; filename=user-confirmation-times_' + this.urlParams.code + '.csv';
+
+      return {
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'text/csv',
+          'Content-Disposition': content_disposition
+        },
+        body: getUserConfirmationTimes(this.urlParams.code)
       };
     }
   });
