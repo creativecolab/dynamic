@@ -413,7 +413,7 @@ export default withTracker(({ pid, activity_id, progress }) => {
   );
 
   // get all the quesitons
-  const questions = Questions.find({ round: { $in: [progress] } }).fetch();
+  const questions = Questions.find({ round: { $in: [progress, 0] } }).fetch();
 
   const voted = Users.findOne({ pid, 'preferences.activity_id': activity_id }) !== undefined;
 

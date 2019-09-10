@@ -1,7 +1,7 @@
 {
   "short_name": "ProtoTeams",
   "name": "ProtoTeams",
-  "description": "A dynamic team formation app",
+  "description": "A dynamic team formation system",
   "icons": [
     {
       "src": "logo-32.png",
