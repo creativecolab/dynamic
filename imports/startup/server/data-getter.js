@@ -3,6 +3,7 @@ import Sessions from '../../api/sessions';
 import Users from '../../api/users';
 
 import { getAverageRating } from './helper-funcs';
+import { strict } from 'assert';
 
 const blacklisted = ['3291', '6734', '5072', '1161', '8035'];
 
@@ -259,7 +260,7 @@ export function getTeamConfirmationTimes(session_code) {
     return 'No session named ' + session_code + ' yet!';
   }
 
-  let ret = "Team-Confirmation-Times\n";
+  let ret = "Team,Activity,Time\n";
   let total_confirmation_time = 0;
   let num_confirmations = 0;
 
@@ -271,9 +272,10 @@ export function getTeamConfirmationTimes(session_code) {
       return;
     }
 
-    const { team_ids } = curr_act;
+    const { team_ids, index } = curr_act;
 
-    ret = ret + "Activity " + activity_id + "\n";
+    total_confirmation_time = 0;
+    num_confirmations = 0;
 
     team_ids.forEach((team_id) => {
       let team = Teams.findOne(team_id);
@@ -281,17 +283,118 @@ export function getTeamConfirmationTimes(session_code) {
         // update the count and running total of confirmation times
         num_confirmations = num_confirmations + 1;
         total_confirmation_time = total_confirmation_time + (team.teamFormationTime / 1000);
-        ret = ret + "Team " + team.color + " " + team.shape + " took " + (team.teamFormationTime / 1000)
-              + " seconds to confirm\n";
+        ret = ret + "Team " + team.color + "_" + team.shape + ",Round " + (index+1) + "," + (team.teamFormationTime / 1000) + "\n";
       }
     });
+
+    ret = ret + "Average,Round " + (index+1) + "," + (total_confirmation_time / num_confirmations).toFixed(3) + "\n";
+
   });
 
   // calculate average
-  ret = ret + "Average Team Confirmation Time this session: " + (total_confirmation_time / num_confirmations);
+  //ret = ret + "Average Team Confirmation Time this session: " + (total_confirmation_time / num_confirmations);
   
  return ret;
 
+}
+
+export function getUserConfirmationTimes(session_code) {
+
+  const session = Sessions.findOne({ code: session_code.toLowerCase() });
+
+  if (!session) {
+    return 'No session named ' + session_code + ' yet!';
+  }
+
+  let ret = "Confirmation_Time,Round\n";
+
+  participants = {}
+
+  session.participants.forEach(participant => {
+    participants[participant] = {
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0
+    };
+  });
+
+  session.activities.forEach((activity_id) => {
+    const curr_act = Activities.findOne(activity_id);
+
+    if (!curr_act) {
+      ret = ret + 'No activity with id ' + activity_id + ' yet!\n';
+      return;
+    }
+
+    const { team_ids, index } = curr_act;
+
+    team_ids.forEach((team_id) => {
+      let team = Teams.findOne(team_id);
+      if (team.confirmed) {
+        // update the count and running total of confirmation times
+        team.members.forEach((member) => {
+          participants[member.pid][String(index+1)] = (team.teamFormationTime / 1000);
+        });
+      }
+    });
+
+
+  });
+
+  for (var participant in participants) {
+    if (participants.hasOwnProperty(participant)) {
+        ret = ret + (participants[participant]["1"] > 0 ? participants[participant]["1"] + ",1\n" : "")
+        + (participants[participant]["2"] > 0 ? participants[participant]["2"] + ",2\n" : "")
+        + (participants[participant]["3"] > 0 ? participants[participant]["3"] + ",3\n" : "")
+        + (participants[participant]["4"] > 0 ? participants[participant]["4"] + ",4\n" : "")
+        + (participants[participant]["5"] > 0 ? participants[participant]["5"] + ",5\n" : "")
+        + (participants[participant]["6"] > 0 ? participants[participant]["6"] + ",6\n" : "")
+    }
+}
+
+  
+ return ret;
+
+}
+
+export function getLastTeams(session_code) {
+
+  const session = Sessions.findOne({ code: session_code.toLowerCase() });
+
+  if (!session) {
+    return 'No session named ' + session_code + ' yet!';
+  }
+
+  let ret = "Participant,Last Team\n";
+
+  const { participants, activities } = session;
+
+  const lastAct = Activities.findOne({session_id: session._id, index: activities.length-1})
+  console.log(lastAct);
+
+  const { team_ids } = lastAct
+
+  const lastTeams = Teams.find({_id: { $in: team_ids}}).fetch()
+
+  lastTeams.forEach(team => { 
+    const toAdd = team.members.map((mate) => {
+      return mate.pid + ';' + team.members.filter((other_mate) => other_mate != mate).map((other_mate) => other_mate.pid)
+    });
+    toAdd.forEach((last_team) => {
+      ret += last_team.substr(0, last_team.indexOf(';')) + ',' 
+              + last_team.substr(last_team.indexOf(';') + 1).replace(/,/g, ';') + '\n';      
+    })
+  });
+
+  participants.forEach((participant) => {
+
+  });
+
+
+  return ret
 }
 
 export function getUserAssessmentTimes(session_code) {
