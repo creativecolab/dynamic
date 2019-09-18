@@ -331,7 +331,7 @@ function createQuestions() {
       let round = 0;
 
       group.prompts.map((q, index) => {
-        if (index % 6 === 0) round += 1;
+        if (index % 5 === 0) round += 1;
 
         if (round > 3) return;
 
@@ -350,7 +350,7 @@ function createQuestions() {
       let round = 3;
 
       group.prompts.map((q, index) => {
-        if (index % 5 === 0) round += 1;
+        if (index % 3 === 0) round += 1;
 
         Questions.insert({
           prompt: q,

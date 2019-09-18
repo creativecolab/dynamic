@@ -64,15 +64,15 @@ export default function Home() {
     // create 6 default activities
     const activities = [];
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
       const activity_id = Activities.insert({
         name: ActivityEnums.name.TEAM_DISCUSSION,
         session_id,
         index: i,
         teamSize: 3, // TODO: default value?
         hasIndvPhase: false,
-        durationIndv: 300,
-        durationTeam: 300,
+        durationIndv: 180,
+        durationTeam: 180,
         durationOffsetIndv: 0,
         durationOffsetTeam: 0,
         status: ActivityEnums.status.READY,
@@ -263,7 +263,7 @@ export default function Home() {
             style={{ color: 'white', background: '#FF6D5F', margin: 0 }}
             size="fixed"
             onClick={createSession}
-            //onClick={() => document.getElementById('landing-title').scrollIntoView()}
+          //onClick={() => document.getElementById('landing-title').scrollIntoView()}
           >
             GET STARTED
           </Button>
