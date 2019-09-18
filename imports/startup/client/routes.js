@@ -21,6 +21,8 @@ export const renderRoutes = () => (
         <Route exact path="/data" component={DataOverview} />
         <Route exact path="/instructor" component={InstructorUI} />
         <Route exact path="/home" component={Home} />
+        <Route exact path="/learnmore" component={Home} />
+        <Route exact path="/about" component={Home} />
         <Route exact path="/host" component={SharedDisplay} />
         <Route exact path="/:code" component={SessionHandler} />
         <Route exact path="/:code/edit" component={Session} />
