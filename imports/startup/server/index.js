@@ -402,7 +402,7 @@ function createUsers() {
 Meteor.startup(() => {
   createQuestions();
 
-  createUsers();
+  // createUsers();
 
   // handles session start/end
   const sessionCursor = Sessions.find({});
