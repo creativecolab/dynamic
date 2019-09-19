@@ -407,7 +407,7 @@ export function getUserAssessmentTimes(session_code) {
 
   let ret = "User-Assessment-Times\n";
   let total_assessment_time = 0;
-  let num_assessments = 0;
+  let total_num_assessments = 0;
 
   session.activities.forEach((activity_id) => {
     const curr_act = Activities.findOne(activity_id);
@@ -421,6 +421,10 @@ export function getUserAssessmentTimes(session_code) {
 
     ret = ret + "Activity " + activity_id + "\n";
 
+    // get the average for this round
+    let num_assessments = 0
+    let round_assessment_time = 0
+
     team_ids.forEach((team_id) => {
       let team = Teams.findOne(team_id);
       team.members.forEach((member) => {
@@ -431,15 +435,22 @@ export function getUserAssessmentTimes(session_code) {
           // time is the elapsed time, update count and running total
           let assessment_time = assessment[0].timestamp - curr_act.statusStartTimes.peerAssessment;
           num_assessments = num_assessments + 1;
-          total_assessment_time = total_assessment_time + (assessment_time / 1000);
+          round_assessment_time = round_assessment_time + (assessment_time / 1000);
           ret = ret + "User " + user.pid +  " took " + (assessment_time / 1000) + " seconds to submit preferences\n";
         }    
       });
     });
+
+    ret = ret + "Average Assessment Time this round is " + (round_assessment_time / num_assessments) + "\n";
+
+    // keep running total going
+    total_num_assessments = total_num_assessments + num_assessments;
+    total_assessment_time = total_assessment_time + round_assessment_time
+
   });
 
   // calculate average
-  ret = ret + "Average User Assessment Time this session: " + (total_assessment_time / num_assessments);
+  ret = ret + "Average User Assessment Time this session: " + (total_assessment_time / total_num_assessments);
   
  return ret;
 
