@@ -7,7 +7,6 @@ export function updateTeamHistory_LateJoinees(session_id) {
   // get a snapshot of the participants and the teamHistory matrix for this session
   const { participants, teamHistory } = Sessions.findOne(session_id);
 
-  // build a new row for each late joinee
   // find the late joinees so far. add them to the matrix
   // dude wtf for loops are faster than forEach/filter/reduce/map 
   // late_joinees = participants.filter(participant => !(participant in teamHistory));
@@ -22,12 +21,12 @@ export function updateTeamHistory_LateJoinees(session_id) {
   // build a new row and a new column for each late joinee
   for (let i = 0; i < late_joinees.length; i++) {
     for (let j = 0; j < participants.length; j++) {
-      // new column for the late_joinee
-      teamHistory[participants[j]][late_joinees[i]] = 0;
       if (participants[j] != late_joinees[i]) {
         // new row for the late_joinee
         teamHistory[late_joinees[i]][participants[j]] = 0;
-      }
+        // new column for the late_joinee
+        teamHistory[participants[j]][late_joinees[i]] = 0;
+      } 
     }
   }
 
