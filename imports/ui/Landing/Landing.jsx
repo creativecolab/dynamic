@@ -28,6 +28,8 @@ export default class Landing extends Component {
     };
   }
 
+  /* text field handlers */
+
   // update the code state so we know where to go
   handleCode = evt => {
     this.setState({
@@ -54,6 +56,8 @@ export default class Landing extends Component {
     });
   };
 
+  /* event handlers */
+
   // once the user enters the session code, try go to that session's page
   handleCodeSubmission = () => {
     const code = this.state.code.toLowerCase();
@@ -72,28 +76,36 @@ export default class Landing extends Component {
 
     // session exists
     if (session) {
-      // generate a pid for the user
-      if (localStorage.getItem("pid")) {
-        console.log("pid " + localStorage.getItem("pid") + " found");
+      // if this is an unowned session, let user's just enter a name, and we'll create a PID for them
+      if (!session.instructor) {
+        // generate a pid for the user
+        if (localStorage.getItem("pid")) {
+          console.log("pid " + localStorage.getItem("pid") + " found");
+        }
+        let pid = [...Array(6)].map(() => Math.random().toString(36)[2]).join('');
+        let user = Users.findOne({ pid: pid });
+        while (user != undefined) {
+          console.log("Pid is already taken!");
+          pid = [...Array(6)].map(() => Math.random().toString(36)[2]).join('');
+          user = Users.findOne({ pid: pid });
+        }
+        Meteor.call('users.addUser', pid, () => {
+          localStorage.setItem("pid", pid);
+          this.setState({
+            pid: pid,
+            pidSubmitted: true,
+            codeSubmitted: true,
+          });
+        });
       }
-      let pid = [...Array(6)].map(() => Math.random().toString(36)[2]).join('');
-      let user = Users.findOne({ pid: pid });
-      while (user != undefined) {
-        console.log("Pid is already taken!");
-        pid = [...Array(6)].map(() => Math.random().toString(36)[2]).join('');
-        user = Users.findOne({ pid: pid });
-      }
-      Meteor.call('users.addUser', pid, () => {
-        localStorage.setItem("pid", pid);
+      // this is an owned session, so there is a roster with PIDs
+      else {
         this.setState({
-          pid: pid,
-          pidSubmitted: true,
           codeSubmitted: true
         });
-      });
+      }
 
     }
-
     // invalid session code
     else {
       this.setState({
@@ -101,6 +113,83 @@ export default class Landing extends Component {
       });
     }
   };
+
+  handleConfirmation = () => {
+    const pid = this.state.pid.toLowerCase().trim();
+    const name = this.state.name.trim();
+    const code = this.state.code.toLowerCase().trim();
+
+    if (!this.state.pidSubmitted) {
+      // check for valid input
+      if (pid.length === 0) {
+        this.setState({
+          invalidPID: true
+        });
+
+        return;
+      } else {
+        this.setState({
+          invalidPID: false
+        });
+      }
+
+      if (name.length === 0) {
+        this.setState({
+          invalidName: true
+        });
+
+        return;
+      } else {
+        this.setState({
+          invalidName: false
+        });
+      }
+
+      // find user by pid on database
+      const user = Users.findOne({ pid });
+
+      // check if user exists!
+      if (user) {
+        this.setState({
+          pidSubmitted: true,
+        });
+        // update the user's name to their preferred name
+        Users.update(user._id, {
+          $set: {
+            name
+          }
+        });
+      }
+      // creating user for the first time! AKA signup
+      else {
+        console.log("New User!");
+        Meteor.call('users.addUser', pid, name, () => {
+          this.setState({
+            pidSubmitted: true,
+          });
+        });
+      }
+    }
+
+    // find current session
+    const session = Sessions.findOne({ code });
+
+    if (session.participants.includes(pid)) {
+      this.setState({
+        ready: true
+      });
+    }
+    // user hasn't joined this session yet
+    else {
+      Meteor.call('sessions.addUser', pid, session._id, () => {
+        this.setState({
+          ready: true,
+        });
+      });
+    }
+  };
+
+  /* render functions */
 
   // will redirect to the main session page
   renderRedirect = () => {
@@ -120,182 +209,23 @@ export default class Landing extends Component {
     }
   };
 
-  // TODO: maybe -- use localStorage to suggest login
-  handleLogin = () => {
-    const pid = this.state.pid.toLowerCase().trim();
-
-    if (pid.length === 0) {
-      this.setState({
-        invalidPID: true
-      });
-
-      return;
-    } else {
-      this.setState({
-        invalidPID: false
-      });
-    }
-
-    // find user by pid on database
-    const user = Users.findOne({ pid });
-
-    // user exists!
-    if (user) {
-      // user is already a participant in this session! TODO: handle case where two diff people enter the same username >:O
-      this.setState({
-        pidSubmitted: true,
-        name: user.name
-      });
-    }
-
-    // creating user for the first time! AKA signup
-    else {
-      // NOT ALLOWED, must use a key that we gave to them
-      this.setState({
-        invalidPID: true
-      });
-
-      // // create db object
-      // Users.insert({
-      //   name,
-      //   pid,
-      //   joinTime: new Date().getTime(),
-      //   teamHistory: [],
-      //   sessionHistory: [
-      //     {
-      //       session_id: session._id,
-      //       sessionJoinTime: new Date().getTime(),
-      //       points: 0
-      //     }
-      //   ],
-      //   preferences: []
-      // });
-
-      // // add user to session
-      // Sessions.update(
-      //   session._id,
-      //   {
-      //     $push: {
-      //       participants: pid
-      //     }
-      //   },
-      //   () => {
-      //    console.log(pid + " successfully joined the session!");
-
-      //    this.setState({
-      //      pidSubmitted: true,
-      //      name: user.name
-      //    });
-      //   }
-      // );
-    }
-  };
-
-  handleConfirmation = () => {
-    const pid = this.state.pid.toLowerCase().trim();
-    const name = this.state.name.trim();
-    const code = this.state.code.toLowerCase().trim();
-
-    if (name.length === 0) {
-      this.setState({
-        invalidName: true
-      });
-
-      return;
-    } else {
-      this.setState({
-        invalidName: false
-      });
-    }
-
-    // find user by pid on database
-    const user = Users.findOne({ pid });
-
-    // update the user's name to their preferred name
-    Users.update(user._id, {
-      $set: {
-        name
-      }
-    });
-
-    // find current session
-    const session = Sessions.findOne({ code });
-
-    if (session.participants.includes(pid)) {
-      this.setState({
-        ready: true
-      });
-    }
-
-    // user hasn't joined this session yet
-    else {
-      // prepare points for this session, note the session join time
-      Users.update(user._id, {
-        $push: {
-          sessionHistory: {
-            session_id: session._id,
-            sessionJoinTime: new Date().getTime(),
-            points: 0
-          }
-        }
-      });
-
-      // add user to session
-      Sessions.update(
-        session._id,
-        {
-          $push: {
-            participants: pid
-          }
-        },
-        () => {
-          console.log(pid + ' successfully joined the session!');
-          this.setState({
-            ready: true
-          });
-        }
-      );
-    }
-  };
-
-  renderLogin() {
-    const { pid, invalidPID } = this.state;
-
-    return (
-      <Mobile buttonAction={this.handleLogin} hasNavbar={false}>
-        <div className="login-main">
-          {/* <TextInput
-            name="name"
-            onSubmit={this.handleLogin}
-            onChange={this.handleName}
-            value={name}
-            invalid={invalidName}
-            invalidMsg="Not a valid name!"
-            label="What is your name?"
-            placeholder="Jane Doe"
-          /> */}
-          <TextInput
-            name="pid"
-            onSubmit={this.handleLogin}
-            onChange={this.handlePid}
-            value={pid}
-            invalid={invalidPID}
-            invalidMsg="Invalid key!"
-            label="Please enter your code"
-            placeholder="7"
-          />
-        </div>
-      </Mobile>
-    );
-  }
-
   renderConfirmation() {
-    const { name, invalidName } = this.state;
+    const { pid, name, invalidName, invalidPID } = this.state;
 
     return (
       <Mobile buttonAction={this.handleConfirmation} buttonTxt="Yes" hasNavbar={false}>
         {this.renderRedirect()}
         <div className="confirmation">
+          <TextInput
+            name="pid"
+            onSubmit={this.handleConfirmation}
+            onChange={this.handlePid}
+            value={pid}
+            invalid={invalidPID}
+            invalidMsg="Invalid PID!"
+            label="What is your PID?"
+            placeholder="Please enter your PID here."
+          />
           <TextInput
             name="name"
             onSubmit={this.handleConfirmation}
@@ -303,7 +233,7 @@ export default class Landing extends Component {
             value={name}
             invalid={invalidName}
             invalidMsg="Invalid Name!"
-            label="Is this your preferred name?"
+            label="What is your preferred name?"
             placeholder="Enter your preferred name here."
           />
         </div>
@@ -312,11 +242,10 @@ export default class Landing extends Component {
   }
 
   render() {
-    const { codeSubmitted, pidSubmitted, code, invalidCode } = this.state;
+    const { codeSubmitted, code, invalidCode } = this.state;
 
-    if (pidSubmitted) return this.renderConfirmation();
+    if (codeSubmitted) return this.renderConfirmation();
 
-    if (codeSubmitted) return this.renderLogin();
     else
       return (
         <Mobile buttonAction={this.handleCodeSubmission} hasNavbar={false}>

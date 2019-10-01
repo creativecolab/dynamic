@@ -15,7 +15,8 @@ class SessionListItem extends Component {
   static propTypes = {
     code: PropTypes.string.isRequired,
     creationTime: PropTypes.number.isRequired,
-    status: PropTypes.number.isRequired
+    status: PropTypes.number.isRequired,
+    instructor: PropTypes.string
   }
 
   constructor(props) {
@@ -73,11 +74,11 @@ class SessionListItem extends Component {
   }
 
   render() {
-    const { code, timestamp, participants, status } = this.props;
+    const { code, timestamp, participants, status, instructor } = this.props;
     return (
       <div>
         {this.renderRedirect()}
-        Code: {code} | Status: {status} {" "}
+        Code: {code} | Host: {instructor} | Status: {status} {" "}
         <button onClick={() => this.startSession()}>start</button>
         <button onClick={() => this.editSession()}>edit</button>
         <button onClick={() => this.viewSession()}>view</button>

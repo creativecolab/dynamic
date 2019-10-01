@@ -1,6 +1,77 @@
 /* This File contains some helper functions for various server actions */
 import ActivityEnums from '../../enums/activities';
 
+import Activities from '../../api/activities';
+import Users from '../../api/users';
+import Questions from '../../api/questions';
+
+import dbquestions from './dbquestions';
+
+// make some default questions for TeamDiscussion
+export function createDefaultQuestions() {
+  if (Questions.find({}).count() !== 0) {
+    return;
+  }
+
+  // for each group of questions
+  dbquestions.map(group => {
+    // icebreaker questions
+    // add 5 icebreaker questions per round
+    // up to round 4
+    if (group.label === 'icebreaker') {
+      let round = 0;
+
+      group.prompts.map((q, index) => {
+        if (index % 5 === 0) round += 1;
+
+        if (round > 3) return;
+
+        Questions.insert({
+          prompt: q,
+          default: true,
+          createdTime: new Date().getTime(),
+          viewTimer: 0,
+          timesViewed: 0,
+          label: 'ICEBREAKER',
+          color: group.color,
+          round
+        });
+      });
+    } else if (group.label === 'design') {
+      let round = 3;
+
+      group.prompts.map((q, index) => {
+        if (index % 3 === 0) round += 1;
+
+        Questions.insert({
+          prompt: q,
+          default: true,
+          createdTime: new Date().getTime(),
+          viewTimer: 0,
+          timesViewed: 0,
+          label: 'DESIGN QUESTION',
+          color: group.color,
+          round
+        });
+      });
+    } else if (group.label === 'team') {
+      group.prompts.map(q => {
+        Questions.insert({
+          prompt: q,
+          default: true,
+          createdTime: new Date().getTime(),
+          viewTimer: 0,
+          timesViewed: 0,
+          label: 'TEAM QUESTION',
+          color: group.color,
+          round: 0
+        });
+      });
+    }
+  });
+}
+
+// shuffling function
 export function shuffle(a) {
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -82,4 +153,112 @@ export function getAverageRating(
   }
 
   return ((participant_avg + other_participant_avg) / 2).toFixed(3);
+}
+
+// make some users based on a roster
+export function createUsers(instructor) {
+  const students = JSON.parse(Assets.getText('rosters/' + instructor + '_students.json'));
+
+  students.forEach(student => {
+    //insert each user into the databse
+    if (Users.findOne({ pid: student.pid.toString() }) === undefined) {
+      Users.insert({
+        name: student.name,
+        pid: student.pid.toString(),
+        teamHistory: [],
+        sessionHistory: [],
+        preferences: []
+        //joinTime: new Date().getTime(),
+      });
+    }
+  });
+}
+
+// create some basic activities with hard-coded values
+export function defaultPreferences(session_id) {
+
+  let activities = [];
+  if (!(session.activities)) {
+    for (let i = 0; i < 6; i++) {
+      const activity_id = Activities.insert({
+        name: ActivityEnums.name.TEAM_DISCUSSION,
+        session_id,
+        index: i,
+        teamSize: 3, // TODO: default value?
+        hasIndvPhase: false,
+        durationIndv: 180,
+        durationTeam: 180,
+        durationOffsetIndv: 0,
+        durationOffsetTeam: 0,
+        status: ActivityEnums.status.READY,
+        creationTime: new Date().getTime(),
+        statusStartTimes: {
+          indvPhase: 0,
+          teamForm: 0,
+          teamPhase: 0,
+          peerAssessment: 0
+        },
+        team_ids: [],
+        allTeamsFound: false,
+        endTime: 0
+      });
+
+      activities.push(activity_id);
+    }
+
+    // add activities to the session
+    Sessions.update(session_id, {
+      $set: {
+        activities
+      }
+    });
+  }
+
+}
+
+// make activities based on the needs of the instructor
+export function readPreferences(instructor, session_id) {
+  // preferences specified by the instructor
+  const preferences = JSON.parse(Assets.getText('instructorPreferences/' + instructor + '_preferences.json'));
+
+  // create activities that the instructor prefers
+  let activities = new Array(preferences.num_activities)
+  for (let i = 0; i < preferences.num_activities; i++) {
+    const activity_id = Activities.insert({
+      name: ActivityEnums.name.TEAM_DISCUSSION,
+      session_id,
+      index: i,
+      teamSize: preferences.group_size,
+      hasIndvPhase: false,
+      durationIndv: 180,
+      durationTeam: preferences.duration,
+      durationOffsetIndv: 0,
+      durationOffsetTeam: 0,
+      status: ActivityEnums.status.READY,
+      creationTime: new Date().getTime(),
+      statusStartTimes: {
+        indvPhase: 0,
+        teamForm: 0,
+        teamPhase: 0,
+        peerAssessment: 0
+      },
+      team_ids: [],
+      allTeamsFound: false,
+      endTime: 0
+    });
+
+    activities[i] = activity_id;
+  }
+
+  // add the newly created activities to the session
+  Sessions.update(session_id, {
+    $set: {
+      activities
+    }
+  });
+
+  // determine what kind of questions to make - TODO: add a way to handle custom questions
+  if (preferences.questions === "default") {
+    createDefaultQuestions();
+  }
 }

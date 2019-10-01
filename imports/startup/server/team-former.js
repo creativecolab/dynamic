@@ -34,7 +34,7 @@ function firstRoundTeams(participants) {
     // teams of 3
     let nextTeam = [];
     while (nextTeam.length != MAX_TEAM_SIZE) {
-      nextTeam.push(ungrouped.pop());
+      nextTeam[nextTeam.length] = ungrouped.pop();
     }
     teams.push(nextTeam);
   }
@@ -42,7 +42,7 @@ function firstRoundTeams(participants) {
   // handles uneven groups
   let addIndex = 0;
   while (ungrouped.length > 0) {
-    teams[addIndex].push(ungrouped.pop());
+    teams[addIndex][teams[addIndex].length] = ungrouped.pop();
     addIndex++;
   } 
 
@@ -89,17 +89,28 @@ function buildNewTeams(participants, teamHistory) {
         if (wup["weight"] < best_wup["weight"]) {
           best_wup = wup;
         }
+        // break when we find someone that we have't worked with
+        if (best_wup["weight"] === 0) break;
       }
       // add the best person that we found
-      nextTeam.push(best_wup["person"]);
-      ungrouped = ungrouped.filter((person) => person != best_wup["person"]);
+      nextTeam[nextTeam.length] = best_wup["person"];
+      // remove them from the ungrouped list
+      now_ungrouped = new Array(ungrouped.length - 1);
+      for (let i = 0, j = 0; i < ungrouped.length; i++) {
+        if (ungrouped[i] != best_wup["person"]) {
+          now_ungrouped[j] = ungrouped[i];
+          j++;
+        }
+      }
+      ungrouped = now_ungrouped;
+      //ungrouped = ungrouped.filter((person) => person != best_wup["person"]);
     }
-    teams.push(nextTeam);
+    teams[teams.length] = nextTeam;
   }
 
   // handles uneven groups
   while (ungrouped.length > 0) {
-    let leftover_person = ungrouped.pop();
+    let leftover_person = ungrouped.pop()
     // we want to join the team where the ungrouped addition would affect the weight of the team the least 
     best_team_match = {
       "team_idx": -1,
@@ -120,9 +131,13 @@ function buildNewTeams(participants, teamHistory) {
       if (team_match["weight"] < best_team_match["weight"]) {
         best_team_match = team_match;
       }
+      // if we found a perfect team, get out (save some iterations)
+      if (best_team_match["weight"] === 0) {
+        break;
+      }
     }
     // add the ungrouped user to the best-matching team that we found
-    teams[best_team_match["team_idx"]].push(leftover_person);
+    teams[best_team_match["team_idx"]][(teams[best_team_match["team_idx"]]).length] = leftover_person;
   } 
 
   console.log(teams);
