@@ -172,9 +172,10 @@ Meteor.startup(() => {
 
       // get duration
       let duration = 0;
+      let activity;
 
       if (update.status) {
-        const activity = Activities.findOne({ _id });
+        activity = Activities.findOne({ _id });
 
         duration = calculateDuration(activity);
       }
@@ -222,7 +223,7 @@ Meteor.startup(() => {
 
         // Stable team-building??
         buildColoredShapes(colored_shapes);
-        teams = formTeams(session._id, prevActIndex);
+        teams = formTeams(session._id, prevActIndex, activity.teamSize);
 
         // update the database collections
         const team_ids = [];

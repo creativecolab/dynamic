@@ -22,9 +22,7 @@ export function createDefaultQuestions() {
       let round = 0;
 
       group.prompts.map((q, index) => {
-        if (index % 5 === 0) round += 1;
-
-        if (round > 3) return;
+        if (index % 3 === 0) round += 1;
 
         Questions.insert({
           prompt: q,
@@ -37,11 +35,9 @@ export function createDefaultQuestions() {
           round
         });
       });
-    } else if (group.label === 'design') {
-      let round = 3;
+    } else if (group.label === 'ideation') {
 
       group.prompts.map((q, index) => {
-        if (index % 3 === 0) round += 1;
 
         Questions.insert({
           prompt: q,
@@ -49,9 +45,9 @@ export function createDefaultQuestions() {
           createdTime: new Date().getTime(),
           viewTimer: 0,
           timesViewed: 0,
-          label: 'DESIGN QUESTION',
+          label: 'IDEATION',
           color: group.color,
-          round
+          round: index
         });
       });
     } else if (group.label === 'team') {
@@ -165,10 +161,10 @@ export function createUsers(instructor) {
       Users.insert({
         name: student.name,
         pid: student.pid.toString(),
+        joinTime: new Date().getTime(),
         teamHistory: [],
         sessionHistory: [],
         preferences: []
-        //joinTime: new Date().getTime(),
       });
     }
   });

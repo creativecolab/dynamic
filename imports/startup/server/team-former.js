@@ -2,38 +2,46 @@
 import Sessions from '../../api/sessions'
 import { shuffle } from './helper-funcs';
 
-// Some constants
-const MAX_TEAM_SIZE = 3;
-
 /*
   Produce the teams for the first round. Should be random, with a goal of teams of 3.
   Will return an array of arrays, with each internal array have pids representing a team
  */
-function firstRoundTeams(participants) {
+function firstRoundTeams(participants, max_team_size) {
 
   // shake them up
   shuffle(participants);
 
-  // edge case, <= MAX_TEAM_SIZE+1 people, just return them in an array of arrays
-  if (participants.length <= MAX_TEAM_SIZE + 1) {
+  // edge case, <= max_team_size+1 people, just return them in an array of arrays
+  if (participants.length <= max_team_size + 1) {
     return [participants];
   }
 
-  // edge case, 5 people is a weirdly balanced team
-  if (participants.length == 5) {
+  // edge case when max_team_size is 3, uneven teams
+  if (max_team_size === 3 && participants.length === 5) {
     return [participants.slice(0,3), participants.slice(3)];
+  }
+
+  // TODO: check if this is good enough
+  // edge case when max_team_size is 5, uneven teams
+  if (max_team_size === 5 && participants.length === 7) {
+    return [participants.slice(0,3), participants.slice(3)];
+  }
+
+  // edge case, not enough teams to make full size teams
+  if (participants.length % max_team_size > Math.floor(participants.length / max_team_size) ) {
+    max_team_size = max_team_size - 1;
   }
 
   // list to hold all of our teams and one to keep track of grouped people
   let teams = [];
   ungrouped = participants.slice(0);
 
-  // build floor(num_participants / MAX_TEAM_SIZE) teams
-  while (teams.length != Math.floor(participants.length / MAX_TEAM_SIZE)) {
+  // build floor(num_participants / max_team_size) teams
+  while (teams.length != Math.floor(participants.length / max_team_size)) {
     
-    // teams of 3
+    // teams of max_team_size
     let nextTeam = [];
-    while (nextTeam.length != MAX_TEAM_SIZE) {
+    while (nextTeam.length != max_team_size) {
       nextTeam[nextTeam.length] = ungrouped.pop();
     }
     teams.push(nextTeam);
@@ -53,10 +61,12 @@ function firstRoundTeams(participants) {
 }
 
 // builds teams for subsequent rounds of team formation (where duplicates are avoided)
-function buildNewTeams(participants, teamHistory) {
+function buildNewTeams(participants, teamHistory, max_team_size) {
 
   // edge case, when num_participants < 6, can't guarantee uniqueness so just make random
-  if (participants.length < 6) return firstRoundTeams(participants);
+  if (participants.length % max_team_size > Math.floor(participants.length / max_team_size) ) {
+    return firstRoundTeams(participants, max_team_size);
+  }
 
   // shake 'em up
   shuffle(participants);
@@ -65,11 +75,11 @@ function buildNewTeams(participants, teamHistory) {
   let teams = [];
   var ungrouped = participants.slice(0);
 
-  // build floor(num_participants / MAX_TEAM_SIZE) teams
-  while (teams.length != Math.floor(participants.length / MAX_TEAM_SIZE)) {
-    // teams of 3
+  // build floor(num_participants / max_team_size) teams
+  while (teams.length != Math.floor(participants.length / max_team_size)) {
+    // teams of max_team_size
     let nextTeam = [ungrouped.pop()];
-    while (nextTeam.length != MAX_TEAM_SIZE) {
+    while (nextTeam.length != max_team_size) {
       // we want people that this team has least recently worked with
       let best_wup = {
         "person": "",
@@ -118,8 +128,8 @@ function buildNewTeams(participants, teamHistory) {
     };
     // check each team
     for (let i = 0; i < teams.length; i++) {
-      // stop at teams of size 4
-      if (teams[i].length > MAX_TEAM_SIZE) continue;
+      // stop at teams of size max_team_size + 1
+      if (teams[i].length > max_team_size) continue;
       // gather the weight of this team to see potential fit
       team_match = {
         "team_idx": i,
@@ -145,11 +155,11 @@ function buildNewTeams(participants, teamHistory) {
   return teams;
 }
 
-export function formTeams(session_id, prevActIndex) {
+export function formTeams(session_id, prevActIndex, max_team_size) {
 
   const { participants, teamHistory} = Sessions.findOne(session_id);
   
   // if we're on the first activity, call first teams. Otherwise, build based on teamHistory 
-  if (prevActIndex < 0) return firstRoundTeams(participants);
-  return buildNewTeams(participants, teamHistory)
+  if (prevActIndex < 0) return firstRoundTeams(participants, max_team_size);
+  return buildNewTeams(participants, teamHistory, max_team_size)
 }
