@@ -7,7 +7,7 @@ import { shuffle } from './helper-funcs';
   Will return an array of arrays, with each internal array have pids representing a team
  */
 function firstRoundTeams(participants, max_team_size) {
-
+  
   // shake them up
   shuffle(participants);
 

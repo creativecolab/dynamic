@@ -21,7 +21,7 @@ import {
   getTeamConfirmationTimes,
   getUserAssessmentTimes
 } from './data-getter';
-import { buildColoredShapes, calculateDuration, createUsers, readPreferences, defaultPreferences, createDefaultQuestions } from './helper-funcs';
+import { buildColoredShapes, calculateDuration, readPreferences, defaultPreferences, createDefaultQuestions } from './helper-funcs';
 import { updateTeamHistory_LateJoinees, updateTeamHistory_TeamFormation } from './team-historian';
 
 let timeout_timer;
@@ -43,8 +43,6 @@ Meteor.startup(() => {
 
         // check if this is a specially made session
         if (session.instructor) {
-          // add students
-          createUsers(session.instructor);
           // fufill preferences
           readPreferences(session.instructor, session._id);
         } 

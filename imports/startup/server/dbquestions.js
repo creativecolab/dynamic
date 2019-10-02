@@ -5,24 +5,20 @@ const dbquestions = [
     prompts: [
 
       'What is the best TV show/movie that you watched recently?',
-      'Who is someone you admire or look up to?',
       'What is something that you are looking forward to?',
+      'Who are your most and least favorite professors so far?',
 
-      'Who is your favorite singer/band?',
-      'UC Socially Dead; Agree or disagree? ',
+      'Star Wars or Harry Potter?',
+      'Share something funny that happened to you this week.',
       'What is a talent you wish you had?',
-
+      
       "If you were to become a YouTuber, what would your topic be (e.g., vlogger, gamer, etc.)",
       'What is an item on your bucket list?',
-      'Who are your most and least favorite professors so far?',
+      'Who is your favorite singer/band?',
 
       'If you had to become a teacher, what subject would you teach?',
       'Who is your favorite Disney character and why?',
       "What other languages do you speak? Teach everyone to say “hello” in that language.",
-
-      'Star Wars or Star Trek?',
-      'Share something funny that happened to you this week.',
-      'If you were just given $200, how would you spend it?',
 
       'What is your favorite thing to do at the beach?',
       'What are your hobbies?',
@@ -35,17 +31,11 @@ const dbquestions = [
     color: "#F05D5E",
     prompts: [
 
-      'Give an elevator pitch of your idea (20 seconds or less).',
-
-      'What kinds of memes are mostly likely to go viral?',
-
-      'What topics do you want to explore for the meme project?',
-
-      'Give an elevator pitch of your idea (20 seconds or less).',
-
-      'What kinds of memes are mostly likely to go viral?',
-
-      'What topics do you want to explore for the meme project?',
+      'Jane is a college student who has trouble staying awake in class. Apart from sleep trackers, what product can you design to help Jane overcome this problem?',
+      'Luke has difficulty controlling his eating. What product/service can you design to help him eat healthier?',
+      'How would you design for a more efficient recycling mechanism, as opposed to multiple, physical bins right next to each other?',
+      'Claire struggles with frequent stress at work. What product/service can you design to help Claire cope with her stress?',
+      'Camille is frequently forgetting her belongings at her friends houses. What kind of solution can you design to help Camille overcome her forgetfulness?'
 
     ]
   },

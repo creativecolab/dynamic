@@ -16,8 +16,6 @@ export function createDefaultQuestions() {
   // for each group of questions
   dbquestions.map(group => {
     // icebreaker questions
-    // add 5 icebreaker questions per round
-    // up to round 4
     if (group.label === 'icebreaker') {
       let round = 0;
 
@@ -256,5 +254,10 @@ export function readPreferences(instructor, session_id) {
   // determine what kind of questions to make - TODO: add a way to handle custom questions
   if (preferences.questions === "default") {
     createDefaultQuestions();
+  }
+
+  // determine whether or not to create users
+  if (preferences.hasRoster) {
+    createUsers(instructor);
   }
 }

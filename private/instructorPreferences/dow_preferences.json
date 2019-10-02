@@ -3,5 +3,6 @@
   "num_activities": 6,
   "duration": 300,
   "group_size": 5,
-  "questions": "default"
+  "questions": "default",
+  "hasUsers": true
 }
