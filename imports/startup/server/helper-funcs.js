@@ -34,8 +34,11 @@ export function createDefaultQuestions() {
         });
       });
     } else if (group.label === 'ideation') {
+      let round = 0;
 
       group.prompts.map((q, index) => {
+        if (index % 2 === 0) round += 1;
+
 
         Questions.insert({
           prompt: q,
@@ -45,11 +48,15 @@ export function createDefaultQuestions() {
           timesViewed: 0,
           label: 'IDEATION',
           color: group.color,
-          round: index
+          round: round
         });
       });
     } else if (group.label === 'team') {
-      group.prompts.map(q => {
+      let round = 0;
+
+      group.prompts.map((q, index) => {
+        if (index % 3 === 0) round += 1;
+
         Questions.insert({
           prompt: q,
           default: true,
@@ -58,7 +65,7 @@ export function createDefaultQuestions() {
           timesViewed: 0,
           label: 'TEAM QUESTION',
           color: group.color,
-          round: 0
+          round: round
         });
       });
     }
