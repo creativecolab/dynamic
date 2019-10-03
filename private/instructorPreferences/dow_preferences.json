@@ -4,5 +4,5 @@
   "duration": 300,
   "group_size": 5,
   "questions": "default",
-  "hasUsers": true
+  "hasRoster": true
 }
