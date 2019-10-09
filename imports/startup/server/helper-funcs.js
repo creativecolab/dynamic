@@ -7,71 +7,6 @@ import Questions from '../../api/questions';
 
 import dbquestions from './dbquestions';
 
-// make some default questions for TeamDiscussion
-export function createDefaultQuestions() {
-  if (Questions.find({}).count() !== 0) {
-    return;
-  }
-
-  // for each group of questions
-  dbquestions.map(group => {
-    // icebreaker questions
-    if (group.label === 'icebreaker') {
-      let round = 0;
-
-      group.prompts.map((q, index) => {
-        if (index % 3 === 0) round += 1;
-
-        Questions.insert({
-          prompt: q,
-          default: true,
-          createdTime: new Date().getTime(),
-          viewTimer: 0,
-          timesViewed: 0,
-          label: 'ICEBREAKER',
-          color: group.color,
-          round
-        });
-      });
-    } else if (group.label === 'ideation') {
-      let round = 0;
-
-      group.prompts.map((q, index) => {
-        if (index % 2 === 0) round += 1;
-
-
-        Questions.insert({
-          prompt: q,
-          default: true,
-          createdTime: new Date().getTime(),
-          viewTimer: 0,
-          timesViewed: 0,
-          label: 'IDEATION',
-          color: group.color,
-          round: round
-        });
-      });
-    } else if (group.label === 'team') {
-      let round = 0;
-
-      group.prompts.map((q, index) => {
-        if (index % 3 === 0) round += 1;
-
-        Questions.insert({
-          prompt: q,
-          default: true,
-          createdTime: new Date().getTime(),
-          viewTimer: 0,
-          timesViewed: 0,
-          label: 'TEAM QUESTION',
-          color: group.color,
-          round: round
-        });
-      });
-    }
-  });
-}
-
 // shuffling function
 export function shuffle(a) {
   for (let i = a.length - 1; i > 0; i--) {
@@ -154,6 +89,103 @@ export function getAverageRating(
   }
 
   return ((participant_avg + other_participant_avg) / 2).toFixed(3);
+}
+
+// make some default questions for TeamDiscussion
+export function createDefaultQuestions() {
+  if (Questions.find({}).count() !== 0) {
+    return;
+  }
+
+  // for each group of questions
+  dbquestions.map(group => {
+    // icebreaker questions
+    if (group.label === 'icebreaker') {
+      let round = 0;
+
+      group.prompts.map((q, index) => {
+        if (index % 3 === 0) round += 1;
+
+        Questions.insert({
+          onwer: 'none',
+          prompt: q,
+          default: true,
+          createdTime: new Date().getTime(),
+          viewTimer: 0,
+          timesViewed: 0,
+          label: 'ICEBREAKER',
+          color: group.color,
+          round
+        });
+      });
+    } else if (group.label === 'ideation') {
+      let round = 0;
+
+      group.prompts.map((q, index) => {
+        if (index % 2 === 0) round += 1;
+
+
+        Questions.insert({
+          onwer: 'none',
+          prompt: q,
+          default: true,
+          createdTime: new Date().getTime(),
+          viewTimer: 0,
+          timesViewed: 0,
+          label: 'IDEATION',
+          color: group.color,
+          round: round
+        });
+      });
+    } else if (group.label === 'team') {
+      let round = 0;
+
+      group.prompts.map((q, index) => {
+        if (index % 3 === 0) round += 1;
+
+        Questions.insert({
+          onwer: 'none',
+          prompt: q,
+          default: true,
+          createdTime: new Date().getTime(),
+          viewTimer: 0,
+          timesViewed: 0,
+          label: 'TEAM QUESTION',
+          color: group.color,
+          round: round
+        });
+      });
+    }
+  });
+}
+
+// make some default questions for TeamDiscussion
+export function createCustomQuestions(instructor, questions) {
+  if (Questions.find({owner: instructor}).count() !== 0) {
+    return;
+  }
+
+  // for each group of questions
+  questions.map(group => {
+    // get the correct label
+    let round = 0;
+
+    group.prompts.map((q, index) => {
+      if (index % group.numPerRound === 0) round += 1;
+
+      Questions.insert({
+        owner: instructor,
+        prompt: q,
+        default: true,
+        createdTime: new Date().getTime(),
+        viewTimer: 0,
+        timesViewed: 0,
+        label: group.label,
+        color: group.color,
+        round
+      });
+    });
+  });
 }
 
 // make some users based on a roster
@@ -259,7 +291,9 @@ export function readPreferences(instructor, session_id) {
   });
 
   // determine what kind of questions to make - TODO: add a way to handle custom questions
-  if (preferences.questions === "default") {
+  if (preferences.questionsType === "custom") {
+    createCustomQuestions(instructor, preferences.questions);
+  } else {
     createDefaultQuestions();
   }
 

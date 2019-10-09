@@ -64,7 +64,7 @@ class SessionHandler extends Component {
     if (!pid) return 'Please log in first!';
 
     // extract session props
-    const { status, length, activities } = this.props;
+    const { status, length, activities, instructor } = this.props;
 
     // extract activity props
     const { activity } = this.props;
@@ -82,7 +82,7 @@ class SessionHandler extends Component {
     const progress = activities.indexOf(activity._id) + 1;
 
     if (status === SessionEnums.status.ACTIVE)
-      return <ActivityHandler pid={pid} sessionLength={length} progress={progress} activity_id={activity._id} />;
+      return <ActivityHandler pid={pid} sessionLength={length} progress={progress} activity_id={activity._id} instructor={instructor} />;
 
     return <Loading />;
   }
@@ -105,9 +105,8 @@ export default withTracker(props => {
   if (!session) return { pid };
 
   // get session status and progress
-  const status = session.status;
-  const length = session.activities.length;
-  const activities = session.activities;
+  const { instructor, status, activities } = session
+  const length = activities.length;
 
   // get current activity in session
   const activity = Activities.findOne(
@@ -125,5 +124,5 @@ export default withTracker(props => {
     { sort: { status: 1 } }
   );
 
-  return { pid, status, length, activity, activities };
+  return { pid, status, length, activity, activities, instructor };
 })(SessionHandler);

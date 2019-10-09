@@ -41,7 +41,8 @@ class TeamDiscussion extends Component {
     statusStartTime: PropTypes.number.isRequired, // start time of this status
     sessionLength: PropTypes.number.isRequired, // length of this session in num of activities
     progress: PropTypes.number.isRequired, // (index + 1) of activity in session's [Activity]
-    duration: PropTypes.number.isRequired // calculated in parent
+    duration: PropTypes.number.isRequired, // calculated in parent
+    instructor: PropTypes.string // may be present if this is a custom session
   };
 
   static defaultProps = {
@@ -398,7 +399,7 @@ class TeamDiscussion extends Component {
   }
 }
 
-export default withTracker(({ pid, activity_id, progress }) => {
+export default withTracker(({ pid, activity_id, progress, instructor }) => {
   // get the team that this user is in for this activity
   const team = Teams.findOne(
     {
@@ -412,8 +413,13 @@ export default withTracker(({ pid, activity_id, progress }) => {
     { sort: { teamCreated: -1 } }
   );
 
+  let questions = []
   // get all the quesitons
-  const questions = Questions.find({ round: { $in: [progress, 0] } }).fetch();
+  if (instructor === "default") {
+    questions = Questions.find({ round: { $in: [progress, 0] }, owner: 'none' }).fetch();
+  } else {
+    questions = Questions.find({ round: { $in: [progress, 0] }, owner: instructor }).fetch();
+  }
 
   const voted = Users.findOne({ pid, 'preferences.activity_id': activity_id }) !== undefined;
 

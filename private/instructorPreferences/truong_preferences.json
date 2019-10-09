@@ -1,0 +1,71 @@
+{
+  "instructor": "Phuong Truong",
+  "num_activities": 5,
+  "duration": 300,
+  "group_size": 3,
+  "hasRoster": true,
+  "questionsType": "custom",
+  "questions": [
+    {
+      "label": "ICEBREAKER",
+      "color": "#1E91D6",
+      "numPerRound": 3,
+      "prompts": [
+        "What is the best TV show/movie that you watched recently?",
+        "What are some misconceptions that people have about engineers?",
+        "What other languages do you speak? Teach everyone to say “hello” in that language.",
+        "UC Socially Dead; Agree or disagree? ",
+        "If you had to become a teacher, what subject would you teach?",
+        "Who is your favorite singer/band?",
+        "If you were to become a YouTuber, what would your topic be (e.g., vlogger, gamer, etc.)?",
+        "What has been your favorite Engineering class so far?",
+        "What is something that you are looking forward to?",
+        "Are you planning to go into industry or academia? Why?",
+        "If you could visit any place in the world, where would it be and why?",
+        "What is your favorite programming language? Why?",
+        "Star Wars or Harry Potter?",
+        "If you could become a professional athlete, what sport would you play?",
+        "What makes you feel old when you think about it?"
+      ]
+    },
+    {
+      "label": "IDEATION",
+      "color": "#F05D5E",
+      "numPerRound": 2,
+      "prompts": [
+        "Give an elevator pitch of your project idea (30 seconds or less).",
+        "What is the coolest thing you have built using raspberry pi, or any other hardware?",
+        "What kind of on-body sensors could we design for a smart watch?",
+        "Give an elevator pitch of your project idea (30 seconds or less).",
+        "What is the coolest thing you have built using raspberry pi, or any other hardware?",
+        "What kind of on-body sensors could we design for a smart watch?",
+        "Give an elevator pitch of your project idea (30 seconds or less).",
+        "What is the coolest thing you have built using raspberry pi, or any other hardware?",
+        "What kind of on-body sensors could we design for a smart watch?",
+        "Give an elevator pitch of your project idea (30 seconds or less)."
+      ]
+    },
+    {
+      "label": "TEAM QUESTION",
+      "color": "#0CB755",
+      "numPerRound": 3,
+      "prompts": [
+        "What do you believe is the most important factor for a successful team?",
+        "How is your course load this quarter?",
+        "What is your biggest pet peeve in group projects?",
+        "Based on previous team projects, what do you think worked and didn't work for you?",
+        "What do you hope to get out of this class?",
+        "Describe your management experience (e.g., student club president or project leader)?",
+        "What do you look for in a good team member?",
+        "Ideally, how often would you like to meet with your team members?",
+        "How do you deal with conflicts in a team?",
+        "What are your strengths and weaknesses in group projects?",
+        "What is your main mode of communication for your project (e.g., email, Facebook, etc.)?",
+        "How do you decide to split the work among team members?",
+        "How is your course load this quarter?",
+        "What is your biggest pet peeve in group projects?",
+        "Ideally, how often would you like to meet with your team members?"
+      ]
+    }
+  ]
+}

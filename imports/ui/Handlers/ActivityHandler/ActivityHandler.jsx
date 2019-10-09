@@ -13,7 +13,8 @@ class ActivityHandler extends Component {
     activity_id: PropTypes.string,
     activity: PropTypes.object,
     pid: PropTypes.string.isRequired,
-    sessionLength: PropTypes.number
+    sessionLength: PropTypes.number,
+    instructor: PropTypes.string
   };
 
   static defaultProps = {
@@ -58,7 +59,7 @@ class ActivityHandler extends Component {
 
   render() {
     // get props from parent
-    const { activity_id, pid, sessionLength, progress } = this.props;
+    const { activity_id, pid, sessionLength, progress, instructor } = this.props;
 
     // get activity object from withTracker
     const { activity } = this.props;
@@ -100,6 +101,7 @@ class ActivityHandler extends Component {
           sessionLength={sessionLength}
           progress={progress}
           duration={duration}
+          instructor={instructor}
         />
       );
     }

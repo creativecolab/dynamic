@@ -1,0 +1,86 @@
+{
+  "instructor": "Eran Mukamel",
+  "num_activities": 5,
+  "duration": 360,
+  "group_size": 3,
+  "hasRoster": true,
+  "questionsType": "custom",
+  "questions": [
+    {
+      "label": "ICEBREAKER",
+      "color": "#1E91D6",
+      "numPerRound": 4,
+      "prompts": [
+        "What is the best TV show/movie that you watched recently?",
+        "UC Socially Dead; Agree or disagree? ",
+        "What did you do this past summer?",
+        "If you could instantly become an expert in something, what would it be?",
+        "What other languages do you speak? Teach everyone to say “hello” in that language.",
+        "If you had to become a teacher, what subject would you teach?",
+        "Who is your favorite singer/band?",
+        "What is an item on your bucket list?",
+        "If you were to become a YouTuber, what would your topic be (e.g., vlogger, gamer, etc.)?",
+        "What is your favorite thing to do at the beach?",
+        "Who are your most and least favorite professors so far?",
+        "What is something that you are grateful for?",
+        "What is something that you are looking forward to?",
+        "Would you rather have more time or more money?",
+        "If you could visit any place in the world, where would it be and why?",
+        "What is your favorite holiday?",
+        "Star Wars or Harry Potter?",
+        "If you could become a professional athlete, what sport would you play?",
+        "Who is the funniest person in your family?",
+        "What makes you feel old when you think about it?"
+      ]
+    },
+    {
+      "label": "IDEATION",
+      "color": "#F05D5E",
+      "numPerRound": 3,
+      "prompts": [
+        "What type of dataset are you interested to use for your final project (e.g. Sports, Health, etc.)?",
+        "What is a specific question that you want to solve using your dataset?",
+        "What is your prior experience with extracting datasets and discovering patterns?",
+        "What programming language are you going to use for your final project?",
+        "What type of dataset are you interested to use for your final project (e.g. Sports, Health, etc.)?",
+        "What is a specific question that you want to solve using your dataset?",
+        "What is your prior experience with extracting datasets and discovering patterns?",
+        "What programming language are you going to use for your final project?",
+        "What type of dataset are you interested to use for your final project (e.g. Sports, Health, etc.)?",
+        "What is a specific question that you want to solve using your dataset?",
+        "What is your prior experience with extracting datasets and discovering patterns?",
+        "What programming language are you going to use for your final project?",
+        "What type of dataset are you interested to use for your final project (e.g. Sports, Health, etc.)?",
+        "What is a specific question that you want to solve using your dataset?",
+        "What is your prior experience with extracting datasets and discovering patterns?"
+      ]
+    },
+    {
+      "label": "TEAM QUESTION",
+      "color": "#0CB755",
+      "numPerRound": 4,
+      "prompts": [
+        "What do you believe is the most important factor for a successful team?",
+        "How is your course load this quarter?",
+        "What is your biggest pet peeve in group projects?",
+        "Based on previous team projects, what do you think worked and didn't work for you?",
+        "What do you hope to get out of this class?",
+        "Describe your management experience (e.g., student club president or project leader)?",
+        "What do you look for in a good team member?",
+        "Ideally, how often would you like to meet with your team members?",
+        "How do you deal with conflicts in a team?",
+        "What are your strengths and weaknesses in group projects?",
+        "What is your main mode of communication for your project (e.g., email, Facebook, etc.)?",
+        "How do you decide to split the work among team members?",
+        "What do you believe is the most important factor for a successful team?",
+        "How is your course load this quarter?",
+        "What is your biggest pet peeve in group projects?",
+        "Based on previous team projects, what do you think worked and didn't work for you?",
+        "What do you hope to get out of this class?",
+        "Describe your management experience (e.g., student club president or project leader)?",
+        "What do you look for in a good team member?",
+        "Ideally, how often would you like to meet with your team members?"
+      ]
+    }
+  ]
+}
