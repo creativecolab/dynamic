@@ -306,7 +306,10 @@ class SessionProgress extends Component {
 
       return (
         <BigScreen
-          sessionCode={this.props.session.code}
+          sessionCode={session.code}
+          hasRound={true}
+          sessionRound={session.activities.indexOf(currentActivity._id) + 1}
+          sessionNumRounds={session.activities.length}
           hasTimer={duration === -1 ? false : true}
           clockDuration={duration}
           clockStartTime={statusStartTime}

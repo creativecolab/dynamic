@@ -81,7 +81,7 @@ class TeamShapes extends Component {
     return (
       <>
         {teams && <div className="shapes-flex">{this.mapShapes(teams)}</div>}
-        {teams && <h2>{numTeams + ' out of ' + teams.length} teams are ready!</h2>}
+        {teams && <h2>{numTeams + ' out of ' + teams.length} groups are ready!</h2>}
       </>
     );
   }

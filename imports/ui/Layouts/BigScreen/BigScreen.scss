@@ -13,11 +13,22 @@
     min-height: 7vh;
     height: auto;
     font-size: 5vh;
-    text-align: left;
+    text-align: center;
     color: $dynamic-white;
     background: $dynamic-black;
     padding: 0 0.5rem;
     user-select: text;
+
+    .round {
+      text-align: left;
+
+      span {
+        font-size: 6vh;
+        line-height: 6vh;
+        font-weight: 600;
+      }
+
+    }
   
     .session-code {
       font-weight: 200;

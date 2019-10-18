@@ -19,6 +19,11 @@ export default class BigScreen extends Component {
   static propTypes = {
     hasButton: PropTypes.bool,
     hasNavbar: PropTypes.bool,
+    sessionCode: PropTypes.string,
+    hasRound: PropTypes.bool,
+    sessionRound: PropTypes.number,
+    sessionNumRounds: PropTypes.number,
+    url: PropTypes.string,
     hasTimer: PropTypes.bool,
     clockDuration: PropTypes.number,
     clockStartTime: PropTypes.number,
@@ -26,8 +31,6 @@ export default class BigScreen extends Component {
     buttonText: PropTypes.string,
     activityPhase: PropTypes.string,
     instructions: PropTypes.string,
-    sessionCode: PropTypes.string,
-    url: PropTypes.string,
     feedbackMsge: PropTypes.string,
     feedbackClass: PropTypes.string,
     children: PropTypes.node
@@ -36,6 +39,11 @@ export default class BigScreen extends Component {
   static defaultProps = {
     hasButton: true,
     hasNavbar: true,
+    sessionCode: '',
+    url: 'prototeams.com',
+    hasRound: false,
+    sessionRound: 0,
+    sessionNumRounds: 0,
     hasTimer: true,
     clockDuration: -1,
     clockStartTime: 0,
@@ -46,8 +54,6 @@ export default class BigScreen extends Component {
     activityPhase: '',
     instructions: '',
     sessionStatus: 0,
-    sessionCode: '',
-    url: 'prototeams.com',
     feedbackMsge: '',
     feedbackClass: '',
     children: {}
@@ -61,11 +67,12 @@ export default class BigScreen extends Component {
 
   render() {
     const { sessionCode, url } = this.props;
+    const { sessionRound, sessionNumRounds } = this.props;
     const { activityPhase, instructions } = this.props;
     const { buttonText, buttonAction } = this.props;
     const { feedbackMsge, feedbackClass } = this.props;
     const { clockStartTime, clockDuration } = this.props;
-    const { hasButton, hasNavbar, hasTimer } = this.props;
+    const { hasButton, hasNavbar, hasTimer, hasRound } = this.props;
     const { children } = this.props;
     const { loading } = this.state;
 
@@ -76,6 +83,7 @@ export default class BigScreen extends Component {
         <div className="shared-main">
           {hasNavbar && (
             <nav className="navbar">
+              {hasRound && <div className="round">Round <span>{sessionRound}</span> of <span>{sessionNumRounds}</span></div>}
               <div className="session-code">
                 Join at <span>{url}</span> with session code <span>{sessionCode.toUpperCase()}</span>
               </div>

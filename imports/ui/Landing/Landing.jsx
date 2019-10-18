@@ -89,7 +89,7 @@ export default class Landing extends Component {
           pid = [...Array(6)].map(() => Math.random().toString(36)[2]).join('');
           user = Users.findOne({ pid: pid });
         }
-        Meteor.call('users.addUser', pid, () => {
+        Meteor.call('users.addUser', pid, "steve", () => {
           localStorage.setItem("pid", pid);
           this.setState({
             pid: pid,
@@ -172,6 +172,7 @@ export default class Landing extends Component {
     }
 
     // find current session
+    console.log(code);
     const session = Sessions.findOne({ code });
 
     if (session.participants.includes(pid)) {
