@@ -237,6 +237,7 @@ Meteor.startup(() => {
               teamNumber: teams.length,
               confirmed: false,
               assessed: false,
+              removed: true,
               teamFormationTime: 0,
               peerAssessmentTime: 0
             });
@@ -524,6 +525,74 @@ Meteor.methods({
         });
       }
     );
+  },
+
+  'teams.removeMember': function(team_id, removee) {
+    // update the team of interest with the new members
+    console.log(team_id);
+    console.log(removee);
+    Teams.update({
+      _id: team_id,
+    },
+    {
+      $pull: {
+        members: {
+          pid: removee
+        }
+      },
+      $set: {
+        remove: true
+      }
+    }, 
+    (error) => {
+      if (error) {
+        throw new Meteor.Error("failed-to-remove",
+        "Unable to remove that person from this team.");
+      } 
+    });
+  },
+
+  'sessions.removeMember': function(activity_id, pid) {
+    // find the current session
+    const session = Sessions.findOne({
+      activities: activity_id
+    });
+
+    if (!session) {
+      throw new Meteor.Error("no-such-session",
+        "Can't remove participants from a non-existant session.");
+    }
+
+    // check if there's enough participants to remove
+    const { participants } = session;
+    if (participants.length - 1 < 2) {
+      throw new Meteor.Error("not-enough-participants",
+        "Not enough participants to remove this person from the session.");
+    }
+
+    // build the new participants for this session
+    let new_participants = [participants.length -1 ];
+    for (let i = 0, j = 0; i < participants.length; i++) {
+      if (participants[i] != pid) {
+        new_participants[j] = participants[i];
+        j++;
+      }
+    }
+
+    // update the session's participants
+    Sessions.update({
+      _id: session._id
+    }, {
+      $set: {
+        participants: new_participants
+      }
+    }, 
+    (error) => {
+      if (error) {
+        throw new Meteor.Error("failed-to-remove",
+        "Unable to remove this person from this session.");
+      } 
+    });
   }
 });
 

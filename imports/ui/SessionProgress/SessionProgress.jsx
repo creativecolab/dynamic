@@ -352,14 +352,20 @@ export default withTracker(props => {
     { sort: { status: 1 } }
   );
 
+  // get the users that may have joined
   const users = Users.find({}).fetch();
 
   if (!currentActivity) return { session, users, activities, currentActivity };
 
   const quiz = Quizzes.findOne({ activity_id: currentActivity._id });
 
-  // let usersTotal = session.participants.length;
-  const usersTotal = Users.find({ 'teamHistory.activity_id': currentActivity._id }).count();
+  // get the total users that can assess
+  const sessionUsers = Users.find({ 'teamHistory.activity_id': currentActivity._id }).fetch();
+  let usersTotal = 0;
+  for (let i = 0; i < sessionUsers.length; i++) {
+    if (session.participants.includes(sessionUsers[i].pid)) usersTotal++;
+  }
+  // get total users that have assessed
   const usersAssessed = Users.find({ 'preferences.activity_id': currentActivity._id }).count();
 
   return { session, users, usersAssessed, usersTotal, activities, currentActivity, quiz };

@@ -233,7 +233,12 @@ class TeamDiscussion extends Component {
           console.log('No team');
           console.log(team);
 
-          return <Waiting text="You have not been assigned a team. Please wait for the next activity." />;
+          //return <Waiting text="You have not been assigned a team. Please wait for the next activity." />;
+          return (<PictureContent
+            imageSrc="/bye-jpg-500.jpg"
+            title="See y'all later!"
+            subtitle="No group this round! But get ready to form new groups for the next round."
+          />)
         }
 
         return (
@@ -264,7 +269,9 @@ class TeamDiscussion extends Component {
     const { questions, team } = this.props;
     const { displayTeam, hasFooter } = this.state;
 
-    if (questions.length === 0) return <Loading />;
+    if (questions.length === 0) {
+      return <Loading />;
+    }
 
     const { progress, sessionLength, statusStartTime, duration } = this.props;
 

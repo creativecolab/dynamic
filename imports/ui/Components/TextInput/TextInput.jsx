@@ -26,7 +26,6 @@ export default class TextInput extends Component {
   };
 
   handleSubmit(evt) {
-    // evt.preventDefault();
     const { onSubmit } = this.props;
 
     if (evt.key === 'Enter') onSubmit();

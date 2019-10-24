@@ -14,21 +14,20 @@ import { Textfit } from 'react-textfit';
 class TeamFormation extends Component {
   static propTypes = {
     pid: PropTypes.string.isRequired,
-    // eslint-disable-next-line react/forbid-prop-types
     _id: PropTypes.string.isRequired,
+    members: PropTypes.array.isRequired,
     confirmed: PropTypes.bool.isRequired
   };
 
   constructor(props) {
     super(props);
 
-    // find team in context
-    //const team = Teams.findOne(props.team_id);
+    // find the team and its members
     const { pid, members } = props;
 
     // state always starts as false
     this.state = {
-      teammates: members.filter(member => member.pid !== pid).map(member => ({ pid: member.pid, confirmed: false })),
+      // teammates: members.filter(member => member.pid !== pid).map(member => ({ pid: member.pid, confirmed: false })),
       sum: '',
       invalidSum: false,
       ready: false
@@ -40,13 +39,77 @@ class TeamFormation extends Component {
   }
 
   renderTeammates() {
-    if (this.props.confirmed) return 'Confirmed. Waiting for other groupmates.';
 
-    return this.state.teammates.map(m => (
-      <Button key={m.pid} active={m.confirmed} onClick={() => this.handleConfirmed(m.pid)}>
-        {this.getNameFromPid(m.pid)}
-      </Button>
-    ));
+    const { confirmed, members, pid } = this.props;
+
+    const teammates = members.filter(member => member.pid !== pid).map(member => ({ pid: member.pid, confirmed: false }))
+
+    return (
+      <div className="member-list">
+        {teammates.map(m => (
+          <div key={m.pid}>
+            {this.getNameFromPid(m.pid)}
+            {!confirmed &&
+              <div className="remove-btn">
+                <Button size="input-text" onClick={() => this.removeTeammate(m.pid)}>Not here?</Button>
+              </div>}
+          </div>
+        ))}
+      </div>
+    );
+
+
+  }
+
+  removeTeammate = removee => {
+
+    console.log("Want to remove " + removee);
+    const { _id, pid, members, activity_id } = this.props;
+
+    // can't get teams of size less than two
+    if (members.length - 1 < 2) {
+      console.log("Can't remove this round.");
+      return;
+    }
+
+    // build the new members
+    let new_members = [members.length - 1]
+    for (var i = 0, j = 0; i < members.length; i++) {
+      if (members[i].pid != removee) {
+        new_members[j] = { pid: members[i].pid, fruitNumber: members[i].fruitNumber };
+        j++;
+      }
+    }
+    console.log(new_members);
+
+    // remove member from the team
+    Meteor.call('teams.removeMember', _id, removee, error => {
+      if (error) {
+        console.log(error.error)
+        console.log("Can't remove from the team this round.");
+        return;
+      } else {
+        console.log('Removed ' + removee + ' from the team successfully.');
+        // remove member from the session
+        Meteor.call('sessions.removeMember', activity_id, removee, error => {
+          if (error) {
+            console.log(error.error);
+            console.log("Can't remove from the session this round.");
+            return;
+          } else {
+            console.log('Removed ' + removee + ' from the session successfully.');
+            // make the database updates visible
+            console.log("Updating state");
+            // TODO: delete this
+            // new teammates don't include themselves and the person they removed
+            // this.setState({
+            //   teammates: new_members.filter(member => member.pid !== pid).map(member => ({ pid: member.pid, confirmed: false }))
+            // })
+          }
+        });
+      }
+    });
+
   }
 
   handleSubmit = sum => {
@@ -76,20 +139,16 @@ class TeamFormation extends Component {
 
     const { sum, invalid } = this.state;
 
-    if (!_id) return <Loading />;
-
-    //const { shape, color } = team;
+    if (!_id) {
+      return <Loading />;
+    }
 
     const myNum = members.filter(m => m.pid === pid)[0].fruitNumber;
 
     if (confirmed) {
       return (
         <PictureContent title="Introduce yourself!" imageSpaced imageSrc="/intro.jpg">
-          <div className="member-list">
-            {this.state.teammates.map(m => (
-              <div key={m.pid}>{this.getNameFromPid(m.pid)}</div>
-            ))}
-          </div>
+          {this.renderTeammates()}
           <div className="team-instruct">
             Looks like you found everyone. While waiting for other groups to form, introduce yourself to your group
             members.
@@ -104,13 +163,7 @@ class TeamFormation extends Component {
         title="Find others with this shape and color"
         imageSrc={`/shapes/${shape}-solid-${color}.jpg`}
       >
-        {/* <hr style={{ width: '100%', margin: 0 }} /> */}
-        <div className="member-list">
-          {this.state.teammates.map(m => (
-            <div key={m.pid}>{this.getNameFromPid(m.pid)}</div>
-          ))}
-        </div>
-        {/* <hr style={{ width: '100%', margin: 0 }} /> */}
+        {this.renderTeammates()}
         <div>
           <div className="user-number">
             You have <b>{myNum}</b> orange{myNum === 1 ? '' : 's'}.
@@ -131,43 +184,6 @@ class TeamFormation extends Component {
         </div>
       </PictureContent>
     );
-
-    // return (
-    //   <PictureContent
-    //     title="Find others with this shape and color"
-    //     hasImage
-    //     imageSrc={`/shapes/${shape}-solid-${color}.jpg`}
-    //     hasSubtitle
-    //     subtitle="Select members found:"
-    //   >
-    //     {this.renderTeammates()}
-    //   </PictureContent>
-    // );
-
-    // if (allConfirmed) {
-    //   return (
-    //     <div className="team-formation-main">
-    //       <img className="intro-img" src="/intro.jpg" alt="..." />
-    //       <p>
-    //         <strong>Introduce yourself!</strong>
-    //       </p>
-    //       <div>
-    //         Looks like you found everyone. While waiting for other groups to form, introduce yourself to your teammates.
-    //         </div>
-    //     </div>
-    //   );
-    // }
-
-    // return (
-    //   <div className="team-formation-main">
-    //     <div className="shape-main">
-    //       <div>Find others with this shape and color</div>
-    //       <img className="shape-img" src={`/shapes/${shape}-solid-${color}.jpg`} alt={`${color} ${shape}`} />
-    //       {!confirmed && <div>Select members found:</div>}
-    //     </div>
-    //     {this.renderTeammates()}
-    //   </div>
-    // );
   }
 }
 

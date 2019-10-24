@@ -93,7 +93,7 @@ export function getAverageRating(
 
 // make some default questions for TeamDiscussion
 export function createDefaultQuestions() {
-  if (Questions.find({}).count() !== 0) {
+  if (Questions.find({onwer: 'none'}).count() !== 0) {
     return;
   }
 
@@ -290,7 +290,7 @@ export function readPreferences(instructor, session_id) {
     }
   });
 
-  // determine what kind of questions to make - TODO: add a way to handle custom questions
+  // determine what kind of questions to make
   if (preferences.questionsType === "custom") {
     createCustomQuestions(instructor, preferences.questions);
   } else {

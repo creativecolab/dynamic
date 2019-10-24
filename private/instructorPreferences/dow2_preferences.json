@@ -1,0 +1,54 @@
+{
+  "instructor": "Steven Dow",
+  "num_activities": 5,
+  "duration": 240,
+  "group_size": 3,
+  "hasRoster": true,
+  "questionsType": "custom",
+  "questions": [
+    {
+      "label": "IDEATION",
+      "color": "#F05D5E",
+      "numPerRound": 4,
+      "prompts": [
+        "Which of the 6 scenarios would you like to work on for your project?",
+        "Would you like to work on a scenario that is not listed? What is it?",
+        "Within your scenario of interest, what specific topic would you like to pursue?",
+        "What type of design can you envision for your topic?",
+        "Would you like to work on a scenario that is not listed? What is it?",
+        "Within your scenario of interest, what specific topic would you like to pursue?",
+        "What type of design can you envision for your topic?",
+        "Which of the 6 scenarios would you like to work on for your project?",
+        "Within your scenario of interest, what specific topic would you like to pursue?",
+        "What type of design can you envision for your topic?",
+        "Which of the 6 scenarios would you like to work on for your project?",
+        "Would you like to work on a scenario that is not listed? What is it?",
+        "What type of design can you envision for your topic?",
+        "Which of the 6 scenarios would you like to work on for your project?",
+        "Would you like to work on a scenario that is not listed? What is it?",
+        "Within your scenario of interest, what specific topic would you like to pursue?",
+        "Which of the 6 scenarios would you like to work on for your project?",
+        "Would you like to work on a scenario that is not listed? What is it?",
+        "Within your scenario of interest, what specific topic would you like to pursue?",
+        "What type of design can you envision for your topic?"
+      ]
+    },
+    {
+      "label": "TEAM QUESTION",
+      "color": "#0CB755",
+      "numPerRound": 2,
+      "prompts": [
+        "What do you believe is the most important factor for a successful team? Why?",
+        "How is your course load this quarter?",
+        "Ideally, how often would you like to meet with your team members?",
+        "Based on previous team projects, what do you think worked and didn't work for you?",
+        "What do you look for in a good team member?",
+        "What do you believe is the most important factor for a successful team? Why?",
+        "How is your course load this quarter?",
+        "Ideally, how often would you like to meet with your team members?",
+        "Based on previous team projects, what do you think worked and didn't work for you?",
+        "What do you look for in a good team member?"
+      ]
+    }
+  ]
+}

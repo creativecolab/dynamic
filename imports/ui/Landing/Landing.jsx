@@ -93,7 +93,7 @@ export default class Landing extends Component {
           localStorage.setItem("pid", pid);
           this.setState({
             pid: pid,
-            pidSubmitted: true,
+            pidSubmitted: false,
             codeSubmitted: true,
           });
         });
