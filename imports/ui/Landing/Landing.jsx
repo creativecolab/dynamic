@@ -146,7 +146,7 @@ export default class Landing extends Component {
       }
 
       // find user by pid on database
-      const user = Users.findOne({ pid });
+      const user = Users.findOne({ pid: pid });
 
       // check if user exists!
       if (user) {
@@ -182,10 +182,14 @@ export default class Landing extends Component {
     }
     // user hasn't joined this session yet
     else {
-      Meteor.call('sessions.addUser', pid, session._id, () => {
+      Meteor.call('sessions.addUser', pid, session._id, (error) => {
+        if (error) {
+          console.log(error.error);
+        }
         this.setState({
           ready: true,
         });
+
       });
     }
   };

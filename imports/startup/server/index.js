@@ -347,20 +347,37 @@ Meteor.startup(() => {
 /* Meteor methods (server-side function, mostly database work) */
 Meteor.methods({
   'users.addUser': function(pid, name) {
-    Users.insert({
-      name: name,
-      pid,
-      joinTime: new Date().getTime(),
-      teamHistory: [],
-      sessionHistory: [],
-      preferences: []
-    });
+    if (!(Users.findOne({pid: pid}))) {
+      Users.insert({
+        name: name,
+        pid,
+        joinTime: new Date().getTime(),
+        teamHistory: [],
+        sessionHistory: [],
+        preferences: []
+      });
+      console.log("New user " + pid + " added!");
+    } else {
+      console.log("Did not add user " + pid + " since they are already in the database.");
+    }
+    
   },
 
   'sessions.addUser': function(pid, session_id) {
+
+    // get the current session and the relevant user
+    const session = Sessions.findOne(session_id);
+    const user = Users.findOne({pid: pid});
+
+    // verify that this user exists
+    if (!user) {
+      console.log("User with pid " + pid + " does not exist, will not add to participants.")
+        throw new Meteor.Error("nonexistant-pid",
+        "A dynamic-user with this PID does not exist.");
+    }
+
     // note the session join time
-    const user_id = Users.findOne({pid: pid})._id;
-    Users.update(user_id, {
+    Users.update(user._id, {
       $push: {
         sessionHistory: {
           session_id: session_id,
@@ -369,6 +386,15 @@ Meteor.methods({
         }
       }
     });
+
+    // verify that this user it not in participants already
+    for (let i = 0; i < session.participants.length; i++) {
+      if (session.participants[i] === pid) {
+        console.log("Duplicate User, will ignore.")
+        throw new Meteor.Error("duplicate-pid",
+        "PID already present in participants for this session.");      
+      }
+    }
 
     // add user to session
     Sessions.update(session_id, {
