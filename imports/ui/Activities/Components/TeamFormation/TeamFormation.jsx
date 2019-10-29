@@ -51,7 +51,7 @@ class TeamFormation extends Component {
             {this.getNameFromPid(m.pid)}
             {!confirmed &&
               <div className="remove-btn">
-                <Button size="input-text" onClick={() => this.removeTeammate(m.pid)}>Not here?</Button>
+                {/* <Button size="input-text" onClick={() => this.removeTeammate(m.pid)}>Not here?</Button> */}
               </div>}
           </div>
         ))}

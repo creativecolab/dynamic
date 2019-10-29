@@ -1,6 +1,6 @@
 {
   "instructor": "David Kirsh",
-  "num_activities": 5,
+  "num_activities": 6,
   "duration": 240,
   "group_size": 3,
   "hasRoster": true,
@@ -12,20 +12,23 @@
       "numPerRound": 3,
       "prompts": [
         "What is the best TV show/movie that you watched recently?",
-        "UC Socially Dead; Agree or disagree? ",
+        "UC Socially Dead; Agree or disagree?",
+        "What is your favorite holiday?",
         "Star Wars or Star Trek?",
-        "What other languages do you speak? Teach everyone to say “hello” in that language.",
         "Who is your favorite singer/band?",
-        "What is an item on your bucket list?",
-        "If you were to become a YouTuber, what would your topic be (e.g., vlogger, gamer, etc.)?",
+        "What has been your most memorable vacation?",
         "What is your favorite thing to do at the beach?",
-        "Who are your most and least favorite professors so far?",
-        "What are you looking forward to?",
-        "What is the best TV show/movie that you watched recently?",
-        "Star Wars or Star Trek?",
-        "If you had to become a teacher, what subject would you teach?",
+        "What has been your favorite class so far?",
         "What other languages do you speak? Teach everyone to say “hello” in that language.",
-        "Who are your most and least favorite professors so far?"
+        "If you were to become a YouTuber, what would your topic be (e.g., vlogger, gamer, etc.)?",
+        "What is an item on your bucket list?",
+        "Who are your most and least favorite professors so far?",
+        "What did you do this past Summer?",
+        "What is your favorite holiday?",
+        "What is an item on your bucket list?",
+        "If you had to become a teacher, what subject would you teach?",
+        "Who is the funniest person in your family?",
+        "How do you spend your weekends?"
       ]
     },
     {
@@ -33,16 +36,18 @@
       "color": "#F05D5E",
       "numPerRound": 2,
       "prompts": [
-        "Jane is a college student who has trouble staying awake in class. Apart from sleep trackers, what product can you design to help Jane overcome this problem?",
-        "Luke has difficulty controlling his eating. What product/service can you design to help him eat healthier?",
+        "A college student who has trouble staying awake in class. Apart from sleep trackers, what product can you design to help them overcome this problem?",
+        "An adult has difficulty controlling their eating. What product/service can you design to help them eat healthier?",
         "How would you design for a more efficient recycling mechanism, as opposed to multiple, physical bins right next to each other?",
-        "Seth struggles with frequent stress at work. What product/service can you design to help Seth cope with his stress?",
-        "Camille is frequently forgetting her belongings at her friends houses. What kind of solution can you design to help Camille overcome her forgetfulness?",
-        "Jane is a college student who has trouble staying awake in class. Apart from sleep trackers, what product can you design to help Jane overcome this problem?",
-        "Seth struggles with frequent stress at work. What product/service can you design to help Seth cope with his stress?",
-        "How would you design for a more efficient recycling mechanism, as opposed to multiple, physical bins right next to each other?",
-        "Luke has difficulty controlling his eating. What product/service can you design to help him eat healthier?",
-        "Camille is frequently forgetting her belongings at her friends houses. What kind of solution can you design to help Camille overcome her forgetfulness?"
+        "Your coworker struggles with frequent stress at work. What product/service can you design to help them cope with their stress?",
+        "Your friend is frequently forgetting their belongings at her friend's houses. What kind of solution can you design to help them overcome their forgetfulness?",
+        "A working professional doesn’t get enough exercise. Apart from activity trackers, what product/service can you design to help motivate them to exercise?",
+        "Someone you know is struggling to quit smoking. What product/service can you design to help them quit?",
+        "A high school student struggles with anger management issues. What product/service can you design to help them better manage their emotions?",
+        "An adult has difficulty controlling their eating. What product/service can you design to help them eat healthier?",
+        "Your coworker struggles with frequent stress at work. What product/service can you design to help them cope with their stress?",
+        "A working professional doesn’t get enough exercise. Apart from activity trackers, what product/service can you design to help motivate them to exercise?",
+        "A high school student struggles with anger management issues. What product/service can you design to help them better manage their emotions?"
       ]
     },
     {
@@ -51,20 +56,23 @@
       "numPerRound": 3,
       "prompts": [
         "What do you believe is the most important factor for a successful team?",
-        "How is your course load this quarter?",
         "What do you hope to get out of this class?",
-        "Ideally, how often would you like to meet with your team members?",
-        "Based on previous team projects, what do you think worked and didn't work for you?",
+        "Based on previous team projects, what do you think worked and didn’t work for you?",
         "What do you look for in a good team member?",
-        "If you were to specialize, which would you be? Colorist, Layout Specialist, Information Designer, or Content Writer.",
-        "What do you believe is the most important factor for a successful team?",
         "How is your course load this quarter?",
-        "What do you hope to get out of this class?",
         "Ideally, how often would you like to meet with your team members?",
-        "Based on previous team projects, what do you think worked and didn't work for you?",
-        "What do you look for in a good team member?",
         "If you were to specialize, which would you be? Colorist, Layout Specialist, Information Designer, or Content Writer.",
-        "What do you believe is the most important factor for a successful team?"
+        "How do you deal with conflicts in the team?",
+        "Do you like to study on-campus or off-campus?",
+        "What is your main mode of communication for your project (e.g., email, Facebook)?",
+        "Describe your management experience (e.g., student club or project leader)?",
+        "What is your biggest pet peeve in group projects?",
+        "What are your strengths and weaknesses in group projects?",
+        "What is a project that you have completed that you are proud of?",
+        "Do you like to work in the morning, afternoon, or evening?",
+        "How do you decide to split the work among team members?",
+        "What does your schedule for a typical school week this quarter look like?",
+        "Do you prefer working in small groups or large groups?"
       ]
     }
   ]
