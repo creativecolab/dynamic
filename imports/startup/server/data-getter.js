@@ -5,63 +5,265 @@ import Users from '../../api/users';
 import { getAverageRating } from './helper-funcs';
 import { strict } from 'assert';
 
-const blacklisted = ['3291', '6734', '5072', '1161', '8035'];
+/* 
+  Goal: Obtain information on each participants pid, name, and joining time. 
+*/
+export function getUserInfo(session_code) {
 
-export function getPreference() {
-  const session = Sessions.findOne({ code: 'quiz2' });
-
-  // TODO: currently assumes there is only one session, need to make more general in the future
+  const session = Sessions.findOne({ code: session_code.toLowerCase() });
 
   if (!session) {
-    return 'No session named quiz2 yet!';
+    return 'No session named ' + session_code + ' yet!';
   }
 
-  const { participants } = session;
+  const { participants, activities } = session;
 
   if (!participants) {
-    return 'No particpants for this session yet';
+    return 'No particpants for the session ' + session_code + ' yet';
   }
 
-  // csv format
-  let ret = 'pid,pref_0,rating_0,pref_1,rating_1,pref_2,rating_2\n';
+  let ret = 'pid,name,join_time,elapsed_joined_time\n';
 
-  // get the data on the preferences of each participant
-  participants.map(user_pid => {
-    ret += `"${user_pid.toUpperCase()}",`;
-    const user = Users.findOne({ pid: user_pid });
 
-    if (user) {
-      user.preference.map(activity_pref => {
-        activity_pref.values.map((pref, index) => {
-          ret += pref.pid + ',' + pref.value;
+  // used to get elapsed time
+  const first_person = Users.findOne({pid: participants[0]});
+  let first_joined_time = first_person.sessionHistory.filter((sesh) => sesh.session_id === session._id)[0].sessionJoinTime;
 
-          // add a comma when not on preference 3
-          if (index != 2) ret += ',';
-        });
+  console.log(participants)
+  // get the data for each participant in this session
+  participants.forEach((participant) => {
 
-        // handles ratings from only 2 people
-        if (activity_pref.values.length < 3) ret += ',\n';
-        else ret += '\n';
-      });
+    let user = Users.findOne({pid: participant});
 
-      // when user exists but has no preference data (happens sometimes)
-      if (user.preference.length == 0) ret += ',,,,,\n';
-    } else {
-      // no preference info on this user for some reason
-      ret += ',,,,,\n';
+    // get user's name
+    let name = user.name;
+
+    // get the user's join time
+    let seshHistory = user.sessionHistory.filter((past_session) => past_session.session_id === session._id);
+    // handles confusing bug where user is in participants list but does not have the session in their history
+    // only occurs in dow2
+    if (seshHistory.length == 1) {
+      let join_time = seshHistory[0].sessionJoinTime;
+      let elapsed_join_time = ((join_time - first_joined_time) / 1000).toFixed(3);
+      let join_time_string = new Date(join_time).toString().substr(15, 9);
+      
+      // put it all together for this user
+      ret += participant + ',' + name + ',' + join_time_string + ',' + elapsed_join_time + '\n';
     }
-    // ret += '\n';
+    else {
+      console.log(user.pid);
+      console.log(user);
+    }
   });
 
   return ret;
 }
 
+/* 
+  Row: unique user
+  Column: pid, assessments_given_per_round, assessment_time_per_round 
+  assessments_given_per_round format: "pid1:xx;pid2:yy;...$pid5:zz$pid6:aa;..."
+  assessment_time_per_round format:  "xx;yy;..."
+*/
+export function getUserAssessment(session_code) {
+
+  const session = Sessions.findOne({ code: session_code.toLowerCase() });
+
+  if (!session) {
+    return 'No session named ' + session_code + ' yet!';
+  }
+
+  const { participants, activities } = session;
+
+  if (!participants) {
+    return 'No particpants for the session ' + session_code + ' yet';
+  }
+
+  if (!activities) {
+    return 'No activities for the session ' + session_code + ' yet';
+  }
+
+  let header = 'pid,assessments_given_per_round,assessment_time_per_round\n';
+
+  let body = ""
+
+  // get the assessment data for each participant in this sessiom
+  participants.forEach((participant) => {
+
+    let user = Users.findOne({pid: participant});
+    let preferences = ""
+    let assessment_times = ""
+
+    // separate by activity with a '$'
+    activities.forEach( activity_id => {
+      let user_preferences = user.preferences.filter( preference => preference.activity_id === activity_id);
+      user_preferences.forEach((user_preference) => {
+        // get the time it took for this assessment
+        let curr_act = Activities.findOne(user_preference.activity_id);
+        assessment_times += ((user_preference.timestamp - curr_act.statusStartTimes.peerAssessment) / 1000) + ";";
+        // get the ratings
+        user_preference.values.forEach((rating) => {
+          preferences += rating.pid + ":" + rating.value + ";"
+        });
+        preferences = preferences.slice(0, -1) + '$';
+      });
+    });
+
+    //replace last '$' with ,
+    preferences = preferences.slice(0, -1) + ',';
+    //replace last ';' with \n
+    assessment_times = assessment_times.slice(0, -1) + '\n';
+    
+    // put it all together for this user
+    body += participant + ',' + preferences + assessment_times;
+  });
+
+  return header + body;
+}
+
+/*
+Row: group per round
+Column: group_name, round, group_members, confirmed?, confirmation_time
+Round - which round the group was formed.
+Group_members - pid1;pid2;...
+Confirmation_time - if not confirmed, NAN or -1
+*/
+export function getGroupsInfo(session_code) {
+
+  const session = Sessions.findOne({ code: session_code.toLowerCase() });
+
+  if (!session) {
+    return 'No session named ' + session_code + ' yet!';
+  }
+
+  const { activities } = session;
+
+  if (!activities) {
+    return 'No activities for the session ' + session_code + ' yet';
+  }
+
+  let header = 'group_name,round,group_members,confirmed,confirmation_time\n'
+  
+  let body = ''
+
+  // get the groups of each activity
+  activities.forEach( (activity_id, round) => {
+
+    const { team_ids } = Activities.findOne(activity_id);
+
+    // get name, round, members, and if confirmed for each group
+    team_ids.forEach( team_id => {
+
+      let group = Teams.findOne(team_id);
+
+      // build the row
+      let group_name = group.color + " " + group.shape + ",";
+      let curr_round = (round + 1) + ",";
+      let group_members = "";
+      group.members.forEach((member) => group_members += member.pid + ";");
+      group_members = group_members.slice(0, -1) + ",";
+      let confirmed = group.confirmed ? "Yes," : "No,";
+      let confirmation_time = "-1"
+      if (group.confirmed) confirmation_time = new Date(group.teamFormationTime).toString().substr(22, 2);
+
+      body += group_name + curr_round + group_members + confirmed + confirmation_time + "\n";
+
+    })
+
+  });
+
+  return header + body;
+
+}
+
+/* 
+Row: unique question
+Column: question, category, round, time_spent
+*/
+export function getQuestionsInfo(session_code) {
+
+  const session = Sessions.findOne({ code: session_code.toLowerCase() });
+
+  if (!session) {
+    return 'No session named ' + session_code + ' yet!';
+  }
+
+  const { instructor } = session;
+
+  if (!instructor) {
+    return 'Session ' + session_code + ' in not owned by any instructor, and does not have special questions!';
+  }
+
+  const questions = Questions.find({owner: instructor}).fetch();
+  
+  if (!questions) {
+    return 'Session ' + session_code + ' with instructor ' + instructor + ' does not have special questions!';
+  }
+
+  let header = 'question,category,round,time_spent\n';
+  let body = '';
+
+  // go through all of the questions
+  questions.forEach(question => {
+    // build the body
+    let prompt = question.prompt.replace(/\(e.g.*/g, "?").replace(/,/, "") + ",";
+    let category = 'Uncategorized,';
+    switch (question.label) {
+      case "TEAM QUESTION":
+        category = 'TEAM QUESTION,';
+        break;
+      case "IDEATION":
+        category = "IDEATION,";
+        break;    
+      case "ICEBREAKER":
+        category = "ICEBREAKER,";
+        break; 
+      default:
+    }
+    let round = question.round + ",";
+    let date = new Date(1000*Math.round(question.viewTimer/1000));
+    let time_spent = date.getUTCMinutes() + ':' + (date.getUTCSeconds() < 10 ? '0' + date.getUTCSeconds() : date.getUTCSeconds());
+
+    body += prompt + category + round + time_spent + "\n";
+  });
+
+  return header + body;
+
+}
+
+/* 
+Row: unique session
+Column: session_id, session_owner, number_of_rounds, time_per_round, number_of_questions_per_round
+*/
+export function getSessionInfo() {
+
+  // successful sessions from the Fall 2019 quarter
+  const sessions = ['84qls', 'hg9ts', 'r6e6s', '4qdqj', 'm66mh', 'd7b8z', 'e7tfd', '8yybn']
+
+  let header = 'session_id,session_owner,number_of_rounds,time_per_round,number_of_questions_per_round\n';
+  let body = "";
+
+  sessions.forEach((curr_session) => {
+    const session = Sessions.findOne({code: curr_session});
+
+    if (!session) body += 'Could not find session with session code ' + curr_session + '!\n';
+
+    let owner = session.instructor;
+    //let num_rounds_
+  });
+
+  return header + body;
+}
+
+///**** Below are older apis, not garuanteed to work with the current database. ****///
 
 /* 
   Goal: Obtain details of the interactions of each participant in a session.
   Does so from the information saved by the "teamHistory" matrix in the queried session.
 */
 export function getInteractions(session_code) {
+
+  const blacklisted = ['3291', '6734', '5072', '1161', '8035'];
 
   const session = Sessions.findOne({ code: session_code.toLowerCase() });
 
@@ -124,6 +326,8 @@ export function getInteractions(session_code) {
   Does so through looking through a User's team history, preference, and session history. 
 */
 export function getUserHistory(session_code) {
+
+  const blacklisted = ['3291', '6734', '5072', '1161', '8035'];
 
   const session = Sessions.findOne({ code: session_code.toLowerCase() });
 
@@ -226,30 +430,6 @@ export function getUserHistory(session_code) {
   });
 
   return ret;
-}
-
-export function getUserJoinTimes(session_code) {
-  const curr_session = Sessions.findOne({ code: session_code.toLowerCase() });
-
-  if (!curr_session) {
-    return 'No session named ' + session_code + ' yet!';
-  }
-
-  const { participants } = curr_session;
-
-  let ret = "Users-Joined-Time\n";
-
-  participants.forEach((participant) => {
-    let user = Users.findOne({pid: participant})
-    user.sessionHistory.forEach((session) => {
-      if (session.session_id === curr_session._id) {
-        ret = ret + "User " + participant + " Joined the Session: timestamp " + session.sessionJoinTime + ", " 
-        + new Date().toISOString(session.sessionJoinTime) + "\n";
-      }
-    });
-  });
-  return ret;
-
 }
 
 export function getTeamConfirmationTimes(session_code) {

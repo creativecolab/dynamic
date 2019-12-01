@@ -14,12 +14,15 @@ import Questions from '../../api/questions';
 import './register-api';
 import { formTeams } from './team-former';
 import {
-  getPreference,
   getInteractions,
   getUserHistory,
+  getUserInfo,
   getUserJoinTimes,
   getTeamConfirmationTimes,
-  getUserAssessmentTimes
+  getUserAssessmentTimes,
+  getUserAssessment,
+  getGroupsInfo,
+  getQuestionsInfo
 } from './data-getter';
 import { buildColoredShapes, calculateDuration, readPreferences, defaultPreferences, createDefaultQuestions } from './helper-funcs';
 import { updateTeamHistory_LateJoinees, updateTeamHistory_TeamFormation } from './team-historian';
@@ -631,18 +634,69 @@ if (Meteor.isServer) {
     prettyJson: true
   });
 
-  Api.addRoute('csv', {
+  /* Active APIs */
+
+  Api.addRoute('user_info/:code', {
     get() {
+      const content_disposition = 'attachment; filename=user_info_[' + this.urlParams.code.toLowerCase() + '].csv';
+
       return {
         statusCode: 200,
         headers: {
           'Content-Type': 'text/csv',
-          'Content-Disposition': 'attachment; filename=preferences_quiz2.csv'
+          'Content-Disposition': content_disposition
         },
-        body: getPreference()
+        body: getUserInfo(this.urlParams.code)
       };
     }
   });
+
+  Api.addRoute('user_assessment/:code', {
+    get() {
+      const content_disposition = 'attachment; filename=user_assessment_[' + this.urlParams.code.toLowerCase() + '].csv';
+
+      return {
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'text/csv',
+          'Content-Disposition': content_disposition
+        },
+        body: getUserAssessment(this.urlParams.code)
+      };
+    }
+  });
+
+  Api.addRoute('groups_info/:code', {
+    get() {
+      const content_disposition = 'attachment; filename=groups_info_[' + this.urlParams.code.toLowerCase() + '].csv';
+
+      return {
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'text/csv',
+          'Content-Disposition': content_disposition
+        },
+        body: getGroupsInfo(this.urlParams.code)
+      };
+    }
+  });
+
+  Api.addRoute('questions/:code', {
+    get() {
+      const content_disposition = 'attachment; filename=questions_[' + this.urlParams.code.toLowerCase() + '].csv';
+
+      return {
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'text/csv',
+          'Content-Disposition': content_disposition
+        },
+        body: getQuestionsInfo(this.urlParams.code)
+      };
+    }
+  });
+
+  /* Inactive APIs (not guaranteed to work) */
 
   Api.addRoute('interactions/:code', {
     get() {

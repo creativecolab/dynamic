@@ -1,0 +1,32 @@
+{
+  "instructor": "Protolab",
+  "num_activities": 3,
+  "duration": 180,
+  "group_size": 3,
+  "hasRoster": false,
+  "questionsType": "custom",
+  "questions": [
+    {
+      "label": "ICEBREAKER",
+      "color": "#F05D5E",
+      "numPerRound": 1,
+      "prompts": [
+        "Tell us any bugs that you find!",
+        "Tell us any bugs that you find!",
+        "Tell us any bugs that you find!"
+      ]
+    },
+    {
+      "label": "IDEATION",
+      "color": "#F05D5E",
+      "numPerRound": 0,
+      "prompts": []
+    },
+    {
+      "label": "TEAM QUESTION",
+      "color": "#0CB755",
+      "numPerRound": 0,
+      "prompts": []
+    }
+  ]
+}
