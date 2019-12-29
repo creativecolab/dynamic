@@ -31,7 +31,10 @@ class TeamFormation extends Component {
       // teammates: members.filter(member => member.pid !== pid).map(member => ({ pid: member.pid, confirmed: false })),
       sum: '',
       invalidSum: false,
-      ready: false
+      ready: false,
+
+      prevQuestionIndex: 0,
+      startTime: new Date().getTime(),
     };
   }
 
@@ -124,11 +127,6 @@ class TeamFormation extends Component {
         if (!error) console.log('Confirmed member successfully');
         else console.log(error);
       });
-      // Teams.update(_id, {
-      //   $set: {
-      //     confirmed: true
-      //   }
-      // });
     } else {
       this.setState({
         invalid: true
@@ -138,6 +136,28 @@ class TeamFormation extends Component {
 
   handleSumChange = evt => {
     this.setState({ sum: evt.target.value, invalid: false });
+  };
+
+  onSlideChange = () => {
+    const endTime = new Date().getTime();
+    const { startTime } = this.state;
+
+    const { questions } = this.props;
+
+    const past_question = questions[this.state.prevQuestionIndex]._id;
+    const next_question = questions[this.reactSwipeEl.getPos()]._id;
+
+    //update questions
+    Meteor.call('questions.updateTimers', past_question, next_question, startTime, endTime, error => {
+      if (!error) console.log('Tracked questions successfully');
+      else console.log(error);
+    });
+
+    // keep track of this current question and when it began
+    this.setState({
+      prevQuestionIndex: this.reactSwipeEl.getPos(),
+      startTime: new Date().getTime()
+    });
   };
 
   render() {
@@ -157,7 +177,8 @@ class TeamFormation extends Component {
         <div>
           <div className="swipe-instr-top">
             <Textfit mode="multi" max={36}>
-              Looks like everyone in your group has found each other! Choose some questions to discuss as a group
+              Looks like everyone in your group has found each other!
+              Choose questions to discuss as a group
             </Textfit>
           </div>
           <div className="swipe-subinstr-top">
