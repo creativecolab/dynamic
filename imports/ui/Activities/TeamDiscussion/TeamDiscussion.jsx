@@ -178,7 +178,7 @@ class TeamDiscussion extends Component {
         return <Waiting text="No team? Try refreshing this page!" />;
       }
 
-      return <TeamFormation pid={pid} {...team} />;
+      return <TeamFormation questions={questions} pid={pid} {...team} />;
     }
 
     // team input phase

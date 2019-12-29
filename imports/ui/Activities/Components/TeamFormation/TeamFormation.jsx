@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
+import ReactSwipe from 'react-swipe';
 
 import Teams from '../../../../api/teams';
 import Users from '../../../../api/users';
@@ -113,16 +114,21 @@ class TeamFormation extends Component {
   }
 
   handleSubmit = sum => {
-    const { _id, members } = this.props;
+    const { pid, _id, members } = this.props;
 
     console.log('submitted sum' + sum);
 
     if (sum == members.map(m => m.fruitNumber).reduce((res, m) => res + m)) {
-      Teams.update(_id, {
-        $set: {
-          confirmed: true
-        }
+      console.log("trying to confirm", pid, "on team", _id);
+      Meteor.call('teams.confirmMember', _id, pid, error => {
+        if (!error) console.log('Confirmed member successfully');
+        else console.log(error);
       });
+      // Teams.update(_id, {
+      //   $set: {
+      //     confirmed: true
+      //   }
+      // });
     } else {
       this.setState({
         invalid: true
@@ -135,7 +141,7 @@ class TeamFormation extends Component {
   };
 
   render() {
-    const { pid, confirmed, _id, members, shape, color } = this.props;
+    const { pid, confirmed, _id, members, shape, color, confirmedMembers } = this.props;
 
     const { sum, invalid } = this.state;
 
@@ -145,13 +151,61 @@ class TeamFormation extends Component {
 
     const myNum = members.filter(m => m.pid === pid)[0].fruitNumber;
 
+    // if team is confirmed
     if (confirmed) {
       return (
-        <PictureContent title="Introduce yourself!" imageSpaced imageSrc="/intro.jpg">
+        <div>
+          <div className="swipe-instr-top">
+            <Textfit mode="multi" max={36}>
+              Looks like everyone in your group has found each other! Choose some questions to discuss as a group
+            </Textfit>
+          </div>
+          <div className="swipe-subinstr-top">
+            <strong>Swipe</strong> to see more questions
+          </div>
+          <div className="slider-main">
+            <ReactSwipe
+              className="carousel"
+              swipeOptions={{ continuous: true, callback: this.onSlideChange }}
+              ref={el => (this.reactSwipeEl = el)}
+            >
+              {this.props.questions.map((q, index) => {
+                return (
+                  <div className="question-card-wrapper" key={q._id}>
+                    <div className="question-card">
+                      <div className="label" style={{ background: q.color }}>
+                        {q.label}
+                      </div>
+                      {index + 1}. {q.prompt}
+                    </div>
+                  </div>
+                );
+              })}
+            </ReactSwipe>
+
+            <button className="prev" type="button" onClick={() => this.reactSwipeEl.prev()}>
+              &larr;
+            </button>
+            <button className="next" type="button" onClick={() => this.reactSwipeEl.next()}>
+              &rarr;
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // if user has confirmed they found everyone, but still waiting on rest of team to confirm
+    if (confirmedMembers.includes(pid)) {
+      return (
+        <PictureContent title="Great job finding your team!" imageSpaced imageSrc={`/shapes/${shape}-solid-${color}.jpg`}>
           {this.renderTeammates()}
+          <div>
+            <div className="user-number">
+              You have <b>{myNum}</b> orange{myNum === 1 ? '' : 's'}.
+            </div>
+          </div>
           <div className="team-instruct">
-            Looks like you found everyone. While waiting for other groups to form, introduce yourself to your group
-            members.
+            Looks like you found everyone! Wait a bit for the rest of your team to be confirmed.
           </div>
         </PictureContent>
       );
