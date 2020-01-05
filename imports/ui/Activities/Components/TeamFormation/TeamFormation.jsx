@@ -10,6 +10,7 @@ import Loading from '../../../Components/Loading/Loading';
 import './TeamFormation.scss';
 import PictureContent from '../../../Components/PictureContent/PictureContent';
 import TextInput from '../../../Components/TextInput/TextInput';
+import QuestionCarousel from '../../TeamDiscussion/QuestionCarousel';
 import { Textfit } from 'react-textfit';
 
 class TeamFormation extends Component {
@@ -32,9 +33,6 @@ class TeamFormation extends Component {
       sum: '',
       invalidSum: false,
       ready: false,
-
-      prevQuestionIndex: 0,
-      startTime: new Date().getTime(),
     };
   }
 
@@ -176,7 +174,7 @@ class TeamFormation extends Component {
   }
 
   render() {
-    const { pid, confirmed, _id, members, shape, color, confirmedMembers } = this.props;
+    const { pid, confirmed, _id, members, shape, color, confirmedMembers, questions, currentQuestions } = this.props;
 
     const { sum, invalid } = this.state;
 
@@ -189,44 +187,12 @@ class TeamFormation extends Component {
     // if team is confirmed
     if (confirmed) {
       return (
-        <div>
-          <div className="swipe-instr-top">
-            <Textfit mode="multi" max={36}>
-              Looks like everyone in your group has found each other!
-              Choose questions to discuss as a group
-            </Textfit>
-          </div>
-          <div className="swipe-subinstr-top">
-            <strong>Swipe</strong> to see more questions
-          </div>
-          <div className="slider-main">
-            <ReactSwipe
-              className="carousel"
-              swipeOptions={{ continuous: true, callback: this.onSlideChange, startSlide: this.getCurrentQuestion() }}
-              ref={el => (this.reactSwipeEl = el)}
-            >
-              {this.props.questions.map((q, index) => {
-                return (
-                  <div className="question-card-wrapper" key={q._id}>
-                    <div className="question-card">
-                      <div className="label" style={{ background: q.color }}>
-                        {q.label}
-                      </div>
-                      {index + 1}. {q.prompt}
-                    </div>
-                  </div>
-                );
-              })}
-            </ReactSwipe>
-
-            <button className="prev" type="button" onClick={() => this.reactSwipeEl.prev()}>
-              &larr;
-            </button>
-            <button className="next" type="button" onClick={() => this.reactSwipeEl.next()}>
-              &rarr;
-            </button>
-          </div>
-        </div>
+        <QuestionCarousel
+          pid={pid}
+          _id={_id}
+          questions={questions}
+          currentQuestions={currentQuestions}
+        />
       );
     }
 
