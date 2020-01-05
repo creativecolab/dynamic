@@ -142,7 +142,7 @@ class TeamFormation extends Component {
     const endTime = new Date().getTime();
     const { startTime } = this.state;
 
-    const { questions } = this.props;
+    const { questions, _id, pid } = this.props;
 
     const past_question = questions[this.state.prevQuestionIndex]._id;
     const next_question = questions[this.reactSwipeEl.getPos()]._id;
@@ -158,7 +158,22 @@ class TeamFormation extends Component {
       prevQuestionIndex: this.reactSwipeEl.getPos(),
       startTime: new Date().getTime()
     });
+
+    Meteor.call('questions.setCurrent', _id, pid, this.reactSwipeEl.getPos(), error => {
+      if (!error) console.log('Set current question successfully');
+      else console.log(error);
+    });
   };
+
+  getCurrentQuestion() {
+    const { pid, currentQuestions } = this.props;
+    for (var i = 0; i < currentQuestions.length; i++) {
+      if (currentQuestions[i].pid == pid) {
+        return currentQuestions[i].question_ind;
+      }
+    }
+    return 0;
+  }
 
   render() {
     const { pid, confirmed, _id, members, shape, color, confirmedMembers } = this.props;
@@ -187,7 +202,7 @@ class TeamFormation extends Component {
           <div className="slider-main">
             <ReactSwipe
               className="carousel"
-              swipeOptions={{ continuous: true, callback: this.onSlideChange }}
+              swipeOptions={{ continuous: true, callback: this.onSlideChange, startSlide: this.getCurrentQuestion() }}
               ref={el => (this.reactSwipeEl = el)}
             >
               {this.props.questions.map((q, index) => {

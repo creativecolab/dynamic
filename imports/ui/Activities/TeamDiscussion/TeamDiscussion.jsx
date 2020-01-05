@@ -61,6 +61,8 @@ class TeamDiscussion extends Component {
 
     const { status, pid, team, voted } = this.props;
 
+
+
     if (status === ActivityEnums.status.INPUT_TEAM) {
       displayTeam = true;
     }
@@ -107,6 +109,11 @@ class TeamDiscussion extends Component {
     this.setState({
       prevQuestionIndex: this.reactSwipeEl.getPos(),
       startTime: new Date().getTime()
+    });
+
+    Meteor.call('questions.setCurrent', _id, pid, this.reactSwipeEl.getPos(), error => {
+      if (!error) console.log('Set current question successfully');
+      else console.log(error);
     });
   };
 
@@ -197,7 +204,7 @@ class TeamDiscussion extends Component {
           <div className="slider-main">
             <ReactSwipe
               className="carousel"
-              swipeOptions={{ continuous: true, callback: this.onSlideChange }}
+              swipeOptions={{ continuous: true, callback: this.onSlideChange, startSlide: this.getCurrentQuestion() }}
               ref={el => (this.reactSwipeEl = el)}
             >
               {questions.map((q, index) => {
@@ -292,6 +299,16 @@ class TeamDiscussion extends Component {
         {this.renderContent(this.props)} {/*component*/}
       </Mobile>
     );
+  }
+
+  getCurrentQuestion() {
+    const { pid, team } = this.props;
+    for (var i = 0; i < team.currentQuestions.length; i++) {
+      if (team.currentQuestions[i].pid == pid) {
+        return team.currentQuestions[i].question_ind;
+      }
+    }
+    return 0;
   }
 
   componentDidUpdate(prevProps) {

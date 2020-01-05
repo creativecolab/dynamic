@@ -262,6 +262,7 @@ Meteor.startup(() => {
               teamNumber: teams.length,
               confirmed: false,
               confirmedMembers: [],
+              currentQuestions: teams[i].map(pid => ({ pid, question_ind:0})),
               assessed: false,
               removed: true,
               teamFormationTime: 0,
@@ -511,6 +512,26 @@ Meteor.methods({
     } catch (error) {
       console.log(error);
     }
+  },
+
+  'questions.setCurrent': function(team_id, member_pid, question_ind){
+    // update the team of interest with the new members
+    console.log(team_id);
+    console.log(member_pid);
+    console.log(question_ind);
+    Teams.update({
+      _id: team_id,
+      "currentQuestions.pid": member_pid
+    },
+    { 
+      $set: { "currentQuestions.$.question_ind" : question_ind } 
+    },
+    (error) => {
+      if (error) {
+        throw new Meteor.Error("failed-to-set-current-question",
+        "Unable to set current question for member");
+      } 
+    });
   },
 
   // write the the database for tracking question time
