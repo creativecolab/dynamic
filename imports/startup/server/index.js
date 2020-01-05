@@ -22,7 +22,9 @@ import {
   getUserAssessmentTimes,
   getUserAssessment,
   getGroupsInfo,
-  getQuestionsInfo
+  getQuestionsInfo,
+  getDefaultQuestions,
+  getPhaseTimes
 } from './data-getter';
 import { buildColoredShapes, calculateDuration, readPreferences, defaultPreferences, createDefaultQuestions } from './helper-funcs';
 import { updateTeamHistory_LateJoinees, updateTeamHistory_TeamFormation } from './team-historian';
@@ -92,7 +94,7 @@ Meteor.startup(() => {
 
         Teams.update(team._id, {
           $set: {
-            teamFormationTime: new Date().getTime() - activity.statusStartTimes.indvPhase
+            teamFormationTime: new Date().getTime() - activity.statusStartTimes.teamForm
           }
         });
       }
@@ -106,7 +108,7 @@ Meteor.startup(() => {
 
         Teams.update(team._id, {
           $set: {
-            peerAssessmentTime: new Date().getTime() - activity.statusStartTimes.teamPhase
+            peerAssessmentTime: new Date().getTime() - activity.statusStartTimes.peerAsessment
           }
         });
       }
@@ -692,6 +694,36 @@ if (Meteor.isServer) {
           'Content-Disposition': content_disposition
         },
         body: getQuestionsInfo(this.urlParams.code)
+      };
+    }
+  });
+
+  Api.addRoute('default_questions/:code', {
+    get() {
+      const content_disposition = 'attachment; filename=questions_[' + this.urlParams.code.toLowerCase() + '].csv';
+
+      return {
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'text/csv',
+          'Content-Disposition': content_disposition
+        },
+        body: getDefaultQuestions(this.urlParams.code)
+      };
+    }
+  });
+
+  Api.addRoute('phase_times/:code', {
+    get() {
+      const content_disposition = 'attachment; filename=phase_times_[' + this.urlParams.code.toLowerCase() + '].csv';
+
+      return {
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'text/csv',
+          'Content-Disposition': content_disposition
+        },
+        body: getPhaseTimes(this.urlParams.code)
       };
     }
   });
