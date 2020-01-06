@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
+import ReactSwipe from 'react-swipe';
 
 import Teams from '../../../../api/teams';
 import Users from '../../../../api/users';
@@ -9,6 +10,7 @@ import Loading from '../../../Components/Loading/Loading';
 import './TeamFormation.scss';
 import PictureContent from '../../../Components/PictureContent/PictureContent';
 import TextInput from '../../../Components/TextInput/TextInput';
+import QuestionCarousel from '../QuestionCarousel/QuestionCarousel';
 import { Textfit } from 'react-textfit';
 
 class TeamFormation extends Component {
@@ -113,15 +115,15 @@ class TeamFormation extends Component {
   }
 
   handleSubmit = sum => {
-    const { _id, members } = this.props;
+    const { pid, _id, members } = this.props;
 
     console.log('submitted sum' + sum);
 
     if (sum == members.map(m => m.fruitNumber).reduce((res, m) => res + m)) {
-      Teams.update(_id, {
-        $set: {
-          confirmed: true
-        }
+      console.log("trying to confirm", pid, "on team", _id);
+      Meteor.call('teams.confirmMember', _id, pid, error => {
+        if (!error) console.log('Confirmed member successfully');
+        else console.log(error);
       });
     } else {
       this.setState({
@@ -135,7 +137,7 @@ class TeamFormation extends Component {
   };
 
   render() {
-    const { pid, confirmed, _id, members, shape, color } = this.props;
+    const { pid, confirmed, _id, members, shape, color, confirmedMembers, questions, currentQuestions } = this.props;
 
     const { sum, invalid } = this.state;
 
@@ -145,13 +147,31 @@ class TeamFormation extends Component {
 
     const myNum = members.filter(m => m.pid === pid)[0].fruitNumber;
 
+    // if team is confirmed
     if (confirmed) {
       return (
-        <PictureContent title="Introduce yourself!" imageSpaced imageSrc="/intro.jpg">
+        <QuestionCarousel
+          pid={pid}
+          _id={_id}
+          questions={questions}
+          currentQuestions={currentQuestions}
+          title={"Looks like everyone in your group has found each other! Choose questions to discuss as a group"}
+        />
+      );
+    }
+
+    // if user has confirmed they found everyone, but still waiting on rest of team to confirm
+    if (confirmedMembers.includes(pid)) {
+      return (
+        <PictureContent title="Great job finding your team!" imageSpaced imageSrc={`/shapes/${shape}-solid-${color}.jpg`}>
           {this.renderTeammates()}
+          <div>
+            <div className="user-number">
+              You have <b>{myNum}</b> orange{myNum === 1 ? '' : 's'}.
+            </div>
+          </div>
           <div className="team-instruct">
-            Looks like you found everyone. While waiting for other groups to form, introduce yourself to your group
-            members.
+            Looks like you found everyone! Wait a bit for the rest of your team to be confirmed.
           </div>
         </PictureContent>
       );
