@@ -99,28 +99,6 @@ Meteor.startup(() => {
         });
       }
 
-      if (update.confirmedMembers){
-        var curTeam = Teams.findOne(_id);
-        console.log("members", curTeam.members);
-        console.log("confirmed members", update.confirmedMembers);
-        if(curTeam.members.length == update.confirmedMembers.length){
-          Teams.update({
-            _id: _id,
-          },
-          {
-            $set: {
-              confirmed: true
-            }
-          }, 
-          (error) => {
-            if (error) {
-              throw new Meteor.Error("failed-to-confirm-team",
-              "Unable to confirm this team.");
-            } 
-          });
-        }
-      }
-
       // set team formation time
       if (update.assessed) {
         // if all confirmed, set team formation time
@@ -263,8 +241,6 @@ Meteor.startup(() => {
               shape: colored_shapes[i].shape,
               teamNumber: teams.length,
               confirmed: false,
-              confirmedMembers: [],
-              currentQuestions: teams[i].map(pid => ({ pid, question_ind:0})),
               assessed: false,
               removed: true,
               teamFormationTime: 0,
@@ -516,26 +492,6 @@ Meteor.methods({
     }
   },
 
-  'questions.setCurrent': function(team_id, member_pid, question_ind){
-    // update the team of interest with the new members
-    console.log(team_id);
-    console.log(member_pid);
-    console.log(question_ind);
-    Teams.update({
-      _id: team_id,
-      "currentQuestions.pid": member_pid
-    },
-    { 
-      $set: { "currentQuestions.$.question_ind" : question_ind } 
-    },
-    (error) => {
-      if (error) {
-        throw new Meteor.Error("failed-to-set-current-question",
-        "Unable to set current question for member");
-      } 
-    });
-  },
-
   // write the the database for tracking question time
   'questions.updateTimers': function(past_question, next_question, startTime, endTime) {
     // save the time spent on the last question
@@ -623,26 +579,6 @@ Meteor.methods({
       if (error) {
         throw new Meteor.Error("failed-to-remove",
         "Unable to remove that person from this team.");
-      } 
-    });
-  },
-
-  'teams.confirmMember': function(team_id, member_pid) {
-    // update the team of interest with the new members
-    console.log(team_id);
-    console.log(member_pid);
-    Teams.update({
-      _id: team_id,
-    },
-    {
-      $addToSet: {
-        confirmedMembers: member_pid
-      }
-    }, 
-    (error) => {
-      if (error) {
-        throw new Meteor.Error("failed-to-confirm-member",
-        "Unable to confirm that person from this team.");
       } 
     });
   },
