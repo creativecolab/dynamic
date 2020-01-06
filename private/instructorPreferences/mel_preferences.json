@@ -1,0 +1,71 @@
+{
+  "instructor": "Stephanie Mel",
+  "num_activities": 5,
+  "duration": 240,
+  "group_size": 3,
+  "hasRoster": false,
+  "questionsType": "custom",
+  "questions": [
+    {
+      "label": "ICEBREAKER",
+      "color": "#1E91D6",
+      "numPerRound": 3,
+      "prompts": [
+        "What’s the best TV show/movie that you have seen recently?",
+        "UC Socially Dead; Agree or disagree?",
+        "What is your favorite holiday?",
+        "What is your favorite kind of music? Do you have a favorite singer/band?",
+        "What did you do this past summer?",
+        "Do you speak another language? If so, teach everyone how to say hello.",
+        "What has been your favorite class so far?",
+        "What do you like to do outside of school?",
+        "If you were to become a YouTuber, what would your topic be (e.g., vlogger, gamer, etc.)?",
+        "How is your course load this quarter?",
+        "How do you like to spend your weekends?",
+        "Do you have a favorite off-campus place in San Diego? What is it?",
+        "Do you have any pets? Are you a dog or cat person?",
+        "What is one thing on your bucket list?",
+        "What is your favorite place to spend time on the UCSD campus?"
+      ]
+    },
+    {
+      "label": "IDEATION",
+      "color": "#F05D5E",
+      "numPerRound": 2,
+      "prompts": [
+        "What takes you out of your comfort zone?",
+        "What experiences have you had working with people who have backgrounds that differ from your own?",
+        "What steps can people take to make everyone feel included in a community?",
+        "Have you ever had to resolve a situation that involved issues related to diversity, equity or inclusion?",
+        "What do see as the strengths of a diverse academic environment?",
+        "What do see as the most challenging aspects of a diverse academic environment?",
+        "Have you ever had to handle a situation where someone was being treated unfairly? If so, what did you do?",
+        "What are the best strategies to use when communicating with people who are different from you?",
+        "Have you ever had an experience where at first you didn’t understand or agree with someone’s perspective/point of view but then eventually you did? How did you get from point A to point B?",
+        "How do you challenge stereotypes and promote sensitivity and inclusion?"
+      ]
+    },
+    {
+      "label": "TEAM QUESTION",
+      "color": "#0CB755",
+      "numPerRound": 3,
+      "prompts": [
+        "What do you believe is the most important factor for a successful team?",
+        "What do you hope to get out of this class?",
+        "Based on previous team projects, what do you think worked and didn’t work for you?",
+        "What do you look for in a good team member?",
+        "Ideally, how often would you like to meet with your team members?",
+        "How do you deal with conflicts in the team?",
+        "How do you decide to split the work among team members?",
+        "What is your main mode of communication for your project when you work on a team (e.g., email, messages, WeChat)?",
+        "Describe your leadership experience (e.g., student club or project leader)? ",
+        "What is your biggest pet peeve in group projects? ",
+        "What are your strengths and weaknesses in group projects?",
+        "What is the most important thing you personally need to do when you’re in a team?",
+        "How can you help create psychological safety in your team?",
+        "What helps you to feel psychologically safe in a team?",
+        "Have you ever had to work with someone who was non-responsive? What did you do?"
+      ]
+    }
+  ]
+}

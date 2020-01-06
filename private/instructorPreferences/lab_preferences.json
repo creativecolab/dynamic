@@ -1,7 +1,7 @@
 {
   "instructor": "Protolab",
-  "num_activities": 3,
-  "duration": 180,
+  "num_activities": 5,
+  "duration": 240,
   "group_size": 3,
   "hasRoster": false,
   "questionsType": "custom",
@@ -9,24 +9,34 @@
     {
       "label": "ICEBREAKER",
       "color": "#F05D5E",
-      "numPerRound": 1,
+      "numPerRound": 5,
       "prompts": [
-        "Tell us any bugs that you find!",
-        "Tell us any bugs that you find!",
-        "Tell us any bugs that you find!"
+        "What is the best TV show/movie that you watched recently?",
+        "What is your favorite part about the winter holidays?",
+        "Who do you think has the best collection of Holiday sweaters, Steven, Steve, or Brian?",
+        "Who is your favorite singer/band the moment?",
+        "What has been your most winter vacation?",
+        "What is your favorite thing to do in the snow?",
+        "If you were to become a YouTuber, what would your topic be (e.g., vlogger, gamer, etc.)?",
+        "What is an item on your bucket list?",
+        "Hot apple cider or eggnog?",
+        "If you had to become a teacher, what subject would you teach?",
+        "Did you ever believe in Santa?",
+        "Are you a dog person or a cat person?",
+        "What did you do this past quarter?",
+        "Who is the funniest person in your family?",
+        "Sunny San Diego or Rainy San Diego?",
+        "Try to break the app and tell us what you find!",
+        "Try to break the app and tell us what you find!",
+        "Try to break the app and tell us what you find!",
+        "Try to break the app and tell us what you find!",
+        "Try to break the app and tell us what you find!",
+        "Try to break the app and tell us what you find!",
+        "Try to break the app and tell us what you find!",
+        "Try to break the app and tell us what you find!",
+        "Try to break the app and tell us what you find!",
+        "Try to break the app and tell us what you find!"
       ]
-    },
-    {
-      "label": "IDEATION",
-      "color": "#F05D5E",
-      "numPerRound": 0,
-      "prompts": []
-    },
-    {
-      "label": "TEAM QUESTION",
-      "color": "#0CB755",
-      "numPerRound": 0,
-      "prompts": []
     }
   ]
 }

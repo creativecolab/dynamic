@@ -164,7 +164,7 @@ export function getGroupsInfo(session_code) {
       group_members = group_members.slice(0, -1) + ",";
       let confirmed = group.confirmed ? "Yes," : "No,";
       let confirmation_time = "-1"
-      if (group.confirmed) confirmation_time = new Date(group.teamFormationTime).toString().substr(22, 2);
+      if (group.confirmed) confirmation_time = group.teamFormationTime / 1000;
 
       body += group_name + curr_round + group_members + confirmed + confirmation_time + "\n";
 
@@ -173,6 +173,51 @@ export function getGroupsInfo(session_code) {
   });
 
   return header + body;
+
+}
+
+/*
+Row: session
+Column: formation_time_per_round, discussion_time_per_round, assessment_time_per_round
+formation_time_per_round - length of teamForm phase, sep. w/ $
+discussion_time_per_round - length of teamPhase phase, sep. w/ $
+assessment_time_per_round - length of peerAssessment phase, sep. w/ $
+*/
+export function getPhaseTimes(session_code) {
+
+  const session = Sessions.findOne({ code: session_code.toLowerCase() });
+
+  if (!session) {
+    return 'No session named ' + session_code + ' yet!';
+  }
+
+  const { activities } = session;
+
+  if (!activities) {
+    return 'No activities for the session ' + session_code + ' yet';
+  }
+
+  let header = 'session_id,formation_time_per_round,discussion_time_per_round,assessment_time_per_round\n'
+  
+  let formation_time_per_round = discussion_time_per_round = assessment_time_per_round = '';
+
+  // get the phase times for each activity
+  activities.forEach( (activity_id) => {
+
+    const {statusStartTimes, endTime} = Activities.findOne(activity_id);
+
+    formation_time_per_round = formation_time_per_round + ((statusStartTimes.teamPhase - statusStartTimes.teamForm) / 1000) + '$'; 
+    discussion_time_per_round = discussion_time_per_round + ((statusStartTimes.peerAssessment - statusStartTimes.teamPhase) / 1000) + '$'; 
+    assessment_time_per_round = assessment_time_per_round + ((endTime - statusStartTimes.peerAssessment) / 1000) + '$'; 
+
+  });
+
+  // format the body
+  formation_time_per_round = formation_time_per_round.slice(0, -1) + ',';
+  discussion_time_per_round = discussion_time_per_round.slice(0, -1) + ',';
+  assessment_time_per_round = assessment_time_per_round.slice(0, -1) + '\n';
+
+  return header + session_code + "," + formation_time_per_round + discussion_time_per_round + assessment_time_per_round;
 
 }
 
@@ -206,7 +251,7 @@ export function getQuestionsInfo(session_code) {
   // go through all of the questions
   questions.forEach(question => {
     // build the body
-    let prompt = question.prompt.replace(/\(e.g.*/g, "?").replace(/,/, "") + ",";
+    let prompt = question.prompt.replace(/\(e.g.*/g, "?").replace(/,/, "") + ","; //remove commas for csv formatting
     let category = 'Uncategorized,';
     switch (question.label) {
       case "TEAM QUESTION":
@@ -219,6 +264,64 @@ export function getQuestionsInfo(session_code) {
         category = "ICEBREAKER,";
         break; 
       default:
+    }
+    let round = question.round + ",";
+    let date = new Date(1000*Math.round(question.viewTimer/1000));
+    let time_spent = date.getUTCMinutes() + ':' + (date.getUTCSeconds() < 10 ? '0' + date.getUTCSeconds() : date.getUTCSeconds());
+
+    body += prompt + category + round + time_spent + "\n";
+  });
+
+  return header + body;
+
+}
+
+/* 
+Row: unique question
+Column: question, category, round, time_spent
+*/
+export function getDefaultQuestions(session_code) {
+
+  const session = Sessions.findOne({ code: session_code.toLowerCase() });
+
+  if (!session) {
+    return 'No session named ' + session_code + ' yet!';
+  }
+
+  const { instructor } = session;
+
+  // if (instructor) {
+  //   return 'Use the /api/questions/:code endpoint instead!'
+  // }
+
+  const questions = Questions.find({default: true}).fetch();
+  
+  if (!questions) {
+    return 'Session ' + session_code + ' does not have default questions!';
+  }
+
+  let header = 'question,category,round,time_spent\n';
+  let body = '';
+
+  // go through all of the questions
+  questions.forEach(question => {
+    // build the body
+    let prompt = question.prompt.replace(/\(e.g.*/g, "?").replace(/,/, "") + ","; //remove commas
+    console.log(question);
+    let category = 'Uncategorized,';
+    switch (question.label) {
+      case "TEAM QUESTION":
+        category = 'TEAM QUESTION,';
+        break;
+      case "IDEATION":
+        category = "IDEATION,";
+        break;    
+      case "ICEBREAKER":
+        category = "ICEBREAKER,";
+        break; 
+      default:
+        category = question.label + ",";
+        break;
     }
     let round = question.round + ",";
     let date = new Date(1000*Math.round(question.viewTimer/1000));

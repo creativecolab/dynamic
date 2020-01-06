@@ -62,8 +62,6 @@ class TeamDiscussion extends Component {
 
     const { status, pid, team, voted } = this.props;
 
-
-
     if (status === ActivityEnums.status.INPUT_TEAM) {
       displayTeam = true;
     }
@@ -90,6 +88,28 @@ class TeamDiscussion extends Component {
 
     return '';
   }
+
+  onSlideChange = () => {
+    const endTime = new Date().getTime();
+    const { startTime } = this.state;
+
+    const { questions } = this.props;
+
+    const past_question = questions[this.state.prevQuestionIndex]._id;
+    const next_question = questions[this.reactSwipeEl.getPos()]._id;
+
+    //update questions
+    Meteor.call('questions.updateTimers', past_question, next_question, startTime, endTime, error => {
+      if (!error) console.log('Tracked questions successfully');
+      else console.log(error);
+    });
+
+    // keep track of this current question and when it began
+    this.setState({
+      prevQuestionIndex: this.reactSwipeEl.getPos(),
+      startTime: new Date().getTime()
+    });
+  };
 
   // make sure we submit preferences for people
   shouldComponentUpdate(nextProps) {
@@ -159,20 +179,50 @@ class TeamDiscussion extends Component {
         return <Waiting text="No team? Try refreshing this page!" />;
       }
 
-      return <TeamFormation questions={questions} pid={pid} {...team} />;
+      return <TeamFormation pid={pid} {...team} />;
     }
 
     // team input phase
     if (status === ActivityEnums.status.INPUT_TEAM) {
       //console.log(questions)
       return (
-        <QuestionCarousel
-          pid={pid}
-          _id={team._id}
-          questions={questions}
-          currentQuestions={team.currentQuestions}
-          title={"Choose questions to discuss as a group"}
-        />
+        <div>
+          <div className="swipe-instr-top">
+            <Textfit mode="single" max={36}>
+              Choose questions to discuss as a group
+            </Textfit>
+          </div>
+          <div className="swipe-subinstr-top">
+            <strong>Swipe</strong> to see more questions
+          </div>
+          <div className="slider-main">
+            <ReactSwipe
+              className="carousel"
+              swipeOptions={{ continuous: true, callback: this.onSlideChange }}
+              ref={el => (this.reactSwipeEl = el)}
+            >
+              {questions.map((q, index) => {
+                return (
+                  <div className="question-card-wrapper" key={q._id}>
+                    <div className="question-card">
+                      <div className="label" style={{ background: q.color }}>
+                        {q.label}
+                      </div>
+                      {index + 1}. {q.prompt}
+                    </div>
+                  </div>
+                );
+              })}
+            </ReactSwipe>
+
+            <button className="prev" type="button" onClick={() => this.reactSwipeEl.prev()}>
+              &larr;
+            </button>
+            <button className="next" type="button" onClick={() => this.reactSwipeEl.next()}>
+              &rarr;
+            </button>
+          </div>
+        </div>
       );
     }
 
