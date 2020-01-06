@@ -32,7 +32,7 @@ class TeamFormation extends Component {
       // teammates: members.filter(member => member.pid !== pid).map(member => ({ pid: member.pid, confirmed: false })),
       sum: '',
       invalidSum: false,
-      ready: false,
+      ready: false
     };
   }
 
