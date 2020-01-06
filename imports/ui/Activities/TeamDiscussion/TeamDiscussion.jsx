@@ -18,7 +18,6 @@ import TeammateSliders from '../Components/TeammateSliders/TeammateSliders';
 
 import './TeamDiscussion.scss';
 import PictureContent from '../../Components/PictureContent/PictureContent';
-import QuestionCarousel from '../Components/QuestionCarousel/QuestionCarousel';
 
 const Message = posed.div({
   hidden: {
