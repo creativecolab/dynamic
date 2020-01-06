@@ -10,7 +10,7 @@ import Loading from '../../../Components/Loading/Loading';
 import './TeamFormation.scss';
 import PictureContent from '../../../Components/PictureContent/PictureContent';
 import TextInput from '../../../Components/TextInput/TextInput';
-import QuestionCarousel from '../../TeamDiscussion/QuestionCarousel';
+import QuestionCarousel from '../QuestionCarousel/QuestionCarousel';
 import { Textfit } from 'react-textfit';
 
 class TeamFormation extends Component {
@@ -135,43 +135,6 @@ class TeamFormation extends Component {
   handleSumChange = evt => {
     this.setState({ sum: evt.target.value, invalid: false });
   };
-
-  onSlideChange = () => {
-    const endTime = new Date().getTime();
-    const { startTime } = this.state;
-
-    const { questions, _id, pid } = this.props;
-
-    const past_question = questions[this.state.prevQuestionIndex]._id;
-    const next_question = questions[this.reactSwipeEl.getPos()]._id;
-
-    //update questions
-    Meteor.call('questions.updateTimers', past_question, next_question, startTime, endTime, error => {
-      if (!error) console.log('Tracked questions successfully');
-      else console.log(error);
-    });
-
-    // keep track of this current question and when it began
-    this.setState({
-      prevQuestionIndex: this.reactSwipeEl.getPos(),
-      startTime: new Date().getTime()
-    });
-
-    Meteor.call('questions.setCurrent', _id, pid, this.reactSwipeEl.getPos(), error => {
-      if (!error) console.log('Set current question successfully');
-      else console.log(error);
-    });
-  };
-
-  getCurrentQuestion() {
-    const { pid, currentQuestions } = this.props;
-    for (var i = 0; i < currentQuestions.length; i++) {
-      if (currentQuestions[i].pid == pid) {
-        return currentQuestions[i].question_ind;
-      }
-    }
-    return 0;
-  }
 
   render() {
     const { pid, confirmed, _id, members, shape, color, confirmedMembers, questions, currentQuestions } = this.props;
