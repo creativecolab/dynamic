@@ -192,6 +192,7 @@ class TeamFormation extends Component {
           _id={_id}
           questions={questions}
           currentQuestions={currentQuestions}
+          title={"Looks like everyone in your group has found each other! Choose questions to discuss as a group"}
         />
       );
     }

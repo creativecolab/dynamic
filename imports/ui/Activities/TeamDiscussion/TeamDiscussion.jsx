@@ -171,6 +171,7 @@ class TeamDiscussion extends Component {
           _id={team._id}
           questions={questions}
           currentQuestions={team.currentQuestions}
+          title={"Choose questions to discuss as a group"}
         />
       );
     }

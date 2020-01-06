@@ -61,9 +61,8 @@ class QuestionCarousel extends Component {
       <div>
         <div className="swipe-instr-top">
           <Textfit mode="multi" max={36}>
-            Looks like everyone in your group has found each other!
-            Choose questions to discuss as a group
-            </Textfit>
+            {this.props.title}
+          </Textfit>
         </div>
         <div className="swipe-subinstr-top">
           <strong>Swipe</strong> to see more questions
