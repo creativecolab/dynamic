@@ -90,28 +90,6 @@ class TeamDiscussion extends Component {
     return '';
   }
 
-  onSlideChange = () => {
-    const endTime = new Date().getTime();
-    const { startTime } = this.state;
-
-    const { questions } = this.props;
-
-    const past_question = questions[this.state.prevQuestionIndex]._id;
-    const next_question = questions[this.reactSwipeEl.getPos()]._id;
-
-    //update questions
-    Meteor.call('questions.updateTimers', past_question, next_question, startTime, endTime, error => {
-      if (!error) console.log('Tracked questions successfully');
-      else console.log(error);
-    });
-
-    // keep track of this current question and when it began
-    this.setState({
-      prevQuestionIndex: this.reactSwipeEl.getPos(),
-      startTime: new Date().getTime()
-    });
-  };
-
   // make sure we submit preferences for people
   shouldComponentUpdate(nextProps) {
     console.log('ShouldComponentUpdate');
