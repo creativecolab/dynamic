@@ -1,4 +1,4 @@
-@import '../../../ui/assets/main';
+@import '../../../../ui/assets/main';
 
 .swipe-instr-top {
   margin: 0 auto 0;
@@ -39,14 +39,7 @@
   .prev {
     left: 2vw;
   }
-
-
 }
-
-// .question-card-wrapper {
-//   // height: 70vh;
-//   // display: flex;
-// }
 
 .question-card {
   margin: 1.1em 0.9em;
@@ -91,5 +84,5 @@
       padding: 0rem 0.2rem;
       line-height: inherit;
     }
-}
 
+}

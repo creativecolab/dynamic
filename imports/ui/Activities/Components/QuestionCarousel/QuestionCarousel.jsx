@@ -2,6 +2,7 @@ import ReactSwipe from 'react-swipe';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Textfit } from 'react-textfit';
+import './QuestionCarousel.scss';
 
 class QuestionCarousel extends Component {
   constructor(props) {
