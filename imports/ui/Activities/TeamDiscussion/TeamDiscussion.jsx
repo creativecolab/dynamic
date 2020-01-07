@@ -19,6 +19,8 @@ import TeammateSliders from '../Components/TeammateSliders/TeammateSliders';
 import './TeamDiscussion.scss';
 import PictureContent from '../../Components/PictureContent/PictureContent';
 
+import QuestionCarousel from '../Components/QuestionCarousel/QuestionCarousel';
+
 const Message = posed.div({
   hidden: {
     opacity: 0,
@@ -178,50 +180,21 @@ class TeamDiscussion extends Component {
         return <Waiting text="No team? Try refreshing this page!" />;
       }
 
-      return <TeamFormation pid={pid} {...team} />;
+      return <TeamFormation pid={pid} {...team} questions={questions} />;
     }
 
+    // team input phase
     // team input phase
     if (status === ActivityEnums.status.INPUT_TEAM) {
       //console.log(questions)
       return (
-        <div>
-          <div className="swipe-instr-top">
-            <Textfit mode="single" max={36}>
-              Choose questions to discuss as a group
-            </Textfit>
-          </div>
-          <div className="swipe-subinstr-top">
-            <strong>Swipe</strong> to see more questions
-          </div>
-          <div className="slider-main">
-            <ReactSwipe
-              className="carousel"
-              swipeOptions={{ continuous: true, callback: this.onSlideChange }}
-              ref={el => (this.reactSwipeEl = el)}
-            >
-              {questions.map((q, index) => {
-                return (
-                  <div className="question-card-wrapper" key={q._id}>
-                    <div className="question-card">
-                      <div className="label" style={{ background: q.color }}>
-                        {q.label}
-                      </div>
-                      {index + 1}. {q.prompt}
-                    </div>
-                  </div>
-                );
-              })}
-            </ReactSwipe>
-
-            <button className="prev" type="button" onClick={() => this.reactSwipeEl.prev()}>
-              &larr;
-            </button>
-            <button className="next" type="button" onClick={() => this.reactSwipeEl.next()}>
-              &rarr;
-            </button>
-          </div>
-        </div>
+        <QuestionCarousel
+          pid={pid}
+          _id={team._id}
+          questions={questions}
+          currentQuestions={team.currentQuestions}
+          title={"Choose questions to discuss as a group"}
+        />
       );
     }
 
@@ -329,12 +302,6 @@ class TeamDiscussion extends Component {
         const { prevQuestionIndex, startTime } = this.state;
         const { questions } = this.props;
 
-        if (questions.length != 0) {
-          Meteor.call('questions.updateTimers', questions[prevQuestionIndex]._id, '', startTime, endTime, error => {
-            if (!error) console.log('Tracked final question successfully');
-            else console.log(error);
-          });
-        }
       } else {
         this.setState({
           hasFooter: false

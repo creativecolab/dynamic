@@ -10,6 +10,7 @@ import './TeamFormation.scss';
 import PictureContent from '../../../Components/PictureContent/PictureContent';
 import TextInput from '../../../Components/TextInput/TextInput';
 import { Textfit } from 'react-textfit';
+import QuestionCarousel from '../QuestionCarousel/QuestionCarousel';
 
 class TeamFormation extends Component {
   static propTypes = {
@@ -135,7 +136,7 @@ class TeamFormation extends Component {
   };
 
   render() {
-    const { pid, confirmed, _id, members, shape, color } = this.props;
+    const { pid, confirmed, _id, members, shape, color, currentQuestions, questions } = this.props;
 
     const { sum, invalid } = this.state;
 
@@ -145,15 +146,16 @@ class TeamFormation extends Component {
 
     const myNum = members.filter(m => m.pid === pid)[0].fruitNumber;
 
+    // if team is confirmed
     if (confirmed) {
       return (
-        <PictureContent title="Introduce yourself!" imageSpaced imageSrc="/intro.jpg">
-          {this.renderTeammates()}
-          <div className="team-instruct">
-            Looks like you found everyone. While waiting for other groups to form, introduce yourself to your group
-            members.
-          </div>
-        </PictureContent>
+        <QuestionCarousel
+          pid={pid}
+          _id={_id}
+          questions={questions}
+          currentQuestions={currentQuestions}
+          title={"Looks like everyone in your group has found each other! Choose questions to discuss as a group"}
+        />
       );
     }
 

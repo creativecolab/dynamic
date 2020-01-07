@@ -244,7 +244,8 @@ Meteor.startup(() => {
               assessed: false,
               removed: true,
               teamFormationTime: 0,
-              peerAssessmentTime: 0
+              peerAssessmentTime: 0,
+              currentQuestions: teams[i].map(pid => ({ pid, question_ind:0}))
             });
 
           for (let j = 0; j < teams[i].length; j++) {
@@ -529,6 +530,26 @@ Meteor.methods({
         }
       );
     }
+  },
+
+  'questions.setCurrent': function(team_id, member_pid, question_ind){
+    // update the team of interest with the new members
+    console.log(team_id);
+    console.log(member_pid);
+    console.log(question_ind);
+    Teams.update({
+      _id: team_id,
+      "currentQuestions.pid": member_pid
+    },
+    { 
+      $set: { "currentQuestions.$.question_ind" : question_ind } 
+    },
+    (error) => {
+      if (error) {
+        throw new Meteor.Error("failed-to-set-current-question",
+        "Unable to set current question for member");
+      } 
+    });
   },
 
   'users.addPoints': function({ user_id, session_id, points }) {
