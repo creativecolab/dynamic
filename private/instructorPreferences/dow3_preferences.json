@@ -1,0 +1,71 @@
+{
+  "instructor": "Steven Dow",
+  "num_activities": 5,
+  "duration": 240,
+  "group_size": 3,
+  "hasRoster": false,
+  "questionsType": "custom",
+  "questions": [
+    {
+      "label": "ICEBREAKER",
+      "color": "#1E91D6",
+      "numPerRound": 3,
+      "prompts": [
+        "What’s the best TV show/movie that you have seen recently?",
+        "UC Socially Dead; Agree or disagree?",
+        "What is your favorite holiday?",
+        "What is your favorite kind of music? Do you have a favorite singer/band?",
+        "What did you do this past summer?",
+        "Do you speak another language? If so, teach everyone how to say hello.",
+        "What has been your favorite class so far?",
+        "What do you like to do outside of school?",
+        "If you were to become a YouTuber, what would your topic be (e.g., vlogger, gamer, etc.)?",
+        "What other courses are you taking this quarter?",
+        "How do you like to spend your weekends?",
+        "Do you have a favorite off-campus place in San Diego? What is it?",
+        "Do you have any pets? Are you a dog or cat person?",
+        "What is one thing on your bucket list?",
+        "What is your favorite place to spend time on the UCSD campus?"
+      ]
+    },
+    {
+      "label": "IDEATION",
+      "color": "#F05D5E",
+      "numPerRound": 2,
+      "prompts": [
+        "What takes you out of your comfort zone?",
+        "You know a college student who has trouble staying awake in class. Apart from sleep trackers, what product can you design to help them overcome this problem?",
+        "What steps can people take to make everyone feel included in a community?",
+        "A person has difficulty controlling their eating. What product/service can you design to help them eat healthier?",
+        "What do see as the most challenging aspects of a diverse academic environment?",
+        "How would you design for a more efficient recycling mechanism, as opposed to multiple, physical bins right next to each other?",
+        "An adult struggles with frequent stress at work. What product/service can you design to help them cope with their stress?",
+        "What are the best strategies to use when communicating with people who are different from you?",
+        "Have you ever had an experience where at first you didn’t understand or agree with someone’s perspective/point of view but then eventually you did? How did you get from point A to point B?",
+        "A college student is frequently forgetting her belongings at their friends houses. What kind of solution can you design to help them overcome their forgetfulness?"
+      ]
+    },
+    {
+      "label": "TEAM QUESTION",
+      "color": "#0CB755",
+      "numPerRound": 3,
+      "prompts": [
+        "What do you believe is the most important factor for a successful team?",
+        "What do you hope to get out of this class?",
+        "Based on previous team projects, what do you think worked and didn’t work for you?",
+        "What do you look for in a good team member?",
+        "Ideally, how often would you like to meet with your team members?",
+        "How do you deal with conflicts in the team?",
+        "How do you decide to split the work among team members?",
+        "What is your main mode of communication for your project when you work on a team (e.g., email, messages)?",
+        "Describe your leadership experience (e.g., student club or project leader)? ",
+        "What is your biggest pet peeve in group projects? ",
+        "What are your strengths and weaknesses in group projects?",
+        "What is the most important thing you personally need to do when you’re in a team?",
+        "How can you help create an inclusive working environment in your team?",
+        "What helps you to feel safe and included in a team?",
+        "Have you ever had to work with someone who was non-responsive? What did you do?"
+      ]
+    }
+  ]
+}
