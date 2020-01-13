@@ -1,8 +1,8 @@
 library(pscl)
 
 # read full data in
-training.data.raw <- read.csv('dyad_data_master.csv', header=T, na.strings=c(""))
-individual.data.raw <- read.csv('individual_data.csv', header=T, na.strings=c(""))
+training.data.raw <- read.csv('~/D4SD/Data_Parser/boyle/csvs/dyad_data_master.csv', header=T, na.strings=c(""))
+individual.data.raw <- read.csv('~/D4SD/Data_Parser/boyle/csvs/individual_data.csv', header=T, na.strings=c(""))
 
 indv_cols <- c('Age','Creativity' ,'Prior.Social.Connections','Psychological.Collectivism','Social.Skills','Leadership','Intercultural.Sensitivity','Imagination','Extraversion','Emotional.Stability','Agreeableness','Conscientiousness','Concrete.Design','Content.Strategy','Site.Strategy','Technology.Strategy','User.Research','Content.Production','Project.Management','Abstract.Design','Technology.Implementation') # extract relevant cols
 data <- subset(individual.data.raw, select = indv_cols)
