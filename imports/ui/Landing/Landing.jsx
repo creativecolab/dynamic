@@ -12,6 +12,8 @@ import TextInput from '../Components/TextInput/TextInput';
 import '../assets/_main.scss';
 import './Landing.scss';
 
+import Platform from 'react-platform-js'
+
 export default class Landing extends Component {
   constructor(props) {
     super(props);
@@ -115,6 +117,13 @@ export default class Landing extends Component {
   };
 
   handleConfirmation = () => {
+    var browserInfo = {
+      browser: Platform.Browser,
+      browserVersion: Platform.BrowserVersion,
+      os: Platform.OS,
+      osVersion: Platform.OSVersion,
+    }
+
     const pid = this.state.pid.toLowerCase().trim();
     const name = this.state.name.trim();
     const code = this.state.code.toLowerCase().trim();
@@ -159,6 +168,9 @@ export default class Landing extends Component {
             name
           }
         });
+        Meteor.call('users.addBrowserInfo', pid, browserInfo, () => {
+          console.log("added browser/os info", browserInfo);
+        });
       }
       // creating user for the first time! AKA signup
       else {
@@ -167,6 +179,10 @@ export default class Landing extends Component {
           this.setState({
             pidSubmitted: true,
           });
+        });
+
+        Meteor.call('users.addBrowserInfo', pid, browserInfo, () => {
+          console.log("added browser/os info", browserInfo);
         });
       }
     }

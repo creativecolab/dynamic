@@ -359,13 +359,29 @@ Meteor.methods({
         joinTime: new Date().getTime(),
         teamHistory: [],
         sessionHistory: [],
-        preferences: []
+        preferences: [],
+        browserInfo: []
       });
       console.log("New user " + pid + " added!");
     } else {
       console.log("Did not add user " + pid + " since they are already in the database.");
     }
-    
+  },
+
+  'users.addBrowserInfo': function(pid, browserInfo) {
+    const user = Users.findOne({pid: pid});
+
+    Users.update(user._id, {
+      $push: {
+        browserInfo: {
+          browser: browserInfo.browser,
+          browserVersion: browserInfo.browserVersion,
+          os: browserInfo.os,
+          osVersion: browserInfo.osVersion,
+          time: Date.now()
+        }
+      }
+    });
   },
 
   'sessions.addUser': function(pid, session_id) {
