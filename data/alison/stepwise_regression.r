@@ -25,9 +25,11 @@ data <- data[rows, ]
 #hist(data$avg_rating)
 
 # normalize data
+data <- subset(data, select= c(social_tie_avg,avg_rating,age, gender, nationality))
 scaled.data <- as.data.frame(lapply(data, normalize))
 library("Hmisc")
 corr <- rcorr(as.matrix(scaled.data))
+corr$r
 corr.r <- data.frame(corr$r)
 write.csv(corr.r,"corr_r.csv")
 corr.P <- data.frame(corr$P)
@@ -44,7 +46,7 @@ train <- scaled.data[1:800,]
 test <- scaled.data[801:990,]
 
 # create scaled model
-scaled_model <- glm(team ~social_tie_avg + avg_rating + gender + age, family= "binomial", data=scaled.data)
+scaled_model <- glm(team ~social_tie_avg + avg_rating + gender + age + nationality, family= "binomial", data=scaled.data)
 summary(scaled_model)
 
 # stepwise scaled model results
@@ -52,7 +54,7 @@ selected_scaled_model <- step(scaled_model)
 summary(selected_scaled_model)
 
 # create un-scaled model
-model <- glm(team ~., family = "binomial", data=data)
+model <- glm(team ~social_tie_avg + avg_rating + gender + age + nationality, family = "binomial", data=data)
 summary(model)
 
 # stepwise unscaled model results

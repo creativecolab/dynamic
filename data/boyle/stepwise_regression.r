@@ -30,32 +30,30 @@ set.seed(14)
 rows <- sample(nrow(data))
 data <- data[rows, ]
 
-hist(data$competence)
-mean(data$competence)
-sd(data$competence)
+#hist(data$competence)
+#mean(data$competence)
+#sd(data$competence)
 
 #cor(my_data, method = "pearson")
 
 #hist(data$avg_rating)
 
-# normalize data
+# normalize data of important variables
+data <- subset(data, select= c(social_tie_avg,avg_rating,age, gender, nationality))
 scaled.data <- as.data.frame(lapply(data, normalize))
 library("Hmisc")
 corr <- rcorr(as.matrix(scaled.data))
-#res2 <- rcorr(as.matrix(my_data))
-#res2
-#res2
-
+corr$r
 corr.r <- data.frame(corr$r)
 write.csv(corr.r,"corr_r.csv")
 corr.P <- data.frame(corr$P)
 write.csv(corr.P,"corr_P.csv")
 
 #hist(scaled.data$interacted)
-hist(scaled.data$Social.Skills)
+#hist(scaled.data$Social.Skills)
 #hist(scaled.data$ixr)
 
-plot(scaled.data$Technology.Strategy, scaled.data$Technology.Implementation)
+#plot(scaled.data$Technology.Strategy, scaled.data$Technology.Implementation)
 
 scaled.data = subset(scaled.data, select = -c(warmth, competence, imagination, intercultural_sensitivity))
 
@@ -66,8 +64,10 @@ test <- scaled.data[801:990,]
 # create model
 model <- glm(team ~., family= "binomial", data=data)
 selectedMod <- step(model)
+summary(selectedMod)
 
-model <- glm(team ~ social_tie_avg + avg_rating + gender + age, family = "binomial", data=data)
+
+model <- glm(team ~ social_tie_avg + avg_rating + gender + age + nationality, family = "binomial", data=data)
 summary(model)
 pR2(model)
 
