@@ -1,0 +1,37 @@
+{
+  "instructor": "PhDVisitors",
+  "num_activities": 4,
+  "duration": 180,
+  "group_size": 3,
+  "hasRoster": false,
+  "questionsType": "custom",
+  "questions": [
+    {
+      "label": "ICEBREAKER",
+      "color": "#F05D5E",
+      "numPerRound": 5,
+      "prompts": [
+        "What is a place in San Diego that you want to visit?",
+        "What is the best TV show/movie that you watched recently?",
+        "Why are you interested in pursuing a PhD?",
+        "What is your favorite part of the UCSD campus?",
+        "Where were you born?",
+        "If you were to become a YouTuber, what would your topic be (e.g., vlogger, gamer, etc.)?",
+        "What institution did you attend before UCSD?",
+        "What is an item on your bucket list?",
+        "Would you rather spend time at the beach or in the snow? Why?",
+        "If you had to become a teacher, what subject would you teach?",
+        "Who is your favorite singer/band the moment?",
+        "Do you have any pets? Are you a dog person or a cat person?",
+        "What did you do this past quarter?",
+        "Who is the funniest person in your family?",
+        "What is something UCSD could use more of?",
+        "What is your favorite burrito in San Deigo?",
+        "Are you an indoor or outdoor person?",
+        "Do you follow any sports?",
+        "How do you like to spend your weekends?",
+        "What project are you most proud of?"
+      ]
+    }
+  ]
+}
