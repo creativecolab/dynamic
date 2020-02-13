@@ -37,6 +37,7 @@ Meteor.startup(() => {
   // handles session start/end
   const sessionCursor = Sessions.find({});
 
+  /* Follow changes that occur to the Sessions collection */
   sessionCursor.observeChanges({
     changed(_id, update) {
       console.log(_id + ' updated.');
@@ -79,12 +80,15 @@ Meteor.startup(() => {
           timestamp: new Date().getTime()
         });
       }
+
+      
     }
   });
 
-  // speeds up activity based on teams ready
+  /* Follow changes that occur to the Teams collection */
   Teams.find({}).observeChanges({
     changed(_id, update) {
+
       // set team formation time
       if (update.confirmed) {
         // if all confirmed, set team formation time
@@ -165,7 +169,7 @@ Meteor.startup(() => {
     }
   });
 
-  // handles team formation
+  /* Follow changes that occur to the Activities collection */
   const activitiesCursor = Activities.find({});
 
   activitiesCursor.observeChanges({
@@ -200,6 +204,7 @@ Meteor.startup(() => {
         });
       });
 
+      // FIXME: Currently deprecated (no indiv round)
       // let input phase last for 120 seconds the first round, 60 seconds other rounds
       if (update.status === 1) {
         console.log('[INDIVIDUAL PHASE]');
