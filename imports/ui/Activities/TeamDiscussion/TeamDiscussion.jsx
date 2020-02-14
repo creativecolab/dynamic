@@ -145,7 +145,7 @@ class TeamDiscussion extends Component {
   // renders based on activity status
   renderContent = ({ status, pid, activity_id, questions, team }) => {
     // individual input phase (none for this activity)
-    if (status === ActivityEnums.status.INPUT_INDV) {
+    if (status === ActivityEnums.status.TEAM_INIT) {
       return 'Indvidual input';
     }
 
@@ -157,6 +157,7 @@ class TeamDiscussion extends Component {
 
         return <Waiting text="No team? Try refreshing this page!" />;
       }
+      console.log("current status", status);
 
       return <TeamFormation pid={pid} {...team} questions={questions} />;
     }

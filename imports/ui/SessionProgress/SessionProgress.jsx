@@ -98,7 +98,7 @@ class SessionProgress extends Component {
     const { durationTeam, durationOffsetTeam } = activity;
 
     // individual input phase
-    if (status === ActivityEnums.status.INPUT_INDV)
+    if (status === ActivityEnums.status.TEAM_CREATION)
       return index === 0 ? durationIndv : durationIndv - durationOffsetIndv;
 
     // team input phase
@@ -111,7 +111,7 @@ class SessionProgress extends Component {
   // supplies the text that the BigScreen layout will use
   getContentText(currentActivity) {
     // indv phase
-    if (currentActivity.status === ActivityEnums.status.INPUT_INDV) {
+    if (currentActivity.status === ActivityEnums.status.TEAM_CREATION) {
       if (currentActivity.name === ActivityEnums.name.QUIZ) {
         return [
           'Team Formation',
@@ -160,7 +160,7 @@ class SessionProgress extends Component {
     const { status } = currentActivity;
 
     switch (status) {
-      case ActivityEnums.status.INPUT_INDV:
+      case ActivityEnums.status.TEAM_CREATION:
         return currentActivity.statusStartTimes.indvPhase;
       case ActivityEnums.status.TEAM_FORMATION:
         return currentActivity.statusStartTimes.teamForm;
@@ -175,7 +175,7 @@ class SessionProgress extends Component {
 
   // builds the HTML component that will go inside the BigScreen layout
   renderContentHTML(currentActivity) {
-    if (currentActivity.status === ActivityEnums.status.INPUT_INDV) {
+    if (currentActivity.status === ActivityEnums.status.TEAM_CREATION) {
       if (currentActivity.name === ActivityEnums.name.QUIZ) {
         return (
           <div className="text-box-bigscreen">
@@ -303,7 +303,7 @@ class SessionProgress extends Component {
       const duration = this.calculateDuration(currentActivity);
       const contentText = this.getContentText(currentActivity);
       const statusStartTime = this.getCurrentStatusStart(currentActivity);
-
+      console.log("current status", session.status);
       return (
         <BigScreen
           sessionCode={session.code}
@@ -314,11 +314,11 @@ class SessionProgress extends Component {
           clockDuration={duration}
           clockStartTime={statusStartTime}
           buttonAction={() => this.advanceActivity()}
-          buttonText={contentText[0]}
-          activityPhase={contentText[1]}
-          instructions={contentText[2]}
+          buttonText={""}
+          activityPhase={""}
+          instructions={""}
         >
-          {this.renderContentHTML(currentActivity)}
+          {"zzz"}
         </BigScreen>
       );
     }

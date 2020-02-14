@@ -200,17 +200,8 @@ Meteor.startup(() => {
         });
       });
 
-      // let input phase last for 120 seconds the first round, 60 seconds other rounds
       if (update.status === 1) {
-        console.log('[INDIVIDUAL PHASE]');
-        clearTimeout(timeout_timer);
-        timeout_timer = setTimeout(() => endPhase(_id, 2), duration * 1000);
-      }
-
-      // team formation
-      if (update.status === 2) {
-        console.log('[TEAM FORMATION PHASE]');
-
+        console.log('[TEAM CREATION PHASE]');
         // get snapshot of participants and teamHistory in session that this activity is in. one db call
         const session = Sessions.findOne({ activities: _id });
 
@@ -302,6 +293,26 @@ Meteor.startup(() => {
             console.log('Team Formation Elapsed Time: ' + (new Date() - teamFormStart));
           }
         );
+
+        const nextActivity = Activities.findOne(
+          { session_id: session._id, status: ActivityEnums.status.TEAM_DISCUSSION },
+          { sort: { index: 1 } }
+        );
+
+        Meteor.call('activities.updateStatus', nextActivity._id, (err, res) => {
+          if (err) {
+            alert(err);
+          } else {
+            // success!
+            console.log('\nStarting Activity Status ' + res);
+          }
+        });
+      }
+
+      // team formation
+      if (update.status === 2) {
+        console.log('[TEAM FORMATION PHASE]');
+
       }
 
       // discussion time!
@@ -456,12 +467,12 @@ Meteor.methods({
         case 0:
           Activities.update(activity_id, {
             $set: {
-              status: currentStatus + 2, // FIXME: skipping first status
+              status: currentStatus + 1, // FIXME: skipping first status
               'statusStartTimes.indvPhase': new Date().getTime()
             }
           });
 
-          return currentStatus + 2;
+          return currentStatus + 1;
         case 1:
           Activities.update(activity_id, {
             $set: {
