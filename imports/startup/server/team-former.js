@@ -8,27 +8,6 @@ import { shuffle } from './helper-funcs';
  */
 function firstRoundTeams(participants, max_team_size) {
 
-  // edge case, <= max_team_size+1 people, just return them in an array of arrays
-  if (participants.length <= max_team_size + 1) {
-    return [participants];
-  }
-
-  // edge case when max_team_size is 3, uneven teams
-  if (max_team_size === 3 && participants.length === 5) {
-    return [participants.slice(0,3), participants.slice(3)];
-  }
-
-  // TODO: check if this is good enough
-  // edge case when max_team_size is 5, uneven teams
-  if (max_team_size === 5 && participants.length === 7) {
-    return [participants.slice(0,3), participants.slice(3)];
-  }
-
-  // edge case, not enough teams to make full size teams
-  if (participants.length % max_team_size > Math.floor(participants.length / max_team_size) ) {
-    max_team_size = max_team_size - 1;
-  }
-
   // list to hold all of our teams and one to keep track of grouped people
   let teams = [];
   ungrouped = participants.slice(0);
@@ -39,17 +18,12 @@ function firstRoundTeams(participants, max_team_size) {
     // teams of max_team_size
     let nextTeam = [];
     while (nextTeam.length != max_team_size) {
-      nextTeam[nextTeam.length] = ungrouped.pop();
+      nextTeam[nextTeam.length] = ungrouped.shift();
     }
     teams.push(nextTeam);
   }
 
-  // handles uneven groups
-  let addIndex = 0;
-  while (ungrouped.length > 0) {
-    teams[addIndex][teams[addIndex].length] = ungrouped.pop();
-    addIndex++;
-  } 
+  teams.push(ungrouped);
 
   console.log(teams);
   // return our completed teams
@@ -61,53 +35,8 @@ function firstRoundTeams(participants, max_team_size) {
 function buildNewTeams(participants, teamHistory, max_team_size) {
   const first = participants.shift();
   participants.push(first);
-
-  // edge case, <= max_team_size+1 people, just return them in an array of arrays
-  if (participants.length <= max_team_size + 1) {
-    return [participants];
-  }
-
-  // edge case when max_team_size is 3, uneven teams
-  if (max_team_size === 3 && participants.length === 5) {
-    return [participants.slice(0,3), participants.slice(3)];
-  }
-
-  // TODO: check if this is good enough
-  // edge case when max_team_size is 5, uneven teams
-  if (max_team_size === 5 && participants.length === 7) {
-    return [participants.slice(0,3), participants.slice(3)];
-  }
-
-  // edge case, not enough teams to make full size teams
-  if (participants.length % max_team_size > Math.floor(participants.length / max_team_size) ) {
-    max_team_size = max_team_size - 1;
-  }
-
-  // list to hold all of our teams and one to keep track of grouped people
-  let teams = [];
-  ungrouped = participants.slice(0);
-
-  // build floor(num_participants / max_team_size) teams
-  while (teams.length != Math.floor(participants.length / max_team_size)) {
-    
-    // teams of max_team_size
-    let nextTeam = [];
-    while (nextTeam.length != max_team_size) {
-      nextTeam[nextTeam.length] = ungrouped.pop();
-    }
-    teams.push(nextTeam);
-  }
-
-  // handles uneven groups
-  let addIndex = 0;
-  while (ungrouped.length > 0) {
-    teams[addIndex][teams[addIndex].length] = ungrouped.pop();
-    addIndex++;
-  } 
-
-  console.log(teams);
-  // return our completed teams
-  return teams;
+ 
+  return firstRoundTeams(participants, max_team_size)
 }
 
 export function formTeams(session_id, prevActIndex, max_team_size) {
