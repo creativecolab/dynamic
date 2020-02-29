@@ -145,7 +145,7 @@ class TeamDiscussion extends Component {
   // renders based on activity status
   renderContent = ({ status, pid, activity_id, questions, team }) => {
     // individual input phase (none for this activity)
-    if (status === ActivityEnums.status.TEAM_INIT) {
+    if (status === ActivityEnums.status.BUILDING_TEAMS) {
       return 'Indvidual input';
     }
 

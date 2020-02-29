@@ -114,7 +114,7 @@ export default withTracker(props => {
       session_id: session._id,
       status: {
         $in: [
-          ActivityEnums.status.TEAM_CREATION,
+          ActivityEnums.status.BUILDING_TEAMS,
           ActivityEnums.status.TEAM_FORMATION,
           ActivityEnums.status.INPUT_TEAM,
           ActivityEnums.status.ASSESSMENT

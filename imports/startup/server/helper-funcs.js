@@ -226,7 +226,7 @@ export function defaultPreferences(session_id) {
         status: ActivityEnums.status.READY,
         creationTime: new Date().getTime(),
         statusStartTimes: {
-          indvPhase: 0,
+          buildTeams: 0,
           teamForm: 0,
           teamPhase: 0,
           peerAssessment: 0
@@ -270,7 +270,7 @@ export function readPreferences(instructor, session_id) {
       status: ActivityEnums.status.READY,
       creationTime: new Date().getTime(),
       statusStartTimes: {
-        indvPhase: 0,
+        buildTeams: 0,
         teamForm: 0,
         teamPhase: 0,
         peerAssessment: 0

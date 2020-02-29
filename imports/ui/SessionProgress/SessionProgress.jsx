@@ -98,7 +98,7 @@ class SessionProgress extends Component {
     const { durationTeam, durationOffsetTeam } = activity;
 
     // individual input phase
-    if (status === ActivityEnums.status.INPUT_INDV)
+    if (status === ActivityEnums.status.BUILDING_TEAMS)
       return index === 0 ? durationIndv : durationIndv - durationOffsetIndv;
 
     // team input phase
@@ -111,7 +111,7 @@ class SessionProgress extends Component {
   // supplies the text that the BigScreen layout will use
   getContentText(currentActivity) {
     // indv phase
-    if (currentActivity.status === ActivityEnums.status.INPUT_INDV) {
+    if (currentActivity.status === ActivityEnums.status.BUILDING_TEAMS) {
       if (currentActivity.name === ActivityEnums.name.QUIZ) {
         return [
           'Team Formation',
@@ -160,7 +160,7 @@ class SessionProgress extends Component {
     const { status } = currentActivity;
 
     switch (status) {
-      case ActivityEnums.status.INPUT_INDV:
+      case ActivityEnums.status.BUILDING_TEAMS:
         return currentActivity.statusStartTimes.indvPhase;
       case ActivityEnums.status.TEAM_FORMATION:
         return currentActivity.statusStartTimes.teamForm;
@@ -175,7 +175,7 @@ class SessionProgress extends Component {
 
   // builds the HTML component that will go inside the BigScreen layout
   renderContentHTML(currentActivity) {
-    if (currentActivity.status === ActivityEnums.status.INPUT_INDV) {
+    if (currentActivity.status === ActivityEnums.status.BUILDING_TEAMS) {
       if (currentActivity.name === ActivityEnums.name.QUIZ) {
         return (
           <div className="text-box-bigscreen">
