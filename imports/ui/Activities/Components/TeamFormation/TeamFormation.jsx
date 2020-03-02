@@ -151,7 +151,7 @@ class TeamFormation extends Component {
       return (
         <QuestionCarousel
           pid={pid}
-          _id={_id}
+          team_id={_id}
           questions={questions}
           currentQuestions={currentQuestions}
           title={"Looks like everyone in your group has found each other! Choose questions to discuss as a group"}

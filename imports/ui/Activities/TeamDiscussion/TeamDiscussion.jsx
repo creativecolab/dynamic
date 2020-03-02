@@ -77,7 +77,7 @@ class TeamDiscussion extends Component {
       prevQuestionIndex: 0,
       startTime: new Date().getTime(),
       displayTeam,
-      hasFooter: !team._id ? false : (status === ActivityEnums.status.ASSESSMENT && !voted ? true : false),
+      hasFooter: status === ActivityEnums.status.ASSESSMENT && !voted,
       teammates
     };
   }
@@ -168,7 +168,7 @@ class TeamDiscussion extends Component {
       return (
         <QuestionCarousel
           pid={pid}
-          _id={team._id}
+          team_id={team._id}
           questions={questions}
           currentQuestions={team.currentQuestions}
           title={"Choose questions to discuss as a group"}
@@ -218,6 +218,7 @@ class TeamDiscussion extends Component {
     console.log('Render');
     const { questions, team } = this.props;
     const { displayTeam, hasFooter } = this.state;
+    console.log(hasFooter);
 
     if (questions.length === 0) {
       return <Loading />;
@@ -235,7 +236,7 @@ class TeamDiscussion extends Component {
         {...team}
         displayTeam={displayTeam}
         hasTimer
-        hasFooter={hasFooter}
+        hasFooter={!team._id ? false : hasFooter}
         buttonAction={this.handleVote}
         buttonTxt="Submit"
       >
@@ -273,11 +274,6 @@ class TeamDiscussion extends Component {
           teammates: team._id ? team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 0 })) : [],
           hasFooter: !voted && team._id
         });
-
-        // update the amount of time the last question that we were on was viewed
-        const endTime = new Date().getTime();
-        const { prevQuestionIndex, startTime } = this.state;
-        const { questions } = this.props;
 
       } else {
         this.setState({
