@@ -77,7 +77,7 @@ class TeamDiscussion extends Component {
       prevQuestionIndex: 0,
       startTime: new Date().getTime(),
       displayTeam,
-      hasFooter: props.status === ActivityEnums.status.ASSESSMENT && !voted && team._id,
+      hasFooter: !team._id ? false : (status === ActivityEnums.status.ASSESSMENT && !voted ? true : false),
       teammates
     };
   }
@@ -163,7 +163,6 @@ class TeamDiscussion extends Component {
     }
 
     // team input phase
-    // team input phase
     if (status === ActivityEnums.status.INPUT_TEAM) {
       //console.log(questions)
       return (
@@ -185,7 +184,6 @@ class TeamDiscussion extends Component {
           console.log('No team');
           console.log(team);
 
-          //return <Waiting text="You have not been assigned a team. Please wait for the next activity." />;
           return (<PictureContent
             imageSrc="/bye-jpg-500.jpg"
             title="See y'all later!"
@@ -345,10 +343,6 @@ class TeamDiscussion extends Component {
         }
       }
     }
-  }
-
-  componentWillUnmount() {
-    console.log('ComponentWillUnmount');
   }
 }
 
