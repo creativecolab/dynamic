@@ -18,8 +18,6 @@ data$warmth =  rowSums(data[,30:31])
 
 data <- subset(data, select = -c(u_r, s_s, t_s, c_s, a_d, t_i, c_p, c_d, p_m, agreeableness, conscientiousness, extraversion, emotional_stability, psychological_collectivism, social_skills, leadership, creativity, personality, social_measures))
 
-
-
 # min-max normalization
 normalize <- function(x) {
   return ((x - min(x)) / (max(x) - min(x)))
@@ -38,14 +36,32 @@ data <- data[rows, ]
 
 #hist(data$avg_rating)
 
+# extract important vars
+data <- subset(data, select= c(social_tie_avg,avg_rating,age, gender, nationality, team))
+mean(data$social_tie_avg)
+sd(data$social_tie_avg)
+mean(data$avg_rating)
+sd(data$avg_rating)
+mean(data$age)
+sd(data$age)
+mean(data$gender)
+sd(data$gender)
+mean(data$nationality)
+sd(data$nationality)
+mean(data$team)
+sd(data$team)
+
 # normalize data of important variables
-data <- subset(data, select= c(social_tie_avg,avg_rating,age, gender, nationality))
-scaled.data <- as.data.frame(lapply(data, normalize))
+data_vars <- subset(data, select= c(social_tie_avg,avg_rating,age, gender, nationality))
+scaled.data <- as.data.frame(lapply(data_vars, normalize))
+
+#correlation mtx
 library("Hmisc")
 corr <- rcorr(as.matrix(scaled.data))
 corr$r
 corr.r <- data.frame(corr$r)
 write.csv(corr.r,"corr_r.csv")
+corr$P
 corr.P <- data.frame(corr$P)
 write.csv(corr.P,"corr_P.csv")
 
@@ -55,7 +71,7 @@ write.csv(corr.P,"corr_P.csv")
 
 #plot(scaled.data$Technology.Strategy, scaled.data$Technology.Implementation)
 
-scaled.data = subset(scaled.data, select = -c(warmth, competence, imagination, intercultural_sensitivity))
+#scaled.data = subset(scaled.data, select = -c(warmth, competence, imagination, intercultural_sensitivity))
 
 # subset into trains and test datasets
 train <- scaled.data[1:800,]
@@ -71,7 +87,7 @@ model <- glm(team ~ social_tie_avg + avg_rating + gender + age + nationality, fa
 summary(model)
 pR2(model)
 
-?pR2
+#?pR2
 
 confint(model)
 exp(coef(model))
@@ -92,6 +108,11 @@ CrossTable(data$interacted, data$team)
 # take out 0 ratings
 filtered_data = subset(data, avg_rating != 0)
 scaled.filtered_data <- as.data.frame(lapply(filtered_data, normalize))
+model <- glm(team ~ social_tie_avg + avg_rating + gender + age + nationality, family = "binomial", data=scaled.filtered_data)
+summary(model)
+pR2(model)
+
+
 hist(data$social_tie_avg)
 
 CrossTable(training.data.raw$social_tie, training.data.raw$team)
