@@ -25,6 +25,7 @@ Meteor.startup(() => {
   // handles session start/end
   const sessionCursor = Sessions.find({});
 
+  /* Follow changes that occur to the Sessions collection */
   sessionCursor.observeChanges({
     changed(_id, update) {
       console.log('\n[Session]' + _id + ' updated.');
@@ -67,12 +68,15 @@ Meteor.startup(() => {
           timestamp: new Date().getTime()
         });
       }
+
+      
     }
   });
 
-  // speeds up activity based on teams ready
+  /* Follow changes that occur to the Teams collection */
   Teams.find({}).observeChanges({
     changed(_id, update) {
+
       // set team formation time
       if (update.confirmed) {
         // if all confirmed, set team formation time
@@ -153,7 +157,7 @@ Meteor.startup(() => {
     }
   });
 
-  // handles team formation
+  /* Follow changes that occur to the Activities collection */
   const activitiesCursor = Activities.find({});
 
   activitiesCursor.observeChanges({
