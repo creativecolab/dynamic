@@ -9,7 +9,7 @@ const ActivityEnums = {
 
   status: {
     READY: 0,
-    INPUT_INDV: 1,
+    BUILDING_TEAMS: 1,
     TEAM_FORMATION: 2,
     INPUT_TEAM: 3,
     ASSESSMENT: 4,

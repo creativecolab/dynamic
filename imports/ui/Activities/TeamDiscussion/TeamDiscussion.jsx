@@ -19,6 +19,8 @@ import TeammateSliders from '../Components/TeammateSliders/TeammateSliders';
 import './TeamDiscussion.scss';
 import PictureContent from '../../Components/PictureContent/PictureContent';
 
+import QuestionCarousel from '../Components/QuestionCarousel/QuestionCarousel';
+
 const Message = posed.div({
   hidden: {
     opacity: 0,
@@ -75,7 +77,7 @@ class TeamDiscussion extends Component {
       prevQuestionIndex: 0,
       startTime: new Date().getTime(),
       displayTeam,
-      hasFooter: props.status === ActivityEnums.status.ASSESSMENT && !voted && team._id,
+      hasFooter: status === ActivityEnums.status.ASSESSMENT && !voted,
       teammates
     };
   }
@@ -87,28 +89,6 @@ class TeamDiscussion extends Component {
 
     return '';
   }
-
-  onSlideChange = () => {
-    const endTime = new Date().getTime();
-    const { startTime } = this.state;
-
-    const { questions } = this.props;
-
-    const past_question = questions[this.state.prevQuestionIndex]._id;
-    const next_question = questions[this.reactSwipeEl.getPos()]._id;
-
-    //update questions
-    Meteor.call('questions.updateTimers', past_question, next_question, startTime, endTime, error => {
-      if (!error) console.log('Tracked questions successfully');
-      else console.log(error);
-    });
-
-    // keep track of this current question and when it began
-    this.setState({
-      prevQuestionIndex: this.reactSwipeEl.getPos(),
-      startTime: new Date().getTime()
-    });
-  };
 
   // make sure we submit preferences for people
   shouldComponentUpdate(nextProps) {
@@ -165,7 +145,7 @@ class TeamDiscussion extends Component {
   // renders based on activity status
   renderContent = ({ status, pid, activity_id, questions, team }) => {
     // individual input phase (none for this activity)
-    if (status === ActivityEnums.status.INPUT_INDV) {
+    if (status === ActivityEnums.status.BUILDING_TEAMS) {
       return 'Indvidual input';
     }
 
@@ -177,51 +157,22 @@ class TeamDiscussion extends Component {
 
         return <Waiting text="No team? Try refreshing this page!" />;
       }
+      console.log("current status", status);
 
-      return <TeamFormation pid={pid} {...team} />;
+      return <TeamFormation pid={pid} {...team} questions={questions} />;
     }
 
     // team input phase
     if (status === ActivityEnums.status.INPUT_TEAM) {
       //console.log(questions)
       return (
-        <div>
-          <div className="swipe-instr-top">
-            <Textfit mode="single" max={36}>
-              Choose questions to discuss as a group
-            </Textfit>
-          </div>
-          <div className="swipe-subinstr-top">
-            <strong>Swipe</strong> to see more questions
-          </div>
-          <div className="slider-main">
-            <ReactSwipe
-              className="carousel"
-              swipeOptions={{ continuous: true, callback: this.onSlideChange }}
-              ref={el => (this.reactSwipeEl = el)}
-            >
-              {questions.map((q, index) => {
-                return (
-                  <div className="question-card-wrapper" key={q._id}>
-                    <div className="question-card">
-                      <div className="label" style={{ background: q.color }}>
-                        {q.label}
-                      </div>
-                      {index + 1}. {q.prompt}
-                    </div>
-                  </div>
-                );
-              })}
-            </ReactSwipe>
-
-            <button className="prev" type="button" onClick={() => this.reactSwipeEl.prev()}>
-              &larr;
-            </button>
-            <button className="next" type="button" onClick={() => this.reactSwipeEl.next()}>
-              &rarr;
-            </button>
-          </div>
-        </div>
+        <QuestionCarousel
+          pid={pid}
+          team_id={team._id}
+          questions={questions}
+          currentQuestions={team.currentQuestions}
+          title={"Choose questions to discuss as a group"}
+        />
       );
     }
 
@@ -233,7 +184,6 @@ class TeamDiscussion extends Component {
           console.log('No team');
           console.log(team);
 
-          //return <Waiting text="You have not been assigned a team. Please wait for the next activity." />;
           return (<PictureContent
             imageSrc="/bye-jpg-500.jpg"
             title="See y'all later!"
@@ -268,6 +218,7 @@ class TeamDiscussion extends Component {
     console.log('Render');
     const { questions, team } = this.props;
     const { displayTeam, hasFooter } = this.state;
+    console.log(hasFooter);
 
     if (questions.length === 0) {
       return <Loading />;
@@ -285,7 +236,7 @@ class TeamDiscussion extends Component {
         {...team}
         displayTeam={displayTeam}
         hasTimer
-        hasFooter={hasFooter}
+        hasFooter={!team._id ? false : hasFooter}
         buttonAction={this.handleVote}
         buttonTxt="Submit"
       >
@@ -324,17 +275,6 @@ class TeamDiscussion extends Component {
           hasFooter: !voted && team._id
         });
 
-        // update the amount of time the last question that we were on was viewed
-        const endTime = new Date().getTime();
-        const { prevQuestionIndex, startTime } = this.state;
-        const { questions } = this.props;
-
-        if (questions.length != 0) {
-          Meteor.call('questions.updateTimers', questions[prevQuestionIndex]._id, '', startTime, endTime, error => {
-            if (!error) console.log('Tracked final question successfully');
-            else console.log(error);
-          });
-        }
       } else {
         this.setState({
           hasFooter: false
@@ -399,10 +339,6 @@ class TeamDiscussion extends Component {
         }
       }
     }
-  }
-
-  componentWillUnmount() {
-    console.log('ComponentWillUnmount');
   }
 }
 
