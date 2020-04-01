@@ -77,7 +77,7 @@ class TeamDiscussion extends Component {
       prevQuestionIndex: 0,
       startTime: new Date().getTime(),
       displayTeam,
-      hasFooter: props.status === ActivityEnums.status.ASSESSMENT && !voted && team._id,
+      hasFooter: status === ActivityEnums.status.ASSESSMENT && !voted,
       teammates
     };
   }
@@ -145,7 +145,7 @@ class TeamDiscussion extends Component {
   // renders based on activity status
   renderContent = ({ status, pid, activity_id, questions, team }) => {
     // individual input phase (none for this activity)
-    if (status === ActivityEnums.status.INPUT_INDV) {
+    if (status === ActivityEnums.status.BUILDING_TEAMS) {
       return 'Indvidual input';
     }
 
@@ -157,18 +157,18 @@ class TeamDiscussion extends Component {
 
         return <Waiting text="No team? Try refreshing this page!" />;
       }
+      console.log("current status", status);
 
       return <TeamFormation pid={pid} {...team} questions={questions} />;
     }
 
-    // team input phase
     // team input phase
     if (status === ActivityEnums.status.INPUT_TEAM) {
       //console.log(questions)
       return (
         <QuestionCarousel
           pid={pid}
-          _id={team._id}
+          team_id={team._id}
           questions={questions}
           currentQuestions={team.currentQuestions}
           title={"Choose questions to discuss as a group"}
@@ -184,7 +184,6 @@ class TeamDiscussion extends Component {
           console.log('No team');
           console.log(team);
 
-          //return <Waiting text="You have not been assigned a team. Please wait for the next activity." />;
           return (<PictureContent
             imageSrc="/bye-jpg-500.jpg"
             title="See y'all later!"
@@ -219,6 +218,7 @@ class TeamDiscussion extends Component {
     console.log('Render');
     const { questions, team } = this.props;
     const { displayTeam, hasFooter } = this.state;
+    console.log(hasFooter);
 
     if (questions.length === 0) {
       return <Loading />;
@@ -236,7 +236,7 @@ class TeamDiscussion extends Component {
         {...team}
         displayTeam={displayTeam}
         hasTimer
-        hasFooter={hasFooter}
+        hasFooter={!team._id ? false : hasFooter}
         buttonAction={this.handleVote}
         buttonTxt="Submit"
       >
@@ -274,11 +274,6 @@ class TeamDiscussion extends Component {
           teammates: team._id ? team.members.filter(m => m.pid !== pid).map(m => ({ pid: m.pid, value: 0 })) : [],
           hasFooter: !voted && team._id
         });
-
-        // update the amount of time the last question that we were on was viewed
-        const endTime = new Date().getTime();
-        const { prevQuestionIndex, startTime } = this.state;
-        const { questions } = this.props;
 
       } else {
         this.setState({
@@ -344,10 +339,6 @@ class TeamDiscussion extends Component {
         }
       }
     }
-  }
-
-  componentWillUnmount() {
-    console.log('ComponentWillUnmount');
   }
 }
 

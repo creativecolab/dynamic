@@ -15,16 +15,16 @@ class QuestionCarousel extends Component {
 
   static propTypes = {
     pid: PropTypes.string.isRequired,
-    _id: PropTypes.string.isRequired,
+    team_id: PropTypes.string,  // required for people in teams
     questions: PropTypes.array.isRequired,
-    currentQuestions: PropTypes.array.isRequired,
+    currentQuestions: PropTypes.array, // required for people in teams
   };
 
   onSlideChange = () => {
     const endTime = new Date().getTime();
     const { startTime } = this.state;
 
-    const { questions, _id, pid } = this.props;
+    const { questions, team_id, pid } = this.props;
 
     const past_question = questions[this.state.prevQuestionIndex]._id;
     const next_question = questions[this.reactSwipeEl.getPos()]._id;
@@ -41,20 +41,34 @@ class QuestionCarousel extends Component {
       startTime: new Date().getTime()
     });
 
-    Meteor.call('questions.setCurrent', _id, pid, this.reactSwipeEl.getPos(), error => {
-      if (!error) console.log('Set current question successfully');
-      else console.log(error);
-    });
+    // if this person is on a team, track what question they're on
+    console.log(team_id);
+    if (team_id) {
+      Meteor.call('questions.setCurrent', team_id, pid, this.reactSwipeEl.getPos(), error => {
+        if (!error) console.log('Set current question successfully');
+        else console.log(error);
+      });
+    }
+
   };
 
   getCurrentQuestion() {
     const { pid, currentQuestions } = this.props;
-    for (var i = 0; i < currentQuestions.length; i++) {
-      if (currentQuestions[i].pid == pid) {
-        return currentQuestions[i].question_ind;
+    console.log(currentQuestions);
+
+    // if user is on a team, get the current question the user is on from db
+    if (currentQuestions) {
+      for (var i = 0; i < currentQuestions.length; i++) {
+        if (currentQuestions[i].pid == pid) {
+          return currentQuestions[i].question_ind;
+        }
       }
+    } else {
+      // user is not on a team, just get which question they're on from their state
+      return this.state.prevQuestionIndex;
     }
-    return 0;
+
+
   }
 
   componentWillUnmount() {

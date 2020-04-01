@@ -33,7 +33,7 @@ class ActivityHandler extends Component {
     const { durationTeam, durationOffsetTeam } = activity;
 
     // individual input phase
-    if (status === ActivityEnums.status.INPUT_INDV) {
+    if (status === ActivityEnums.status.BUILDING_TEAMS) {
       return progress === 1 ? durationIndv : durationIndv - durationOffsetIndv;
     }
 
