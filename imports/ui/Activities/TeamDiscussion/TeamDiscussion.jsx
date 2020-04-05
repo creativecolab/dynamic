@@ -288,10 +288,10 @@ class TeamDiscussion extends Component {
           startTime: new Date().getTime()
         });
         // update question 1 times viewed
-        const { questions } = this.props;
+        const { questions, team_id } = this.props;
 
         if (questions.length != 0) {
-          Meteor.call('questions.updateTimers', questions[0]._id, questions[0]._id, 0, 0, error => {
+          Meteor.call('questions.updateTimers', questions[0]._id, questions[0]._id, 0, 0, team_id, error => {
             if (!error) console.log('Tracked question 1 successfully');
             else console.log(error);
           });

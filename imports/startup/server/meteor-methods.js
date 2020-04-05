@@ -163,8 +163,9 @@ Meteor.methods({
     }
   },
 
-  // write the the database for tracking question time
-  'questions.updateTimers': function(past_question, next_question, startTime, endTime) {
+  // write to the database for tracking question time (OLD VERSION)
+  'questions.updateTimers': function(past_question, next_question, startTime, endTime, team_id) {
+    console.log("update timers called with params", past_question, next_question, startTime, endTime, team_id);
     // save the time spent on the last question
     Questions.update(
       past_question,
@@ -181,6 +182,59 @@ Meteor.methods({
         }
       }
     );
+
+
+    const question = Questions.findOne(past_question);
+
+    //if teamViewTimer field not present
+    if(!question.teamViewTimer){
+      Questions.update(
+        past_question,
+        {
+          $set: {
+            teamViewTimer: []
+          }
+        }
+      );
+
+      Questions.update(past_question, {
+        $push: {
+          teamViewTimer: {
+            "id": team_id,
+            "time": endTime-startTime
+          }
+        }
+      });
+    }
+    else{
+      const timers = question.teamViewTimer;
+
+      var index = -1;
+      for(var i = 0; i < timers.length; i++){
+          if(timers[i].id == team_id){
+            index = i;
+            break;
+          }
+      }
+
+      // If team has already viewed this question
+      if(index >= 0){
+        Questions.update(
+          { _id: past_question, "teamViewTimer.id": team_id },
+          { $inc: { "teamViewTimer.$.time" : endTime-startTime } }
+        );
+      }
+      else{
+        Questions.update(past_question, {
+          $push: {
+            teamViewTimer: {
+              "id": team_id,
+              "time": endTime-startTime
+            }
+          }
+        });
+      }
+    }
 
     // update how many times the next question has been viewed
     if (next_question != '') {

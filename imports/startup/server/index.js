@@ -228,6 +228,7 @@ Meteor.startup(() => {
               removed: true,
               teamFormationTime: 0,
               peerAssessmentTime: 0,
+              questionTimers:[],
               currentQuestions: teams[i].map(pid => ({ pid, question_ind:0}))
             });
 
