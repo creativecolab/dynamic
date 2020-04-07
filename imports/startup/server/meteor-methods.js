@@ -101,6 +101,15 @@ Meteor.methods({
     });
   },
 
+  'sessions.finishSession': function(session_id) {
+    Sessions.update(session_id, {
+      $set: {
+        endTime : new Date().getTime(),
+        status: 3
+      }  
+    });
+  },
+
   'activities.updateStatus': function(activity_id) {
     try {
       const activity = Activities.findOne(activity_id);

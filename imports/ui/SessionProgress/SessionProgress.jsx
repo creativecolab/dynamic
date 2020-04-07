@@ -331,7 +331,9 @@ class SessionProgress extends Component {
         <BigScreen
           sessionCode={this.props.session.code}
           hasTimer={false}
-          buttonAction={() => this.advanceActivity()}
+          buttonAction={() => Meteor.call('sessions.finishSession', session._id, () => {
+            console.log("completed session");
+          })}
           buttonText={"Complete Session"}
           activityPhase={"Summary Phase"}
           instructions={"View your summary of this session!"}

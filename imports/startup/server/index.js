@@ -74,6 +74,11 @@ Meteor.startup(() => {
         console.log("Activities, users are viewing the session sumary.");
       }
 
+      if (update.status === SessionEnums.status.FINISHED) {
+        // TODO: decide if anything needs to be done
+        console.log("Session Complete.");
+      }
+
 
       
     }
@@ -344,7 +349,7 @@ Meteor.startup(() => {
           Sessions.update(session._id, {
             $set: {
               status: SessionEnums.status.SUMMARY,
-              endTime: new Date().getTime()
+              summaryTime: new Date().getTime()
             }
           });
         }
