@@ -61,7 +61,7 @@ Meteor.methods({
         sessionHistory: {
           session_id: session_id,
           sessionJoinTime: new Date().getTime(),
-          viewSummary: false,
+          viewedSummary: false,
           selectedEmails: false,
           sentEmails: false
         }
@@ -247,6 +247,60 @@ Meteor.methods({
           user: Users.findOne(user_id).pid,
           timestamp: new Date().getTime()
         });
+      }
+    );
+  },
+
+  'users.toggleViewedSummary': function(pid, session_id, summaryViewToggle) {
+    Users.update(
+      {
+        pid: pid,
+        sessionHistory: {
+          $elemMatch: {
+            session_id: session_id
+          }
+        }
+      },
+      {
+        $set: {
+          'sessionHistory.$.viewedSummary': summaryViewToggle
+        }
+      }
+    );
+  },
+
+  'users.toggleSelectedEmails': function(pid, session_id, selectEmailsToggle) {
+    Users.update(
+      {
+        pid: pid,
+        sessionHistory: {
+          $elemMatch: {
+            session_id: session_id
+          }
+        }
+      },
+      {
+        $set: {
+          'sessionHistory.$.selectedEmails': selectEmailsToggle
+        }
+      }
+    );
+  },
+
+  'users.toggleSentEmails': function(pid, session_id, sendEmailsToggle) {
+    Users.update(
+      {
+        pid: pid,
+        sessionHistory: {
+          $elemMatch: {
+            session_id: session_id
+          }
+        }
+      },
+      {
+        $set: {
+          'sessionHistory.$.sentEmails': sendEmailsToggle
+        }
       }
     );
   },

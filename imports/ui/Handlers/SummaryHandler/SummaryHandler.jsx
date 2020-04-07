@@ -19,11 +19,11 @@ class SummaryHandler extends Component {
     session_id: PropTypes.string.isRequired
   };
 
-  static defaultProps = {
-    activity_id: '',
-    sessionLength: 0,
-    activity: {}
-  };
+  // static defaultProps = {
+  //   activity_id: '',
+  //   sessionLength: 0,
+  //   activity: {}
+  // };
 
   constructor(props) {
     super(props);
@@ -57,7 +57,7 @@ class SummaryHandler extends Component {
 
   render() {
     // get props from parent
-    const { pid, preferences } = this.props;
+    const { pid, session_id, preferences } = this.props;
 
     // get 'viewSummary', preferences, 'selectedEmails', 'sentEmails' 
     const { viewedSummary, selectedEmails, sentEmails } = this.state;
@@ -76,12 +76,30 @@ class SummaryHandler extends Component {
     }
 
     let buttonAct;
-    if (!viewedSummary)
-      buttonAct = () => this.setState({ viewedSummary: true });
-    else if (!selectedEmails)
-      buttonAct = () => this.setState({ selectedEmails: true });
-    else
-      buttonAct = () => this.setState({ sentEmails: true });
+    if (!viewedSummary) {
+      buttonAct = () => {
+        this.setState({ viewedSummary: true });
+        Meteor.call('users.toggleViewedSummary', pid, session_id, true, () => {
+          console.log("set viewSummary to ", true);
+        });
+      }
+    }
+    else if (!selectedEmails) {
+      buttonAct = () => {
+        this.setState({ selectedEmails: true });
+        Meteor.call('users.toggleSelectedEmails', pid, session_id, true, () => {
+          console.log("set selectedEmails to ", true);
+        });
+      }
+    }
+    else {
+      buttonAct = () => {
+        this.setState({ sentEmails: true });
+        Meteor.call('users.toggleSentEmails', pid, session_id, true, () => {
+          console.log("set sentEmails to ", true);
+        });
+      }
+    }
 
     return (
       <Mobile
@@ -111,7 +129,8 @@ export default withTracker(props => {
     // get viewSummary, selectedEmails, sentEmails
     for (let i = 0; i < user.sessionHistory.length; i++) {
       if (user.sessionHistory[i].session_id === props.session_id) {
-        viewedSummary = user.sessionHistory[i].viewSummary;
+        console.log(user.sessionHistory[i]);
+        viewedSummary = user.sessionHistory[i].viewedSummary;
         selectedEmails = user.sessionHistory[i].selectedEmails;
         sentEmails = user.sessionHistory[i].sentEmails;
       }
