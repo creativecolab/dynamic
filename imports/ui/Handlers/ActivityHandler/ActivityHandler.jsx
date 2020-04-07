@@ -10,6 +10,7 @@ import TeamDiscussion from '../../Activities/TeamDiscussion/TeamDiscussion';
 
 class ActivityHandler extends Component {
   static propTypes = {
+    session_id: PropTypes.string,
     activity_id: PropTypes.string,
     activity: PropTypes.object,
     pid: PropTypes.string.isRequired,
@@ -59,7 +60,7 @@ class ActivityHandler extends Component {
 
   render() {
     // get props from parent
-    const { activity_id, pid, sessionLength, progress, instructor } = this.props;
+    const { session_id, activity_id, pid, sessionLength, progress, instructor } = this.props;
 
     // get activity object from withTracker
     const { activity } = this.props;
@@ -95,6 +96,7 @@ class ActivityHandler extends Component {
       return (
         <TeamDiscussion
           pid={pid}
+          session_id={session_id}
           activity_id={activity_id}
           status={status}
           statusStartTime={statusStartTime}

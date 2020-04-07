@@ -67,7 +67,13 @@ Meteor.startup(() => {
           session_id: session._id,
           timestamp: new Date().getTime()
         });
+      } 
+
+      if (update.status === SessionEnums.status.SUMMARY) {
+        // TODO: decide if anything needs to be done
+        console.log("Activities, users are viewing the session sumary.");
       }
+
 
       
     }
@@ -332,12 +338,12 @@ Meteor.startup(() => {
           { sort: { index: 1 } }
         );
 
-        // no activities left!! end session...
+        // no activities left!! end active session...
         if (!nextActivity) {
           console.log("Ending Session...");
           Sessions.update(session._id, {
             $set: {
-              status: SessionEnums.status.FINISHED,
+              status: SessionEnums.status.SUMMARY,
               endTime: new Date().getTime()
             }
           });

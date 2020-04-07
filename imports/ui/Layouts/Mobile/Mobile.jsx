@@ -68,6 +68,7 @@ export default class Mobile extends Component {
     color: PropTypes.string,
     shape: PropTypes.string,
     buttonAction: PropTypes.func,
+    buttonSize: PropTypes.string,
     buttonTxt: PropTypes.string,
     activityName: PropTypes.string,
     sessionStatus: PropTypes.number,
@@ -93,6 +94,7 @@ export default class Mobile extends Component {
     buttonAction: () => {
       console.log('Button action not set');
     },
+    buttonSize: 'small',
     buttonTxt: 'Next',
     clockDuration: 0,
     clockStartTime: 0,
@@ -166,7 +168,7 @@ export default class Mobile extends Component {
 
   render() {
     const { title, sessionStatus, sessionLength } = this.props;
-    const { buttonTxt, buttonAction } = this.props;
+    const { buttonSize, buttonTxt, buttonAction } = this.props;
     const { feedbackMsge, feedbackClass } = this.props;
     const { clockStartTime, clockDuration, displayTeam, members, shape, color } = this.props;
     const { hasFooter, hasNavbar, hasTimer } = this.props;
@@ -200,10 +202,10 @@ export default class Mobile extends Component {
                   {title ? (
                     <>{title}</>
                   ) : (
-                    <>
-                      Round {sessionStatus} of {sessionLength}
-                    </>
-                  )}
+                      <>
+                        Round {sessionStatus} of {sessionLength}
+                      </>
+                    )}
                 </div>
               </div>
               <div className="clock">
@@ -231,7 +233,7 @@ export default class Mobile extends Component {
         </div>
         {hasFooter && (
           <Footer className="footer" pose={loading ? 'hidden' : 'visible'}>
-            <Button size="small" onClick={buttonAction}>
+            <Button size={buttonSize} onClick={buttonAction}>
               {buttonTxt}
             </Button>
           </Footer>

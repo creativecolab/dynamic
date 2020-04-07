@@ -61,7 +61,9 @@ Meteor.methods({
         sessionHistory: {
           session_id: session_id,
           sessionJoinTime: new Date().getTime(),
-          points: 0
+          viewSummary: false,
+          selectedEmails: false,
+          sentEmails: false
         }
       }
     });

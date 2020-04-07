@@ -18,7 +18,9 @@ export default class TeammateSliders extends Component {
     pid: PropTypes.string.isRequired,
     activity_id: PropTypes.string.isRequired,
     teammates: PropTypes.array.isRequired,
-    handleChange: PropTypes.func.isRequired
+    handleChange: PropTypes.func.isRequired,
+    progress: PropTypes.number.isRequired,
+    session: PropTypes.string.isRequired
   };
 
   getName(pid) {
@@ -115,7 +117,10 @@ export default class TeammateSliders extends Component {
           preferences: {
             values: teammates,
             activity_id,
-            timestamp: new Date().getTime()
+            timestamp: new Date().getTime(),
+            shareEmail: false,
+            round: this.props.progress,
+            session: this.props.session_id
           }
         }
       },
