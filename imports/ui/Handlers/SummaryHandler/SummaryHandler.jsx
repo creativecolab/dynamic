@@ -55,6 +55,11 @@ class SummaryHandler extends Component {
       return (<EmailConfirmation preferences={preferences} onSubmit={() => this.setState({ sentEmails: true })} />);
   }
 
+  backButtonPressed() {
+    console.log("back pressed", Date());
+    console.log(this.state);
+  }
+
   render() {
     // get props from parent
     const { pid, session_id, preferences } = this.props;
@@ -112,6 +117,7 @@ class SummaryHandler extends Component {
         buttonAction={buttonAct}
         buttonSize={'medium'}
         buttonTxt={'Send Emails'}
+        backButtonFunction={this.backButtonPressed.bind(this)}
       >
         {this.renderBody()}
       </Mobile>

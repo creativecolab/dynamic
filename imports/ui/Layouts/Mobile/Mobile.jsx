@@ -166,6 +166,10 @@ export default class Mobile extends Component {
     return contentStyle;
   }
 
+  backPressed() {
+    console.log("zzzzzz");
+  }
+
   render() {
     const { title, sessionStatus, sessionLength } = this.props;
     const { buttonSize, buttonTxt, buttonAction } = this.props;
@@ -180,23 +184,41 @@ export default class Mobile extends Component {
 
     if (displayTeam && team_id) names = this.getTeammateNames(members);
 
+    var topLeft = (
+      <div className="nav-team-shape">
+
+      </div>
+    );
+    if (this.props.backButtonFunction) {
+      topLeft = (
+        <div className="nav-team-shape" onClick={() => this.props.backButtonFunction()}>
+          Back
+        </div>
+      );
+    }
+    else if (displayTeam && team_id) {
+      topLeft = (
+        <div onClick={() => this.openTeam()} className="nav-team-shape">
+          {displayTeam && team_id && (
+            <>
+              <img src={`/shapes/${shape}-solid-${color}-small.png`} alt="" />
+              {/* <div className="name-flex">
+                <div className="group-name-label">names</div> */}
+              {teamOpen ? <span>&#9650;</span> : <span>&#9660;</span>}
+              {/* </div> */}
+              <div className="nav-team-shape-label">GROUP</div>
+            </>
+          )}
+        </div>
+      );
+    }
+
     return (
       <div className="mobile-main">
         {hasNavbar && (
           <>
             <nav className="navbar">
-              <div onClick={() => this.openTeam()} className="nav-team-shape">
-                {displayTeam && team_id && (
-                  <>
-                    <img src={`/shapes/${shape}-solid-${color}-small.png`} alt="" />
-                    {/* <div className="name-flex">
-                      <div className="group-name-label">names</div> */}
-                    {teamOpen ? <span>&#9650;</span> : <span>&#9660;</span>}
-                    {/* </div> */}
-                    <div className="nav-team-shape-label">GROUP</div>
-                  </>
-                )}
-              </div>
+              {topLeft}
               <div className="progress-status">
                 <div className="session-progress">
                   {title ? (

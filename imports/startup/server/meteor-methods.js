@@ -260,6 +260,19 @@ Meteor.methods({
     );
   },
 
+  'users.getTopQuestions': function(pid, session) {
+    var user = Users.findOne(user_id);
+    var prefs = user.preferences;
+    
+    var topQuestions = {}
+    for(var i = 0; i < prefs.length; i++){
+        if(prefs[i].session == session){
+          var round = prefs[i].round;
+          topQuestions[round] = [];
+        }
+    }
+  },
+
   'users.toggleViewedSummary': function(pid, session_id, summaryViewToggle) {
     Users.update(
       {
