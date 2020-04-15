@@ -312,6 +312,15 @@ Meteor.methods({
         }
       }
     );
+
+    // since this user has completed the session, mark them as completed for this session
+    Sessions.update(session_id, 
+      {
+        $push: {
+          doneParticipants: pid
+        }
+      }
+    );
   },
 
   'teams.removeMember': function(team_id, removee) {

@@ -14,7 +14,8 @@ import Logs from '../../api/logs';
 import './meteor-methods';
 import './register-api';
 import { formTeams } from './team-former';
-import { buildColoredShapes, calculateDuration, readPreferences, defaultPreferences, createDefaultQuestions } from './helper-funcs';
+import { buildColoredShapes, calculateDuration, readPreferences,
+         defaultPreferences, createDefaultQuestions } from './helper-funcs';
 import { updateTeamHistory_LateJoinees, updateTeamHistory_TeamFormation } from './team-historian';
 
 let timeout_timer;
@@ -22,13 +23,14 @@ let teams = [];
 
 /* Meteor start-up function, called once server starts */
 Meteor.startup(() => {
+
   // handles session start/end
   const sessionCursor = Sessions.find({});
 
   /* Follow changes that occur to the Sessions collection */
   sessionCursor.observeChanges({
     changed(_id, update) {
-      console.log('\n[Session]' + _id + ' updated.');
+      console.log('\n[Session] ' + _id + ' updated.');
       console.log(update);
 
       // start session!
@@ -70,16 +72,35 @@ Meteor.startup(() => {
       } 
 
       if (update.status === SessionEnums.status.SUMMARY) {
-        // TODO: decide if anything needs to be done
-        console.log("Activities, users are viewing the session sumary.");
+        // during this status, monitor if all participants are done viewing the summary
+        console.log("Activities complete, users are viewing the session summary.");
+      }
+
+      // check if all participants have confirmed their emails
+      if (update.doneParticipants) {
+        // get the session of interest
+        const session = Sessions.findOne(_id);
+
+        // check if everyone has confirmed their emails
+        if (session.participants.length == update.doneParticipants.length) {
+          // if everyone is done, automatically move on
+          console.log("All users have confirmed their emails.");
+          Sessions.update(_id, 
+            { $set: {
+              status: SessionEnums.status.FINISHED
+            }
+          });
+        }
       }
 
       if (update.status === SessionEnums.status.FINISHED) {
-        // TODO: decide if anything needs to be done
-        console.log("Session Complete.");
+        // clear teamHistory from Session to make it more readable in db
+        Sessions.update(_id, {
+          $set: {
+            teamHistory: {}
+          }
+        }, () => console.log("Session Complete."));
       }
-
-
       
     }
   });
