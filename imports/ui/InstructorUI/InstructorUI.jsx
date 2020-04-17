@@ -61,6 +61,7 @@ class InstructorUI extends Component {
         code: newcode.toLowerCase(),
         instructor: instructor.toLowerCase(),
         participants: [],
+        doneParticipants: [],
         teamHistory: {},
         activities: [],
         status: SessionEnums.status.READY,
