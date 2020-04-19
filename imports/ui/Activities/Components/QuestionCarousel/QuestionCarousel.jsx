@@ -30,7 +30,7 @@ class QuestionCarousel extends Component {
     const next_question = questions[this.reactSwipeEl.getPos()]._id;
 
     //update questions
-    Meteor.call('questions.updateTimers', past_question, next_question, startTime, endTime, error => {
+    Meteor.call('questions.updateTimers', past_question, next_question, startTime, endTime, team_id, error => {
       if (!error) console.log('Tracked questions successfully');
       else console.log(error);
     });
@@ -72,12 +72,12 @@ class QuestionCarousel extends Component {
   }
 
   componentWillUnmount() {
-    const { startTime, prevQuestionIndex } = this.state;
-    const { questions } = this.props;
+    const { startTime, prevQuestionIndex, } = this.state;
+    const { questions, team_id } = this.props;
     const endTime = new Date().getTime();
 
     if (questions.length != 0) {
-      Meteor.call('questions.updateTimers', questions[prevQuestionIndex]._id, '', startTime, endTime, error => {
+      Meteor.call('questions.updateTimers', questions[prevQuestionIndex]._id, '', startTime, endTime, team_id, error => {
         if (!error) console.log('Tracked final question successfully');
         else console.log(error);
       });
