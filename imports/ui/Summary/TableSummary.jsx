@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Meteor } from 'meteor/meteor';
 
 import Button from '../Components/Button/Button';
 import Users from '../../api/users';
+import Questions from '../../api/questions';
+import Activities from '../../api/activities';
 
 import './TableSummary.scss';
 
@@ -52,7 +55,9 @@ export default class TableSummary extends Component {
       obj.round = pref.round;
       data.push(obj);
     }
-    console.log(data);
+
+    Meteor.call('teams.topQuestions');
+    console.log("zzzz", data);
   }
 
   render() {

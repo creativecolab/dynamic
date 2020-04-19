@@ -314,17 +314,38 @@ Meteor.methods({
     );
   },
 
-  'users.getTopQuestions': function(pid, session) {
-    var user = Users.findOne(user_id);
-    var prefs = user.preferences;
-    
-    var topQuestions = {}
-    for(var i = 0; i < prefs.length; i++){
-        if(prefs[i].session == session){
-          var round = prefs[i].round;
-          topQuestions[round] = [];
-        }
+  'teams.topQuestionsInRound': function(instructor, team_id, round) {
+    console.log("getting top questions");
+
+    let questions = [];
+    console.log(Questions.findOne("oTktMgZoxBufkrDvE"));
+
+    // get all the quesitons
+    if (!instructor || instructor === "default") {
+      questions = Questions.find({ round: round, owner: "none" }).fetch();
+    } else {
+      questions = Questions.find({ round: round, owner: instructor }).fetch();
     }
+
+    var questionTimes = [];
+
+    for(var i = 0; i < questions.length; i++){
+      var question = questions[i];
+      var data = {};
+      var viewTimers = question.teamViewTimer;
+
+      for(var j = 0; j < viewTimers.length; j++){
+        var entry = viewTimers[j];
+        if(entry.id == team_id){
+          data["time"] = entry.time;
+          data["question"] = question.prompt;
+          break;
+        }
+      }
+      questionTimes.push(data);
+    }
+
+    console.log(questions);
   },
 
   'users.toggleViewedSummary': function(pid, session_id, summaryViewToggle) {
