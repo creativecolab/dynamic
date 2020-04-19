@@ -314,38 +314,75 @@ Meteor.methods({
     );
   },
 
-  'teams.topQuestionsInRound': function(instructor, team_id, round) {
-    console.log("getting top questions");
+  'users.getSummary': function(pid, session_id){
+    const user = Users.findOne({ pid });
+    const session = Sessions.findOne({ _id: session_id });
 
-    let questions = [];
-    console.log(Questions.findOne("oTktMgZoxBufkrDvE"));
+    var relevant_prefs = [];
 
-    // get all the quesitons
-    if (!instructor || instructor === "default") {
-      questions = Questions.find({ round: round, owner: "none" }).fetch();
-    } else {
-      questions = Questions.find({ round: round, owner: instructor }).fetch();
-    }
-
-    var questionTimes = [];
-
-    for(var i = 0; i < questions.length; i++){
-      var question = questions[i];
-      var data = {};
-      var viewTimers = question.teamViewTimer;
-
-      for(var j = 0; j < viewTimers.length; j++){
-        var entry = viewTimers[j];
-        if(entry.id == team_id){
-          data["time"] = entry.time;
-          data["question"] = question.prompt;
-          break;
-        }
+    //get all preferences of the users for this session
+    for (var i = 0; i < user.preferences.length; i++) {
+      const pref = user.preferences[i];
+      if (pref.session == session_id) {
+        relevant_prefs.push(pref);
       }
-      questionTimes.push(data);
     }
 
-    console.log(questions);
+    //sort preferences by increasing round
+    relevant_prefs.sort((a, b) => (a.round > b.round) ? 1 : -1)
+
+    var data = [];
+
+    for (var i = 0; i < relevant_prefs.length; i++) {
+      var obj = {};
+      var members = [];
+      var rankings = [];
+      const pref = relevant_prefs[i];
+
+      //get rankings/names of each teammate for this round
+      for (var j = 0; j < pref.values.length; j++) {
+        const teammate_pid = pref.values[j].pid;
+        const teammate = Users.findOne({ pid: teammate_pid });
+
+        members.push(teammate.name);
+        rankings.push(pref.values[j].value);
+      }
+
+      obj.members = members;
+      obj.rankings = rankings;
+      obj.round = pref.round;
+
+      // get the top questions for this round
+      if (!session.instructor || session.instructor === "default") {
+        questions = Questions.find({ round: pref.round, onwer: "none" }).fetch();
+      } else {
+        questions = Questions.find({ round: pref.round, onwer: session.instructor }).fetch();
+      }
+
+      var questionTimes = [];
+
+      for(var i = 0; i < questions.length; i++){
+        var question = questions[i];
+        var qdata = {};
+        var viewTimers = question.teamViewTimer;
+
+        for(var j = 0; j < viewTimers.length; j++){
+          var entry = viewTimers[j];
+          if(entry.id == pref.team){
+            qdata["time"] = entry.time;
+            qdata["question"] = question.prompt;
+            break;
+          }
+        }
+        questionTimes.push(qdata);
+
+      }
+
+      obj.questions = questionTimes;
+      data.push(obj);
+    }
+
+    return data;
   },
 
   'users.toggleViewedSummary': function(pid, session_id, summaryViewToggle) {

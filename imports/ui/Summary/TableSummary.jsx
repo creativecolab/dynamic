@@ -19,45 +19,17 @@ export default class TableSummary extends Component {
     super(props)
     console.log("construct");
     const { pid, session_id } = props;
+    this.getSummary(pid, session_id);
 
+  }
 
-    const user = Users.findOne({ pid });
-    console.log(user);
-
-    var relevant_prefs = [];
-
-    for (var i = 0; i < user.preferences.length; i++) {
-      const pref = user.preferences[i];
-      if (pref.session == session_id) {
-        relevant_prefs.push(pref);
-      }
-    }
-
-    relevant_prefs.sort((a, b) => (a.round > b.round) ? 1 : -1)
-
-    var data = [];
-
-    for (var i = 0; i < relevant_prefs.length; i++) {
-      var obj = {};
-      var members = [];
-      var rankings = [];
-      const pref = relevant_prefs[i];
-
-      for (var j = 0; j < pref.values.length; j++) {
-        const teammate_pid = pref.values[j].pid;
-        const teammate = Users.findOne({ pid: teammate_pid });
-
-        members.push(teammate.name);
-        rankings.push(pref.values[j].value);
-      }
-      obj.members = members;
-      obj.rankings = rankings;
-      obj.round = pref.round;
-      data.push(obj);
-    }
-
-    Meteor.call('teams.topQuestions');
-    console.log("zzzz", data);
+  getSummary(pid, session_id) {
+    Meteor.call('users.getSummary', pid, session_id, (error, result) => {
+      console.log("summary info loaded", result);
+      this.setState({
+        data: result
+      });
+    })
   }
 
   render() {
@@ -65,14 +37,19 @@ export default class TableSummary extends Component {
     const rankingData = [["4", "2"], ["5", "3"], ["2", "5"], ["3", "1", "2"]];
     const questionData = [["Q1", "Q2", "Q3", "Q4"], ["Q3", "Q4"], ["Q5"], ["Q6", "Q7", "Q8"]];
 
+    var rows = [];
+    console.log(this.state);
+    if (this.state && this.state.data) {
+      for (var i = 0; i < this.state.data.length; i++) {
+        rows.push(<TableRow key={i} data={this.state.data[i]} />);
+      }
+    }
+
     return (
       <div className="table-summary" id="center-container">
         <div>
           <TableHeader />
-          <TableRow round={1} members={memberData[0]} rankings={rankingData[0]} questions={questionData[0]} />
-          <TableRow round={2} members={memberData[1]} rankings={rankingData[1]} questions={questionData[1]} />
-          <TableRow round={3} members={memberData[2]} rankings={rankingData[2]} questions={questionData[2]} />
-          <TableRow round={4} members={memberData[3]} rankings={rankingData[3]} questions={questionData[3]} />
+          {rows}
         </div>
       </div>
     );
@@ -103,41 +80,26 @@ class TableHeader extends Component {
 class TableRow extends Component {
   render() {
     var memberComponents = [];
-    for (var i = 0; i < this.props.members.length; i++) {
+    console.log("DATA", this.props.data);
+    const { members, rankings, questions, round } = this.props.data;
+    for (var i = 0; i < members.length; i++) {
       memberComponents.push(
-        <MemberRow member={this.props.members[i]} ranking={this.props.rankings[i]} key={i} />
+        <MemberRow member={members[i]} ranking={rankings[i]} key={i} />
       );
     }
 
-    // return (
-    //   <div className="table-row-container">
-    //     <div className="round-cell">
-    //       <h5>{this.props.round}</h5>
-
-    //     </div>
-    //     <div className="members-cell">
-    //       {memberComponents}
-    //     </div>
-    //     <div className="ranking-cell">
-    //       {this.props.rankings}
-    //     </div>
-    //     <div className="share-cell">
-    //       checkbox
-    //     </div>
-    //   </div>
-    // );
     return (
       <div className="table-row-container">
         <div className="table-row">
           <div className="round-cell">
-            <h5>{this.props.round}</h5>
+            <h5>{round}</h5>
 
           </div>
           <div className="members-cell">
             {memberComponents}
           </div>
         </div>
-        <DetailsList questions={this.props.questions} />
+        <DetailsList questions={questions} />
       </div>
     );
   }
@@ -169,7 +131,7 @@ class DetailsList extends Component {
     for (var i = 0; i < this.props.questions.length; i++) {
       questionComponents.push(
         <div key={i}>
-          <p>{this.props.questions[i]}</p>
+          <p>{this.props.questions[i].question}</p>
         </div>
       );
     }
