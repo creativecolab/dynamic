@@ -112,7 +112,7 @@ class TeamDiscussion extends Component {
   };
 
   handleVote = () => {
-    const { pid, activity_id } = this.props;
+    const { pid, activity_id, team } = this.props;
 
     if (!this.props.team._id) {
       return;
@@ -129,6 +129,7 @@ class TeamDiscussion extends Component {
           preferences: {
             values: teammates,
             activity_id,
+            team: team._id,
             timestamp: new Date().getTime(),
             shareEmail: false,
             round: this.props.progress,
@@ -204,6 +205,7 @@ class TeamDiscussion extends Component {
             activity_id={activity_id}
             teammates={this.state.teammates}
             handleChange={this.handlepreferenceChange}
+            team_id={team._id}
             round={progress}
             session={session_id}
           />

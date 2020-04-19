@@ -117,6 +117,7 @@ export default class TeammateSliders extends Component {
           preferences: {
             values: teammates,
             activity_id,
+            team: this.props.team_id,
             timestamp: new Date().getTime(),
             shareEmail: false,
             round: this.props.progress,

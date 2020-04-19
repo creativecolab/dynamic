@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import Button from '../Components/Button/Button';
+import Users from '../../api/users';
 
 import './TableSummary.scss';
 
@@ -11,9 +12,50 @@ export default class TableSummary extends Component {
     preferences: PropTypes.array
   };
 
+  constructor(props) {
+    super(props)
+    console.log("construct");
+    const { pid, session_id } = props;
+
+
+    const user = Users.findOne({ pid });
+    console.log(user);
+
+    var relevant_prefs = [];
+
+    for (var i = 0; i < user.preferences.length; i++) {
+      const pref = user.preferences[i];
+      if (pref.session == session_id) {
+        relevant_prefs.push(pref);
+      }
+    }
+
+    relevant_prefs.sort((a, b) => (a.round > b.round) ? 1 : -1)
+
+    var data = [];
+
+    for (var i = 0; i < relevant_prefs.length; i++) {
+      var obj = {};
+      var members = [];
+      var rankings = [];
+      const pref = relevant_prefs[i];
+
+      for (var j = 0; j < pref.values.length; j++) {
+        const teammate_pid = pref.values[j].pid;
+        const teammate = Users.findOne({ pid: teammate_pid });
+
+        members.push(teammate.name);
+        rankings.push(pref.values[j].value);
+      }
+      obj.members = members;
+      obj.rankings = rankings;
+      obj.round = pref.round;
+      data.push(obj);
+    }
+    console.log(data);
+  }
 
   render() {
-    const rankings = [1, 2];
     const memberData = [["Sam", "Justin"], ["Steven", "Matin"], ["Alison", "Amaya"], ["Billy", "Bob", "Joe"]];
     const rankingData = [["4", "2"], ["5", "3"], ["2", "5"], ["3", "1", "2"]];
     const questionData = [["Q1", "Q2", "Q3", "Q4"], ["Q3", "Q4"], ["Q5"], ["Q6", "Q7", "Q8"]];

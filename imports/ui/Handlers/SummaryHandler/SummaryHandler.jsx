@@ -40,7 +40,7 @@ class SummaryHandler extends Component {
     // determine with component to load based on state
     const { viewedSummary, selectedEmails, sentEmails } = this.state;
 
-    const { preferences } = this.props;
+    const { preferences, pid, session_id } = this.props;
 
 
     // haven't looked at the summary yet
@@ -49,7 +49,7 @@ class SummaryHandler extends Component {
 
     // haven't finished selecting emails
     if (!selectedEmails)
-      return (<TableSummary preferences={preferences} />);
+      return (<TableSummary preferences={preferences} pid={pid} session_id={session_id} />);
 
     if (!sentEmails)
       return (<EmailConfirmation preferences={preferences} onSubmit={() => this.setState({ sentEmails: true })} />);
