@@ -320,6 +320,7 @@ Meteor.methods({
 
     var relevant_prefs = [];
 
+
     //get all preferences of the users for this session
     for (var i = 0; i < user.preferences.length; i++) {
       const pref = user.preferences[i];
@@ -361,8 +362,8 @@ Meteor.methods({
 
       var questionTimes = [];
 
-      for(var i = 0; i < questions.length; i++){
-        var question = questions[i];
+      for(var k = 0; k < questions.length; k++){
+        var question = questions[k];
         var qdata = {};
         var viewTimers = question.teamViewTimer;
 
@@ -377,7 +378,6 @@ Meteor.methods({
         questionTimes.push(qdata);
 
       }
-
       obj.questions = questionTimes;
       data.push(obj);
     }
