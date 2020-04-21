@@ -19,12 +19,6 @@ class SummaryHandler extends Component {
     session_id: PropTypes.string.isRequired
   };
 
-  // static defaultProps = {
-  //   activity_id: '',
-  //   sessionLength: 0,
-  //   activity: {}
-  // };
-
   constructor(props) {
     super(props);
     const { viewedSummary, selectedEmails, sentEmails } = this.props;
@@ -80,7 +74,7 @@ class SummaryHandler extends Component {
       return <Survey />;
     }
 
-    let buttonAct;
+    let buttonAct, backBtnAct;
     if (!viewedSummary) {
       buttonAct = () => {
         this.setState({ viewedSummary: true });
@@ -104,6 +98,12 @@ class SummaryHandler extends Component {
           console.log("set sentEmails to ", true);
         });
       }
+      backBtnAct = () => {
+        this.setState({ selectedEmails: false });
+        Meteor.call('users.toggleSelectedEmails', pid, session_id, false, () => {
+          console.log("set selectedEmails to ", false);
+        });
+      }
     }
 
     return (
@@ -113,11 +113,12 @@ class SummaryHandler extends Component {
         hasFooter={true}
         hasNavbar={true}
         hasTimer={false}
-        displayTea={false}
+        displayTeam={false}
+        hasBackBtn={this.state.selectedEmails ? true : false}
         buttonAction={buttonAct}
         buttonSize={'medium'}
         buttonTxt={'Send Emails'}
-        backButtonFunction={this.backButtonPressed.bind(this)}
+        backBtnAction={backBtnAct}
       >
         {this.renderBody()}
       </Mobile>

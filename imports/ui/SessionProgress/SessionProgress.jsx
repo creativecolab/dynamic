@@ -338,7 +338,7 @@ class SessionProgress extends Component {
           activityPhase={"Summary Phase"}
           instructions={"View your summary of this session!"}
         >
-          <SessionEnd /> {/* TODO: change this*/}
+          [Insert Image here]
         </BigScreen>
       );
     }

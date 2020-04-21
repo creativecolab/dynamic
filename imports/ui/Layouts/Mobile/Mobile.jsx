@@ -62,11 +62,13 @@ export default class Mobile extends Component {
     hasTimer: PropTypes.bool,
     title: PropTypes.string,
     displayTeam: PropTypes.bool,
+    hasBackBtn: PropTypes.bool,
     // team: PropTypes.object,
     _id: PropTypes.string,
     members: PropTypes.array,
     color: PropTypes.string,
     shape: PropTypes.string,
+    backBtnAction: PropTypes.func,
     buttonAction: PropTypes.func,
     buttonSize: PropTypes.string,
     buttonTxt: PropTypes.string,
@@ -91,6 +93,10 @@ export default class Mobile extends Component {
     hasNavbar: true,
     hasTimer: true,
     displayTeam: false,
+    hasBackBtn: false,
+    backBtnAction: () => {
+      console.log('Back button action not set');
+    },
     buttonAction: () => {
       console.log('Button action not set');
     },
@@ -166,15 +172,13 @@ export default class Mobile extends Component {
     return contentStyle;
   }
 
-  backPressed() {
-    console.log("zzzzzz");
-  }
-
   render() {
     const { title, sessionStatus, sessionLength } = this.props;
     const { buttonSize, buttonTxt, buttonAction } = this.props;
+    const { hasBackBtn, backBtnAction } = this.props;
     const { feedbackMsge, feedbackClass } = this.props;
-    const { clockStartTime, clockDuration, displayTeam, members, shape, color } = this.props;
+    const { clockStartTime, clockDuration } = this.props;
+    const { displayTeam, members, shape, color } = this.props;
     const { hasFooter, hasNavbar, hasTimer } = this.props;
     const { children, footerText } = this.props;
     const { loading, teamOpen } = this.state;
@@ -184,15 +188,16 @@ export default class Mobile extends Component {
 
     if (displayTeam && team_id) names = this.getTeammateNames(members);
 
+    // set up top left part of navbar
     var topLeft = (
       <div className="nav-team-shape">
 
       </div>
     );
-    if (this.props.backButtonFunction) {
+    if (hasBackBtn) {
       topLeft = (
-        <div className="nav-team-shape" onClick={() => this.props.backButtonFunction()}>
-          Back
+        <div className="nav-back-btn" onClick={backBtnAction}>
+          {"<"}
         </div>
       );
     }
