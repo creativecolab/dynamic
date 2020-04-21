@@ -29,14 +29,20 @@
     text-align: center;
     z-index: 2;
 
+    .nav-back-btn {
+      margin-left: 10px;
+      width: 46px;
+      color: $dynamic-white;
+      font-size: 48px;
+      display: flex;
+      line-height: $navbar-height;
+      text-align: center;
+    }
+
     .nav-team-shape {
-      // cursor: pointer;
-      // margin: -$navbar-padding;
-      // padding: $navbar-padding;
-      // background: rgb(12, 12, 12);
+      margin-left: 10px;
       width: 46px;
       color: $dynamic-gray;
-      // line-height: 25px;
       font-size: 18px;
       display: flex;
       flex-wrap: wrap;
@@ -52,16 +58,6 @@
         line-height: 25px;
         font-size: 15px;
       }
-
-      
-      // .name-flex {
-      //   display: flex;
-      //   flex-direction: column;
-
-      //   .group-name-label {
-      //     color: white;
-      //   }
-      //  }
     }
 
 
