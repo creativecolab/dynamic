@@ -11,6 +11,7 @@ import SessionHandler from '../../ui/Handlers/SessionHandler/SessionHandler';
 import DataOverview from '../../ui/DataOverview/DataOverview';
 import SharedDisplay from '../../ui/SharedDisplay/SharedDisplay';
 import Home from '../../ui/Home/Home';
+import NewHome from '../../ui/NewHome/NewHome';
 // eslint-disable-next-line import/prefer-default-export
 export const renderRoutes = () => (
   <Router>
@@ -23,6 +24,9 @@ export const renderRoutes = () => (
         <Route exact path="/home" component={Home} />
         <Route exact path="/learnmore" component={Home} />
         <Route exact path="/about" component={Home} />
+
+        <Route exact path="/newhome" component={NewComponent} />
+        
         <Route exact path="/host" component={SharedDisplay} />
         <Route exact path="/:code" component={SessionHandler} />
         <Route exact path="/:code/edit" component={Session} />
