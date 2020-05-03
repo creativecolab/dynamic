@@ -76,3 +76,17 @@
   align-items: center;
   justify-content: center;
 }
+
+.checkbox{
+  width: 30px;
+  height:30px;
+}
+
+.checked{
+  background:cyan;
+}
+
+.unchecked{
+  background:white;
+  border: 1px solid black;
+}

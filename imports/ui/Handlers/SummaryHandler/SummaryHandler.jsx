@@ -8,7 +8,7 @@ import Teams from '../../../api/teams';
 import Mobile from '../../Layouts/Mobile/Mobile';
 
 import ActivityCompletion from '../../Summary/ActivityCompletion';
-import TableSummary from '../../Summary/TableSummary';
+import TableSummary from '../../Summary/Table/TableSummary';
 import EmailConfirmation from '../../Summary/EmailConfirmation';
 import Loading from '../../Components/Loading/Loading';
 import Survey from '../../Components/Survey/Survey';

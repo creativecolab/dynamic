@@ -42,6 +42,42 @@ Meteor.methods({
     });
   },
 
+  'users.addToEmailList': function(pid, session_id, teammember_pid) {
+    Users.update(
+      {
+        pid: pid,
+        sessionHistory: {
+          $elemMatch: {
+            session_id: session_id
+          }
+        }
+      },
+      {
+        $addToSet: {
+          'sessionHistory.$.sendEmailsTo': teammember_pid
+        }
+      }
+    );
+  },
+
+  'users.removeFromEmailList': function(pid, session_id, teammember_pid) {
+    Users.update(
+      {
+        pid: pid,
+        sessionHistory: {
+          $elemMatch: {
+            session_id: session_id
+          }
+        }
+      },
+      {
+        $pull: {
+          'sessionHistory.$.sendEmailsTo': teammember_pid
+        }
+      }
+    );
+  },
+
   'sessions.addUser': function(pid, session_id) {
 
     // get the current session and the relevant user
@@ -63,7 +99,8 @@ Meteor.methods({
           sessionJoinTime: new Date().getTime(),
           viewedSummary: false,
           selectedEmails: false,
-          sentEmails: false
+          sentEmails: false,
+          sendEmailsTo: []
         }
       }
     });
@@ -337,12 +374,15 @@ Meteor.methods({
     for (var i = 0; i < relevant_prefs.length; i++) {
       var obj = {};
       var members = [];
+      var pids = [];
       var rankings = [];
       const pref = relevant_prefs[i];
 
       //get rankings/names of each teammate for this round
       for (var j = 0; j < pref.values.length; j++) {
         const teammate_pid = pref.values[j].pid;
+        pids.push(teammate_pid);
+
         const teammate = Users.findOne({ pid: teammate_pid });
 
         members.push(teammate.name);
@@ -352,6 +392,7 @@ Meteor.methods({
       obj.members = members;
       obj.rankings = rankings;
       obj.round = pref.round;
+      obj.pids = pids;
 
       // get the top questions for this round
       if (!session.instructor || session.instructor === "default") {
