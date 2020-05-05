@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 export default class DetailsList extends Component {
+
+  static proptypes = {
+    questions: PropTypes.array.isRequired
+  }
+
   constructor(props) {
     super(props);
     this.state = ({
