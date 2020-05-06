@@ -66,12 +66,15 @@ class SummaryHandler extends Component {
 
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(userEmail)) {
       // valid email
-      this.setState({
-        invalidEmail: false,
-        sentEmails: true
-      });
-      Meteor.call('users.saveEmail', pid, session_id, userEmail, () => {
-        console.log("Accepted email address.");
+      Meteor.call('users.saveEmail', pid, session_id, userEmail, (err) => {
+        if (err) console.log(err);
+        else {
+          console.log("Accepted email address.");
+          this.setState({
+            invalidEmail: false,
+            sentEmails: true
+          });
+        }
       });
     } else {
       this.setState({

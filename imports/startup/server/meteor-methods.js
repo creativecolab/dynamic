@@ -81,22 +81,22 @@ Meteor.methods({
     );
   },
 
-  'users.saveEmail': function( pid, session_id, email_address) {
+  'users.saveEmail': function(pid, session_id, email_address) {
     Users.update(
       {
         pid: pid,
         sessionHistory: {
           $elemMatch: {
-            session: session_id
+            session_id: session_id
           }
         }
       },
       {
         $set: {
-          'sessionHistory.$.sentEmails': true,
-          'sessionHistory.$.emailAddress': email_address
+          'sessionHistory.$.emailAddress': email_address,
+          'sessionHistory.$.sentEmails': true
         }
-      }
+      },
     );
 
     // since this user has completed the session, mark them as completed for this session
@@ -270,7 +270,8 @@ Meteor.methods({
           viewedSummary: false,
           selectedEmails: false,
           sentEmails: false,
-          sendEmailsTo: []
+          sendEmailsTo: [],
+          emailAddress: ""
         }
       }
     });

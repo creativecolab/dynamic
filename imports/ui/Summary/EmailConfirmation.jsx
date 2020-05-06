@@ -20,48 +20,13 @@ export default class EmailConfirmation extends Component {
 
   constructor(props) {
     super(props);
-
-    // this.state = {
-    //   userEmail: "",
-    //   invalidEmail: this.props.invalidEmail
-    // }
   }
-
-  // reset state values if they used SummaryHandler's button instead 
-  // componentWillReceiveProps(nextProps) {
-  //   if (nextProps.invalidEmail !== this.props.invalidEmail) {
-  //     this.setState({ invalidEmail: nextProps.invalidEmail })
-  //   }
-  // }
 
   /* Event Handlers */
 
-  // track the user's entered email here and in parent prop
+  // track the user's entered email using parent prop
   updateEmail = evt => {
-    // use this to update the value of TextInput
-    // this.setState({
-    //   userEmail: evt.target.value,
-    //   invalidEmail: false
-    // });
-    // use this to match SummaryHandler's state, so it's button can work
     this.props.trackEmail(evt.target.value);
-
-    // TODO: update email in db 
-  }
-
-  confirmEmail = () => {
-
-    const { userEmail } = this.state;
-
-    // check for invalid email
-    if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(userEmail))) {
-      this.setState({
-        invalidEmail: true,
-      });
-    } else {
-      // tell Summary Handler that the email address was confirmed
-      this.props.onSubmit();
-    }
   }
 
   /* Component Selection */
