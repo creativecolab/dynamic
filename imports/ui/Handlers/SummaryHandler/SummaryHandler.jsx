@@ -116,7 +116,7 @@ class SummaryHandler extends Component {
         displayTeam={false}
         hasBackBtn={this.state.selectedEmails ? true : false}
         buttonAction={buttonAct}
-        buttonSize={'medium'}
+        buttonSize={'small'}
         buttonTxt={'Send Emails'}
         backBtnAction={backBtnAct}
       >

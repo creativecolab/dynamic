@@ -18,7 +18,7 @@ export default class TableRow extends Component {
       <div className="table-row-container">
         <div className="table-row">
           <div className="round-cell">
-            <h5>{round}</h5>
+            {round}
 
           </div>
           <div className="members-cell">

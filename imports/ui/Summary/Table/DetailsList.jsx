@@ -22,9 +22,13 @@ export default class DetailsList extends Component {
 
   render() {
     var questionComponents = [];
-    for (var i = 0; i < this.props.questions.length; i++) {
+
+    //TODO
+    const max = 3;
+
+    for (var i = 0; i < this.props.questions.length && i < max; i++) {
       questionComponents.push(
-        <div key={i}>
+        <div key={i} className="question-detail-container">
           <p>{this.props.questions[i].question}</p>
         </div>
       );
@@ -34,7 +38,6 @@ export default class DetailsList extends Component {
       return (
         <div className="question-summary">
           <div>
-            <h4>Questions</h4>
             {questionComponents}
           </div>
           <div className="showhide-details" onClick={() => this.hideClicked()}>

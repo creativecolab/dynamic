@@ -24,7 +24,7 @@ export default class MemberRow extends Component {
         <div className="ranking-cell">
           {rankingComponents}
         </div>
-        <div className="share-cell">
+        <div className="check-cell">
           <CheckBox checked={this.props.checked} teammate_pid={this.props.pid} toggleCallback={this.props.toggleCallback} />
         </div>
       </div>
@@ -45,12 +45,12 @@ class CheckBox extends Component {
   render() {
     if (this.props.checked) {
       return (
-        <div className="checked checkbox" onClick={() => this.toggle()}></div>
+        <div id="checkbox" className="checked checkbox" onClick={() => this.toggle()}></div>
       );
     }
     else {
       return (
-        <div className="unchecked checkbox" onClick={() => this.toggle()}></div>
+        <div id="checkbox" className="unchecked checkbox" onClick={() => this.toggle()}></div>
       );
     }
 

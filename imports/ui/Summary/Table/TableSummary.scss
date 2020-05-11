@@ -56,17 +56,18 @@
 }
 
 .full-dot{
-  height: 25px;
-  width: 25px;
+  height: 11px;
+  width: 11px;
   background-color: gold;
   border-radius: 50%;
   display: inline-block;
 }
 
 .empty-dot{
-  height: 25px;
-  width: 25px;
+  height: 11px;
+  width: 11px;
   background-color: lightgrey;
+  box-sizing: border-box;
   border-radius: 50%;
   display: inline-block;
 }
@@ -82,11 +83,57 @@
   height:30px;
 }
 
+#checkbox{
+  border-radius: 5px;
+  width: 20px;
+  height: 20px;
+  box-sizing: border-box;
+}
+
 .checked{
-  background:cyan;
+  background: #74E1FF;
 }
 
 .unchecked{
   background:white;
-  border: 1px solid black;
+  border: 1px solid #8D8D8D;
+}
+
+.showhide-details{
+  font-size: 12px;
+  line-height: 15px;
+  text-align: center;
+}
+
+.member-cell{
+  font-size: 12px;
+  line-height: 15px;
+}
+
+.round-cell{
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+}
+
+.table-header-container div h2{
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.check-cell{
+  padding-left: calc(50% - 10px);
+}
+
+.member-row-container{
+  padding-bottom: 10px;
+}
+
+.table-row{
+  padding-top:10px
+}
+
+.question-detail-container p{
+  font-size: 15px;
+  line-height: 18px;
 }
