@@ -1,8 +1,22 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import MemberRow from './MemberRow';
 import DetailsList from './DetailsList';
 
 export default class TableRow extends Component {
+
+  static propTypes = {
+    data: PropTypes.object.isRequired,
+    selectedToEmail: PropTypes.array.isRequired,
+    toggleCallback: PropTypes.func.isRequired
+  }
+
+  constructor(props) {
+    super(props);
+  }
+
+
   render() {
     var memberComponents = [];
     const { selectedToEmail, data } = this.props;

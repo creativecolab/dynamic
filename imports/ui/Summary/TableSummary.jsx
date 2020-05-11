@@ -1,42 +1,45 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Meteor } from 'meteor/meteor';
+//import { Meteor } from 'meteor/meteor';
 
-import TableHeader from './TableHeader';
-import TableRow from './TableRow';
+import TableHeader from './TableComponents/TableHeader';
+import TableRow from './TableComponents/TableRow';
 
 import { withTracker } from 'meteor/react-meteor-data';
 
 import './TableSummary.scss';
 
 class TableSummary extends Component {
-
   static propTypes = {
-    preferences: PropTypes.array
+    pid: PropTypes.string.isRequired,
+    session_id: PropTypes.string.isRequired,
+    trackRecipients: PropTypes.func
   };
 
   constructor(props) {
     super(props)
 
     const { pid, session_id } = props;
-    this.getSummary(pid, session_id);
-  }
 
-  getSummary(pid, session_id) {
+    // get the data necessary for this component
     Meteor.call('users.getSummary', pid, session_id, (error, result) => {
       this.setState({
         data: result
       });
-    })
+    });
   }
 
-  toggleChecked(teammate_id, prevChecked) {
+  toggleChecked(teammate_id, teammate_name, prevChecked) {
     //previously checked, need to uncheck
     if (prevChecked) {
-      Meteor.call('users.removeFromEmailList', this.props.pid, this.props.session_id, teammate_id);
+      Meteor.call('users.removeFromEmailList', this.props.pid, this.props.session_id, teammate_id, () => {
+        this.props.trackRecipients(teammate_name, false);
+      });
     }
     else {
-      Meteor.call('users.addToEmailList', this.props.pid, this.props.session_id, teammate_id);
+      Meteor.call('users.addToEmailList', this.props.pid, this.props.session_id, teammate_id, () => {
+        this.props.trackRecipients(teammate_name, true);
+      });
     }
   }
 
@@ -47,6 +50,7 @@ class TableSummary extends Component {
         rows.push(<TableRow key={i} data={this.state.data[i]} selectedToEmail={this.props.selectedToEmail} toggleCallback={this.toggleChecked.bind(this)} />);
       }
     }
+
 
     return (
       <div className="table-summary" id="center-container">

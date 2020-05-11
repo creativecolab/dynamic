@@ -6,47 +6,73 @@ import Mobile from '../Layouts/Mobile/Mobile';
 import TextInput from '../Components/TextInput/TextInput';
 
 import './EmailConfirmation.scss';
+import { resetWarningCache } from 'prop-types';
 
 export default class EmailConfirmation extends Component {
 
   static propTypes = {
+    trackEmail: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
-    preferences: PropTypes.array
+    recipients: PropTypes.array.isRequired,
+    invalidEmail: PropTypes.bool.isRequired,
+    userEmail: PropTypes.string.isRequired
   };
-
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      userEmail: "",
-      invalidEmail: false
-    }
   }
 
-  updateEmail = (email) => {
-    this.setState({
-      userEmail: email
-    });
+  /* Event Handlers */
 
-    // TODO: update email in db
+  // track the user's entered email using parent prop
+  updateEmail = evt => {
+    this.props.trackEmail(evt.target.value);
+  }
+
+  /* Component Selection */
+
+  // make recipient list
+  makeRecipientList(recipients) {
+    if (recipients === undefined || recipients.length == 0) {
+      return (
+        <h3>You have elected to not invite anyone to connect. Please enter your email to continue.</h3>
+      )
+    } else {
+      // format the recipient list
+      let recipients_map = recipients.map((curr_rec, idx) => {
+        if (idx == 0) return (<strong key={idx}>{curr_rec}</strong>);
+        else if (idx > 0 && idx < recipients.length - 1) return (<strong key={idx}>, {curr_rec}</strong>);
+        else {
+          return (<t key={idx}><t>{recipients.length == 2 ? <strong> </strong> : <strong>, </strong>}</t>and <strong>{curr_rec}</strong></t>);
+        }
+      });
+
+      return (
+        <h3>You are about to invite {recipients_map} to connect. Please enter your email to continue.</h3>
+      )
+    }
   }
 
 
   render() {
+
+    // get details, and states passed down from SummaryHandler
+    const { onSubmit, recipients, userEmail, invalidEmail } = this.props;
+    //const { userEmail, invalidEmail } = this.state;
+
     return (
       <div id="center-container">
         <div id="instructions">
-          <h2>You are about to send an email inviting {"Person"} to connect.</h2>
+          {this.makeRecipientList(recipients)}
         </div>
         <h2>[insert graphic here]</h2>
         <TextInput
           name="email"
-          onSubmit={this.props.onSubmit}
-          onChange={this.updateEmail}
-          value={this.state.userEmail}
-          invalid={this.state.invalidEmail}
-          invalidMsg="Please enter an email address with extension @ucsd.edu"
+          onSubmit={onSubmit}
+          onChange={this.updateEmail.bind(this)}
+          value={userEmail}
+          invalid={invalidEmail}
+          invalidMsg="Please enter a valid email address."
           label="Enter your email address:"
           labelPos="left"
           placeholder="abcde@ucsd.edu"

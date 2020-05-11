@@ -13,6 +13,21 @@ if (Meteor.isServer) {
 
   /* Active APIs */
 
+  Api.addRoute('whos_late/:code', {
+    get() {
+      const content_disposition = 'attachment; filename=late_counts_[' + this.urlParams.code.toLowerCase() + '].csv';
+
+      return {
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'text/csv',
+          'Content-Disposition': content_disposition
+        },
+        body: data_getter.getLateCount(this.urlParams.code)
+      };
+    }
+  });
+
   Api.addRoute('user_info/:code', {
     get() {
       const content_disposition = 'attachment; filename=user_info_[' + this.urlParams.code.toLowerCase() + '].csv';

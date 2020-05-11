@@ -9,6 +9,9 @@ import Questions from '../../api/questions';
 
 /* Meteor methods (server-side functions, mostly database work) */
 Meteor.methods({
+
+  /* Users Collection Methods */
+  
   'users.addUser': function(pid, name) {
     if (!(Users.findOne({pid: pid}))) {
       Users.insert({
@@ -78,250 +81,31 @@ Meteor.methods({
     );
   },
 
-  'sessions.addUser': function(pid, session_id) {
-
-    // get the current session and the relevant user
-    const session = Sessions.findOne(session_id);
-    const user = Users.findOne({pid: pid});
-
-    // verify that this user exists
-    if (!user) {
-      console.log("User with pid " + pid + " does not exist, will not add to participants.")
-        throw new Meteor.Error("nonexistant-pid",
-        "A dynamic-user with this PID does not exist.");
-    }
-
-    // note the session join time
-    Users.update(user._id, {
-      $push: {
-        sessionHistory: {
-          session_id: session_id,
-          sessionJoinTime: new Date().getTime(),
-          viewedSummary: false,
-          selectedEmails: false,
-          sentEmails: false,
-          sendEmailsTo: []
-        }
-      }
-    });
-
-    // verify that this user it not in participants already
-    for (let i = 0; i < session.participants.length; i++) {
-      if (session.participants[i] === pid) {
-        console.log("Duplicate User, will ignore.")
-        throw new Meteor.Error("duplicate-pid",
-        "PID already present in participants for this session.");      
-      }
-    }
-
-    // add user to session
-    Sessions.update(session_id, {
-        $push: {
-          participants: pid
-        }
-      }
-    );
-  },
-
-  'sessions.buildTeamHistory': function(participants, session_id) {
-    teamHistory = {};
-    participants.forEach(participant => {
-      teamHistory[participant] = {};
-      participants.forEach(other_participants => {
-        if (other_participants != participant) teamHistory[participant][other_participants] = 0;
-      });
-    });
-    Sessions.update(session_id, {
-      $set: {
-        teamHistory
-      }
-    });
-  },
-
-  'sessions.finishSession': function(session_id) {
-    Sessions.update(session_id, {
-      $set: {
-        endTime : new Date().getTime(),
-        status: 3
-      }  
-    });
-  },
-
-  'activities.updateStatus': function(activity_id) {
-    try {
-      const activity = Activities.findOne(activity_id);
-
-      const currentStatus = activity.status;
-
-      // increment the status, get the appropriate timestamp, and prepare for next status
-      switch (currentStatus) {
-        case 0:
-          Activities.update(activity_id, {
-            $set: {
-              status: currentStatus + 1, 
-              'statusStartTimes.buildTeams': new Date().getTime()
-            }
-          });
-
-          return currentStatus + 1;
-        case 1:
-          Activities.update(activity_id, {
-            $set: {
-              status: currentStatus + 1,
-              'statusStartTimes.teamForm': new Date().getTime(),
-              allTeamsFound: false
-            }
-          });
-
-          return currentStatus + 1;
-        case 2:
-          Activities.update(activity_id, {
-            $set: {
-              status: currentStatus + 1,
-              'statusStartTimes.teamPhase': new Date().getTime()
-            }
-          });
-
-          return currentStatus + 1;
-        case 3:
-          Activities.update(activity_id, {
-            $set: {
-              status: currentStatus + 1,
-              'statusStartTimes.peerAssessment': new Date().getTime()
-            }
-          });
-
-          return currentStatus + 1;
-        case 4:
-          Activities.update(activity_id, {
-            $set: {
-              status: currentStatus + 1,
-              endTime: new Date().getTime()
-            }
-          });
-
-          return currentStatus + 1;
-        default:
-          console.log('No longer incrementing');
-
-          return -1;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  },
-
-  // write to the database for tracking question time (OLD VERSION)
-  'questions.updateTimers': function(past_question, next_question, startTime, endTime, team_id) {
-    console.log("update timers called with params", past_question, next_question, startTime, endTime, team_id);
-    // save the time spent on the last question
-    Questions.update(
-      past_question,
+  'users.saveEmail': function(pid, session_id, email_address) {
+    Users.update(
       {
-        $inc: {
-          viewTimer: endTime - startTime
+        pid: pid,
+        sessionHistory: {
+          $elemMatch: {
+            session_id: session_id
+          }
         }
       },
-      error => {
-        if (!error) {
-          //console.log('Saved past question');
-        } else {
-          console.log(error);
+      {
+        $set: {
+          'sessionHistory.$.emailAddress': email_address,
+          'sessionHistory.$.sentEmails': true
         }
-      }
+      },
     );
 
-
-    const question = Questions.findOne(past_question);
-
-    //if teamViewTimer field not present
-    if(!question.teamViewTimer){
-      Questions.update(
-        past_question,
-        {
-          $set: {
-            teamViewTimer: []
-          }
-        }
-      );
-
-      Questions.update(past_question, {
-        $push: {
-          teamViewTimer: {
-            "id": team_id,
-            "time": endTime-startTime
-          }
-        }
-      });
-    }
-    else{
-      const timers = question.teamViewTimer;
-
-      var index = -1;
-      for(var i = 0; i < timers.length; i++){
-          if(timers[i].id == team_id){
-            index = i;
-            break;
-          }
-      }
-
-      // If team has already viewed this question
-      if(index >= 0){
-        Questions.update(
-          { _id: past_question, "teamViewTimer.id": team_id },
-          { $inc: { "teamViewTimer.$.time" : endTime-startTime } }
-        );
-      }
-      else{
-        Questions.update(past_question, {
-          $push: {
-            teamViewTimer: {
-              "id": team_id,
-              "time": endTime-startTime
-            }
-          }
-        });
+    // since this user has completed the session, mark them as completed for this session
+    Sessions.update(session_id, {
+      $push: {
+        doneParticipants: pid
       }
     }
-
-    // update how many times the next question has been viewed
-    if (next_question != '') {
-      Questions.update(
-        next_question,
-        {
-          $inc: {
-            timesViewed: 1
-          }
-        },
-        error => {
-          if (!error) {
-            //console.log('Saved next question');
-          } else {
-            console.log(error);
-          }
-        }
-      );
-    }
-  },
-
-  'questions.setCurrent': function(team_id, member_pid, question_ind){
-    // update the team of interest with the new members
-    console.log(team_id);
-    console.log(member_pid);
-    console.log(question_ind);
-    Teams.update({
-      _id: team_id,
-      "currentQuestions.pid": member_pid
-    },
-    { 
-      $set: { "currentQuestions.$.question_ind" : question_ind } 
-    },
-    (error) => {
-      if (error) {
-        throw new Meteor.Error("failed-to-set-current-question",
-        "Unable to set current question for member");
-      } 
-    });
+    );
   },
 
   'users.addPoints': function({ user_id, session_id, points }) {
@@ -462,55 +246,75 @@ Meteor.methods({
     );
   },
 
-  'users.toggleSentEmails': function(pid, session_id, sendEmailsToggle) {
-    Users.update(
-      {
-        pid: pid,
+  /* Sessions Collection Methods */
+
+  'sessions.addUser': function(pid, session_id) {
+
+    // get the current session and the relevant user
+    const session = Sessions.findOne(session_id);
+    const user = Users.findOne({pid: pid});
+
+    // verify that this user exists
+    if (!user) {
+      console.log("User with pid " + pid + " does not exist, will not add to participants.")
+        throw new Meteor.Error("nonexistant-pid",
+        "A dynamic-user with this PID does not exist.");
+    }
+
+    // note the session join time
+    Users.update(user._id, {
+      $push: {
         sessionHistory: {
-          $elemMatch: {
-            session_id: session_id
-          }
-        }
-      },
-      {
-        $set: {
-          'sessionHistory.$.sentEmails': sendEmailsToggle
+          session_id: session_id,
+          sessionJoinTime: new Date().getTime(),
+          viewedSummary: false,
+          selectedEmails: false,
+          sentEmails: false,
+          sendEmailsTo: [],
+          emailAddress: ""
         }
       }
-    );
+    });
 
-    // since this user has completed the session, mark them as completed for this session
-    Sessions.update(session_id, 
-      {
+    // verify that this user it not in participants already
+    for (let i = 0; i < session.participants.length; i++) {
+      if (session.participants[i] === pid) {
+        console.log("Duplicate User, will ignore.")
+        throw new Meteor.Error("duplicate-pid",
+        "PID already present in participants for this session.");      
+      }
+    }
+
+    // add user to session
+    Sessions.update(session_id, {
         $push: {
-          doneParticipants: pid
+          participants: pid
         }
       }
     );
   },
 
-  'teams.removeMember': function(team_id, removee) {
-    // update the team of interest with the new members
-    console.log(team_id);
-    console.log(removee);
-    Teams.update({
-      _id: team_id,
-    },
-    {
-      $pull: {
-        members: {
-          pid: removee
-        }
-      },
+  'sessions.buildTeamHistory': function(participants, session_id) {
+    teamHistory = {};
+    participants.forEach(participant => {
+      teamHistory[participant] = {};
+      participants.forEach(other_participants => {
+        if (other_participants != participant) teamHistory[participant][other_participants] = 0;
+      });
+    });
+    Sessions.update(session_id, {
       $set: {
-        remove: true
+        teamHistory
       }
-    }, 
-    (error) => {
-      if (error) {
-        throw new Meteor.Error("failed-to-remove",
-        "Unable to remove that person from this team.");
-      } 
+    });
+  },
+
+  'sessions.finishSession': function(session_id) {
+    Sessions.update(session_id, {
+      $set: {
+        endTime : new Date().getTime(),
+        status: 3
+      }  
     });
   },
 
@@ -555,5 +359,214 @@ Meteor.methods({
         "Unable to remove this person from this session.");
       } 
     });
-  }
+  },
+
+  /* Activities Collection Methods */
+
+  'activities.updateStatus': function(activity_id) {
+    try {
+      const activity = Activities.findOne(activity_id);
+
+      const currentStatus = activity.status;
+
+      // increment the status, get the appropriate timestamp, and prepare for next status
+      switch (currentStatus) {
+        case 0:
+          Activities.update(activity_id, {
+            $set: {
+              status: currentStatus + 1, 
+              'statusStartTimes.buildTeams': new Date().getTime()
+            }
+          });
+
+          return currentStatus + 1;
+        case 1:
+          Activities.update(activity_id, {
+            $set: {
+              status: currentStatus + 1,
+              'statusStartTimes.teamForm': new Date().getTime(),
+              allTeamsFound: false
+            }
+          });
+
+          return currentStatus + 1;
+        case 2:
+          Activities.update(activity_id, {
+            $set: {
+              status: currentStatus + 1,
+              'statusStartTimes.teamPhase': new Date().getTime()
+            }
+          });
+
+          return currentStatus + 1;
+        case 3:
+          Activities.update(activity_id, {
+            $set: {
+              status: currentStatus + 1,
+              'statusStartTimes.peerAssessment': new Date().getTime()
+            }
+          });
+
+          return currentStatus + 1;
+        case 4:
+          Activities.update(activity_id, {
+            $set: {
+              status: currentStatus + 1,
+              endTime: new Date().getTime()
+            }
+          });
+
+          return currentStatus + 1;
+        default:
+          console.log('No longer incrementing');
+
+          return -1;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  /* Questions Collection Methods */
+
+  // write to the database for tracking question time (OLD VERSION)
+  'questions.updateTimers': function(past_question, next_question, startTime, endTime, team_id) {
+    console.log("update timers called with params", past_question, next_question, startTime, endTime, team_id);
+    // save the time spent on the last question
+    Questions.update(
+      past_question,
+      {
+        $inc: {
+          viewTimer: endTime - startTime
+        }
+      },
+      error => {
+        if (!error) {
+          //console.log('Saved past question');
+        } else {
+          console.log(error);
+        }
+      }
+    );
+
+
+    const question = Questions.findOne(past_question);
+
+    //if teamViewTimer field not present
+    if(!question.teamViewTimer){
+      Questions.update(
+        past_question,
+        {
+          $set: {
+            teamViewTimer: []
+          }
+        }
+      );
+
+      Questions.update(past_question, {
+        $push: {
+          teamViewTimer: {
+            "id": team_id,
+            "time": endTime-startTime
+          }
+        }
+      });
+    }
+    else{
+      const timers = question.teamViewTimer;
+
+      var index = -1;
+      for(var i = 0; i < timers.length; i++){
+          if(timers[i].id == team_id){
+            index = i;
+            break;
+          }
+      }
+
+      // If team has already viewed this question
+      if(index >= 0){
+        Questions.update(
+          { _id: past_question, "teamViewTimer.id": team_id },
+          { $inc: { "teamViewTimer.$.time" : endTime-startTime } }
+        );
+      }
+      else{
+        Questions.update(past_question, {
+          $push: {
+            teamViewTimer: {
+              "id": team_id,
+              "time": endTime-startTime
+            }
+          }
+        });
+      }
+    }
+
+    // update how many times the next question has been viewed
+    if (next_question != '') {
+      Questions.update(
+        next_question,
+        {
+          $inc: {
+            timesViewed: 1
+          }
+        },
+        error => {
+          if (!error) {
+            //console.log('Saved next question');
+          } else {
+            console.log(error);
+          }
+        }
+      );
+    }
+  },
+
+  'questions.setCurrent': function(team_id, member_pid, question_ind){
+    // update the team of interest with the new members
+    console.log(team_id);
+    console.log(member_pid);
+    console.log(question_ind);
+    Teams.update({
+      _id: team_id,
+      "currentQuestions.pid": member_pid
+    },
+    { 
+      $set: { "currentQuestions.$.question_ind" : question_ind } 
+    },
+    (error) => {
+      if (error) {
+        throw new Meteor.Error("failed-to-set-current-question",
+        "Unable to set current question for member");
+      } 
+    });
+  },
+
+  /* Teams Collection Methods */
+
+  'teams.removeMember': function(team_id, removee) {
+    // update the team of interest with the new members
+    console.log(team_id);
+    console.log(removee);
+    Teams.update({
+      _id: team_id,
+    },
+    {
+      $pull: {
+        members: {
+          pid: removee
+        }
+      },
+      $set: {
+        remove: true
+      }
+    }, 
+    (error) => {
+      if (error) {
+        throw new Meteor.Error("failed-to-remove",
+        "Unable to remove that person from this team.");
+      } 
+    });
+  },
+
 });
