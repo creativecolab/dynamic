@@ -47,3 +47,17 @@
   justify-content: center;
   flex-direction: column;
 }
+
+.ranking-connector{
+  margin:0;
+  height:1px;
+  width:5px;
+}
+
+.empty-connector{
+  background-color: lightgrey;
+}
+
+.filled-connector{
+  background-color: gold;
+}

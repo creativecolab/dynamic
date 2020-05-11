@@ -22,17 +22,27 @@ export default class MemberRow extends Component {
     for (var i = 0; i < 5; i++) {
       if (i <= this.props.ranking) {
         rankingComponents.push(
-          <span key={i} className="full-dot"></span>
+          <span key={"dot" + i} className="full-dot"></span>
         );
       }
       else {
         rankingComponents.push(
-          <span key={i} className="empty-dot"></span>
+          <span key={"dot" + i} className="empty-dot"></span>
         );
       }
-      // rankingComponents.push(
-      //   <hr key={i}></hr>
-      // );
+
+      if (i < 4) {
+        if (i < this.props.ranking) {
+          rankingComponents.push(
+            <div className="ranking-connector filled-connector" key={i}></div>
+          );
+        }
+        else {
+          rankingComponents.push(
+            <div className="ranking-connector empty-connector" key={i}></div>
+          );
+        }
+      }
     }
 
     return (

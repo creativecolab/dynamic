@@ -60,7 +60,13 @@ export default class DetailsList extends Component {
             </div>
           </div>
           <div className="showhide-details" onClick={() => this.hideClicked()}>
-            Close Details
+            <svg height="10" width="30">
+              <line x1="0" y1="10" x2="15" y2="0" style={{ "stroke": "rgb(0,0,0)", "stroke-width": "1" }} />
+              <line x1="30" y1="10" x2="15" y2="0" style={{ "stroke": "rgb(0,0,0)", "stroke-width": "1" }} />
+            </svg>
+            <div>
+              Close Details
+            </div>
           </div>
         </div>
       );
