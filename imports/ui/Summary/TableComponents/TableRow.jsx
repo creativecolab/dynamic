@@ -20,7 +20,7 @@ export default class TableRow extends Component {
   render() {
     var memberComponents = [];
     const { selectedToEmail, data } = this.props;
-    const { members, rankings, questions, pids, round } = data;
+    const { members, rankings, questions, pids, round, team } = data;
     for (var i = 0; i < members.length; i++) {
       var checked = selectedToEmail.includes(pids[i]);
       memberComponents.push(
@@ -39,7 +39,7 @@ export default class TableRow extends Component {
             {memberComponents}
           </div>
         </div>
-        <DetailsList questions={questions} />
+        <DetailsList questions={questions} team={team} />
       </div>
     );
   }

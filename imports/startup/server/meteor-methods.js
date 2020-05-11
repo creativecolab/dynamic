@@ -161,6 +161,8 @@ Meteor.methods({
       var pids = [];
       var rankings = [];
       const pref = relevant_prefs[i];
+      obj.team = Teams.findOne(pref.team);
+      
 
       //get rankings/names of each teammate for this round
       for (var j = 0; j < pref.values.length; j++) {
@@ -196,7 +198,7 @@ Meteor.methods({
           var entry = viewTimers[j];
           if(entry.id == pref.team){
             qdata["time"] = entry.time;
-            qdata["question"] = question.prompt;
+            qdata["question"] = question;
             break;
           }
         }

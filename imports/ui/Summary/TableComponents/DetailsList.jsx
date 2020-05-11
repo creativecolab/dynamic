@@ -35,16 +35,27 @@ export default class DetailsList extends Component {
     for (var i = 0; i < this.props.questions.length && i < max; i++) {
       questionComponents.push(
         <div key={i} className="question-detail-container">
-          <p>{this.props.questions[i].question}</p>
+          <div className="question-label">{this.props.questions[i].question.label}</div>
+          <p>{this.props.questions[i].question.prompt}</p>
         </div>
       );
     }
 
+    const { shape, color } = this.props.team;
+
     if (this.state.show) {
       return (
-        <div className="question-summary">
-          <div>
-            {questionComponents}
+        <div>
+          <div className="details-container">
+            <div className="details-shape-container">
+              <img src={`/shapes/${shape}-solid-${color}.jpg`}></img>
+            </div>
+            <div className="question-summary">
+              <h1>
+                Questions
+              </h1>
+              {questionComponents}
+            </div>
           </div>
           <div className="showhide-details" onClick={() => this.hideClicked()}>
             Close Details
@@ -54,7 +65,7 @@ export default class DetailsList extends Component {
     }
     else {
       return (
-        <div className="question-summary">
+        <div>
           <div className="showhide-details" onClick={() => this.showClicked()}>
             Show Details
           </div>

@@ -88,6 +88,7 @@
   width: 20px;
   height: 20px;
   box-sizing: border-box;
+  margin-left: calc(50% - 10px);
 }
 
 .checked{
@@ -133,7 +134,42 @@
   padding-top:10px
 }
 
-.question-detail-container p{
-  font-size: 15px;
+.question-detail-container{
+  font-size: 14px;
   line-height: 18px;
+  text-align: left;
+}
+
+
+.question-detail-container p{
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.details-container{
+  display: grid;
+  grid-template-columns: 25% 75%;
+}
+
+.question-summary h1{
+  font-size: 15px;
+  text-align: left;
+}
+
+.details-shape-container{
+  margin: 0 25px 0 25px;
+}
+
+.details-shape-container img{
+  width:100%
+}
+
+.question-label{
+  padding: 3px;
+  text-align: left;
+  margin: 0;
+  font-size: 8px;
+  background: #74E1FF;
+  border-radius: 5px;
+  display:inline
 }
