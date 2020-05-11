@@ -25,7 +25,7 @@
   display: inline-block;
 }
 
-.ranking-cell{
+.ranking-container{
   display: flex;
   align-items: center;
 }
@@ -60,4 +60,8 @@
 
 .filled-connector{
   background-color: gold;
+}
+
+.ranking-cell{
+  display: inline-grid;
 }

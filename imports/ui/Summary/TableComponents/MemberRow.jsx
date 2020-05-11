@@ -54,7 +54,9 @@ export default class MemberRow extends Component {
 
         </div>
         <div className="ranking-cell">
-          {rankingComponents}
+          <div className="ranking-container">
+            {rankingComponents}
+          </div>
         </div>
         <div className="share-cell">
           <CheckBox checked={this.props.checked} teammate_pid={this.props.pid} teammate_name={this.props.member} toggleCallback={this.props.toggleCallback} />
