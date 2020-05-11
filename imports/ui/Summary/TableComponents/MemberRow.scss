@@ -28,7 +28,6 @@
 .ranking-cell{
   display: flex;
   align-items: center;
-  justify-content: center;
 }
 
 .share-cell #checkbox{
@@ -39,6 +38,7 @@
   font-size: 12px;
   line-height: 15px;
   margin: 0;
+  align-self: baseline;
 }
 
 .member-cell{
