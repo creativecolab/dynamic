@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
+import './MemberRow.scss';
+import './CheckBox.scss';
 
 export default class MemberRow extends Component {
 
@@ -29,12 +30,18 @@ export default class MemberRow extends Component {
           <span key={i} className="empty-dot"></span>
         );
       }
+      // rankingComponents.push(
+      //   <hr key={i}></hr>
+      // );
     }
 
     return (
       <div className="member-row-container">
         <div className="member-cell">
-          {this.props.member}
+          <h1>
+            {this.props.member}
+          </h1>
+
         </div>
         <div className="ranking-cell">
           {rankingComponents}
@@ -68,12 +75,12 @@ class CheckBox extends Component {
   render() {
     if (this.props.checked) {
       return (
-        <div id="checkbox" className="checked checkbox" onClick={() => this.toggle()}></div>
+        <div id="checkbox" className="checked" onClick={() => this.toggle()}></div>
       );
     }
     else {
       return (
-        <div id="checkbox" className="unchecked checkbox" onClick={() => this.toggle()}></div>
+        <div id="checkbox" className="unchecked" onClick={() => this.toggle()}></div>
       );
     }
 

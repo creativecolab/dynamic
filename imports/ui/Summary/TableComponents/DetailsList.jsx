@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import './DetailsList.scss';
 
 export default class DetailsList extends Component {
 
@@ -32,6 +33,7 @@ export default class DetailsList extends Component {
     //TODO
     const max = 3;
 
+    console.log("render", this.props.questions);
     for (var i = 0; i < this.props.questions.length && i < max; i++) {
       questionComponents.push(
         <div key={i} className="question-detail-container">

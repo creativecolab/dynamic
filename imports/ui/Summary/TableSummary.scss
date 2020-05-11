@@ -19,102 +19,15 @@
   height: 30%; 
 }
 
-.table-header-container{
-  display: grid;
-  grid-template-columns: 25% 25% 25% 25%;
-  border-bottom: 1px solid black;
-}
-
-.table-row{
-  display: grid;
-  grid-template-columns: 25% 75%;
-}
-
-.table-row-container{
-  border-bottom: 1px solid lightgrey;
-}
-
-.round-cell{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.member-row-container{
-  display: grid;
-  grid-template-columns: 33% 33% 33%;
-}
-
 .table-summary{
   max-height: calc(100% - 240px);
   overflow: scroll;  
 }
 
-.showhide-details{
-  color:black;
-  font-size: 20px;
-}
-
-.full-dot{
-  height: 11px;
-  width: 11px;
-  background-color: gold;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.empty-dot{
-  height: 11px;
-  width: 11px;
-  background-color: lightgrey;
-  box-sizing: border-box;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.ranking-cell{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.checkbox{
-  width: 30px;
-  height:30px;
-}
-
-#checkbox{
-  border-radius: 5px;
-  width: 20px;
-  height: 20px;
-  box-sizing: border-box;
-  margin-left: calc(50% - 10px);
-}
-
-.checked{
-  background: #74E1FF;
-}
-
-.unchecked{
-  background:white;
-  border: 1px solid #8D8D8D;
-}
-
-.showhide-details{
-  font-size: 12px;
-  line-height: 15px;
-  text-align: center;
-}
-
-.member-cell{
-  font-size: 12px;
-  line-height: 15px;
-}
-
-.round-cell{
-  font-size: 14px;
-  line-height: 17px;
-  text-align: center;
+.table-header-container{
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
+  border-bottom: 1px solid black;
 }
 
 .table-header-container div h2{
@@ -122,54 +35,23 @@
   line-height: 17px;
 }
 
-.check-cell{
-  padding-left: calc(50% - 10px);
-}
-
-.member-row-container{
-  padding-bottom: 10px;
+.table-row-container{
+  border-bottom: 1px solid lightgrey;
 }
 
 .table-row{
-  padding-top:10px
-}
-
-.question-detail-container{
-  font-size: 14px;
-  line-height: 18px;
-  text-align: left;
-}
-
-
-.question-detail-container p{
-  font-size: 14px;
-  line-height: 18px;
-}
-
-.details-container{
+  padding-top:10px;
   display: grid;
   grid-template-columns: 25% 75%;
 }
 
-.question-summary h1{
-  font-size: 15px;
-  text-align: left;
+.round-cell{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
 }
 
-.details-shape-container{
-  margin: 0 25px 0 25px;
-}
-
-.details-shape-container img{
-  width:100%
-}
-
-.question-label{
-  padding: 3px;
-  text-align: left;
-  margin: 0;
-  font-size: 8px;
-  background: #74E1FF;
-  border-radius: 5px;
-  display:inline
-}

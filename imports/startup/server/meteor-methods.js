@@ -202,8 +202,8 @@ Meteor.methods({
             break;
           }
         }
-        questionTimes.push(qdata);
-
+        if(qdata.time && qdata.question)
+          questionTimes.push(qdata);
       }
       obj.questions = questionTimes;
       data.push(obj);

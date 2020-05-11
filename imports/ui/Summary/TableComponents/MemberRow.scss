@@ -1,0 +1,49 @@
+.member-row-container{
+  padding-bottom: 10px;
+}
+
+.member-row-container{
+  display: grid;
+  grid-template-columns: 33% 33% 33%;
+}
+
+
+.full-dot{
+  height: 11px;
+  width: 11px;
+  background-color: gold;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.empty-dot{
+  height: 11px;
+  width: 11px;
+  background-color: lightgrey;
+  box-sizing: border-box;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.ranking-cell{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.share-cell #checkbox{
+  margin-left: calc(50% - 10px);
+}
+
+.member-cell h1{
+  font-size: 12px;
+  line-height: 15px;
+  margin: 0;
+}
+
+.member-cell{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
