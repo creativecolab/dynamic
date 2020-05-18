@@ -34,10 +34,11 @@ export default class DetailsList extends Component {
     const max = 3;
 
     for (var i = 0; i < this.props.questions.length && i < max; i++) {
+      var question = this.props.questions[i].question;
       questionComponents.push(
         <div key={i} className="question-detail-container">
-          <div className="question-label">{this.props.questions[i].question.label}</div>
-          <p>{this.props.questions[i].question.prompt}</p>
+          <div className="question-label" style={{ background: question.color }}>{question.label}</div>
+          <p>{question.prompt}</p>
         </div>
       );
     }

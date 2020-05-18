@@ -23,10 +23,12 @@ class TableSummary extends Component {
 
     // get the data necessary for this component
     Meteor.call('users.getSummary', pid, session_id, (error, result) => {
+      console.log(result);
       this.setState({
         data: result
       });
     });
+
   }
 
   toggleChecked(teammate_id, teammate_name, prevChecked) {
