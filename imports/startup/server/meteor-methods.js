@@ -145,6 +145,7 @@ Meteor.methods({
 
     var relevant_prefs = [];
 
+    console.log(user.preferences);
 
     //get all preferences of the users for this session
     for (var i = 0; i < user.preferences.length; i++) {
@@ -165,6 +166,10 @@ Meteor.methods({
       var pids = [];
       var rankings = [];
       const pref = relevant_prefs[i];
+
+      if(pref.noSubmit)
+        obj.noSubmit = true;
+
       obj.team = Teams.findOne(pref.team);
       
 

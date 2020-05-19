@@ -20,7 +20,7 @@ export default class MemberRow extends Component {
   render() {
     var rankingComponents = [];
     for (var i = 0; i < 5; i++) {
-      if (i <= this.props.ranking) {
+      if (i <= this.props.ranking && !this.props.noSubmit) {
         rankingComponents.push(
           <span key={"dot" + i} className="full-dot"></span>
         );

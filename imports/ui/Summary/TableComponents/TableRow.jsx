@@ -20,11 +20,11 @@ export default class TableRow extends Component {
   render() {
     var memberComponents = [];
     const { selectedToEmail, data } = this.props;
-    const { members, rankings, questions, pids, round, team } = data;
+    const { members, rankings, questions, pids, round, team, noSubmit } = data;
     for (var i = 0; i < members.length; i++) {
       var checked = selectedToEmail.includes(pids[i]);
       memberComponents.push(
-        <MemberRow member={members[i]} ranking={rankings[i]} key={i} pid={pids[i]} checked={checked} toggleCallback={this.props.toggleCallback} />
+        <MemberRow noSubmit={noSubmit} member={members[i]} ranking={rankings[i]} key={i} pid={pids[i]} checked={checked} toggleCallback={this.props.toggleCallback} />
       );
     }
 
