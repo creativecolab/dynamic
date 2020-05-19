@@ -1,0 +1,17 @@
+#checkbox{
+  width: 30px;
+  height:30px;
+  border-radius: 5px;
+  width: 20px;
+  height: 20px;
+  box-sizing: border-box;
+}
+
+.checked{
+  background: #74E1FF;
+}
+
+.unchecked{
+  background:white;
+  border: 1px solid #8D8D8D;
+}

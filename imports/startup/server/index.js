@@ -14,7 +14,8 @@ import Logs from '../../api/logs';
 import './meteor-methods';
 import './register-api';
 import { formTeams } from './team-former';
-import { buildColoredShapes, calculateDuration, readPreferences, defaultPreferences, createDefaultQuestions } from './helper-funcs';
+import { buildColoredShapes, calculateDuration, readPreferences,
+         defaultPreferences, createDefaultQuestions } from './helper-funcs';
 import { updateTeamHistory_LateJoinees, updateTeamHistory_TeamFormation } from './team-historian';
 
 let timeout_timer;
@@ -22,13 +23,17 @@ let teams = [];
 
 /* Meteor start-up function, called once server starts */
 Meteor.startup(() => {
-  // handles session start/end
-  const sessionCursor = Sessions.find({});
+
+  /* Environment Variables */
+  //TODO: Set up email credentials
+  process.env.MAIL_URL="smtps://EmailTest:mypassword@ProtoTeams.com:465/";
 
   /* Follow changes that occur to the Sessions collection */
+  const sessionCursor = Sessions.find({});
+
   sessionCursor.observeChanges({
     changed(_id, update) {
-      console.log('\n[Session]' + _id + ' updated.');
+      console.log('\n[Session] ' + _id + ' updated.');
       console.log(update);
 
       // start session!
@@ -67,8 +72,42 @@ Meteor.startup(() => {
           session_id: session._id,
           timestamp: new Date().getTime()
         });
+      } 
+
+      if (update.status === SessionEnums.status.SUMMARY) {
+        // during this status, monitor if all participants are done viewing the summary
+        console.log("Activities complete, users are viewing the session summary.");
       }
 
+      // check if all participants have confirmed their emails
+      if (update.doneParticipants) {
+        // get the session of interest
+        const session = Sessions.findOne(_id);
+
+        // check if everyone has confirmed their emails
+        if (session.participants.length == update.doneParticipants.length) {
+          // if everyone is done, automatically move on
+          console.log("All users have confirmed their emails.");
+          Sessions.update(_id, 
+            { $set: {
+              status: SessionEnums.status.FINISHED
+            }
+          });
+        }
+      }
+
+      if (update.status === SessionEnums.status.FINISHED) {
+        // clear teamHistory from Session to make it more readable in db
+        Sessions.update(_id, {
+          $set: {
+            teamHistory: {}
+          }
+        }, () => console.log("Session Complete."));
+        // TODO: call email sending functions
+        // call helperMethod to build email mastersheet
+        // then, set a timer to call the MeteorMethod 
+          // (both to send emails after the session is really over and to allow time for email mastersheet to be built)
+      }
       
     }
   });
@@ -332,13 +371,13 @@ Meteor.startup(() => {
           { sort: { index: 1 } }
         );
 
-        // no activities left!! end session...
+        // no activities left!! end active session...
         if (!nextActivity) {
           console.log("Ending Session...");
           Sessions.update(session._id, {
             $set: {
-              status: SessionEnums.status.FINISHED,
-              endTime: new Date().getTime()
+              status: SessionEnums.status.SUMMARY,
+              summaryTime: new Date().getTime()
             }
           });
         }

@@ -176,6 +176,56 @@ export function getGroupsInfo(session_code) {
 
 }
 
+/**
+ * Produce a csv with the number of late participants.
+ * This gets data for all sessions in the db.
+ * Row: Session
+ * Col: Num participants, Num Late
+ */
+export function getLateCount(session_code) {
+  // get the session with the specified session code
+  const session = Sessions.findOne({ code: session_code.toLowerCase() });
+
+  if (!session) {
+    return 'No session named ' + session_code + ' yet!';
+  }
+
+  const { participants, instructor, startTime } = session;
+
+  // set up csv output
+  let csv_deets = session_code + ',' + instructor + ',' + participants.length;
+  let num_late = 0;
+
+  // check all participants, see if any of them were late
+  let no_more_late = false
+  // check latest first
+  for (let i = participants.length - 1; i > -1; i--) {
+    let currUser = Users.findOne({pid: participants[i]}); 
+
+    // as long as this participant exists, find sessionHistory for this session
+    if (currUser) {
+      for (let j = 0; j < currUser.sessionHistory.length; j++) {
+        if (currUser.sessionHistory[j].session_id == session._id) {
+          // check if the user joined session after it had started
+          if (currUser.sessionHistory[j].sessionJoinTime > startTime) {
+            num_late++;
+          } else {
+            // don't keep searching, no one who joined earlier will be late
+            no_more_late = true;
+          }
+          // don't need to check other sessionHistories, we found what we need
+          break;
+        }
+      }
+    }
+    // due to order of iteration, if someone wasn't late, no else will be
+    if (no_more_late) break;
+  }
+
+  // return the results
+  return csv_deets + "," + num_late + "\n";
+}
+
 /*
 Row: session
 Column: formation_time_per_round, discussion_time_per_round, assessment_time_per_round

@@ -5,21 +5,24 @@ import ReactSwipe from 'react-swipe';
 import posed from 'react-pose';
 
 import { Textfit } from 'react-textfit';
+
 import Questions from '../../../api/questions';
 import Teams from '../../../api/teams';
 import Users from '../../../api/users';
+
 import ActivityEnums from '../../../enums/activities';
+
 import Mobile from '../../Layouts/Mobile/Mobile';
 
 import Loading from '../../Components/Loading/Loading';
 import Waiting from '../../Components/Waiting/Waiting';
+import PictureContent from '../../Components/PictureContent/PictureContent';
 import TeamFormation from '../Components/TeamFormation/TeamFormation';
 import TeammateSliders from '../Components/TeammateSliders/TeammateSliders';
+import QuestionCarousel from '../Components/QuestionCarousel/QuestionCarousel';
 
 import './TeamDiscussion.scss';
-import PictureContent from '../../Components/PictureContent/PictureContent';
 
-import QuestionCarousel from '../Components/QuestionCarousel/QuestionCarousel';
 
 const Message = posed.div({
   hidden: {
@@ -38,6 +41,7 @@ class TeamDiscussion extends Component {
     questions: PropTypes.array,
     team: PropTypes.object,
     voted: PropTypes.bool,
+    session_id: PropTypes.string.isRequired, // to relate preferences to
     activity_id: PropTypes.string.isRequired, // to handle responses
     status: PropTypes.number.isRequired, // status of this activity
     statusStartTime: PropTypes.number.isRequired, // start time of this status
@@ -108,7 +112,7 @@ class TeamDiscussion extends Component {
   };
 
   handleVote = () => {
-    const { pid, activity_id } = this.props;
+    const { pid, activity_id, team } = this.props;
 
     if (!this.props.team._id) {
       return;
@@ -125,7 +129,11 @@ class TeamDiscussion extends Component {
           preferences: {
             values: teammates,
             activity_id,
-            timestamp: new Date().getTime()
+            team: team._id,
+            timestamp: new Date().getTime(),
+            shareEmail: false,
+            round: this.props.progress,
+            session: this.props.session_id
           }
         }
       },
@@ -143,7 +151,7 @@ class TeamDiscussion extends Component {
   };
 
   // renders based on activity status
-  renderContent = ({ status, pid, activity_id, questions, team }) => {
+  renderContent = ({ status, pid, activity_id, questions, team, progress, session_id }) => {
     // individual input phase (none for this activity)
     if (status === ActivityEnums.status.BUILDING_TEAMS) {
       return 'Indvidual input';
@@ -197,6 +205,9 @@ class TeamDiscussion extends Component {
             activity_id={activity_id}
             teammates={this.state.teammates}
             handleChange={this.handlepreferenceChange}
+            team_id={team._id}
+            round={progress}
+            session={session_id}
           />
         );
       } else {
@@ -288,10 +299,10 @@ class TeamDiscussion extends Component {
           startTime: new Date().getTime()
         });
         // update question 1 times viewed
-        const { questions } = this.props;
+        const { questions, team } = this.props;
 
         if (questions.length != 0) {
-          Meteor.call('questions.updateTimers', questions[0]._id, questions[0]._id, 0, 0, error => {
+          Meteor.call('questions.updateTimers', questions[0]._id, questions[0]._id, 0, 0, team._id, error => {
             if (!error) console.log('Tracked question 1 successfully');
             else console.log(error);
           });

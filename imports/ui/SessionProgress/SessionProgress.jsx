@@ -9,11 +9,13 @@ import Users from '../../api/users';
 import Logs from '../../api/logs';
 import Quizzes from '../../api/quizzes';
 
+import SessionEnums from '/imports/enums/sessions'
 import ActivityEnums from '/imports/enums/activities';
 
 import BigScreen from '../Layouts/BigScreen/BigScreen';
 
 import Loading from '../Components/Loading/Loading';
+import SessionBegin from './Components/SessionBegin';
 import SessionEnd from './Components/SessionEnd';
 import TeamShapes from './Components/TeamShapes';
 import StatsPage from './Components/StatsPage';
@@ -251,7 +253,7 @@ class SessionProgress extends Component {
     const numJoined = session.participants.length;
 
     // session not yet begun, provide details about what will happen.
-    if (session.status === 0)
+    if (session.status === SessionEnums.status.READY)
       return (
         <BigScreen
           sessionCode={this.props.session.code}
@@ -295,7 +297,7 @@ class SessionProgress extends Component {
       );
 
     // session started, render instructions for activities
-    if (session.status === 1) {
+    if (session.status === SessionEnums.status.ACTIVE) {
       // no activities
       if (!currentActivity) return <Loading />;
 
@@ -323,8 +325,27 @@ class SessionProgress extends Component {
       );
     }
 
+    // activities done, summary time.
+    if (session.status === SessionEnums.status.SUMMARY) {
+      return (
+        <BigScreen
+          sessionCode={this.props.session.code}
+          hasTimer={false}
+          buttonAction={() => Meteor.call('sessions.finishSession', session._id, () => {
+            console.log("completed session");
+          })}
+          buttonText={"Complete Session"}
+          activityPhase={"Summary Phase"}
+          instructions={"View your summary of this session!"}
+        >
+          [Insert Image here]
+        </BigScreen>
+      );
+    }
+
+
     // session ended.
-    if (session.status === 2) {
+    if (session.status === SessionEnums.status.FINISHED) {
       return (
         <BigScreen sessionCode={this.props.session.code} hasTimer={false} hasButton={false}>
           <SessionEnd />

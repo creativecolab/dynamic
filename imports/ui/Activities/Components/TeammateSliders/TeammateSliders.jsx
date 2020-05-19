@@ -18,7 +18,9 @@ export default class TeammateSliders extends Component {
     pid: PropTypes.string.isRequired,
     activity_id: PropTypes.string.isRequired,
     teammates: PropTypes.array.isRequired,
-    handleChange: PropTypes.func.isRequired
+    handleChange: PropTypes.func.isRequired,
+    progress: PropTypes.number.isRequired,
+    session: PropTypes.string.isRequired
   };
 
   getName(pid) {
@@ -99,14 +101,17 @@ export default class TeammateSliders extends Component {
 
   componentWillUnmount() {
     //when the component is unmounting, save whatever the user has done on the slider if they haven't submitted
-    const { pid, activity_id, teammates } = this.props;
+    const { pid, activity_id, teammates, session, round } = this.props;
 
     const user = Users.findOne({ pid });
 
     const voted = user.preferences.filter(pref => pref.activity_id == activity_id).length === 1;
 
+    console.log("unmounting teammate sliders for ", user._id, this.props);
     // if the user already voted, we don't need to save their preferences
     if (voted) return;
+
+    console.log("updating teammate sliders");
 
     Users.update(
       user._id,
@@ -115,7 +120,12 @@ export default class TeammateSliders extends Component {
           preferences: {
             values: teammates,
             activity_id,
-            timestamp: new Date().getTime()
+            team: this.props.team_id,
+            timestamp: new Date().getTime(),
+            shareEmail: false,
+            round: round,
+            session: session,
+            noSubmit: true
           }
         }
       },

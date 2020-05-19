@@ -62,12 +62,15 @@ export default class Mobile extends Component {
     hasTimer: PropTypes.bool,
     title: PropTypes.string,
     displayTeam: PropTypes.bool,
+    hasBackBtn: PropTypes.bool,
     // team: PropTypes.object,
     _id: PropTypes.string,
     members: PropTypes.array,
     color: PropTypes.string,
     shape: PropTypes.string,
+    backBtnAction: PropTypes.func,
     buttonAction: PropTypes.func,
+    buttonSize: PropTypes.string,
     buttonTxt: PropTypes.string,
     activityName: PropTypes.string,
     sessionStatus: PropTypes.number,
@@ -90,9 +93,14 @@ export default class Mobile extends Component {
     hasNavbar: true,
     hasTimer: true,
     displayTeam: false,
+    hasBackBtn: false,
+    backBtnAction: () => {
+      console.log('Back button action not set');
+    },
     buttonAction: () => {
       console.log('Button action not set');
     },
+    buttonSize: 'small',
     buttonTxt: 'Next',
     clockDuration: 0,
     clockStartTime: 0,
@@ -166,9 +174,11 @@ export default class Mobile extends Component {
 
   render() {
     const { title, sessionStatus, sessionLength } = this.props;
-    const { buttonTxt, buttonAction } = this.props;
+    const { buttonSize, buttonTxt, buttonAction } = this.props;
+    const { hasBackBtn, backBtnAction } = this.props;
     const { feedbackMsge, feedbackClass } = this.props;
-    const { clockStartTime, clockDuration, displayTeam, members, shape, color } = this.props;
+    const { clockStartTime, clockDuration } = this.props;
+    const { displayTeam, members, shape, color } = this.props;
     const { hasFooter, hasNavbar, hasTimer } = this.props;
     const { children, footerText } = this.props;
     const { loading, teamOpen } = this.state;
@@ -178,32 +188,51 @@ export default class Mobile extends Component {
 
     if (displayTeam && team_id) names = this.getTeammateNames(members);
 
+    // set up top left part of navbar
+    var topLeft = (
+      <div className="nav-team-shape">
+
+      </div>
+    );
+    if (hasBackBtn) {
+      topLeft = (
+        <div className="nav-back-btn" onClick={backBtnAction}>
+          {"<"}
+        </div>
+      );
+    }
+    else if (displayTeam && team_id) {
+      topLeft = (
+        <div onClick={() => this.openTeam()} className="nav-team-shape">
+          {displayTeam && team_id && (
+            <>
+              <img src={`/shapes/${shape}-solid-${color}-small.png`} alt="" />
+              {/* <div className="name-flex">
+                <div className="group-name-label">names</div> */}
+              {teamOpen ? <span>&#9650;</span> : <span>&#9660;</span>}
+              {/* </div> */}
+              <div className="nav-team-shape-label">GROUP</div>
+            </>
+          )}
+        </div>
+      );
+    }
+
     return (
       <div className="mobile-main">
         {hasNavbar && (
           <>
             <nav className="navbar">
-              <div onClick={() => this.openTeam()} className="nav-team-shape">
-                {displayTeam && team_id && (
-                  <>
-                    <img src={`/shapes/${shape}-solid-${color}-small.png`} alt="" />
-                    {/* <div className="name-flex">
-                      <div className="group-name-label">names</div> */}
-                    {teamOpen ? <span>&#9650;</span> : <span>&#9660;</span>}
-                    {/* </div> */}
-                    <div className="nav-team-shape-label">GROUP</div>
-                  </>
-                )}
-              </div>
+              {topLeft}
               <div className="progress-status">
                 <div className="session-progress">
                   {title ? (
                     <>{title}</>
                   ) : (
-                    <>
-                      Round {sessionStatus} of {sessionLength}
-                    </>
-                  )}
+                      <>
+                        Round {sessionStatus} of {sessionLength}
+                      </>
+                    )}
                 </div>
               </div>
               <div className="clock">
@@ -231,7 +260,7 @@ export default class Mobile extends Component {
         </div>
         {hasFooter && (
           <Footer className="footer" pose={loading ? 'hidden' : 'visible'}>
-            <Button size="small" onClick={buttonAction}>
+            <Button size={buttonSize} onClick={buttonAction}>
               {buttonTxt}
             </Button>
           </Footer>

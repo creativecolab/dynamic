@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
 
 import ActivityHandler from '../ActivityHandler/ActivityHandler';
+import SummaryHandler from '../SummaryHandler/SummaryHandler';
 
 import Sessions from '../../../api/sessions';
 import Activities from '../../../api/activities';
@@ -64,16 +65,19 @@ class SessionHandler extends Component {
     if (!pid) return 'Please log in first!';
 
     // extract session props
-    const { status, length, activities, instructor } = this.props;
-
-    // extract activity props
-    const { activity } = this.props;
-
-    // end of activity, link to survey
-    if (status === SessionEnums.status.FINISHED) return <Survey />;
+    const { status, length, activities, instructor, session_id } = this.props;
 
     // before the activities begin
     if (status === SessionEnums.status.READY) return <OnboardingInstructions />;
+
+    // end of activities, begin summary
+    if (status === SessionEnums.status.SUMMARY) return <SummaryHandler pid={pid} session_id={session_id} />;
+
+    // end of session, link to survey
+    if (status === SessionEnums.status.FINISHED) return <Survey />;
+
+    // extract activity props
+    const { activity } = this.props;
 
     if (!activity) {
       return <Loading />;
@@ -82,7 +86,7 @@ class SessionHandler extends Component {
     const progress = activities.indexOf(activity._id) + 1;
 
     if (status === SessionEnums.status.ACTIVE)
-      return <ActivityHandler pid={pid} sessionLength={length} progress={progress} activity_id={activity._id} instructor={instructor} />;
+      return <ActivityHandler pid={pid} sessionLength={length} progress={progress} session_id={session_id} activity_id={activity._id} instructor={instructor} />;
 
     return <Loading />;
   }
@@ -106,12 +110,13 @@ export default withTracker(props => {
 
   // get session status and progress
   const { instructor, status, activities } = session
+  const session_id = session._id;
   const length = activities.length;
 
   // get current activity in session
   const activity = Activities.findOne(
     {
-      session_id: session._id,
+      session_id: session_id,
       status: {
         $in: [
           ActivityEnums.status.BUILDING_TEAMS,
@@ -124,5 +129,5 @@ export default withTracker(props => {
     { sort: { status: 1 } }
   );
 
-  return { pid, status, length, activity, activities, instructor };
+  return { pid, status, length, activity, activities, session_id, instructor };
 })(SessionHandler);

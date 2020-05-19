@@ -3,7 +3,8 @@ const SessionEnums = {
   status: {
     READY: 0,
     ACTIVE: 1,
-    FINISHED: 2
+    SUMMARY: 2,
+    FINISHED: 3
   }
 };
 

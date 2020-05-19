@@ -8,6 +8,7 @@ export default class TextInput extends Component {
     name: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     label: PropTypes.string,
+    labelPos: PropTypes.string,
     placeholder: PropTypes.string,
     invalid: PropTypes.bool,
     invalidMsg: PropTypes.string,
@@ -21,6 +22,7 @@ export default class TextInput extends Component {
     invalidMsg: 'Invalid input',
     placeholder: 'Placeholder',
     label: 'Label',
+    labelPos: 'center',
     hasButton: false,
     onSubmit: () => { }
   };
@@ -32,12 +34,14 @@ export default class TextInput extends Component {
   }
 
   render() {
-    const { name, value, label, placeholder, invalid, invalidMsg, onSubmit, onChange, hasButton } = this.props;
+    const { name, value, label, labelPos, placeholder, invalid, invalidMsg, onSubmit, onChange, hasButton } = this.props;
 
     return (
       <div className="field-container">
         <label className="field-title" htmlFor={name}>
-          {label}
+          <div style={{ textAlign: labelPos }}>
+            {label}
+          </div>
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', position: 'relative' }}>
             <div className="input-container">
               <input

@@ -1,0 +1,67 @@
+.member-row-container{
+  padding-bottom: 10px;
+}
+
+.member-row-container{
+  display: grid;
+  grid-template-columns: 33% 33% 33%;
+}
+
+
+.full-dot{
+  height: 11px;
+  width: 11px;
+  background-color: gold;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.empty-dot{
+  height: 11px;
+  width: 11px;
+  background-color: lightgrey;
+  box-sizing: border-box;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.ranking-container{
+  display: flex;
+  align-items: center;
+}
+
+.share-cell #checkbox{
+  margin-left: calc(50% - 10px);
+}
+
+.member-cell h1{
+  font-size: 12px;
+  line-height: 15px;
+  margin: 0;
+  align-self: baseline;
+}
+
+.member-cell{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.ranking-connector{
+  margin:0;
+  height:1px;
+  width:5px;
+}
+
+.empty-connector{
+  background-color: lightgrey;
+}
+
+.filled-connector{
+  background-color: gold;
+}
+
+.ranking-cell{
+  display: inline-grid;
+}

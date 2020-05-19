@@ -24,6 +24,7 @@ export default class Button extends Component {
     let className = 'btn';
 
     if (size === 'small') className += ' btn-small';
+    else if (size === 'medium') className += ' btn-med';
     else if (size === 'large') className += ' btn-large';
     else if (size === 'tags') className += ' btn-tags';
     else if (size === 'input-text') className += ' btn-input-text';

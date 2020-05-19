@@ -1,0 +1,64 @@
+.outer {
+  display: flex;
+  flex-direction: column;
+  height: 70vh;
+  margin: 0;
+  position: relative;
+}
+
+.inner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center; 
+}
+
+#moving-logo{
+  width: 30%; 
+  height: 30%; 
+}
+
+.table-summary{
+  max-height: calc(100% - 240px);
+  overflow: scroll;  
+}
+
+.table-header-container{
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
+  border-bottom: 1px solid black;
+}
+
+.table-header-container div h2{
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.table-row-container{
+  border-bottom: 1px solid lightgrey;
+}
+
+.table-row{
+  padding-top:10px;
+  display: grid;
+  grid-template-columns: 25% 75%;
+}
+
+.round-cell{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+}
+
+.table-header-container .members-cell h2{
+  text-align: left;
+}
+
+.table-header-container .ranking-cell h2{
+  text-align: left;
+}
