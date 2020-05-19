@@ -390,8 +390,9 @@ Meteor.methods({
       let emailBody = buildEmailPrompt(recipientName, emailMap[pid].prospectives);
       let header = emailHeader;
       let sender = emailSender;
+      console.log("to: " + recipientEmail + "\nfrom: " + sender + "\ntext: " + emailBody + "\nsubject: " + header);
 
-      Email.send({to: 'samuelblake97@gmail.com', from: sender, text: emailBody, subject: header})
+      //Email.send({to: 'samuelblake97@gmail.com', from: sender, text: emailBody, subject: header})
     }
 
     // Make sure that all arguments are strings.

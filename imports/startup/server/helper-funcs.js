@@ -351,8 +351,9 @@ export async function produceEmailMastersheet(session_id, doneParticipants) {
       let recipientPID = pidMap[pid].interestedIn[i];
       let prospectiveObj = { 'name': pidMap[pid].name, 'email': pidMap[pid].email };
 
-      // add these details to the recipient's prospective connection array
-      pidMap[recipientPID].prospectives.push(prospectiveObj);
+      // add these details to the recipient's prospective connection array, they saved their email
+      if (recipientPID in pidMap)
+        pidMap[recipientPID].prospectives.push(prospectiveObj);
 
     }
   }
