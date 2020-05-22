@@ -24,10 +24,13 @@ let teams = [];
 /* Meteor start-up function, called once server starts */
 Meteor.startup(() => {
 
-  // handles session start/end
-  const sessionCursor = Sessions.find({});
+  /* Environment Variables */
+  //TODO: Set up email credentials
+  process.env.MAIL_URL="smtps://EmailTest:mypassword@ProtoTeams.com:465/";
 
   /* Follow changes that occur to the Sessions collection */
+  const sessionCursor = Sessions.find({});
+
   sessionCursor.observeChanges({
     changed(_id, update) {
       console.log('\n[Session] ' + _id + ' updated.');
@@ -100,6 +103,10 @@ Meteor.startup(() => {
             teamHistory: {}
           }
         }, () => console.log("Session Complete."));
+        // TODO: call email sending functions
+        // call helperMethod to build email mastersheet
+        // then, set a timer to call the MeteorMethod 
+          // (both to send emails after the session is really over and to allow time for email mastersheet to be built)
       }
       
     }

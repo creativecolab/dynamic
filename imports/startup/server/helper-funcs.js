@@ -306,3 +306,60 @@ export function readPreferences(instructor, session_id) {
     createUsers(instructor);
   }
 }
+
+/* builds a complex object that can be used to determine who should be emailed. Async to make sure everything exists when called upon. */
+export async function produceEmailMastersheet(session_id, doneParticipants) {
+
+  // build up the pid map
+  let pidMap = {};
+  for (let i = 0; i < doneParticipants.length; i++) {
+    let currPid = doneParticipants[i];
+
+    // get this user from the db
+    let user = await Users.findOne(
+      {
+        pid: currPid,
+        sessionHistory: {
+          $elemMatch: {
+            session_id: session_id
+          }
+        }
+      });
+
+    // get the user's email and their preferences
+    let currUserObj = {
+      'name': user.name,
+    }
+    for (let j = 0; j < user.sessionHistory.length; j++) {
+      if (user.sessionHistory[j].session_id === session_id) {
+        currUserObj['email'] = user.sessionHistory[j].emailAddress;
+        currUserObj['interestedIn'] = user.sessionHistory[j].sendEmailsTo;
+        currUserObj['prospectives'] = [];
+        break;
+      }
+    }
+
+    // save this user's information in the master map
+    pidMap[currPid] = currUserObj;
+    
+  }
+  // console.log(pidMap);
+
+  // iterate over the pid keys and add a prospectives field for the corresponding pids
+  for (var pid of Object.keys(pidMap)) {
+    for (let i = 0; i < pidMap[pid].interestedIn.length; i++) {
+      let recipientPID = pidMap[pid].interestedIn[i];
+      let prospectiveObj = { 'name': pidMap[pid].name, 'email': pidMap[pid].email };
+
+      // add these details to the recipient's prospective connection array, they saved their email
+      if (recipientPID in pidMap)
+        pidMap[recipientPID].prospectives.push(prospectiveObj);
+
+    }
+  }
+  // console.log(pidMap);
+
+  // send this email map back
+  return pidMap;
+
+}
