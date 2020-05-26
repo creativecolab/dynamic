@@ -20,11 +20,12 @@
 }
 
 .details-shape-container{
-  margin: 0 25px 0 25px;
+  margin: 0 25% 0 25%;
 }
 
 .details-shape-container img{
-  width:100%
+  width:100%;
+  max-width: 75px;
 }
 
 .question-label{

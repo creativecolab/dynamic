@@ -193,7 +193,7 @@ Meteor.methods({
       if (!session.instructor || session.instructor === "default") {
         questions = Questions.find({ round: pref.round, onwer: "none" }).fetch();
       } else {
-        questions = Questions.find({ round: pref.round, onwer: session.instructor }).fetch();
+        questions = Questions.find({ round: pref.round, owner: session.instructor }).fetch();
       }
 
       var questionTimes = [];
