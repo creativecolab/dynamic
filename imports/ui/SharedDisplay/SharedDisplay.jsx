@@ -9,8 +9,10 @@ import Card from '../Components/Card/Card';
 import Sessions from '../../api/sessions';
 import SessionEnums from '../../enums/sessions';
 
+import Questions from '../../api/questions';
 import Activities from '../../api/activities';
 import ActivityEnums from '../../enums/activities';
+
 
 import './SharedDisplay.scss';
 
@@ -33,7 +35,7 @@ export default class SharedDisplay extends Component {
   }
 
   // insert new session to db
-  createSession = () => {
+  createSession() {
     const code = this.makeSessionCode();
 
     console.log(code);
@@ -43,10 +45,46 @@ export default class SharedDisplay extends Component {
     // session already exists!
     if (session) {
       console.log('Session already exists!');
-
       return;
     }
 
+    const arbitraryQ = Questions.findOne();
+    if (arbitraryQ) {
+      const instructor = arbitraryQ.owner;
+      this.createInstructorSession(code, instructor)
+
+    }
+    else {
+      this.createDefaultSession(code);
+    }
+
+    this.setState({
+      code: code.toLowerCase(),
+      createdSession: true
+    });
+  };
+
+  createInstructorSession(code, instructor) {
+    Sessions.insert(
+      {
+        code: code.toLowerCase(),
+        instructor: instructor.toLowerCase(),
+        participants: [],
+        teamHistory: {},
+        activities: [],
+        status: SessionEnums.status.READY,
+        creationTime: new Date().getTime(),
+        startTime: 0,
+        endTime: 0
+      },
+      error => {
+        if (error) console.log('Something went wrong!');
+        else console.log('Session created!');
+      }
+    );
+  }
+
+  createDefaultSession(code) {
     // create session
     const session_id = Sessions.insert(
       {
@@ -94,7 +132,6 @@ export default class SharedDisplay extends Component {
 
       activities.push(activity_id);
     }
-
     // add new activity to this session, necessary? good?
     Sessions.update(
       session_id,
@@ -112,7 +149,7 @@ export default class SharedDisplay extends Component {
         }
       }
     );
-  };
+  }
 
   renderRedirect() {
     const { createdSession, code } = this.state;
@@ -160,7 +197,7 @@ export default class SharedDisplay extends Component {
         <Button
           style={{ color: 'white', background: '#080808', fontWeight: 600 }}
           size="small"
-          onClick={this.createSession}
+          onClick={this.createSession.bind(this)}
         >
           BEGIN
         </Button>
