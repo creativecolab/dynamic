@@ -8,8 +8,7 @@ import Teams from '../../api/teams';
 import Logs from '../../api/logs';
 import Questions from '../../api/questions';
 
-import { produceEmailMastersheet } from './helper-funcs';
-import { buildEmailPrompt, emailHeader, emailSender } from './email-helper';
+import { buildEmailPrompt, produceEmailMastersheet, emailHeader, emailSender } from './helper_functions/email-processer';
 
 /* Meteor methods (server-side functions, mostly database work) */
 Meteor.methods({

@@ -1,9 +1,52 @@
-/* This File contains multiple functions that various apis use to get certain data in csv format */
-import Sessions from '../../api/sessions';
-import Users from '../../api/users';
+/**
+ * This File contains multiple functions that various apis use to system data in research-friendly format 
+ */
+import Sessions from '../../../api/sessions';
+import Users from '../../../api/users';
+import Activities from '../../../api/activities';
+import Teams from '../../../api/teams';
+import Questions from '../../../api/questions';
 
-import { getAverageRating } from './helper-funcs';
-import { strict } from 'assert';
+/* parse the preferences of a user to get the average rating for a person */
+export function getAverageRating(
+  participant,
+  participant_preferences,
+  other_participant,
+  other_participant_preferences,
+  activities
+) {
+  // worst javascript in the world to get the ratings that pertain to the person of interest
+  const ratings_for_person = participant_preferences
+    .filter(preference => activities.includes(preference.activity_id))
+    .map(rating => rating.values.filter(value => value.pid === other_participant))
+    .filter(person_rating => person_rating.length > 0)
+    .map(person_rating => person_rating[0].value);
+  let participant_avg = parseFloat(
+    (ratings_for_person.reduce((total, value) => total + value, 0) / ratings_for_person.length).toFixed(3)
+  );
+
+  if (isNaN(participant_avg)) {
+    console.log('no rating given for ' + other_participant + ' by ' + participant);
+    participant_avg = 0;
+  }
+
+  // more terrible javascript to get ratings from the person of interest of the participant
+  const ratings_for_participant = other_participant_preferences
+    .filter(preference => activities.includes(preference.activity_id))
+    .map(rating => rating.values.filter(value => value.pid === participant))
+    .filter(person_rating => person_rating.length > 0)
+    .map(person_rating => person_rating[0].value);
+  let other_participant_avg = parseFloat(
+    (ratings_for_participant.reduce((total, value) => total + value, 0) / ratings_for_participant.length).toFixed(3)
+  );
+
+  if (isNaN(other_participant_avg)) {
+    console.log('no rating given for ' + participant + ' by ' + other_participant);
+    other_participant_avg = 0;
+  }
+
+  return ((participant_avg + other_participant_avg) / 2).toFixed(3);
+}
 
 /* 
   Goal: Obtain information on each participants pid, name, and joining time. 

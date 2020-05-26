@@ -1,3 +1,109 @@
+/**
+ * This file contains functionality for automating the system's discussion question set-up.abs
+ */ 
+import Questions from '../../../api/questions';
+
+// make some default questions for TeamDiscussion
+export function createDefaultQuestions() {
+  if (Questions.find({onwer: 'none'}).count() !== 0) {
+    return;
+  }
+
+  // for each group of questions
+  dbquestions.map(group => {
+    // icebreaker questions
+    if (group.label === 'icebreaker') {
+      let round = 0;
+
+      group.prompts.map((q, index) => {
+        if (index % 3 === 0) round += 1;
+
+        Questions.insert({
+          onwer: 'none',
+          prompt: q,
+          default: true,
+          createdTime: new Date().getTime(),
+          viewTimer: 0,
+          teamViewTimer: [],
+          timesViewed: 0,
+          label: 'ICEBREAKER',
+          color: group.color,
+          round
+        });
+      });
+    } else if (group.label === 'ideation') {
+      let round = 0;
+
+      group.prompts.map((q, index) => {
+        if (index % 2 === 0) round += 1;
+
+
+        Questions.insert({
+          onwer: 'none',
+          prompt: q,
+          default: true,
+          createdTime: new Date().getTime(),
+          viewTimer: 0,
+          teamViewTimer: [],
+          timesViewed: 0,
+          label: 'IDEATION',
+          color: group.color,
+          round: round
+        });
+      });
+    } else if (group.label === 'team') {
+      let round = 0;
+
+      group.prompts.map((q, index) => {
+        if (index % 3 === 0) round += 1;
+
+        Questions.insert({
+          onwer: 'none',
+          prompt: q,
+          default: true,
+          createdTime: new Date().getTime(),
+          viewTimer: 0,
+          teamViewTimer: [],
+          timesViewed: 0,
+          label: 'TEAM QUESTION',
+          color: group.color,
+          round: round
+        });
+      });
+    }
+  });
+}
+
+// make some default questions for TeamDiscussion
+export function createCustomQuestions(instructor, questions) {
+  if (Questions.find({owner: instructor}).count() !== 0) {
+    return;
+  }
+
+  // for each group of questions
+  questions.map(group => {
+    // get the correct label
+    let round = 0;
+
+    group.prompts.map((q, index) => {
+      if (index % group.numPerRound === 0) round += 1;
+
+      Questions.insert({
+        owner: instructor,
+        prompt: q,
+        default: true,
+        createdTime: new Date().getTime(),
+        viewTimer: 0,
+        teamViewTimer: [],
+        timesViewed: 0,
+        label: group.label,
+        color: group.color,
+        round
+      });
+    });
+  });
+}
+
 const dbquestions = [
   {
     label: 'icebreaker',
@@ -23,10 +129,6 @@ const dbquestions = [
       'If you had to become a teacher, what subject would you teach?',
       "What other languages do you speak? Teach everyone to say “hello” in that language.",
       "Who are your most and least favorite professors so far?",
-
-
-
-
 
     ]
   },
@@ -79,5 +181,3 @@ const dbquestions = [
     ]
   }
 ];
-
-export default dbquestions;

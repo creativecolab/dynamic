@@ -1,11 +1,10 @@
 /**
- * File contains methods and constants that pertain to the email functionalities.
+ * File contains methods and constants that pertain to the system's email functionalities.
  */ 
-import { Meteor } from 'meteor/meteor';
 import { Email } from 'meteor/email';
 
-import Sessions from '../../api/sessions';
-import Users from '../../api/users';
+import Sessions from '../../../api/sessions';
+import Users from '../../../api/users';
 
 /* constants */
 export const emailHeader = "Your Peers from ProtoTeams want to connect with you!";

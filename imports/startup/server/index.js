@@ -13,12 +13,13 @@ import Teams from '../../api/teams';
 
 // bundle modules
 import './meteor-methods';
-import './register-api';
-import { formTeams } from './team-former';
-import { buildColoredShapes, calculateDuration, readPreferences,
-         defaultPreferences, createDefaultQuestions } from './helper-funcs';
-import { updateTeamHistory_LateJoinees, updateTeamHistory_TeamFormation } from './team-historian';
-import { getEmailCredentials, sendEmails } from './email-helper';
+import './apis/register-api';
+import { formTeams } from './helper_functions/team-former';
+import { updateTeamHistory_LateJoinees, updateTeamHistory_TeamFormation } from './helper_functions/team-historian';
+import { buildColoredShapes, calculateDuration } from './helper_functions/small-helpers';
+import { readPreferences, defaultPreferences } from './helper_functions/session-builder';
+import { createDefaultQuestions } from './helper_functions/question-maker'
+import { getEmailCredentials, sendEmails } from './helper_functions/email-processer';
 
 let timeout_timer;
 let teams = [];
@@ -27,7 +28,6 @@ let teams = [];
 Meteor.startup(() => {
 
   /* Environment Variables */
-  //TODO: Set up email credentials cleanly
   process.env.MAIL_URL = getEmailCredentials();
 
   /* Follow changes that occur to the Sessions collection */
@@ -99,7 +99,7 @@ Meteor.startup(() => {
         }, () => console.log("Session Complete.\n"));
         // send out emails to everyone in 5 minutes
         clearTimeout(timeout_timer);
-        timeout_timer = setTimeout(() => sendEmails(_id), 30 * 1000);
+        timeout_timer = setTimeout(() => sendEmails(_id), 300 * 1000);
       }
       
     }

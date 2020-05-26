@@ -1,6 +1,18 @@
-/* This File contains all the code necessary to build teams for a round in an activity */
-import Sessions from '../../api/sessions'
-import { shuffle } from './helper-funcs';
+/**
+ * This File contains all the code necessary to build teams for a round in an activity 
+ */
+import Sessions from '../../../api/sessions'
+
+// shuffling function
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+
+  return a;
+}
 
 /*
   Produce the teams for the first round. Should be random, with a goal of teams of 3.
