@@ -57,6 +57,7 @@ class TableSummary extends Component {
     return (
       <div className="table-summary" id="center-container">
         <div>
+          <h4>Select the peers who you may want to connect with via email.</h4>
           <TableHeader />
           {rows}
         </div>

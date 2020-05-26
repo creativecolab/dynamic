@@ -249,7 +249,7 @@ class TeamDiscussion extends Component {
         hasTimer
         hasFooter={!team._id ? false : hasFooter}
         buttonAction={this.handleVote}
-        buttonTxt="Submit"
+        buttonText="Submit"
       >
         {this.renderContent(this.props)} {/*component*/}
       </Mobile>

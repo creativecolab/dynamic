@@ -71,7 +71,7 @@ export default class Mobile extends Component {
     backBtnAction: PropTypes.func,
     buttonAction: PropTypes.func,
     buttonSize: PropTypes.string,
-    buttonTxt: PropTypes.string,
+    buttonText: PropTypes.string,
     activityName: PropTypes.string,
     sessionStatus: PropTypes.number,
     sessionLength: PropTypes.number,
@@ -101,7 +101,7 @@ export default class Mobile extends Component {
       console.log('Button action not set');
     },
     buttonSize: 'small',
-    buttonTxt: 'Next',
+    buttonText: 'Next',
     clockDuration: 0,
     clockStartTime: 0,
     feedbackMsge: '',
@@ -174,7 +174,7 @@ export default class Mobile extends Component {
 
   render() {
     const { title, sessionStatus, sessionLength } = this.props;
-    const { buttonSize, buttonTxt, buttonAction } = this.props;
+    const { buttonSize, buttonText, buttonAction } = this.props;
     const { hasBackBtn, backBtnAction } = this.props;
     const { feedbackMsge, feedbackClass } = this.props;
     const { clockStartTime, clockDuration } = this.props;
@@ -261,7 +261,7 @@ export default class Mobile extends Component {
         {hasFooter && (
           <Footer className="footer" pose={loading ? 'hidden' : 'visible'}>
             <Button size={buttonSize} onClick={buttonAction}>
-              {buttonTxt}
+              {buttonText}
             </Button>
           </Footer>
         )}
