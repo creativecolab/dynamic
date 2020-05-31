@@ -8,8 +8,7 @@ import Teams from '../../api/teams';
 import Logs from '../../api/logs';
 import Questions from '../../api/questions';
 
-import { produceEmailMastersheet } from './helper-funcs';
-import { buildEmailPrompt, emailHeader, emailSender } from './email-prompts';
+import { buildEmailPrompt, produceEmailMastersheet, emailHeader, emailSender } from './helper_functions/email-processer';
 
 /* Meteor methods (server-side functions, mostly database work) */
 Meteor.methods({
@@ -381,50 +380,27 @@ Meteor.methods({
 
     // async to make sure the email is populated
     const emailMap = await produceEmailMastersheet(session_id, doneParticipants); 
-    console.log(emailMap);
+    //console.log(emailMap);
 
-    // now, for send an email with the information from each of the participants
+    // now, send an email with the information from each of the participants
     for (var pid of Object.keys(emailMap)) {
       let recipientEmail = emailMap[pid].email;
       let recipientName = emailMap[pid].name;
       let emailBody = buildEmailPrompt(recipientName, emailMap[pid].prospectives);
       let header = emailHeader;
       let sender = emailSender;
-      console.log("to: " + recipientEmail + "\nfrom: " + sender + "\ntext: " + emailBody + "\nsubject: " + header);
+      //console.log("to: " + recipientEmail + "\nfrom: " + sender + "\ntext: " + emailBody + "\nsubject: " + header)
 
-      //Email.send({to: 'samuelblake97@gmail.com', from: sender, text: emailBody, subject: header})
+      try {
+        console.log("Sending Email to [" + recipientEmail + ":" + pid + "]...");
+        Email.send({to: recipientEmail, from: sender, text: emailBody, subject: header});
+      }
+      catch (failedEmail) {
+        console.log("\nFailed to send an email to " + recipientEmail);
+        console.log("This was likely due to an invalid email being entered.");
+        console.log(failedEmail);
+      }
     }
-
-    // Make sure that all arguments are strings.
-    // check([to, from, subject, text], [String]);
-
-    // // Let other method calls from the same client start running, without
-    // // waiting for the email sending to complete.
-    // this.unblock();
-
-    // Email.send({ to, from, subject, text });
-    // Server: Define a method that the client can call.
-    // Meteor.methods({
-    //   sendEmail(to, from, subject, text) {
-    //     // Make sure that all arguments are strings.
-    //     check([to, from, subject, text], [String]);
-
-    //     // Let other method calls from the same client start running, without
-    //     // waiting for the email sending to complete.
-    //     this.unblock();
-
-    //     Email.send({ to, from, subject, text });
-    //   }
-    // });
-
-    // // Client: Asynchronously send an email.
-    // Meteor.call(
-    //   'sendEmail',
-    //   'Alice <alice@example.com>',
-    //   'bob@example.com',
-    //   'Hello from Meteor!',
-    //   'This is a test of Email.send.'
-    // );
  },
 
   /* Activities Collection Methods */

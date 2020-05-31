@@ -9,5 +9,7 @@ pycache
 .vscode
 dump_protolab_friday_before/
 cogs187_data/
+# NOTE: UNCOMMENT THESE WHEN DEPLOYING
 private/rosters
+private/mailKeys
 

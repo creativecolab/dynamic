@@ -40,11 +40,6 @@ class SummaryHandler extends Component {
     // add or remove recipients
     if (add) {
       // only add a recipient once
-      // if (this.state.recipients) {
-      //   this.setState({
-      //     recipients: [recipient]
-      //   });
-      // } else 
       if (this.state.recipients.indexOf(recipient) == -1) {
         this.setState({
           recipients: [...this.state.recipients, recipient]
@@ -125,9 +120,9 @@ class SummaryHandler extends Component {
       return <Survey />;
     }
 
-    let buttonAct, backBtnAct;
+    let btnAct, btnTxt, backBtnAct;
     if (!viewedSummary) {
-      buttonAct = () => {
+      btnAct = () => {
         let recipients = this.props.sendEmailsTo.map(pid => Users.findOne({ pid: pid }).name)
         this.setState({
           viewedSummary: true,
@@ -137,17 +132,20 @@ class SummaryHandler extends Component {
           console.log("set viewSummary to ", true);
         });
       }
+      btnTxt = "View Summary"
     }
     else if (!selectedEmails) {
-      buttonAct = () => {
+      btnAct = () => {
         this.setState({ selectedEmails: true });
         Meteor.call('users.toggleSelectedEmails', pid, session_id, true, () => {
           console.log("set selectedEmails to ", true);
         });
       }
+      btnTxt = "Confirm"
     }
     else {
-      buttonAct = this.checkEmailToConfirm.bind(this);
+      btnAct = this.checkEmailToConfirm.bind(this);
+      btnTxt = "Save Email"
       backBtnAct = () => {
         this.setState({ selectedEmails: false });
         Meteor.call('users.toggleSelectedEmails', pid, session_id, false, () => {
@@ -164,9 +162,9 @@ class SummaryHandler extends Component {
         hasNavbar={true}
         hasTimer={false}
         displayTeam={false}
-        buttonAction={buttonAct}
+        buttonAction={btnAct}
         buttonSize={'small'}
-        buttonTxt={'Send Emails'}
+        buttonText={btnTxt}
         hasBackBtn={this.state.selectedEmails ? true : false}
         backBtnAction={backBtnAct}
       >

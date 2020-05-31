@@ -1,6 +1,7 @@
-/* File that contains some functions to help keep the teamHistory matrix for a session up-to-date */
-
-import Sessions from '../../api/sessions';
+/**
+ * File that contains some functions to help keep the teamHistory matrix for a session up-to-date.
+ */
+import Sessions from '../../../api/sessions';
 
 export function updateTeamHistory_LateJoinees(session_id) {
 
@@ -42,14 +43,6 @@ export function updateTeamHistory_LateJoinees(session_id) {
 export function updateTeamHistory_TeamFormation(session_id, teams) {
   // get a snapshot of the teamHistory matrix of this session
   const { teamHistory } = Sessions.findOne(session_id);
-
-   // teams.forEach(team => {
-  //   team.forEach(member => {
-  //     team.forEach(other_member => {
-  //       if (member != other_member) teamHistory[member][other_member] = teamHistory[member][other_member] + 1;
-  //     });
-  //   });
-  // });
 
   // update the matrix based on the new teams
   for (let i = 0; i < teams.length; i++) {

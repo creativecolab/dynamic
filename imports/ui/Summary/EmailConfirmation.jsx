@@ -35,7 +35,10 @@ export default class EmailConfirmation extends Component {
   makeRecipientList(recipients) {
     if (recipients === undefined || recipients.length == 0) {
       return (
-        <h3>You have elected to not invite anyone to connect. Please enter your email to continue.</h3>
+        <div>
+          <h3>You have decided to not invite anyone to connect.</h3>
+          <h3>Please enter your email to so others can contact you to connect.</h3>
+        </div>
       )
     } else {
       // format the recipient list
@@ -48,7 +51,10 @@ export default class EmailConfirmation extends Component {
       });
 
       return (
-        <h3>You are about to invite {recipients_map} to connect. Please enter your email to continue.</h3>
+        <div>
+          <h3>You are about to invite {recipients_map} to connect.</h3>
+          <h3>Please enter your email to so others can contact you to connect.</h3>
+        </div>
       )
     }
   }

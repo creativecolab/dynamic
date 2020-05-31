@@ -1,22 +1,25 @@
 import { Meteor } from 'meteor/meteor';
 // import { PythonShell } from 'python-shell';
 
+// enums
 import ActivityEnums from '../../enums/activities';
 import SessionEnums from '../../enums/sessions';
 
+// collections
 import Activities from '../../api/activities';
 import Sessions from '../../api/sessions';
 import Users from '../../api/users';
 import Teams from '../../api/teams';
-import Logs from '../../api/logs';
 
 // bundle modules
 import './meteor-methods';
-import './register-api';
-import { formTeams } from './team-former';
-import { buildColoredShapes, calculateDuration, readPreferences, readDefaultPreferences,
-         defaultPreferences, createDefaultQuestions } from './helper-funcs';
-import { updateTeamHistory_LateJoinees, updateTeamHistory_TeamFormation } from './team-historian';
+
+import { readPreferences, readDefaultPreferences} from './helper_functions/session-builder';
+import './apis/register-api';
+import { formTeams } from './helper_functions/team-former';
+import { updateTeamHistory_LateJoinees, updateTeamHistory_TeamFormation } from './helper_functions/team-historian';
+import { buildColoredShapes, calculateDuration } from './helper_functions/small-helpers';
+import { getEmailCredentials, sendEmails } from './helper_functions/email-processer';
 
 let timeout_timer;
 let teams = [];
@@ -25,8 +28,7 @@ let teams = [];
 Meteor.startup(() => {
 
   /* Environment Variables */
-  //TODO: Set up email credentials
-  process.env.MAIL_URL="smtps://EmailTest:mypassword@ProtoTeams.com:465/";
+  process.env.MAIL_URL = getEmailCredentials();
 
   /* Follow changes that occur to the Sessions collection */
   const sessionCursor = Sessions.find({});
@@ -59,14 +61,6 @@ Meteor.startup(() => {
             console.log('\nStarting Activity Status ' + res);
           }
         });
-
-        // TODO: Update logs
-        Logs.insert({
-          status: 1,
-          message: 'Session started',
-          session_id: session._id,
-          timestamp: new Date().getTime()
-        });
       } 
 
       if (update.status === SessionEnums.status.SUMMARY) {
@@ -97,11 +91,10 @@ Meteor.startup(() => {
           $set: {
             teamHistory: {}
           }
-        }, () => console.log("Session Complete."));
-        // TODO: call email sending functions
-        // call helperMethod to build email mastersheet
-        // then, set a timer to call the MeteorMethod 
-          // (both to send emails after the session is really over and to allow time for email mastersheet to be built)
+        }, () => console.log("Session Complete.\n"));
+        // send out emails to everyone in 5 minutes
+        clearTimeout(timeout_timer);
+        timeout_timer = setTimeout(() => sendEmails(_id), 300 * 1000);
       }
       
     }
