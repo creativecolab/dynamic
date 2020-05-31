@@ -22,12 +22,12 @@ export default class MemberRow extends Component {
     for (var i = 0; i < 5; i++) {
       if (i <= this.props.ranking && !this.props.noSubmit) {
         rankingComponents.push(
-          <span key={"dot" + i} className="full-dot"></span>
+          <span key={"dot" + i} className="full-dot ranking-dot"></span>
         );
       }
       else {
         rankingComponents.push(
-          <span key={"dot" + i} className="empty-dot"></span>
+          <span key={"dot" + i} className="empty-dot ranking-dot"></span>
         );
       }
 
