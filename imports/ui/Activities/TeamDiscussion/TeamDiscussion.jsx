@@ -152,6 +152,7 @@ class TeamDiscussion extends Component {
 
   // renders based on activity status
   renderContent = ({ status, pid, activity_id, questions, team, progress, session_id }) => {
+
     // individual input phase (none for this activity)
     if (status === ActivityEnums.status.BUILDING_TEAMS) {
       return 'Indvidual input';
@@ -370,7 +371,7 @@ export default withTracker(({ pid, activity_id, progress, instructor }) => {
   let questions = []
   // get all the quesitons
   if (instructor === "default") {
-    questions = Questions.find({ round: { $in: [progress, 0] }, owner: 'none' }).fetch();
+    questions = Questions.find({ round: { $in: [progress, 0] }, owner: 'default' }).fetch();
   } else {
     questions = Questions.find({ round: { $in: [progress, 0] }, owner: instructor }).fetch();
   }

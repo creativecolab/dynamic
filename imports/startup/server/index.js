@@ -14,7 +14,7 @@ import Logs from '../../api/logs';
 import './meteor-methods';
 import './register-api';
 import { formTeams } from './team-former';
-import { buildColoredShapes, calculateDuration, readPreferences,
+import { buildColoredShapes, calculateDuration, readPreferences, readDefaultPreferences,
          defaultPreferences, createDefaultQuestions } from './helper-funcs';
 import { updateTeamHistory_LateJoinees, updateTeamHistory_TeamFormation } from './team-historian';
 
@@ -41,18 +41,13 @@ Meteor.startup(() => {
         const session = Sessions.findOne(_id);
 
         // check if this is a specially made session
-        if (session.instructor) {
+        if (!session.instructor || session.instructor === "default"){
+          readDefaultPreferences(session._id);
+        }
+        else if (session.instructor) {
           // fufill preferences
           readPreferences(session.instructor, session._id);
         } 
-        // make some default stuff
-        else {
-          // create 6 default activities
-          if (!session.activities) {
-            defaultPreferences(session._id);
-          }
-          createDefaultQuestions();
-        }
 
         // start first activity
         const firstActivity = Activities.findOne({ session_id: _id, index: 0 });

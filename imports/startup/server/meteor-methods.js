@@ -191,7 +191,7 @@ Meteor.methods({
 
       // get the top questions for this round
       if (!session.instructor || session.instructor === "default") {
-        questions = Questions.find({ round: pref.round, onwer: "none" }).fetch();
+        questions = Questions.find({ round: pref.round, owner: "default" }).fetch();
       } else {
         questions = Questions.find({ round: pref.round, owner: session.instructor }).fetch();
       }

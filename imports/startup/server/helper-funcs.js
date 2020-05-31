@@ -93,7 +93,7 @@ export function getAverageRating(
 
 // make some default questions for TeamDiscussion
 export function createDefaultQuestions() {
-  if (Questions.find({onwer: 'none'}).count() !== 0) {
+  if (Questions.find({owner: 'default'}).count() !== 0) {
     return;
   }
 
@@ -107,7 +107,7 @@ export function createDefaultQuestions() {
         if (index % 3 === 0) round += 1;
 
         Questions.insert({
-          onwer: 'none',
+          owner: 'default',
           prompt: q,
           default: true,
           createdTime: new Date().getTime(),
@@ -127,7 +127,7 @@ export function createDefaultQuestions() {
 
 
         Questions.insert({
-          onwer: 'none',
+          owner: 'default',
           prompt: q,
           default: true,
           createdTime: new Date().getTime(),
@@ -146,7 +146,7 @@ export function createDefaultQuestions() {
         if (index % 3 === 0) round += 1;
 
         Questions.insert({
-          onwer: 'none',
+          owner: 'default',
           prompt: q,
           default: true,
           createdTime: new Date().getTime(),
@@ -250,8 +250,57 @@ export function defaultPreferences(session_id) {
       }
     });
   }
-
 }
+
+export function readDefaultPreferences(session_id){
+  const preferences = {
+    "instructor": "default",
+    "num_activities": 4,
+    "duration": 180,
+    "group_size": 3,
+    "hasRoster": false,
+    "questionsType": "default"
+  }
+
+  // create activities that the instructor prefers
+  let activities = new Array(preferences.num_activities)
+  for (let i = 0; i < preferences.num_activities; i++) {
+    const activity_id = Activities.insert({
+      name: ActivityEnums.name.TEAM_DISCUSSION,
+      session_id,
+      index: i,
+      teamSize: preferences.group_size,
+      hasIndvPhase: false,
+      durationIndv: 180,
+      durationTeam: preferences.duration,
+      durationOffsetIndv: 0,
+      durationOffsetTeam: 0,
+      status: ActivityEnums.status.READY,
+      creationTime: new Date().getTime(),
+      statusStartTimes: {
+        buildTeams: 0,
+        teamForm: 0,
+        teamPhase: 0,
+        peerAssessment: 0
+      },
+      team_ids: [],
+      allTeamsFound: false,
+      endTime: 0
+    });
+
+    activities[i] = activity_id;
+  }
+
+  // add the newly created activities to the session
+  Sessions.update(session_id, {
+    $set: {
+      activities
+    }
+  });
+
+  createDefaultQuestions();
+}
+
 
 // make activities based on the needs of the instructor
 export function readPreferences(instructor, session_id) {
