@@ -9,11 +9,6 @@ import Card from '../Components/Card/Card';
 import Sessions from '../../api/sessions';
 import SessionEnums from '../../enums/sessions';
 
-import Questions from '../../api/questions';
-import Activities from '../../api/activities';
-import ActivityEnums from '../../enums/activities';
-
-
 import './SharedDisplay.scss';
 
 export default class SharedDisplay extends Component {
@@ -48,15 +43,6 @@ export default class SharedDisplay extends Component {
       return;
     }
 
-    this.createDefaultSession(code);
-
-    this.setState({
-      code: code.toLowerCase(),
-      createdSession: true
-    });
-  };
-
-  createDefaultSession(code) {
     Sessions.insert(
       {
         code: code.toLowerCase(),
@@ -74,7 +60,13 @@ export default class SharedDisplay extends Component {
         else console.log('Session created!');
       }
     );
-  }
+
+    this.setState({
+      code: code.toLowerCase(),
+      createdSession: true
+    });
+  };
+
 
   renderRedirect() {
     const { createdSession, code } = this.state;
