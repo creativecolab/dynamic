@@ -9,11 +9,6 @@ import Card from '../Components/Card/Card';
 import Sessions from '../../api/sessions';
 import SessionEnums from '../../enums/sessions';
 
-import Questions from '../../api/questions';
-import Activities from '../../api/activities';
-import ActivityEnums from '../../enums/activities';
-
-
 import './SharedDisplay.scss';
 
 export default class SharedDisplay extends Component {
@@ -48,15 +43,23 @@ export default class SharedDisplay extends Component {
       return;
     }
 
-    const arbitraryQ = Questions.findOne();
-    if (arbitraryQ) {
-      const instructor = arbitraryQ.owner;
-      this.createInstructorSession(code, instructor)
-
-    }
-    else {
-      this.createDefaultSession(code);
-    }
+    Sessions.insert(
+      {
+        code: code.toLowerCase(),
+        instructor: "default",
+        participants: [],
+        teamHistory: {},
+        activities: [],
+        status: SessionEnums.status.READY,
+        creationTime: new Date().getTime(),
+        startTime: 0,
+        endTime: 0
+      },
+      error => {
+        if (error) console.log('Something went wrong!');
+        else console.log('Session created!');
+      }
+    );
 
     this.setState({
       code: code.toLowerCase(),
@@ -64,92 +67,6 @@ export default class SharedDisplay extends Component {
     });
   };
 
-  createInstructorSession(code, instructor) {
-    Sessions.insert(
-      {
-        code: code.toLowerCase(),
-        instructor: instructor.toLowerCase(),
-        participants: [],
-        teamHistory: {},
-        activities: [],
-        status: SessionEnums.status.READY,
-        creationTime: new Date().getTime(),
-        startTime: 0,
-        endTime: 0
-      },
-      error => {
-        if (error) console.log('Something went wrong!');
-        else console.log('Session created!');
-      }
-    );
-  }
-
-  createDefaultSession(code) {
-    // create session
-    const session_id = Sessions.insert(
-      {
-        code: code.toLowerCase(),
-        participants: [],
-        teamHistory: {},
-        activities: [],
-        status: SessionEnums.status.READY,
-        creationTime: new Date().getTime(),
-        startTime: 0,
-        endTime: 0
-      },
-      error => {
-        if (error) console.log('Something went wrong!');
-        else console.log('Session created!');
-      }
-    );
-
-    // create 6 default activities
-    const activities = [];
-
-    for (let i = 0; i < 6; i++) {
-      const activity_id = Activities.insert({
-        name: ActivityEnums.name.TEAM_DISCUSSION,
-        session_id,
-        index: i,
-        teamSize: 3, // TODO: default value?
-        hasIndvPhase: false,
-        durationIndv: 180,
-        durationTeam: 180,
-        durationOffsetIndv: 0,
-        durationOffsetTeam: 0,
-        status: ActivityEnums.status.READY,
-        creationTime: new Date().getTime(),
-        statusStartTimes: {
-          indvPhase: 0,
-          teamForm: 0,
-          teamPhase: 0,
-          peerAssessment: 0
-        },
-        team_ids: [],
-        allTeamsFound: false,
-        endTime: 0
-      });
-
-      activities.push(activity_id);
-    }
-    // add new activity to this session, necessary? good?
-    Sessions.update(
-      session_id,
-      {
-        $set: {
-          activities
-        }
-      },
-      error => {
-        if (!error) {
-          this.setState({
-            createdSession: true,
-            code
-          });
-        }
-      }
-    );
-  }
 
   renderRedirect() {
     const { createdSession, code } = this.state;

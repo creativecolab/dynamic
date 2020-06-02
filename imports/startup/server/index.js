@@ -13,12 +13,12 @@ import Teams from '../../api/teams';
 
 // bundle modules
 import './meteor-methods';
+
+import { readPreferences, readDefaultPreferences} from './helper_functions/session-builder';
 import './apis/register-api';
 import { formTeams } from './helper_functions/team-former';
 import { updateTeamHistory_LateJoinees, updateTeamHistory_TeamFormation } from './helper_functions/team-historian';
 import { buildColoredShapes, calculateDuration } from './helper_functions/small-helpers';
-import { readPreferences, defaultPreferences } from './helper_functions/session-builder';
-import { createDefaultQuestions } from './helper_functions/question-maker'
 import { getEmailCredentials, sendEmails } from './helper_functions/email-processer';
 
 let timeout_timer;
@@ -43,18 +43,13 @@ Meteor.startup(() => {
         const session = Sessions.findOne(_id);
 
         // check if this is a specially made session
-        if (session.instructor) {
+        if (!session.instructor || session.instructor === "default"){
+          readDefaultPreferences(session._id);
+        }
+        else if (session.instructor) {
           // fufill preferences
           readPreferences(session.instructor, session._id);
         } 
-        // make some default stuff
-        else {
-          // create 6 default activities
-          if (!session.activities) {
-            defaultPreferences(session._id);
-          }
-          createDefaultQuestions();
-        }
 
         // start first activity
         const firstActivity = Activities.findOne({ session_id: _id, index: 0 });

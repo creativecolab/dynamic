@@ -5,7 +5,7 @@ import Questions from '../../../api/questions';
 
 // make some default questions for TeamDiscussion
 export function createDefaultQuestions() {
-  if (Questions.find({onwer: 'none'}).count() !== 0) {
+  if (Questions.find({owner: 'default'}).count() !== 0) {
     return;
   }
 
@@ -19,7 +19,7 @@ export function createDefaultQuestions() {
         if (index % 3 === 0) round += 1;
 
         Questions.insert({
-          onwer: 'none',
+          owner: 'default',
           prompt: q,
           default: true,
           createdTime: new Date().getTime(),
@@ -39,7 +39,7 @@ export function createDefaultQuestions() {
 
 
         Questions.insert({
-          onwer: 'none',
+          owner: 'default',
           prompt: q,
           default: true,
           createdTime: new Date().getTime(),
@@ -58,7 +58,7 @@ export function createDefaultQuestions() {
         if (index % 3 === 0) round += 1;
 
         Questions.insert({
-          onwer: 'none',
+          owner: 'default',
           prompt: q,
           default: true,
           createdTime: new Date().getTime(),
