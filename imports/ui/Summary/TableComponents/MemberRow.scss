@@ -7,22 +7,19 @@
   grid-template-columns: 33% 33% 33%;
 }
 
-
-.full-dot{
+.ranking-dot{
   height: 11px;
   width: 11px;
-  background-color: gold;
   border-radius: 50%;
   display: inline-block;
 }
 
+.full-dot{
+  background-color: gold;
+}
+
 .empty-dot{
-  height: 11px;
-  width: 11px;
   background-color: lightgrey;
-  box-sizing: border-box;
-  border-radius: 50%;
-  display: inline-block;
 }
 
 .ranking-container{

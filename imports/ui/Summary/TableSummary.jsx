@@ -8,6 +8,7 @@ import TableRow from './TableComponents/TableRow';
 import { withTracker } from 'meteor/react-meteor-data';
 
 import './TableSummary.scss';
+import './TableSummaryDesktop.scss';
 
 class TableSummary extends Component {
   static propTypes = {
