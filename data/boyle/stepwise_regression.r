@@ -82,9 +82,39 @@ model <- glm(team ~., family= "binomial", data=data)
 selectedMod <- step(model)
 summary(selectedMod)
 
+### START LOGISTIC REGRESSION USED FOR PAPER REPORTING ###
 
-model <- glm(team ~ social_tie_avg + avg_rating + gender + age + nationality, family = "binomial", data=data)
+## LOAD DATA ## 
+training.data.raw <- read.csv('~/D4SD/Data_Parser/boyle/csvs/dyad_data_master.csv', header=T, na.strings=c(""))
+
+## CLEAN DATA ## 
+data <- subset(training.data.raw, select = -c(mutual, dyad))
+data$competence = rowSums(data[,13:21])
+data$personality = rowSums(data[,8:11])
+data$social_measures = rowSums(data[,22:25])
+data$warmth =  rowSums(data[,30:31])
+data <- subset(data, select = -c(u_r, s_s, t_s, c_s, a_d, t_i, c_p, c_d, p_m, agreeableness, conscientiousness, extraversion, emotional_stability, psychological_collectivism, social_skills, leadership, creativity, personality, social_measures))
+data
+
+## EXTRACT RELEVANT FEATURES ## 
+data <- subset(data, select= c(social_tie_avg, avg_rating, interacted, age, gender, nationality, team))
+data 
+
+## 9/8/20, drop avg_rating in lieu of interacted ## 
+data <- subset(data, select= -c(avg_rating))
+data 
+
+## FINAL CLEANING ## 
+data[,1] <- data[,1] + 1 # scale social tie avg up
+data
+
+## RUN LOGISTIC REGRESSION MODEL ## 
+model <- glm(team ~ social_tie_avg + interacted + gender + age + nationality, family = "binomial", data=data)
 summary(model)
+
+### END LOGISTIC REGRESSION USED FOR PAPER REPORTING ###
+
+
 pR2(model)
 
 #?pR2

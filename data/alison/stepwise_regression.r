@@ -1,5 +1,28 @@
 library(pscl)
 
+### START LOGISTIC REGRESSION USED FOR PAPER REPORTING ###
+
+## LOAD DATA ## 
+training.data.raw <- read.csv('~/D4SD/Data_Parser/alison/csvs/alison_dyad_data_excluded.csv', header=T, na.strings=c(""))
+
+## EXTRACT RELEVANT FEATURES ## 
+data <- subset(data, select= c(social_tie_avg, avg_rating, interacted, age, gender, nationality, team))
+data 
+
+## 9/8/20, drop avg_rating in lieu of interacted ## 
+data <- subset(data, select= -c(avg_rating))
+data 
+
+## FINAL CLEANING ## 
+data[,1] <- data[,1] + 1 # scale social tie avg up
+data
+
+## RUN LOGISTIC REGRESSION MODEL ## 
+model <- glm(team ~ social_tie_avg + interacted + gender + age + nationality, family = "binomial", data=data)
+summary(model)
+
+### END LOGISTIC REGRESSION USED FOR PAPER REPORTING ###
+
 # read full data in
 training.data.raw <- read.csv('~/D4SD/Data_Parser/alison/csvs/alison_dyad_data_excluded.csv', header=T, na.strings=c(""))
 
@@ -71,6 +94,8 @@ selected_scaled_model <- step(scaled_model)
 summary(selected_scaled_model)
 
 # create un-scaled model
+data[,1] <- data[,1] + 1
+data
 model <- glm(team ~social_tie_avg + avg_rating + gender + age + nationality, family = "binomial", data=data)
 summary(model)
 
