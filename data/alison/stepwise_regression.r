@@ -6,7 +6,7 @@ library(pscl)
 training.data.raw <- read.csv('~/D4SD/Data_Parser/alison/csvs/alison_dyad_data_excluded.csv', header=T, na.strings=c(""))
 
 ## EXTRACT RELEVANT FEATURES ## 
-data <- subset(data, select= c(social_tie_avg, avg_rating, interacted, age, gender, nationality, team))
+data <- subset(training.data.raw, select= c(social_tie_avg, avg_rating, interacted, age, gender, nationality, team))
 data 
 
 ## 9/8/20, drop avg_rating in lieu of interacted ## 
@@ -47,12 +47,18 @@ data <- data[rows, ]
 
 #hist(data$avg_rating)
 
+### MEANS and SD data for paper ### 
+training.data.raw <- read.csv('~/D4SD/Data_Parser/alison/csvs/alison_dyad_data_excluded.csv', header=T, na.strings=c(""))
 
-data <- subset(data, select= c(social_tie_avg,avg_rating,age, gender, nationality, team))
+
+data <- subset(training.data.raw, select= c(social_tie_avg, avg_rating, interacted, age, gender, nationality, team))
 mean(data$social_tie_avg)
 sd(data$social_tie_avg)
 mean(data$avg_rating)
 sd(data$avg_rating)
+## 8/9/20, including interacted
+mean(data$interacted)
+sd(data$interacted)
 mean(data$age)
 sd(data$age)
 mean(data$gender)
@@ -61,6 +67,8 @@ mean(data$nationality)
 sd(data$nationality)
 mean(data$team)
 sd(data$team)
+
+###
 
 # normalize data of important variables
 data_vars <- subset(data, select= c(social_tie_avg,avg_rating,age, gender, nationality))

@@ -36,12 +36,20 @@ data <- data[rows, ]
 
 #hist(data$avg_rating)
 
-# extract important vars
-data <- subset(data, select= c(social_tie_avg,avg_rating,age, gender, nationality, team))
+### MEANS and SD data for paper ### 
+training.data.raw <- read.csv('~/D4SD/Data_Parser/boyle/csvs/dyad_data_master.csv', header=T, na.strings=c(""))
+
+## extract important vars
+data <- subset(training.data.raw, select= c(social_tie_avg, avg_rating, interacted, age, gender, nationality, team))
+
+## means and sds
 mean(data$social_tie_avg)
 sd(data$social_tie_avg)
 mean(data$avg_rating)
 sd(data$avg_rating)
+## 8/9/20, including interacted
+mean(data$interacted)
+sd(data$interacted)
 mean(data$age)
 sd(data$age)
 mean(data$gender)
@@ -50,6 +58,8 @@ mean(data$nationality)
 sd(data$nationality)
 mean(data$team)
 sd(data$team)
+
+###
 
 # normalize data of important variables
 data_vars <- subset(data, select= c(social_tie_avg,avg_rating,age, gender, nationality))
