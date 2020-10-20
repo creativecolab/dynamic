@@ -210,6 +210,58 @@ export default function Home() {
             experience as well as the outcomes of working in teams.
           </div>
         </div>
+        <div className="team-wrapper">
+          <div className="team-heading">
+            <b>The Team</b>
+          </div>
+          <div className="team-group">
+            <div className="team-member-gus">
+              <img src="homepage/gus.png"></img>
+              <h2>Gustavo Umbelino</h2>
+              <p>Lead Researcher, Software Developer</p>
+            </div>
+            <div className="team-member-matin">
+              <img src="homepage/matin.png"></img>
+              <h2>Matin Yarmand</h2>
+              <p>Researcher</p>
+            </div>
+            <div className="team-member-samuel">
+              <img src="homepage/sam.png"></img>
+              <h2>Samuel Blake</h2>
+              <p>Software Developer, Researcher</p>
+            </div>
+            <div className="team-member-steven">
+              <img src="homepage/steven.png"></img>
+              <h2>Steven Dow</h2>
+              <p>Professor</p>
+            </div>
+            <div className="team-member-vivian">
+              <img src="homepage/missing_red.png"></img>
+              <h2>Vivian Ta</h2>
+              <p>UX Designer, Videographer</p>
+            </div>
+            <div className="team-member-amy">
+              <img src="homepage/missing_yellow.png"></img>
+              <h2>Amy Luo</h2>
+              <p>UX Designer</p>
+            </div>
+            <div className="team-member-alison">
+              <img src="homepage/alison.png"></img>
+              <h2>Alison Chen</h2>
+              <p>UX Designer</p>
+            </div>
+            <div className="team-member-amaya">
+              <img src="homepage/amaya.png"></img>
+              <h2>Amaya Mali</h2>
+              <p>UX Designer</p>
+            </div>
+            <div className="team-member-justin">
+              <img src="homepage/justin.png"></img>
+              <h2>Justin Chen</h2>
+              <p>Software Developer</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

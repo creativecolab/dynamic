@@ -109,6 +109,93 @@
   }
 }
 
+.team-wrapper {
+  width: 100%;
+  margin: 5vw;
+}
+
+.team-heading {
+  font-size: 2.5em;
+  text-align: left;
+}
+
+.team-group {
+  display: grid;
+  grid-template-rows: 30% 30% 30%;
+  grid-template-columns: 30% 30% 30%;
+  margin: 5%;
+  grid-gap: 20px 10px;
+  font-size: 1em;
+  text-align: center;
+  img {
+    max-height: 100%;
+    max-width: 100%;
+  }
+}
+
+.team-member-gus {
+  grid-row-start: 1;
+  grid-row-end: 1;
+  grid-column-start: 1;
+  grid-column-end: 1;
+}
+
+.team-member-matin {
+  grid-row-start: 1;
+  grid-row-end: 1;
+  grid-column-start: 2;
+  grid-column-end: 2;
+}
+
+.team-member-samuel {
+  grid-row-start: 1;
+  grid-row-end: 1;
+  grid-column-start: 3;
+  grid-column-end: 3;
+}
+
+.team-member-steven {
+  grid-row-start: 2;
+  grid-row-end: 2;
+  grid-column-start: 1;
+  grid-column-end: 1;
+}
+
+.team-member-vivian {
+  grid-row-start: 2;
+  grid-row-end: 2;
+  grid-column-start: 2;
+  grid-column-end: 2;
+}
+
+.team-member-amy {
+  grid-row-start: 2;
+  grid-row-end: 2;
+  grid-column-start: 3;
+  grid-column-end: 3;
+}
+
+.team-member-alison {
+  grid-row-start: 3;
+  grid-row-end: 3;
+  grid-column-start: 1;
+  grid-column-end: 1;
+}
+
+.team-member-amaya {
+  grid-row-start: 3;
+  grid-row-end: 3;
+  grid-column-start: 2;
+  grid-column-end: 2;
+}
+
+.team-member-justin {
+  grid-row-start: 3;
+  grid-row-end: 3;
+  grid-column-start: 3;
+  grid-column-end: 3;
+}
+
 .steps-background {
   color: white;
   //background: #080808;
